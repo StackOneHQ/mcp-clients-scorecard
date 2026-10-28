@@ -1,0 +1,8 @@
+{
+  "name": "mcp-client-compat-probe",
+  "private": true,
+  "description": "Probe server for live MCP handshakes",
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0"
+  }
+}

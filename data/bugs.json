@@ -1,0 +1,71 @@
+{
+  "as_of": "2026-10-27",
+  "window_start": "2026-07-28",
+  "repos": {
+    "anthropics/claude-code": {
+      "issues": 822,
+      "completed": 60,
+      "duplicates": 53
+    },
+    "anomalyco/opencode": {
+      "issues": 343,
+      "completed": 62,
+      "duplicates": 27
+    },
+    "openai/codex": {
+      "issues": 462,
+      "completed": 22,
+      "duplicates": 12
+    },
+    "github/copilot-cli": {
+      "issues": 136,
+      "completed": 32,
+      "duplicates": 3
+    },
+    "google-gemini/gemini-cli": {
+      "issues": 29,
+      "completed": 5,
+      "duplicates": 0
+    },
+    "continuedev/continue": {
+      "issues": 9,
+      "completed": 0,
+      "duplicates": 0
+    },
+    "microsoft/vscode": {
+      "issues": 297,
+      "completed": 122,
+      "duplicates": 10
+    },
+    "aaif-goose/goose": {
+      "issues": 63,
+      "completed": 35,
+      "duplicates": 0
+    },
+    "zed-industries/zed": {
+      "issues": 21,
+      "completed": 2,
+      "duplicates": 2
+    },
+    "cline/cline": {
+      "issues": 39,
+      "completed": 5,
+      "duplicates": 0
+    },
+    "earendil-works/pi": {
+      "issues": 80,
+      "completed": 25,
+      "duplicates": 0
+    },
+    "Factory-AI/factory": {
+      "issues": 3,
+      "completed": 1,
+      "duplicates": 0
+    },
+    "anthropics/claude-ai-mcp": {
+      "issues": 467,
+      "completed": 63,
+      "duplicates": 31
+    }
+  }
+}
