@@ -5,7 +5,7 @@ import { ROOT, COLUMNS, TIERS, GROUPS, protocolGrade, formatDate } from './data.
 const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
 
-// Each logo is read once: the client chart embeds the same logo at every step of its line
+// Each logo is read once: the feature chart embeds a client's logo at every step that client caused
 const logos = new Map();
 const logo = f => {
   if (!logos.has(f)) logos.set(f, `data:${f.endsWith('.png') ? 'image/png' : 'image/svg+xml'};base64,${fs.readFileSync(ROOT + 'assets/logos/' + f).toString('base64')}`);
@@ -155,8 +155,7 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   }).join('');
   const legend = series.map((s, i) => {
     const { color, dash } = lineStyle(i);
-    const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
-    return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
+    return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg><span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
   // A row of logo chips where a line steps up, one per client behind the step. A row stays on its month and moves up or down
   // a chip at a time to clear other rows, never sideways, so the month it marks stays right. i is the line's index, matching its colour.
@@ -188,7 +187,6 @@ svg{position:absolute;left:0;top:0}
 .lg span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg b{color:#fff;font-weight:800}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
-.lg img{width:26px;height:26px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:6px;padding:3px}.lg img.av,.lg img.png{padding:0}
 .mk{position:absolute;border-radius:6px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
 .mk img{width:15px;height:15px;object-fit:contain}.mk img.av{width:20px;height:20px;border-radius:4px}.mk img.png{width:20px;height:20px}
 </style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
@@ -199,6 +197,11 @@ svg{position:absolute;left:0;top:0}
 export function historyFeaturesHtml({ data }, ms, series) {
   return lineChart({ title: 'Which MCP clients shipped each feature, and when', subtitle: 'Each step is a client release adding full or partial support, marked with that client\'s logo', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
 }
+
+// The four features drawn dashed above are hollow rings here, so the close hues (green and lime, amber and orange) still differ
+const dot = (f, cx, cy, r) => lineStyle(f).dash
+  ? `<circle cx="${cx}" cy="${cy}" r="${r - 2}" fill="#000" stroke="${lineStyle(f).color}" stroke-width="4"/>`
+  : `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${lineStyle(f).color}" stroke="#000" stroke-width="2"/>`;
 
 // One row per client, one dot per feature at the month of the release that shipped it, in the feature's colour from the chart above.
 // Features shipped in the same month sit side by side, centred on that month.
@@ -217,7 +220,7 @@ export function historyClientsHtml({ data }, ms, rows, features) {
       const c0 = Math.max(L + half, Math.min(L + pw - half, x(at)));
       return ss.map((s, j) => {
         const cx = c0 + j * gap - half;
-        return `<circle cx="${cx}" cy="${cy}" r="${D}" fill="${LINE[s.f % LINE.length]}" stroke="#000" stroke-width="2"/>`;
+        return dot(s.f, cx, cy, D);
       }).join('');
     }).join('');
     const first = Math.min(...r.shipped.map(s => s.at));
@@ -226,22 +229,22 @@ export function historyClientsHtml({ data }, ms, rows, features) {
       + `<text x="${L - 20}" y="${cy + 7}" text-anchor="end" class="nm">${esc(r.label)}</text>`;
   }).join('');
   const names = rows.map((r, i) => r.logo ? `<img src="${logo(r.logo)}"${logoClass(r.logo)} style="left:${40}px;top:${T + rh * (i + 0.5) - 13}px">` : '').join('');
-  const legend = features.map((f, i) => `<div><i style="background:${LINE[i % LINE.length]}"></i>${esc(f)}</div>`).join('');
+  const legend = features.map((f, i) => `<div><svg width="20" height="20">${dot(i, 10, 10, 9)}</svg>${esc(f)}</div>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><title>Features supported per client</title>${FONT}
 <style>
 *{box-sizing:border-box;margin:0}
 body{width:${W}px;height:${H}px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;position:relative;overflow:hidden}
 h1{position:absolute;left:44px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
 h2{position:absolute;left:44px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
-svg{position:absolute;left:0;top:0}
+body>svg{position:absolute;left:0;top:0}
 .ax,.ud{font-size:18px;fill:#9A9A94;font-family:Inter,system-ui,sans-serif}.ud{font-size:15px}
 .nm{font-size:20px;font-weight:600;fill:#EDEDED;font-family:Inter,system-ui,sans-serif}
 body>img{position:absolute;width:26px;height:26px;object-fit:contain;background:#fff;border-radius:6px;padding:3px}body>img.av,body>img.png{padding:0}
 .leg{position:absolute;left:44px;top:138px;display:flex;gap:26px;font-size:18px;font-weight:600}
-.leg div{display:flex;align-items:center;gap:10px;white-space:nowrap}.leg i{width:16px;height:16px;border-radius:50%}
+.leg div{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
 </style></head><body><h1>Features supported per client</h1><h2>Each dot is a feature, placed at the release that shipped it</h2>
-<svg width="${W}" height="${H}">${body}${monthAxis(ms, x, T + ph + 6)}</svg>${names}
+<svg width="${W}" height="${H}">${body}${rows.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`}${monthAxis(ms, x, T + ph + 6)}</svg>${names}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(data.as_of)}</div></body></html>`;
 }
 
