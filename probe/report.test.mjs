@@ -30,6 +30,18 @@ test('a client that carries on after an older version is offered accepted the do
   assert.equal(r['@openai/codex'].connected, true);
 });
 
+test('a client that retries initialize after an older version is offered did not accept it', () => {
+  const r = report([
+    { label: '@openai/codex', method: 'initialize', params: { protocolVersion: '2026-07-28' } },
+    { label: '@openai/codex', reply: '2025-11-25' },
+    { label: '@openai/codex', method: 'initialize', params: { protocolVersion: '2026-07-28' } },
+    { label: '@factory/cli', method: 'initialize', params: { protocolVersion: '2025-11-25' } },
+    { label: '@factory/cli', reply: '2025-11-25' },
+  ]);
+  assert.equal(r['@openai/codex'].accepted_downgrade, null);
+  assert.equal(r['@openai/codex'].connected, false);
+});
+
 test('a client that stops after an older version is offered did not connect', () => {
   const lines = [
     { label: '@openai/codex', method: 'initialize', params: { protocolVersion: '2026-07-28' } },
