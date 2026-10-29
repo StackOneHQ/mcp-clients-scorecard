@@ -103,7 +103,8 @@ function validate(data, bugs) {
     for (const k of Object.keys(c)) if (k !== 'file' && !CLIENT_KEYS.has(k)) errs.push(`${at}: unknown key ${k}`);
     if (!GROUPS.some(([g]) => g === c.group)) errs.push(`${at}: group must be cli or app`);
     if (!TIERS.includes(c.tier)) errs.push(`${at}: tier must be one of ${TIERS.join(' ')}`);
-    if (!c.logo || !fs.existsSync(ROOT + 'assets/logos/' + c.logo)) errs.push(`${at}: logo ${c.logo} not found in assets/logos`);
+    // A bare file name, so a client file cannot point the renderer at a file outside assets/logos
+    if (!/^[\w-]+\.(svg|png)$/.test(c.logo || '') || !fs.existsSync(ROOT + 'assets/logos/' + c.logo)) errs.push(`${at}: logo ${c.logo} not found in assets/logos`);
     if (!isUrl(c.website)) errs.push(`${at}: website must be an https URL`);
     for (const k of ['docs', 'repo']) if (c[k] != null && !isUrl(c[k])) errs.push(`${at}: ${k} must be an https URL or null`);
     if (c.tracker != null) {
