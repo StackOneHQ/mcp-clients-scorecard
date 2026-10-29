@@ -33,16 +33,24 @@ const datedMonth = cell => (supported(cell) && cell.since ? String(cell.since.da
 // Month index a dated cell counts from; dates before SERIES_START count from the first month
 const monthIndex = (ms, d) => Math.max(0, ms.findIndex(m => d <= m));
 
+// Where a line steps up: the month index and the logos of the clients whose release caused it, ordered by client name.
+// Clients that share a logo (Claude Code and the Claude app) show it once per step.
+function jumps(ms, shipped) {
+  const by = new Map();
+  for (const s of [...shipped].sort((a, b) => a.c.name.localeCompare(b.c.name))) {
+    const at = monthIndex(ms, s.d);
+    if (!by.has(at)) by.set(at, []);
+    if (!by.get(at).includes(s.c.logo)) by.get(at).push(s.c.logo);
+  }
+  return [...by].sort((a, b) => a[0] - b[0]).map(([at, logos]) => ({ at, logos }));
+}
+
 export function featureSeries({ data }) {
   const ms = months(data.as_of);
   return FEATURE_COLS.map(([k, label]) => {
     const shipped = data.clients.map(c => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
-    const dated = shipped.map(s => s.d);
     const undated = data.clients.filter(c => supported(c.cells[k]) && !c.cells[k].since).length;
-    // jumps: where the line steps up, with the logos of the clients whose release caused it
-    const jumps = [...new Set(shipped.map(s => monthIndex(ms, s.d)))].sort((a, b) => a - b)
-      .map(at => ({ at, logos: shipped.filter(s => monthIndex(ms, s.d) === at).map(s => s.c.logo).filter(Boolean).sort() }));
-    return { label, values: ms.map(m => dated.filter(d => d <= m).length), undated, jumps };
+    return { label, values: ms.map(m => shipped.filter(s => s.d <= m).length), undated, jumps: jumps(ms, shipped) };
   });
 }
 
@@ -50,10 +58,8 @@ export function clientSeries({ data }, limit = 8) {
   const ms = months(data.as_of);
   return data.clients
     .map(c => {
-      const dated = FEATURE_COLS.map(([k]) => datedMonth(c.cells[k])).filter(Boolean);
-      // steps: the month indexes where the line goes up, for the logo markers on the chart
-      const steps = [...new Set(dated.map(d => monthIndex(ms, d)))].sort((a, b) => a - b);
-      return { label: c.name, tier: c.tier, logo: c.logo, steps, values: ms.map(m => dated.filter(d => d <= m).length) };
+      const shipped = FEATURE_COLS.map(([k]) => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
+      return { label: c.name, tier: c.tier, logo: c.logo, jumps: jumps(ms, shipped), values: ms.map(m => shipped.filter(s => s.d <= m).length) };
     })
     .filter(s => s.values.at(-1) > 0)
     .sort((a, b) => b.values.at(-1) - a.values.at(-1) || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.label.localeCompare(b.label))
