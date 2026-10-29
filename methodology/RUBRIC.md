@@ -1,6 +1,6 @@
 # Rubric
 
-Tiers come from three numbers. The rules below are the same ones in `rubricTier` in [render/data.mjs](render/data.mjs), so the build can tell when the data moves a client.
+Tiers come from three numbers. The rules below are the same ones in `rubricTier` in [render/data.mjs](../render/data.mjs), so the build can tell when the data moves a client.
 
 ## Feature score
 
@@ -8,7 +8,7 @@ Each of the eight feature columns (everything except the spec version) scores 1 
 
 ## Spec grade
 
-The newest protocol version the client negotiates, compared with the list in `spec_versions` at the top of [data/clients.yaml](data/clients.yaml):
+The newest protocol version the client negotiates, compared with the list in `spec_versions` in [data/meta.yaml](../data/meta.yaml):
 
 | Grade | Meaning |
 | --- | --- |
@@ -39,6 +39,6 @@ Applied in order. The first rule that matches sets the tier.
 
 ## Exceptions
 
-A client can sit in a tier the rubric does not give it only with a `tier_note` in the data, listed below. The build fails on any other mismatch.
+A client can sit in a tier the rubric does not give it only with a `tier_note` in its file in [data/clients/](../data/clients/), listed below. The build fails on any other mismatch.
 
 - **opencode** is held at B. On 1.19.4, the npm latest, the rubric gives C. The V2 build, which opencode's own README installs, turns code mode on by default and adds tool search, CIMD and elicitation.

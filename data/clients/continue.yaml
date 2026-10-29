@@ -1,0 +1,73 @@
+# Continue. Field reference: data/README.md. After editing, run npm run build.
+name: Continue
+group: cli
+tier: D
+note: Repository is read-only and no longer maintained.
+unmaintained: true
+logo: gh-continue.png
+website: https://continue.dev
+docs: https://docs.continue.dev
+repo: https://github.com/continuedev/continue
+version_checked: 2.0.0
+tracker:
+  repo: continuedev/continue
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2025-11-25
+    method: source
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
+    evidence: core/package-lock.json:4431-4432 SDK 1.29.0 (LATEST 2025-11-25); core/package.json:67 ^1.25.2; MCPConnection.ts:88-96 no override
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
+    evidence: "grep code mode / execute_javascript: none"
+    checked: 2026-10-27
+  tool_search:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
+    evidence: "grep tool search / deferred: none"
+    checked: 2026-10-27
+  apps:
+    value: p
+    method: source
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/gui/src/pages/gui/ToolCallDiv/MCPAppRenderer.tsx
+    evidence: 'gui MCPAppRenderer.tsx imports `AppBridge` from `@modelcontextprotocol/ext-apps/app-bridge`; core/tools/callTool.ts:117-118 reads `mcpMeta.ui.resourceUri`; commit a7a5351b "feat: limited MCP App support (#10132)" 2026-02-06. But client declares `capabilities: {}` (no ui extension advertised)'
+    checked: 2026-10-27
+    since:
+      date: 2026-02-17
+      version: "1.2.16"
+      source: https://github.com/continuedev/continue/releases/tag/v1.2.16-vscode
+  tasks:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
+    evidence: "grep tasks/ , io.modelcontextprotocol/tasks: none; capabilities {}"
+    checked: 2026-10-27
+  events:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core
+    evidence: "grep events/subscribe, notifications/events: none"
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPOauth.ts#L119
+    evidence: MCPOauth.ts:119-132 `clientMetadata` (redirect_uris, client_name) is DCR only; no clientMetadataUrl
+    checked: 2026-10-27
+  id_jag:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core
+    evidence: "grep id-jag, jwt-bearer: none"
+    checked: 2026-10-27
+  elicitation:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
+    evidence: "MCPConnection.ts:88-96 `capabilities: {}`; grep elicit: none"
+    checked: 2026-10-27

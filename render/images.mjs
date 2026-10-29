@@ -1,4 +1,4 @@
-// HTML for the two 1080x1350 images: the tier board and the per-feature matrix
+// HTML for the PNGs in assets/: the tier board and per-feature matrix (1080x1350), and the two adoption charts (1200x700)
 import fs from 'node:fs';
 import { ROOT, COLUMNS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
 
@@ -105,4 +105,71 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 <div class="foot"><div class="leg"><div>${mark('y')}yes</div><div>${mark('p')}partial</div><div>${mark('n')}no</div></div><div style="white-space:nowrap">${formatDate(data.as_of)}</div></div>
 </body></html>`;
+}
+
+// Step-line charts for the adoption section, 1200x700, from the since dates (see render/history.mjs)
+const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F472B6', '#A3E635', '#FB923C'];
+
+function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
+  const W = 1200, H = 700, L = 84, R = 300, T = 150, B = 92;
+  const pw = W - L - R, ph = H - T - B;
+  const max = Math.max(1, ...series.flatMap(s => s.values));
+  const step = max > 10 ? 2 : 1;
+  const top = Math.ceil(max / step) * step;
+  const x = i => L + (months.length === 1 ? pw / 2 : (i * pw) / (months.length - 1));
+  const y = v => T + ph - (v / top) * ph;
+  let grid = '';
+  for (let v = 0; v <= top; v += step) grid += `<line x1="${L}" x2="${L + pw}" y1="${y(v)}" y2="${y(v)}" stroke="#2A2A26"/><text x="${L - 14}" y="${y(v) + 6}" text-anchor="end" class="ax">${v}</text>`;
+  // Label the first month, January of each year and the last month, skipping labels closer than four months
+  const marks = [];
+  months.forEach((m, i) => {
+    if (!(i === 0 || m.endsWith('-01') || i === months.length - 1)) return;
+    if (marks.length && i - marks.at(-1) < 4) {
+      if (i !== months.length - 1) return;
+      if (marks.length > 1) marks.pop(); else return;
+    }
+    marks.push(i);
+  });
+  months.forEach((m, i) => {
+    if (marks.includes(i)) {
+      const lab = new Date(m + '-01T00:00:00Z').toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+      grid += `<line x1="${x(i)}" x2="${x(i)}" y1="${T + ph}" y2="${T + ph + 8}" stroke="#55554F"/><text x="${x(i)}" y="${T + ph + 34}" text-anchor="middle" class="ax">${lab}</text>`;
+    }
+  });
+  // Small vertical offsets keep equal lines from hiding each other
+  const off = i => (i - (series.length - 1) / 2) * 2.2;
+  const lines = series.map((s, i) => {
+    let d = `M${x(0)},${y(s.values[0]) + off(i)}`;
+    s.values.forEach((v, j) => { if (j) d += `H${x(j)}V${y(v) + off(i)}`; });
+    return `<path d="${d}" fill="none" stroke="${LINE[i % LINE.length]}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`
+      + `<circle cx="${x(months.length - 1)}" cy="${y(s.values.at(-1)) + off(i)}" r="6" fill="${LINE[i % LINE.length]}"/>`;
+  }).join('');
+  const legend = series.map((s, i) => `<div class="lg"><i style="background:${LINE[i % LINE.length]}"></i><span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`).join('');
+  const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:${W}px;height:${H}px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;position:relative;overflow:hidden}
+h1{position:absolute;left:${L - 40}px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
+h2{position:absolute;left:${L - 40}px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
+svg{position:absolute;left:0;top:0}
+.ax{font-size:18px;fill:#9A9A94;font-family:Inter,system-ui,sans-serif}
+.yl{font-size:18px;fill:#9A9A94;font-family:Inter,system-ui,sans-serif;font-weight:600}
+.leg{position:absolute;left:${W - R + 36}px;top:${T - 6}px;width:${R - 60}px;display:flex;flex-direction:column;gap:12px}
+.lg{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600}
+.lg i{width:22px;height:6px;border-radius:3px;flex-shrink:0}
+.lg span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg b{color:#fff;font-weight:800}
+.foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
+</style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
+<svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>
+<div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(asOf)}</div></body></html>`;
+}
+
+export function historyFeaturesHtml({ data }, ms, series) {
+  return lineChart({ title: 'MCP clients supporting each feature', subtitle: 'Clients with full or partial support, counted from the first release that shipped it', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
+}
+
+export function historyClientsHtml({ data }, ms, series) {
+  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series: series.map(s => ({ label: s.name, values: s.values })), yLabel: 'Features', asOf: data.as_of });
 }
