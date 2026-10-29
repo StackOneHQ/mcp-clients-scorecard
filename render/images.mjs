@@ -209,11 +209,17 @@ export function historyClientsHtml({ data }, ms, rows, features) {
   const rh = ph / Math.max(1, rows.length), D = 9;
   const body = rows.map((r, i) => {
     const cy = T + rh * (i + 0.5);
-    const byMonth = Map.groupBy(r.shipped, s => s.at);
-    const dots = [...byMonth].map(([at, ss]) => ss.map((s, j) => {
-      const cx = Math.min(x(at) + (j - (ss.length - 1) / 2) * (2 * D + 2), L + pw + D);
-      return `<circle cx="${cx}" cy="${cy}" r="${D}" fill="${LINE[s.f % LINE.length]}" stroke="#000" stroke-width="2"/>`;
-    }).join('')).join('');
+    const byMonth = new Map();
+    for (const s of r.shipped) byMonth.set(s.at, [...(byMonth.get(s.at) || []), s]);
+    const dots = [...byMonth].map(([at, ss]) => {
+      // Slide the whole group inside the plot so dots in the first or last month keep their spacing
+      const gap = 2 * D + 2, half = ((ss.length - 1) / 2) * gap;
+      const c0 = Math.max(L + half, Math.min(L + pw - half, x(at)));
+      return ss.map((s, j) => {
+        const cx = c0 + j * gap - half;
+        return `<circle cx="${cx}" cy="${cy}" r="${D}" fill="${LINE[s.f % LINE.length]}" stroke="#000" stroke-width="2"/>`;
+      }).join('');
+    }).join('');
     const first = Math.min(...r.shipped.map(s => s.at));
     const extra = r.undated ? `<text x="${L + pw + 22}" y="${cy + 6}" class="ud">+${r.undated} undated</text>` : '';
     return `<line x1="${L}" x2="${L + pw}" y1="${cy}" y2="${cy}" stroke="#1E1E1B"/><line x1="${x(first)}" x2="${L + pw}" y1="${cy}" y2="${cy}" stroke="#3A3A35" stroke-width="2"/>${dots}${extra}`
