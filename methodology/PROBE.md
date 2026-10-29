@@ -15,7 +15,7 @@ The probe checks which protocol version a CLI really sends, rather than what its
 | opencode | `opencode-ai` | `opencode mcp list` |
 | Droid | `@factory/cli` | `droid mcp add`, then `droid exec` |
 
-[probe/report.mjs](../probe/report.mjs) turns the log into `probe/results.json`: per package, the installed version, the versions it asked for, and the version the server agreed. A client that asks for a version the probe server does not support, then carries on with the older version the server offers, is recorded under `accepted_downgrade`: use the version it asked for, not the one it accepted. It exits 1 when no client completed a handshake. Check the per-client output in `PROBE_OUT` first: a CLI that needs sign-in or failed to install also gives no handshake.
+[probe/report.mjs](../probe/report.mjs) turns the log into `probe/results.json`: per package, the installed version, the versions it asked for, and the version the server agreed. On the `initialize` path, a client that asks for a version the probe server does not support, then carries on with the older version the server offers, is recorded under `accepted_downgrade`: use the version it asked for, not the one it accepted. A `server/discover` client sends its version on every later request, so a switch to an older version shows up in its requested list instead. It exits 1 when no client completed a handshake. Check the per-client output in `PROBE_OUT` first: a CLI that needs sign-in or failed to install also gives no handshake.
 
 ## Reproducing it
 
