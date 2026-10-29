@@ -7,7 +7,7 @@ There are two ways to send one.
 ## Option 1: open a pull request
 
 1. Edit your client's file in [data/clients/](data/clients/), for example `data/clients/claude-code.yaml`. The fields are listed below and in [data/README.md](data/README.md).
-2. Run `npm ci && npm run build`. This validates the data and regenerates the README sections, [EVIDENCE.md](EVIDENCE.md), the history snapshot and the images. Images need Chrome. Without it, run `npm run build -- --no-images`: when you push a branch of this repository, the build workflow renders the images and commits them for you. A pull request from a fork gets the same commit only if Actions is enabled on the fork; otherwise say so in the pull request and a maintainer rebuilds the images.
+2. Run `npm ci && npm run build`. This validates the data and regenerates the README sections, [EVIDENCE.md](EVIDENCE.md), the history snapshot and the images. Images need Chrome. Without it, run `npm run build -- --no-images`: when you push a branch of this repository, the build workflow renders the images and commits them for you. A pull request from a fork gets the same commit only if Actions is enabled on the fork; otherwise say so in the pull request. The build workflow redraws everything on `main` once the pull request merges.
 3. Open a pull request and fill in the checklist. CI runs `npm run check`, which fails if the data is invalid or a generated file is stale.
 
 ## Option 2: file the evidence form

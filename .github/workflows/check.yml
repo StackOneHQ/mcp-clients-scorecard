@@ -1,9 +1,8 @@
 name: check
 on:
   pull_request:
-  push:
-    branches: [main]
-  # started by the build workflow after it commits regenerated files
+  # Pushes, main included, go through the build workflow, which regenerates first and then
+  # starts this workflow on its own commit, so a merge with stale generated files never shows red
   workflow_dispatch:
 permissions:
   contents: read
