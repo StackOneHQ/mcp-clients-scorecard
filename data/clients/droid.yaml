@@ -16,7 +16,7 @@ cells:
     value: 2025-11-25
     method: probe
     source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.251.0
-    evidence: 'Live probe of 0.251.0: initialize requested and negotiated 2025-11-25 (clientInfo factory-cli). The 0.249.0 binary also carries flag `mcp_2026_07_28` with defaultValue false'
+    evidence: 'Live probe of 0.251.0, newer than the 0.249.0 binary the source cells were read from: initialize requested and negotiated 2025-11-25 (clientInfo factory-cli). The 0.249.0 binary also carries flag `mcp_2026_07_28` with defaultValue false'
     checked: 2026-10-27
   code_mode:
     value: n

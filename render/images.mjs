@@ -158,11 +158,13 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf, labels = fal
     const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
     return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
-  // Client charts: a logo chip where a line steps up, with the feature it added. Chips that would overlap shift right, like an avatar row.
+  // Client charts: a logo chip where a line steps up, with the feature it added. Chips that would overlap shift sideways, like an avatar row:
+  // right, or left in the last month so they stay inside the plot and clear of the legend.
   const placed = [];
   const chips = series.filter(s => s.steps).flatMap((s, i) => s.steps.map(st => {
     let cx = x(st.i), cy = y(s.values[st.i]) + off(i);
-    while (placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30)) cx += 22;
+    const step = st.i === months.length - 1 ? -22 : 22;
+    while (placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30)) cx += step;
     placed.push({ cx, cy });
     const tag = st.features.map(l => SHORT[l] || l).join(' + ');
     return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(s.logo)}"${logoClass(s.logo)}></div>`

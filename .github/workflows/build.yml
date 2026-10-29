@@ -45,5 +45,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ github.ref_name }}
-        run: gh workflow run check.yml --ref "$BRANCH"
+        # Best effort: the npm run check step below already validates this commit
+        run: gh workflow run check.yml --ref "$BRANCH" || echo "::warning::Could not start the check workflow on the regenerated commit"
       - run: npm run check

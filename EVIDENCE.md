@@ -68,7 +68,7 @@ Tier **B** · CLI · checked on `0.249.0` · tracker [Factory-AI/factory](https:
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.251.0) | Live probe of 0.251.0: initialize requested and negotiated 2025-11-25 (clientInfo factory-cli). The 0.249.0 binary also carries flag `mcp_2026_07_28` with defaultValue false | probe | 2026-10-27 |  |
+| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.251.0) | Live probe of 0.251.0, newer than the 0.249.0 binary the source cells were read from: initialize requested and negotiated 2025-11-25 (clientInfo factory-cli). The 0.249.0 binary also carries flag `mcp_2026_07_28` with defaultValue false | probe | 2026-10-27 |  |
 | Code mode | [![no](assets/icons/n.svg)](https://docs.factory.ai/harness/mcp) | docs.factory.ai MCP/connectors/changelog searched, no hit | docs | 2026-10-27 |  |
 | Tool search | [![yes](assets/icons/y.svg) On demand](https://docs.factory.ai/changelog/release-notes) | "MCP tool search - Droid can now search and load MCP tools on demand" (flag McpToolSearch default true) | changelog | 2026-10-27 | [2026-06-03 (0.140.0)](https://docs.factory.ai/changelog/release-notes) |
 | MCP Apps | [![no](assets/icons/n.svg)](https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.249.0) | 0 hits for io.modelcontextprotocol/ui and ui:// in binary \| npm @factory/cli-linux-x64@0.249.0 | source | 2026-10-27 |  |
