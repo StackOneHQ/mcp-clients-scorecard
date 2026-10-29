@@ -44,10 +44,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: regenerate tables and charts from data/"
-          if ! git push origin "HEAD:refs/heads/$BRANCH"; then
-            # A rejected push is only fine when someone pushed while this ran: their push queued a run
-            # that rebuilds from the new tip. Anything else, such as branch protection, fails the run.
+          if ! git push origin "HEAD:refs/heads/$BRANCH" 2> "$RUNNER_TEMP/push.err"; then
+            cat "$RUNNER_TEMP/push.err" >&2
+            # A rejected push is only fine when it lost a race: someone pushed while this ran, and their
+            # push queued a run that rebuilds from the new tip. Anything else, such as branch protection,
+            # fails the run, even if the branch also moved.
             git fetch -q origin "$BRANCH"
+            grep -qE "fetch first|non-fast-forward" "$RUNNER_TEMP/push.err" || exit 1
             [ "$(git rev-parse FETCH_HEAD)" != "$BASE" ] || exit 1
             echo "::notice::$BRANCH moved during the build; the queued run regenerates from the new tip"
             echo "pushed=false" >> "$GITHUB_OUTPUT"
@@ -59,6 +62,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ github.ref_name }}
-        # Best effort: the npm run check step below already validates this commit
+        # Best effort: the npm run check and npm test steps below already validate this commit
         run: gh workflow run check.yml --ref "$BRANCH" || echo "::warning::Could not start the check workflow on the regenerated commit"
       - run: npm run check
+      - run: npm test
