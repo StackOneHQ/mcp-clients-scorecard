@@ -28,7 +28,7 @@ h1{font-size:60px;font-weight:800;letter-spacing:-1.5px;margin:0 0 34px 12px}
 .tier{color:#1a1a17;font-size:96px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .items{background:#1A1A17;display:flex;align-items:center;justify-content:flex-start;gap:0}
 .bar{background:#EDEDED;border-radius:3px}
-.it{width:149px;height:164px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px}
+.it{flex:0 1 149px;min-width:0;height:164px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px}
 .chip{width:88px;height:88px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .chip img{width:58px;height:58px;object-fit:contain}.chip img.png{width:78px;height:78px;filter:brightness(1.08) contrast(1.25)}.chip img.av{width:84px;height:84px}
 .it span{font-size:30px;font-weight:500;color:#EDEDED;text-align:center;line-height:1.1}
@@ -45,6 +45,8 @@ const ICON = {
 };
 const mark = m => `<div class="m ${m}">${ICON[m]}</div>`;
 const rateClass = r => (r >= 0.4 ? 'g' : r >= 0.15 ? 'a' : 'rd');
+// Matrix heading and track width per column; columns not listed use their label and share the rest of the row
+const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '60px'], tool_search: ['Tool<br>search', '124px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
 
 export function matrixHtml({ data }) {
   const fix = f =>
@@ -66,14 +68,15 @@ export function matrixHtml({ data }) {
       body += `<div class="r"><div class="name"><div class="tb" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div><div class="lg"><img src="${logo(c.logo)}"${png}></div><span>${esc(c.name)}</span></div>${fix(c.fix)}${cells}</div>`;
     }
   }
-  const heads = ['MCP bugs<br>fixed', 'Spec<br>version', 'Code<br>mode', 'Tool<br>search', 'MCP<br>Apps', 'Tasks', 'Events', 'CIMD', 'ID-JAG', 'Elicit'];
+  const heads = ['MCP bugs<br>fixed', ...COLUMNS.map(([k, l]) => MATRIX_COL[k]?.[0] ?? esc(l))];
+  const tracks = `240px 106px ${COLUMNS.map(([k]) => MATRIX_COL[k]?.[1] ?? '1fr').join(' ')}`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients: the receipts</title>${FONT}
 <style>
 *{box-sizing:border-box;margin:0}
 body{width:1080px;height:1350px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26px 16px}
 .t{flex:1;display:flex;flex-direction:column;background:#1A1A17;border-radius:18px;padding:8px 0 10px}
-.h,.r{display:grid;grid-template-columns:240px 106px 112px 60px 124px repeat(6,1fr);align-items:center}
+.h,.r{display:grid;grid-template-columns:${tracks};align-items:center}
 .h{height:68px;font-size:18px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
 .h div:first-child{text-align:left;padding-left:16px}
 .grp{font-size:20px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#76D6AE;padding:14px 20px 4px}
@@ -107,11 +110,13 @@ ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 </body></html>`;
 }
 
-// Step-line charts for the adoption section, 1200x700, from the since dates (see render/history.mjs)
-const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F472B6', '#A3E635', '#FB923C'];
+// Step-line charts for the adoption section, 1200x700, from the since dates (see render/history.mjs).
+// Eight distinct hues; the second four are dashed so neighbouring hues (green and lime, amber and orange) still differ.
+const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F5F5F5', '#A3E635', '#FB923C'];
+const lineStyle = i => ({ color: LINE[i % LINE.length], dash: i % LINE.length >= 4 ? '12 8' : '' });
 
 function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
-  const W = 1200, H = 700, L = 84, R = 300, T = 150, B = 92;
+  const W = 1200, H = 700, L = 84, R = 300, T = 186, B = 92;
   const pw = W - L - R, ph = H - T - B;
   const max = Math.max(1, ...series.flatMap(s => s.values));
   const step = max > 10 ? 2 : 1;
@@ -120,10 +125,10 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const y = v => T + ph - (v / top) * ph;
   let grid = '';
   for (let v = 0; v <= top; v += step) grid += `<line x1="${L}" x2="${L + pw}" y1="${y(v)}" y2="${y(v)}" stroke="#2A2A26"/><text x="${L - 14}" y="${y(v) + 6}" text-anchor="end" class="ax">${v}</text>`;
-  // Label the first month, January of each year and the last month, skipping labels closer than four months
+  // Label the first month, each January and July, and the last month, skipping labels closer than four months
   const marks = [];
   months.forEach((m, i) => {
-    if (!(i === 0 || m.endsWith('-01') || i === months.length - 1)) return;
+    if (!(i === 0 || m.endsWith('-01') || m.endsWith('-07') || i === months.length - 1)) return;
     if (marks.length && i - marks.at(-1) < 4) {
       if (i !== months.length - 1) return;
       if (marks.length > 1) marks.pop(); else return;
@@ -139,12 +144,16 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   // Small vertical offsets keep equal lines from hiding each other
   const off = i => (i - (series.length - 1) / 2) * 2.2;
   const lines = series.map((s, i) => {
+    const { color, dash } = lineStyle(i);
     let d = `M${x(0)},${y(s.values[0]) + off(i)}`;
     s.values.forEach((v, j) => { if (j) d += `H${x(j)}V${y(v) + off(i)}`; });
-    return `<path d="${d}" fill="none" stroke="${LINE[i % LINE.length]}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`
-      + `<circle cx="${x(months.length - 1)}" cy="${y(s.values.at(-1)) + off(i)}" r="6" fill="${LINE[i % LINE.length]}"/>`;
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="${dash}" stroke-linejoin="round"/>`
+      + `<circle cx="${x(months.length - 1)}" cy="${y(s.values.at(-1)) + off(i)}" r="6" fill="${color}"/>`;
   }).join('');
-  const legend = series.map((s, i) => `<div class="lg"><i style="background:${LINE[i % LINE.length]}"></i><span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`).join('');
+  const legend = series.map((s, i) => {
+    const { color, dash } = lineStyle(i);
+    return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg><span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
+  }).join('');
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
 <style>
@@ -157,7 +166,7 @@ svg{position:absolute;left:0;top:0}
 .yl{font-size:18px;fill:#9A9A94;font-family:Inter,system-ui,sans-serif;font-weight:600}
 .leg{position:absolute;left:${W - R + 36}px;top:${T - 6}px;width:${R - 60}px;display:flex;flex-direction:column;gap:12px}
 .lg{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600}
-.lg i{width:22px;height:6px;border-radius:3px;flex-shrink:0}
+.lg svg{position:static;flex-shrink:0}
 .lg span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg b{color:#fff;font-weight:800}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
@@ -172,4 +181,14 @@ export function historyFeaturesHtml({ data }, ms, series) {
 
 export function historyClientsHtml({ data }, ms, series) {
   return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of });
+}
+
+// Per-client badge for client READMEs, regenerated with the table so it follows the tier
+export function badgeSvg(c) {
+  const left = 'MCP clients scorecard', right = `tier ${c.tier}`;
+  const lw = left.length * 6.5 + 12, rw = right.length * 6.5 + 12;
+  const text = (s, x, w) => `<text x="${x + w / 2}" y="14" text-anchor="middle" textLength="${w - 12}">${esc(s)}</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${lw + rw}" height="20" role="img" aria-label="${esc(left)}: ${esc(right)}"><title>${esc(left)}: ${esc(right)}</title>`
+    + `<rect width="${lw}" height="20" fill="#1A1A17"/><rect x="${lw}" width="${rw}" height="20" fill="${TIER_COLOR[c.tier]}"/>`
+    + `<g font-family="Verdana,DejaVu Sans,sans-serif" font-size="11"><g fill="#fff">${text(left, 0, lw)}</g><g fill="#1a1a17">${text(right, lw, rw)}</g></g></svg>\n`;
 }

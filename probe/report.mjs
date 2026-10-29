@@ -22,9 +22,9 @@ for (const pkg of pkgs) {
     if (v && !requested.includes(v)) requested.push(v);
     clientInfo ||= p.clientInfo || p._meta?.['io.modelcontextprotocol/clientInfo'] || null;
   }
-  // The server logs the version it answered with; for server/discover that is a list, so keep the requested one it contains
-  const replies = mine.filter(l => l.reply).map(l => l.reply);
-  const negotiated = replies.length ? [].concat(replies.at(-1)).find(v => requested.includes(v)) ?? [].concat(replies.at(-1))[0] : null;
+  // initialize replies with the agreed version; server/discover replies with a list, which only agrees if it holds a requested version
+  const reply = mine.filter(l => l.reply).at(-1)?.reply ?? null;
+  const negotiated = Array.isArray(reply) ? reply.find(v => requested.includes(v)) ?? null : reply;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
   results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, errors, client_info: clientInfo, connected: negotiated !== null };
   console.log(pkg.padEnd(28), String(version).padEnd(10), negotiated ? `agreed ${negotiated} (asked ${requested.join(', ')})` : requested.length ? `asked ${requested.join(', ')}, no agreement: ${errors[0] || 'no reply'}` : 'no handshake');

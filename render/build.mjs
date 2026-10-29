@@ -1,13 +1,14 @@
 // npm run build                   regenerate the README sections, EVIDENCE.md, the history snapshot and the PNGs
 // npm run build -- --no-images    skip the PNGs (no Chrome needed)
 // npm run check                   validate data/ and fail if any generated file is out of date
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ROOT, load, tierMismatches } from './data.mjs';
 import { evidence, spliceReadme, readmeSections } from './markdown.mjs';
-import { tiersHtml, matrixHtml, historyFeaturesHtml, historyClientsHtml } from './images.mjs';
+import { tiersHtml, matrixHtml, historyFeaturesHtml, historyClientsHtml, badgeSvg } from './images.mjs';
 import { snapshot, months, featureSeries, clientSeries } from './history.mjs';
 
 const args = new Set(process.argv.slice(2));
@@ -25,6 +26,7 @@ const outputs = {
   'README.md': spliceReadme(fs.readFileSync(ROOT + 'README.md', 'utf8'), readmeSections(model)),
   'EVIDENCE.md': evidence(model),
   [historyFile]: snapshot(model),
+  ...Object.fromEntries(model.data.clients.map(c => [`assets/badges/${c.slug}.svg`, badgeSvg(c)])),
 };
 const ms = months(model.data.as_of);
 const images = [
@@ -33,6 +35,9 @@ const images = [
   ['history-features', historyFeaturesHtml(model, ms, featureSeries(model)), 1200, 700],
   ['history-clients', historyClientsHtml(model, ms, clientSeries(model)), 1200, 700],
 ];
+// PNG bytes differ between Chrome versions, so check compares a hash of the HTML each image was rendered from
+const IMAGE_HASHES = 'assets/images.json';
+const hashes = Object.fromEntries(images.map(([name, html]) => [name, crypto.createHash('sha256').update(html).digest('hex')]));
 
 if (check) {
   const stale = Object.entries(outputs).filter(([f, s]) => !fs.existsSync(ROOT + f) || fs.readFileSync(ROOT + f, 'utf8') !== s).map(([f]) => f);
@@ -40,18 +45,21 @@ if (check) {
     console.error(`Out of date: ${stale.join(', ')}. Run \`npm run build\` and commit the result.`);
     process.exit(1);
   }
-  const missing = images.map(([n]) => `assets/${n}.png`).filter(f => !fs.existsSync(ROOT + f));
-  if (missing.length) {
-    console.error(`Missing ${missing.join(', ')}. Run \`npm run build\` with Chrome available.`);
+  const built = fs.existsSync(ROOT + IMAGE_HASHES) ? JSON.parse(fs.readFileSync(ROOT + IMAGE_HASHES, 'utf8')) : {};
+  const staleImages = images.map(([n]) => n).filter(n => built[n] !== hashes[n] || !fs.existsSync(ROOT + `assets/${n}.png`));
+  if (staleImages.length) {
+    console.error(`Out of date: ${staleImages.map(n => `assets/${n}.png`).join(', ')}. Run \`npm run build\` with Chrome available and commit the result.`);
     process.exit(1);
   }
-  console.log(`data valid, ${model.data.clients.length} clients, ${Object.keys(outputs).join(', ')} up to date`);
+  console.log(`data valid, ${model.data.clients.length} clients; README.md, EVIDENCE.md, ${historyFile}, badges and images up to date`);
   process.exit(0);
 }
 
-fs.mkdirSync(ROOT + 'data/history', { recursive: true });
-for (const [f, s] of Object.entries(outputs)) fs.writeFileSync(ROOT + f, s);
-console.log(`wrote ${Object.keys(outputs).join(', ')}`);
+for (const [f, s] of Object.entries(outputs)) {
+  fs.mkdirSync(path.dirname(ROOT + f), { recursive: true });
+  fs.writeFileSync(ROOT + f, s);
+}
+console.log(`wrote README.md, EVIDENCE.md, ${historyFile} and ${model.data.clients.length} badges`);
 
 if (!args.has('--no-images')) {
   const chrome = findChrome();
@@ -65,6 +73,7 @@ if (!args.has('--no-images')) {
     console.log(`wrote assets/${name}.png`);
   }
   fs.rmSync(tmp, { recursive: true, force: true });
+  fs.writeFileSync(ROOT + IMAGE_HASHES, JSON.stringify(hashes, null, 2) + '\n');
 }
 
 function findChrome() {

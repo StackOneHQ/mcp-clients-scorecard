@@ -7,7 +7,7 @@ There are two ways to send one.
 ## Option 1: open a pull request
 
 1. Edit your client's file in [data/clients/](data/clients/), for example `data/clients/claude-code.yaml`. The fields are listed below and in [data/README.md](data/README.md).
-2. Run `npm ci && npm run build`. This validates the data and regenerates the README sections, [EVIDENCE.md](EVIDENCE.md), the history snapshot and the images. Images need Chrome; without it run `npm run build -- --no-images` and say so in the pull request, and a maintainer will rebuild them.
+2. Run `npm ci && npm run build`. This validates the data and regenerates the README sections, [EVIDENCE.md](EVIDENCE.md), the history snapshot and the images. Images need Chrome. Without it, run `npm run build -- --no-images` and say so in the pull request: CI fails on the out of date images until a maintainer rebuilds them.
 3. Open a pull request and fill in the checklist. CI runs `npm run check`, which fails if the data is invalid or a generated file is stale.
 
 ## Option 2: file the evidence form
@@ -60,6 +60,16 @@ Other fields you can update: `version_checked` (the version you checked against)
 2. Add a square logo (SVG preferred) to [assets/logos/](assets/logos/) and set `logo`.
 3. Fill in all nine cells with sources, and set `tier` to the tier [the rubric](methodology/RUBRIC.md) gives. The build prints the expected tier if it does not match.
 4. Run `npm run build` and open a pull request.
+
+## Badge for your README
+
+Each build writes a badge per client to [assets/badges/](assets/badges/), named by the slug, that shows the client's current tier. To show it in your own README:
+
+```markdown
+[![MCP clients scorecard](https://raw.githubusercontent.com/StackOneHQ/mcp-clients-scorecard/main/assets/badges/claude-code.svg)](https://github.com/StackOneHQ/mcp-clients-scorecard#scorecard)
+```
+
+Replace `claude-code` with your slug. The badge changes when the table does.
 
 ## Tiers
 

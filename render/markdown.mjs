@@ -139,7 +139,7 @@ export function evidence({ data }) {
     }
     out.push('');
   }
-  out.push(`MCP bugs fixed is completed issues divided by issues minus duplicates, for issues opened since ${data.bug_window_start} with "mcp" in the title. Below ${MIN_ISSUES} issues the rate is not shown. Counts are in [data/bugs.json](data/bugs.json).`, '');
+  out.push(`MCP bugs fixed is completed issues divided by issues minus duplicates, for issues opened since ${data.bug_window_start} with "mcp" in the title (every issue, for trackers that are only about MCP). Below ${MIN_ISSUES} issues the rate is not shown. Counts are in [data/bugs.json](data/bugs.json).`, '');
   return out.join('\n');
 }
 

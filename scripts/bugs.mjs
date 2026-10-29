@@ -15,7 +15,8 @@ async function count(q) {
       await sleep(2200);
       return Number(n.trim());
     } catch (e) {
-      await sleep(30000 * (attempt + 1));
+      console.error(`search failed (attempt ${attempt + 1} of 3): ${String(e.stderr || e.message).trim()}`);
+      if (attempt < 2) await sleep(30000 * (attempt + 1));
     }
   }
   throw new Error(`search failed: ${q}`);

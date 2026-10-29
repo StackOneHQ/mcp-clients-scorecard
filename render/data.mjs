@@ -1,7 +1,8 @@
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
 
-export const ROOT = new URL('..', import.meta.url).pathname;
+export const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const readYaml = f => YAML.parse(fs.readFileSync(ROOT + f, 'utf8'));
 // Column order and labels come from data/features.yaml
 const FEATURES = readYaml('data/features.yaml');
@@ -18,9 +19,21 @@ export const MIN_ISSUES = 20;
 const CLIENT_KEYS = new Set(['name', 'group', 'tier', 'tier_note', 'note', 'unmaintained', 'logo', 'website', 'docs', 'repo', 'version_checked', 'npm', 'tracker', 'cells']);
 const CELL_KEYS = new Set(['value', 'method', 'source', 'evidence', 'checked', 'label', 'quality', 'fallback', 'since']);
 const SINCE_KEYS = new Set(['date', 'version', 'source']);
+const TRACKER_KEYS = new Set(['repo', 'mcp_in_title']);
+const QUALITIES = new Set(['strong', 'basic']);
 const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_date', 'spec_source', 'spec_event']);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS = /^https:\/\/\S+$/;
+// A real calendar day: 2026-02-31 matches the pattern but does not survive the round trip
+const isDate = v => {
+  const t = Date.parse(v + 'T00:00:00Z');
+  return DATE.test(String(v)) && !Number.isNaN(t) && new Date(t).toISOString().slice(0, 10) === String(v);
+};
+// The renderers call decodeURI on every link, so a stray % has to fail here rather than crash the build
+const isUrl = v => {
+  if (!HTTPS.test(v || '')) return false;
+  try { decodeURI(v); return true; } catch { return false; }
+};
 const slugOf = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 // Pass { counts: false } to load the clients without data/bugs.json (npm run bugs does this to rebuild it)
@@ -56,8 +69,11 @@ function fixRate(client, bugs) {
 function validate(data, bugs) {
   const errs = [];
   const asOf = String(data.as_of);
-  if (!DATE.test(asOf)) errs.push('data/meta.yaml: as_of must be YYYY-MM-DD');
-  if (!Array.isArray(data.spec_versions) || !data.spec_versions.length) errs.push('data/meta.yaml: spec_versions must list spec revisions, newest first');
+  if (!isDate(asOf)) errs.push('data/meta.yaml: as_of must be YYYY-MM-DD');
+  const versions = (Array.isArray(data.spec_versions) ? data.spec_versions : []).map(String);
+  const descending = versions.every((v, i) => isDate(v) && (i === 0 || v < versions[i - 1]));
+  if (!versions.length || !descending || versions[0] > asOf) errs.push('data/meta.yaml: spec_versions must list distinct YYYY-MM-DD revisions, newest first, none after as_of');
+  if (!isDate(data.bug_window_start)) errs.push('data/meta.yaml: bug_window_start must be YYYY-MM-DD');
   const ids = new Set();
   for (const f of data.features) {
     const at = `data/features.yaml ${f.id || '(no id)'}`;
@@ -65,8 +81,8 @@ function validate(data, bugs) {
     ids.add(f.id);
     for (const k of Object.keys(f)) if (!FEATURE_KEYS.has(k)) errs.push(`${at}: unknown key ${k}`);
     for (const k of ['id', 'label', 'definition', 'ref']) if (!f[k]) errs.push(`${at}: ${k} is empty`);
-    if (!HTTPS.test(f.url || '')) errs.push(`${at}: url must be an https URL`);
-    if (f.spec_date !== undefined && (!DATE.test(String(f.spec_date)) || !HTTPS.test(f.spec_source || ''))) errs.push(`${at}: spec_date must be YYYY-MM-DD with an https spec_source`);
+    if (!isUrl(f.url)) errs.push(`${at}: url must be an https URL`);
+    if (f.spec_date !== undefined && (!isDate(String(f.spec_date)) || !isUrl(f.spec_source))) errs.push(`${at}: spec_date must be YYYY-MM-DD with an https spec_source`);
     if (f.spec_date !== undefined && !f.spec_event) errs.push(`${at}: spec_date needs a spec_event that says what happened on that date`);
     if (f.spec_date !== undefined && String(f.spec_date) > String(data.as_of)) errs.push(`${at}: spec_date is after as_of`);
   }
@@ -89,8 +105,13 @@ function validate(data, bugs) {
     if (!GROUPS.some(([g]) => g === c.group)) errs.push(`${at}: group must be cli or app`);
     if (!TIERS.includes(c.tier)) errs.push(`${at}: tier must be one of ${TIERS.join(' ')}`);
     if (!c.logo || !fs.existsSync(ROOT + 'assets/logos/' + c.logo)) errs.push(`${at}: logo ${c.logo} not found in assets/logos`);
-    if (!HTTPS.test(c.website || '')) errs.push(`${at}: website must be an https URL`);
-    for (const k of ['docs', 'repo']) if (c[k] != null && !HTTPS.test(c[k])) errs.push(`${at}: ${k} must be an https URL or null`);
+    if (!isUrl(c.website)) errs.push(`${at}: website must be an https URL`);
+    for (const k of ['docs', 'repo']) if (c[k] != null && !isUrl(c[k])) errs.push(`${at}: ${k} must be an https URL or null`);
+    if (c.tracker != null) {
+      for (const k of Object.keys(c.tracker)) if (!TRACKER_KEYS.has(k)) errs.push(`${at}: unknown tracker key ${k}`);
+      if (!/^[\w.-]+\/[\w.-]+$/.test(c.tracker.repo || '')) errs.push(`${at}: tracker.repo must be owner/name`);
+      if (typeof c.tracker.mcp_in_title !== 'boolean') errs.push(`${at}: tracker.mcp_in_title must be true or false`);
+    }
     if (bugs && c.tracker && !bugs.repos?.[c.tracker.repo]) errs.push(`${at}: no counts for ${c.tracker.repo} in data/bugs.json`);
     for (const k of Object.keys(c.cells || {})) if (!ids.has(k)) errs.push(`${at}: unknown cell ${k}`);
     for (const [key] of COLUMNS) {
@@ -100,18 +121,19 @@ function validate(data, bugs) {
       for (const k of Object.keys(cell)) if (!CELL_KEYS.has(k)) errs.push(`${ca}: unknown key ${k}`);
       if (key !== 'protocol' && !MARKS.has(cell.value)) errs.push(`${ca}: value must be y, p or n`);
       if (key === 'protocol' && cell.value !== NOT_PUBLISHED && !data.spec_versions?.includes(String(cell.value))) errs.push(`${ca}: value must be in spec_versions or "${NOT_PUBLISHED}"`);
+      if (cell.quality !== undefined && !QUALITIES.has(cell.quality)) errs.push(`${ca}: quality must be strong or basic`);
       if (!METHODS.has(cell.method)) errs.push(`${ca}: method must be one of ${[...METHODS].join(', ')}`);
-      if (!HTTPS.test(cell.source || '')) errs.push(`${ca}: source must be an https URL`);
+      if (!isUrl(cell.source)) errs.push(`${ca}: source must be an https URL`);
       if (!cell.evidence) errs.push(`${ca}: evidence is empty`);
-      if (!DATE.test(String(cell.checked))) errs.push(`${ca}: checked must be YYYY-MM-DD`);
+      if (!isDate(String(cell.checked))) errs.push(`${ca}: checked must be YYYY-MM-DD`);
       else if (String(cell.checked) > asOf) errs.push(`${ca}: checked ${cell.checked} is after as_of ${asOf}`);
       if (cell.since !== undefined) {
         const s = cell.since || {};
         for (const k of Object.keys(s)) if (!SINCE_KEYS.has(k)) errs.push(`${ca}.since: unknown key ${k}`);
         if (key !== 'protocol' && cell.value === 'n') errs.push(`${ca}.since: only y or p cells take a since date`);
-        if (!DATE.test(String(s.date))) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
+        if (!isDate(String(s.date))) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);
-        if (!HTTPS.test(s.source || '')) errs.push(`${ca}.since: source must be an https URL`);
+        if (!isUrl(s.source)) errs.push(`${ca}.since: source must be an https URL`);
       }
     }
   }

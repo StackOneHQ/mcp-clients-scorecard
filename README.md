@@ -178,6 +178,7 @@ flowchart LR
 
 - **Pull request**: edit your client's file in [data/clients/](data/clients/), run `npm ci && npm run build`, and open a pull request. [CONTRIBUTING.md](CONTRIBUTING.md) lists the fields and the evidence we accept.
 - **Issue form**: [submit evidence](../../issues/new?template=submit-evidence.yml) with the feature, the value you claim and a source link. We check it and open the pull request.
+- **Badge**: every client gets a badge in [assets/badges/](assets/badges/) that follows its tier. [CONTRIBUTING.md](CONTRIBUTING.md#badge-for-your-readme) has the snippet.
 - **New client**: copy any file in [data/clients/](data/clients/), add a logo to [assets/logos/](assets/logos/), and fill in all nine cells.
 
 ## Methodology
@@ -213,9 +214,9 @@ Field reference for every data file: [data/README.md](data/README.md).
 
 | Command | What it does |
 | --- | --- |
-| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot and the PNGs (needs Chrome, or `CHROME_PATH`) |
+| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot, the badges and the PNGs (needs Chrome, or `CHROME_PATH`) |
 | `npm run build -- --no-images` | The same, without the PNGs |
-| `npm run check` | Validates the data and fails if a generated file is stale |
+| `npm run check` | Validates the data and fails if a generated file or image is stale |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
 

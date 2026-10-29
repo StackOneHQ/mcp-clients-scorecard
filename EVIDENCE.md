@@ -300,4 +300,4 @@ Tier **C** · App or IDE · MCP bugs fixed: no public tracker
 | ID-JAG | [![no](assets/icons/n.svg)](https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners) | Not in Okta XAA partner list | changelog | 2026-10-27 |  |
 | Elicitation | [![no](assets/icons/n.svg)](https://docs.devin.ai/desktop/changelog) | Desktop v3.11.1108: "Improved handling for less common MCP server features" (unspecific) | changelog | 2026-10-27 |  |
 
-MCP bugs fixed is completed issues divided by issues minus duplicates, for issues opened since 2026-07-28 with "mcp" in the title. Below 20 issues the rate is not shown. Counts are in [data/bugs.json](data/bugs.json).
+MCP bugs fixed is completed issues divided by issues minus duplicates, for issues opened since 2026-07-28 with "mcp" in the title (every issue, for trackers that are only about MCP). Below 20 issues the rate is not shown. Counts are in [data/bugs.json](data/bugs.json).
