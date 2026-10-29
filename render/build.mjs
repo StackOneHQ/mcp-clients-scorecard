@@ -41,6 +41,7 @@ const hashes = Object.fromEntries(images.map(([name, html]) => [name, crypto.cre
 
 if (check) {
   const stale = Object.entries(outputs).filter(([f, s]) => !fs.existsSync(ROOT + f) || fs.readFileSync(ROOT + f, 'utf8') !== s).map(([f]) => f);
+  stale.push(...orphanBadges());
   if (stale.length) {
     console.error(`Out of date: ${stale.join(', ')}. Run \`npm run build\` and commit the result.`);
     process.exit(1);
@@ -55,6 +56,7 @@ if (check) {
   process.exit(0);
 }
 
+for (const f of orphanBadges()) fs.rmSync(ROOT + f);
 for (const [f, s] of Object.entries(outputs)) {
   fs.mkdirSync(path.dirname(ROOT + f), { recursive: true });
   fs.writeFileSync(ROOT + f, s);
@@ -74,6 +76,12 @@ if (!args.has('--no-images')) {
   }
   fs.rmSync(tmp, { recursive: true, force: true });
   fs.writeFileSync(ROOT + IMAGE_HASHES, JSON.stringify(hashes, null, 2) + '\n');
+}
+
+// Badges of clients that were renamed or removed
+function orphanBadges() {
+  const dir = ROOT + 'assets/badges';
+  return fs.existsSync(dir) ? fs.readdirSync(dir).map(f => `assets/badges/${f}`).filter(f => !(f in outputs)) : [];
 }
 
 function findChrome() {

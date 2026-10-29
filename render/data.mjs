@@ -25,13 +25,10 @@ const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_d
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS = /^https:\/\/\S+$/;
 // A real calendar day: 2026-02-31 matches the pattern but does not survive the round trip
-const isDate = v => {
-  const t = Date.parse(v + 'T00:00:00Z');
-  return DATE.test(String(v)) && !Number.isNaN(t) && new Date(t).toISOString().slice(0, 10) === String(v);
-};
+const isDate = v => typeof v === 'string' && DATE.test(v) && new Date(Date.parse(v + 'T00:00:00Z') || 0).toISOString().slice(0, 10) === v;
 // The renderers call decodeURI on every link, so a stray % has to fail here rather than crash the build
 const isUrl = v => {
-  if (!HTTPS.test(v || '')) return false;
+  if (typeof v !== 'string' || !HTTPS.test(v)) return false;
   try { decodeURI(v); return true; } catch { return false; }
 };
 const slugOf = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -69,7 +66,7 @@ function fixRate(client, bugs) {
 function validate(data, bugs) {
   const errs = [];
   const asOf = String(data.as_of);
-  if (!isDate(asOf)) errs.push('data/meta.yaml: as_of must be YYYY-MM-DD');
+  if (!isDate(data.as_of)) errs.push('data/meta.yaml: as_of must be YYYY-MM-DD');
   const versions = (Array.isArray(data.spec_versions) ? data.spec_versions : []).map(String);
   const descending = versions.every((v, i) => isDate(v) && (i === 0 || v < versions[i - 1]));
   if (!versions.length || !descending || versions[0] > asOf) errs.push('data/meta.yaml: spec_versions must list distinct YYYY-MM-DD revisions, newest first, none after as_of');
@@ -82,7 +79,7 @@ function validate(data, bugs) {
     for (const k of Object.keys(f)) if (!FEATURE_KEYS.has(k)) errs.push(`${at}: unknown key ${k}`);
     for (const k of ['id', 'label', 'definition', 'ref']) if (!f[k]) errs.push(`${at}: ${k} is empty`);
     if (!isUrl(f.url)) errs.push(`${at}: url must be an https URL`);
-    if (f.spec_date !== undefined && (!isDate(String(f.spec_date)) || !isUrl(f.spec_source))) errs.push(`${at}: spec_date must be YYYY-MM-DD with an https spec_source`);
+    if (f.spec_date !== undefined && (!isDate(f.spec_date) || !isUrl(f.spec_source))) errs.push(`${at}: spec_date must be YYYY-MM-DD with an https spec_source`);
     if (f.spec_date !== undefined && !f.spec_event) errs.push(`${at}: spec_date needs a spec_event that says what happened on that date`);
     if (f.spec_date !== undefined && String(f.spec_date) > String(data.as_of)) errs.push(`${at}: spec_date is after as_of`);
   }
@@ -125,13 +122,13 @@ function validate(data, bugs) {
       if (!METHODS.has(cell.method)) errs.push(`${ca}: method must be one of ${[...METHODS].join(', ')}`);
       if (!isUrl(cell.source)) errs.push(`${ca}: source must be an https URL`);
       if (!cell.evidence) errs.push(`${ca}: evidence is empty`);
-      if (!isDate(String(cell.checked))) errs.push(`${ca}: checked must be YYYY-MM-DD`);
+      if (!isDate(cell.checked)) errs.push(`${ca}: checked must be YYYY-MM-DD`);
       else if (String(cell.checked) > asOf) errs.push(`${ca}: checked ${cell.checked} is after as_of ${asOf}`);
       if (cell.since !== undefined) {
         const s = cell.since || {};
         for (const k of Object.keys(s)) if (!SINCE_KEYS.has(k)) errs.push(`${ca}.since: unknown key ${k}`);
         if (key !== 'protocol' && cell.value === 'n') errs.push(`${ca}.since: only y or p cells take a since date`);
-        if (!isDate(String(s.date))) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
+        if (!isDate(s.date)) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);
         if (!isUrl(s.source)) errs.push(`${ca}.since: source must be an https URL`);
       }
