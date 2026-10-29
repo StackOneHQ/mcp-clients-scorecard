@@ -30,12 +30,19 @@ export function months(asOf) {
 // A cell counts from the month of its since date. Cells that are y or p today but carry no since are "undated".
 const datedMonth = cell => (supported(cell) && cell.since ? String(cell.since.date).slice(0, 7) : null);
 
+// Month index a dated cell counts from; dates before SERIES_START count from the first month
+const monthIndex = (ms, d) => Math.max(0, ms.findIndex(m => d <= m));
+
 export function featureSeries({ data }) {
   const ms = months(data.as_of);
   return FEATURE_COLS.map(([k, label]) => {
-    const dated = data.clients.map(c => datedMonth(c.cells[k])).filter(Boolean);
+    const shipped = data.clients.map(c => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
+    const dated = shipped.map(s => s.d);
     const undated = data.clients.filter(c => supported(c.cells[k]) && !c.cells[k].since).length;
-    return { label, values: ms.map(m => dated.filter(d => d <= m).length), undated };
+    // jumps: where the line steps up, with the logos of the clients whose release caused it
+    const jumps = [...new Set(shipped.map(s => monthIndex(ms, s.d)))].sort((a, b) => a - b)
+      .map(at => ({ at, logos: shipped.filter(s => monthIndex(ms, s.d) === at).map(s => s.c.logo).filter(Boolean).sort() }));
+    return { label, values: ms.map(m => dated.filter(d => d <= m).length), undated, jumps };
   });
 }
 
@@ -45,7 +52,7 @@ export function clientSeries({ data }, limit = 8) {
     .map(c => {
       const dated = FEATURE_COLS.map(([k]) => datedMonth(c.cells[k])).filter(Boolean);
       // steps: the month indexes where the line goes up, for the logo markers on the chart
-      const steps = [...new Set(dated.map(d => Math.max(0, ms.findIndex(m => d <= m))))].sort((a, b) => a - b);
+      const steps = [...new Set(dated.map(d => monthIndex(ms, d)))].sort((a, b) => a - b);
       return { label: c.name, tier: c.tier, logo: c.logo, steps, values: ms.map(m => dated.filter(d => d <= m).length) };
     })
     .filter(s => s.values.at(-1) > 0)

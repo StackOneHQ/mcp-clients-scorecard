@@ -156,18 +156,20 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
     const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
     return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
-  // Client charts: a logo chip where a line steps up. Chips that would overlap shift sideways, like an avatar row: right, or left
+  // A logo chip where a line steps up: the client's own logo on client charts, and on feature charts the logos of the clients
+  // whose release caused that step (s.jumps). Chips that would overlap shift sideways, like an avatar row: right, or left
   // once a chip would pass the right edge of the plot, so they stay clear of the legend. i is the line's index, matching its colour.
   const placed = [];
   const free = (cx, cy) => !placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30);
-  const chips = series.flatMap((s, i) => (s.steps || []).map(si => {
-    const cy = y(s.values[si]) + off(i);
-    let cx = x(si);
+  const jumpsOf = s => s.jumps || (s.steps || []).map(at => ({ at, logos: [s.logo] }));
+  const chips = series.flatMap((s, i) => jumpsOf(s).flatMap(({ at, logos }) => logos.map(f => {
+    const cy = y(s.values[at]) + off(i);
+    let cx = x(at);
     while (!free(cx, cy) && cx + 22 + 15 <= L + pw) cx += 22;
-    if (!free(cx, cy)) for (cx = x(si); !free(cx, cy) && cx - 22 - 15 >= L; ) cx -= 22;
+    if (!free(cx, cy)) for (cx = x(at); !free(cx, cy) && cx - 22 - 15 >= L; ) cx -= 22;
     placed.push({ cx, cy });
-    return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(s.logo)}"${logoClass(s.logo)}></div>`;
-  })).join('');
+    return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(f)}"${logoClass(f)}></div>`;
+  }))).join('');
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
 <style>
