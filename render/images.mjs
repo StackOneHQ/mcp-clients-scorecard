@@ -158,16 +158,17 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   }).join('');
   // A row of logo chips where a line steps up, one per client behind the step. A row stays on its month and moves up or down
   // a chip at a time to clear other rows, never sideways, so the month it marks stays right. i is the line's index, matching its colour.
+  const C = 24, half = C / 2, overlap = 18;
   const placed = [];
-  const free = (x0, x1, cy) => !placed.some(p => x0 < p.x1 + 2 && p.x0 < x1 + 2 && Math.abs(p.cy - cy) < 30);
+  const free = (x0, x1, cy) => !placed.some(p => x0 < p.x1 + 2 && p.x0 < x1 + 2 && Math.abs(p.cy - cy) < C);
   const chips = series.flatMap((s, i) => s.jumps.map(({ at, logos }) => {
-    const width = 30 + 22 * (logos.length - 1);
-    const x0 = Math.min(x(at) - 15, L + pw + 15 - width), x1 = x0 + width;
+    const width = C + overlap * (logos.length - 1);
+    const x0 = Math.min(x(at) - half, L + pw + half - width), x1 = x0 + width;
     const base = y(s.values[at]) + off(i);
-    const shifted = [1, -1, 2, -2, 3, -3, 4, -4, 5, -5].map(n => base - 32 * n).filter(cy => cy - 15 >= T - 20 && cy + 15 <= T + ph);
+    const shifted = [1, -1, 2, -2, 3, -3, 4, -4, 5, -5].map(n => base - (C + 2) * n).filter(cy => cy - half >= T - 20 && cy + half <= T + ph);
     const cy = [base, ...shifted].find(c => free(x0, x1, c)) ?? base;
     placed.push({ x0, x1, cy });
-    return logos.map((f, j) => `<div class="mk" style="left:${x0 + 22 * j}px;top:${cy - 15}px;border-color:${lineStyle(i).color};z-index:${j + 1}"><img src="${logo(f)}"${logoClass(f)}></div>`).join('');
+    return logos.map((f, j) => `<div class="mk" style="left:${x0 + overlap * j}px;top:${cy - half}px;width:${C}px;height:${C}px;border-color:${lineStyle(i).color};z-index:${j + 1}"><img src="${logo(f)}"${logoClass(f)}></div>`).join('');
   })).join('');
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
@@ -186,8 +187,8 @@ svg{position:absolute;left:0;top:0}
 .lg b{color:#fff;font-weight:800}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
 .lg img{width:26px;height:26px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:6px;padding:3px}.lg img.av,.lg img.png{padding:0}
-.mk{position:absolute;width:30px;height:30px;border-radius:8px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
-.mk img{width:20px;height:20px;object-fit:contain}.mk img.av{width:26px;height:26px;border-radius:6px}.mk img.png{width:26px;height:26px}
+.mk{position:absolute;border-radius:6px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
+.mk img{width:15px;height:15px;object-fit:contain}.mk img.av{width:20px;height:20px;border-radius:4px}.mk img.png{width:20px;height:20px}
 </style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
 <svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>${chips}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(asOf)}</div></body></html>`;

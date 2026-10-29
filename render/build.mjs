@@ -29,7 +29,7 @@ const outputs = {
   [historyFile]: snapshot(model),
   ...Object.fromEntries(model.data.clients.map(c => [`assets/badges/${c.slug}.svg`, badgeSvg(c)])),
 };
-const ms = months(model.data.as_of);
+const ms = months(model.data);
 const images = [
   ['tiers', tiersHtml(model), 1080, 1350],
   ['matrix', matrixHtml(model), 1080, 1350],

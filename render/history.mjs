@@ -1,9 +1,11 @@
 // Time series built from the `since` dates on each cell, and the per-date snapshot in data/history/
 import { COLUMNS, TIERS } from './data.mjs';
 
-const SERIES_START = '2024-11';
 const FEATURE_COLS = COLUMNS.filter(([k]) => k !== 'protocol');
 const supported = cell => cell.value === 'y' || cell.value === 'p';
+
+// A cell counts from the month of its since date. Cells that are y or p today but carry no since are "undated".
+const datedMonth = cell => (supported(cell) && cell.since ? String(cell.since.date).slice(0, 7) : null);
 
 // What every client looked like on as_of. Written to data/history/<as_of>.json so later dates can be compared.
 export function snapshot({ data }) {
@@ -14,11 +16,13 @@ export function snapshot({ data }) {
   return JSON.stringify({ as_of: String(data.as_of), spec_versions: data.spec_versions.map(String), clients }, null, 2) + '\n';
 }
 
-// Month labels from SERIES_START to the month of as_of, inclusive
-export function months(asOf) {
+// Month labels from the month before the earliest dated release, so the first step shows, to the month of as_of
+export function months(data) {
   const out = [];
-  let [y, m] = SERIES_START.split('-').map(Number);
-  const end = String(asOf).slice(0, 7);
+  const first = data.clients.flatMap(c => FEATURE_COLS.map(([k]) => datedMonth(c.cells[k]))).filter(Boolean).sort()[0];
+  let [y, m] = (first ?? String(data.as_of)).slice(0, 7).split('-').map(Number);
+  if (--m < 1) { m = 12; y--; }
+  const end = String(data.as_of).slice(0, 7);
   for (;;) {
     const s = `${y}-${String(m).padStart(2, '0')}`;
     out.push(s);
@@ -27,18 +31,14 @@ export function months(asOf) {
   }
 }
 
-// A cell counts from the month of its since date. Cells that are y or p today but carry no since are "undated".
-const datedMonth = cell => (supported(cell) && cell.since ? String(cell.since.date).slice(0, 7) : null);
 
-// Dates before SERIES_START count from the first month
-const monthIndex = (ms, d) => Math.max(0, ms.findIndex(m => d <= m));
 
 // Where a line steps up: the month index and the logos of the clients whose release caused it, ordered by client name.
 // A logo two clients share shows once per step.
 function jumps(ms, shipped) {
   const by = new Map();
   for (const s of [...shipped].sort((a, b) => a.c.name.localeCompare(b.c.name))) {
-    const at = monthIndex(ms, s.d);
+    const at = ms.indexOf(s.d);
     if (!by.has(at)) by.set(at, []);
     if (!by.get(at).includes(s.c.logo)) by.get(at).push(s.c.logo);
   }
@@ -46,7 +46,7 @@ function jumps(ms, shipped) {
 }
 
 export function featureSeries({ data }) {
-  const ms = months(data.as_of);
+  const ms = months(data);
   return FEATURE_COLS.map(([k, label]) => {
     const shipped = data.clients.map(c => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
     const undated = data.clients.filter(c => supported(c.cells[k]) && !c.cells[k].since).length;
@@ -55,7 +55,7 @@ export function featureSeries({ data }) {
 }
 
 export function clientSeries({ data }, limit = 8) {
-  const ms = months(data.as_of);
+  const ms = months(data);
   return data.clients
     .map(c => {
       const shipped = FEATURE_COLS.map(([k]) => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
