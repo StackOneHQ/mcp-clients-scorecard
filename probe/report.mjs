@@ -26,9 +26,8 @@ for (const pkg of pkgs) {
   const reply = mine.filter(l => l.reply).at(-1)?.reply ?? null;
   // A reply only counts as agreed when it is a version the client asked for
   const negotiated = Array.isArray(reply) ? reply.find(v => requested.includes(v)) ?? null : requested.includes(reply) ? reply : null;
-  // When the server answers initialize with an older version and the client then sends notifications/initialized, the client
-  // accepted the downgrade. That connects, but it is the server's version, not the newest the client supports. A retried
-  // initialize is not acceptance.
+  // A client that sends notifications/initialized after the server offers an older version accepted the downgrade:
+  // it connects, but on the server's version, not the newest it supports
   const replyAt = mine.findLastIndex(l => l.reply);
   const accepted = !negotiated && typeof reply === 'string' && mine.slice(replyAt + 1).some(l => l.method === 'notifications/initialized') ? reply : null;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
