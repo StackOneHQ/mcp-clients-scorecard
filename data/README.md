@@ -1,6 +1,6 @@
 # Data files
 
-Everything the scorecard shows comes from this folder. `npm run build` reads it, validates it, and writes the README sections, [EVIDENCE.md](../EVIDENCE.md), the PNGs in [assets/](../assets/) and the snapshot in [history/](history/). `npm run check` fails on any field below that is missing or malformed.
+Everything the scorecard shows comes from this folder. `npm run build` reads it, validates it, and writes the README sections, [EVIDENCE.md](../EVIDENCE.md), the PNGs in [assets/](../assets/) and the snapshot in [history/](history/). `npm run check` fails when a required field below is missing, a value is outside its allowed set, a date or URL is malformed, or a key is unknown.
 
 | File | Edited by | Holds |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ The file name is the client name in lower case with hyphens: `Claude Code` is `c
 | `label` | tool_search only | How the client searches, shown in the table |
 | `quality` | tool_search only | `strong` or `basic`, colours the pill in the matrix image |
 | `fallback` | protocol only | Older version the client falls back to |
-| `since` | no | `date` (YYYY-MM-DD), `version` and `source` (https) of the first release that shipped the feature. Only on `y` or `p` cells. |
+| `since` | no | The first release that shipped the feature: `date` (YYYY-MM-DD, required), `source` (https, required) and `version` (optional, a quoted string). Only on `y` or `p` cells. |
 
 Unknown keys fail the check, so a typo in a field name does not pass silently.
 

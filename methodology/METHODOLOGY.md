@@ -24,6 +24,8 @@ The values mean:
 - `p`: partial. Behind a flag, off by default, marked experimental, or only one of two modes (for example form elicitation without URL elicitation).
 - `n`: not supported, or not documented anywhere we could find. A missing feature and an undocumented one look the same from outside, so a vendor who can show support should [send the source](../CONTRIBUTING.md).
 
+A feature the vendor calls beta or preview is `y` when it is on by default or turned on by a documented setting or admin policy, and `p` when it needs an experimental flag or an undocumented switch. The evidence names the vendor's label.
+
 For tool search, `quality: strong` marks a search the vendor documents (BM25, embeddings, deferred loading with a search tool), and `basic` marks one whose ranking is not documented. Strong labels show green in the matrix image, basic ones amber.
 
 ## Evidence methods
@@ -44,7 +46,7 @@ When sources disagree, the order of trust is probe, then source at a pinned comm
 
 The protocol cell holds the newest revision the client asks for or agrees to. For the CLIs this comes from the live probe. For apps and IDEs it comes from the code or the vendor's docs. Hosted clients that do not say which revision they speak show `not published`.
 
-The grade compares that value with `spec_versions` in [data/meta.yaml](../data/meta.yaml): the first entry is current, the second is one behind, anything else is older. When a new revision ships, it goes at the front of the list and every client drops a grade until it catches up.
+The grade compares that value with `spec_versions` in [data/meta.yaml](../data/meta.yaml): the first entry is current, the second is one behind, and any other listed revision is older. `not published` gets no grade and shows as not published. When a new revision ships, it goes at the front of the list and every client drops a grade until it catches up.
 
 ## MCP bugs fixed
 

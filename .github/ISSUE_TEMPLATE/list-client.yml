@@ -1,0 +1,77 @@
+# Issue form for a client that is not in the scorecard yet
+name: List a client
+description: Add an MCP client to the scorecard, with links we can check
+title: "[new client] NAME"
+labels:
+  - new-client
+body:
+  - type: markdown
+    attributes:
+      value: "Use this form to add an MCP client that is not in the table. A pull request with data/clients/_template.yaml filled in is faster, see CONTRIBUTING.md. A maintainer checks every link and opens the pull request."
+  - type: input
+    id: name
+    attributes:
+      label: Client name
+      placeholder: Your Client
+    validations:
+      required: true
+  - type: dropdown
+    id: group
+    attributes:
+      label: Kind
+      options:
+        - CLI
+        - App or IDE
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: docs
+    attributes:
+      label: MCP docs
+      description: The page that documents MCP support
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: changelog
+    attributes:
+      label: Changelog or releases
+      description: Used to date when each feature shipped
+      placeholder: https://
+    validations:
+      required: false
+  - type: input
+    id: repo
+    attributes:
+      label: Source or issue repository
+      placeholder: https://github.com/owner/name
+    validations:
+      required: false
+  - type: input
+    id: npm
+    attributes:
+      label: npm package
+      description: For CLIs, so the weekly probe can check the protocol handshake
+    validations:
+      required: false
+  - type: textarea
+    id: features
+    attributes:
+      label: Feature support
+      description: "For each feature you support (code mode, tool search, MCP Apps, tasks, events, CIMD, ID-JAG, elicitation), the value (y or p), a public https link that shows it and the version that shipped it"
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: Every link is public and describes a released version, not a plan
+          required: true

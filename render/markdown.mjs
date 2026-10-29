@@ -16,7 +16,10 @@ const pipe = s => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 // Link text and URL land inside a table cell, so brackets in the text are escaped, except inside the status icons
 const ICON = /(!\[[a-z ]+\]\(assets\/icons\/[a-z-]+\.svg\))/;
 const escText = s => pipe(s).split(ICON).map((part, i) => (i % 2 ? part : part.replace(/[[\]]/g, m => '\\' + m))).join('');
-const link = (text, url) => `[${escText(text)}](${encodeURI(decodeURI(url)).replace(/\|/g, '%7C').replace(/\)/g, '%29')})`;
+// Percent-encode what a Markdown link target cannot hold (spaces, brackets, pipes, non-ASCII), keeping existing %XX escapes as they are
+const encUrl = url => url.replace(/%(?![0-9A-Fa-f]{2})/g, '%25')
+  .replace(/[^A-Za-z0-9\-._~:/?#@!$&'*+,;=%]/gu, c => (c === '(' ? '%28' : c === ')' ? '%29' : encodeURIComponent(c)));
+const link = (text, url) => `[${escText(text)}](${encUrl(url)})`;
 const fixText = f => (f.kind === 'rate' ? `${f.pct}% of ${f.n}` : f.kind === 'few' ? 'too few issues' : 'no public tracker');
 const anchor = name => name.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ /g, '-');
 // Mermaid labels: drop characters that end a label or start a comment

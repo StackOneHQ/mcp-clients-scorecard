@@ -43,8 +43,11 @@ export function clientSeries({ data }, limit = 8) {
   const ms = months(data.as_of);
   return data.clients
     .map(c => {
-      const dated = FEATURE_COLS.map(([k]) => datedMonth(c.cells[k])).filter(Boolean);
-      return { label: c.name, tier: c.tier, values: ms.map(m => dated.filter(d => d <= m).length) };
+      const dated = FEATURE_COLS.map(([k, label]) => ({ label, m: datedMonth(c.cells[k]) })).filter(d => d.m);
+      // steps: the month index where each feature first counts, for the logo markers on the chart
+      const at = d => Math.max(0, ms.findIndex(m => d.m <= m));
+      const steps = [...new Set(dated.map(at))].sort((a, b) => a - b).map(i => ({ i, features: dated.filter(d => at(d) === i).map(d => d.label) }));
+      return { label: c.name, tier: c.tier, logo: c.logo, steps, values: ms.map(m => dated.filter(d => d.m <= m).length) };
     })
     .filter(s => s.values.at(-1) > 0)
     .sort((a, b) => b.values.at(-1) - a.values.at(-1) || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.label.localeCompare(b.label))

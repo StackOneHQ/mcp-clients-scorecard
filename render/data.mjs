@@ -19,6 +19,7 @@ export const MIN_ISSUES = 20;
 const CLIENT_KEYS = new Set(['name', 'group', 'tier', 'tier_note', 'note', 'unmaintained', 'logo', 'website', 'docs', 'repo', 'version_checked', 'npm', 'tracker', 'cells']);
 const CELL_KEYS = new Set(['value', 'method', 'source', 'evidence', 'checked', 'label', 'quality', 'fallback', 'since']);
 const SINCE_KEYS = new Set(['date', 'version', 'source']);
+const META_KEYS = new Set(['as_of', 'spec_versions', 'bug_window_start', 'image_note']);
 const TRACKER_KEYS = new Set(['repo', 'mcp_in_title']);
 const QUALITIES = new Set(['strong', 'basic']);
 const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_date', 'spec_source', 'spec_event']);
@@ -26,7 +27,7 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS = /^https:\/\/\S+$/;
 // A real calendar day: 2026-02-31 matches the pattern but does not survive the round trip
 const isDate = v => typeof v === 'string' && DATE.test(v) && new Date(Date.parse(v + 'T00:00:00Z') || 0).toISOString().slice(0, 10) === v;
-// The renderers call decodeURI on every link, so a stray % has to fail here rather than crash the build
+// A stray % (not followed by two hex digits) is a broken URL, so it fails here
 const isUrl = v => {
   if (typeof v !== 'string' || !HTTPS.test(v)) return false;
   try { decodeURI(v); return true; } catch { return false; }
@@ -36,7 +37,7 @@ const slugOf = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^
 // Pass { counts: false } to load the clients without data/bugs.json (npm run bugs does this to rebuild it)
 export function load({ counts = true } = {}) {
   const meta = readYaml('data/meta.yaml');
-  const clients = fs.readdirSync(ROOT + 'data/clients').filter(f => f.endsWith('.yaml')).sort()
+  const clients = fs.readdirSync(ROOT + 'data/clients').filter(f => f.endsWith('.yaml') && !f.startsWith('_')).sort()
     .map(f => ({ file: f, ...readYaml('data/clients/' + f) }));
   const data = { ...meta, features: FEATURES, clients };
   const bugs = counts ? JSON.parse(fs.readFileSync(ROOT + 'data/bugs.json', 'utf8')) : null;
@@ -66,6 +67,7 @@ function fixRate(client, bugs) {
 function validate(data, bugs) {
   const errs = [];
   const asOf = String(data.as_of);
+  for (const k of Object.keys(data)) if (k !== 'features' && k !== 'clients' && !META_KEYS.has(k)) errs.push(`data/meta.yaml: unknown key ${k}`);
   if (!isDate(data.as_of)) errs.push('data/meta.yaml: as_of must be YYYY-MM-DD');
   const versions = (Array.isArray(data.spec_versions) ? data.spec_versions : []).map(String);
   const descending = versions.every((v, i) => isDate(v) && (i === 0 || v < versions[i - 1]));
@@ -131,6 +133,7 @@ function validate(data, bugs) {
         if (!isDate(s.date)) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);
         if (!isUrl(s.source)) errs.push(`${ca}.since: source must be an https URL`);
+        if (s.version !== undefined && (typeof s.version !== 'string' || !s.version.trim())) errs.push(`${ca}.since: version must be a quoted string, for example "1.102"`);
       }
     }
   }

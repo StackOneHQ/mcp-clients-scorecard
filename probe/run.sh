@@ -8,6 +8,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 WORK=$(mktemp -d)
 OUT=${PROBE_OUT:-$WORK/out}
 mkdir -p "$OUT"
+OUT=$(cd "$OUT" && pwd)
 export PROBE_LOG="$WORK/probe.log"
 export SRV="$HERE/server.cjs"
 T=${PROBE_TIMEOUT:-90}

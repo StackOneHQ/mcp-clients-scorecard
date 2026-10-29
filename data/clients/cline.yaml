@@ -30,10 +30,10 @@ cells:
     evidence: "grep tool search / deferred tool: only Composio meta tools and codebase search tool (unrelated to MCP tool discovery)"
     checked: 2026-10-27
   apps:
-    value: p
+    value: n
     method: source
     source: https://github.com/cline/cline/blob/c35b729049c7bb26c340df63ea9235c40b32dd29/sdk/DOC.md#L513
-    evidence: 'sdk/DOC.md:513-516 "MCP Apps (experimental) ... off by default. `createDefaultMcpServerClientFactory({ mcpApps: true })`" advertises io.modelcontextprotocol/ui. No shipped app sets mcpApps; extension McpHub declares `capabilities: {}`'
+    evidence: 'sdk/DOC.md:513-516 "MCP Apps (experimental) ... off by default. `createDefaultMcpServerClientFactory({ mcpApps: true })`" advertises io.modelcontextprotocol/ui, but no shipped app sets mcpApps and there is no user setting; the VS Code extension McpHub declares `capabilities: {}`. Graded n until a released app exposes it'
     checked: 2026-10-27
   tasks:
     value: n

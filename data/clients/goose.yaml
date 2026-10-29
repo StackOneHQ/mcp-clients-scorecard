@@ -20,10 +20,10 @@ cells:
     checked: 2026-10-27
     fallback: 2025-11-25
   code_mode:
-    value: y
+    value: p
     method: source
     source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/platform_extensions/code_execution.rs#L24
-    evidence: platform_extensions/mod.rs:155-162 "Code Mode" extension, default_enabled false; code_execution.rs:24 list_functions / get_function_details / execute_javascript (Boa JS); goose-cli Cargo.toml:95 `code-mode` in default features; docs guides/managing-tools/code-mode.md
+    evidence: Off by default. platform_extensions/mod.rs:155-162 "Code Mode" extension, default_enabled false, turned on per session; code_execution.rs:24 list_functions / get_function_details / execute_javascript (Boa JS); goose-cli Cargo.toml:95 `code-mode` in default features; docs guides/managing-tools/code-mode.md
     checked: 2026-10-27
     since:
       date: 2025-12-18

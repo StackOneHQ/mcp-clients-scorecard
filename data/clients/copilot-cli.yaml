@@ -20,7 +20,7 @@ cells:
     checked: 2026-10-27
   code_mode:
     value: n
-    method: source
+    method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: Not documented in the changelog or docs
     checked: 2026-10-27
@@ -44,7 +44,7 @@ cells:
     checked: 2026-10-27
   tasks:
     value: p
-    method: source
+    method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: Experimental tasks in 1.0.41
     checked: 2026-10-27
@@ -54,13 +54,13 @@ cells:
       source: https://github.com/github/copilot-cli/releases/tag/v1.0.41
   events:
     value: n
-    method: source
+    method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: Not documented in the changelog
     checked: 2026-10-27
   cimd:
     value: y
-    method: source
+    method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: CIMD in 1.0.83
     checked: 2026-10-27
@@ -76,9 +76,9 @@ cells:
     checked: 2026-10-27
   elicitation:
     value: y
-    method: source
+    method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: Form elicitation in 0.0.421
+    evidence: '0.0.421 "structured form input ... using MCP Elicitations (experimental)"; 0.0.423 "MCP servers can now request users to visit a URL" (URL mode)'
     checked: 2026-10-27
     since:
       date: 2026-03-03

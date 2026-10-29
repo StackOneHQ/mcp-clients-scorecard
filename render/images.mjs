@@ -115,7 +115,10 @@ ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F5F5F5', '#A3E635', '#FB923C'];
 const lineStyle = i => ({ color: LINE[i % LINE.length], dash: i % LINE.length >= 4 ? '12 8' : '' });
 
-function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
+const SHORT = { 'Code mode': 'Code', 'Tool search': 'Search', 'MCP Apps': 'Apps', Elicitation: 'Elicit' };
+const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
+
+function lineChart({ title, subtitle, months, series, yLabel, asOf, labels = false }) {
   const W = 1200, H = 700, L = 84, R = 300, T = 186, B = 92;
   const pw = W - L - R, ph = H - T - B;
   const max = Math.max(1, ...series.flatMap(s => s.values));
@@ -152,8 +155,19 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   }).join('');
   const legend = series.map((s, i) => {
     const { color, dash } = lineStyle(i);
-    return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg><span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
+    const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
+    return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
+  // Client charts: a logo chip where a line steps up, with the feature it added. Chips that would overlap shift right, like an avatar row.
+  const placed = [];
+  const chips = series.filter(s => s.steps).flatMap((s, i) => s.steps.map(st => {
+    let cx = x(st.i), cy = y(s.values[st.i]) + off(i);
+    while (placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30)) cx += 22;
+    placed.push({ cx, cy });
+    const tag = st.features.map(l => SHORT[l] || l).join(' + ');
+    return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(s.logo)}"${logoClass(s.logo)}></div>`
+      + (labels ? `<div class="mt" style="left:${cx}px;top:${cy - 38}px">${esc(tag)}</div>` : '');
+  })).join('');
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
 <style>
@@ -170,8 +184,12 @@ svg{position:absolute;left:0;top:0}
 .lg span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg b{color:#fff;font-weight:800}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
+.lg img{width:26px;height:26px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:6px;padding:3px}.lg img.av,.lg img.png{padding:0}
+.mk{position:absolute;width:30px;height:30px;border-radius:8px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
+.mk img{width:20px;height:20px;object-fit:contain}.mk img.av{width:26px;height:26px;border-radius:6px}.mk img.png{width:26px;height:26px}
+.mt{position:absolute;transform:translateX(-50%);font-size:13px;font-weight:700;color:#EDEDED;background:#000;padding:0 3px;white-space:nowrap}
 </style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
-<svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>
+<svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>${chips}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(asOf)}</div></body></html>`;
 }
 
@@ -179,8 +197,8 @@ export function historyFeaturesHtml({ data }, ms, series) {
   return lineChart({ title: 'MCP clients supporting each feature', subtitle: 'Clients with full or partial support, counted from the first release that shipped it', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
 }
 
-export function historyClientsHtml({ data }, ms, series) {
-  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of });
+export function historyClientsHtml({ data }, ms, series, labels = false) {
+  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of, labels });
 }
 
 // Per-client badge for client READMEs, regenerated with the table so it follows the tier

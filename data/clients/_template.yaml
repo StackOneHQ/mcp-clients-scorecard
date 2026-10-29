@@ -1,0 +1,72 @@
+# Template for a new client. Copy it to data/clients/<slug>.yaml (the build skips files that start with _).
+# Field reference: data/README.md. Evidence rules: CONTRIBUTING.md. After editing, run npm run build.
+name: Your Client
+group: cli                      # cli, or app for apps and IDEs
+tier: D                         # the build prints the tier the rubric gives; set it to that
+logo: icon-your-client.svg      # square SVG in assets/logos/
+website: https://example.com
+docs: https://example.com/docs/mcp
+repo: null                      # https source or issue repo, or null
+version_checked: "1.0.0"        # leave out for hosted clients
+tracker: null                   # or: { repo: owner/name, mcp_in_title: true }
+# npm: your-cli-package         # CLIs on npm: the weekly probe installs it and records the handshake
+cells:
+  protocol:
+    value: 2025-11-25           # newest revision the client negotiates, from data/meta.yaml spec_versions, or not published
+    method: docs                # probe, source, docs, changelog or issue
+    source: https://example.com/docs/mcp
+    evidence: What the source shows, in one sentence
+    checked: 2026-10-27         # the day you opened the source, YYYY-MM-DD
+  code_mode:
+    value: n                    # y, p or n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  tool_search:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+    # on y or p, add label (shown in the table) and quality (strong or basic)
+  apps:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  events:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  id_jag:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
+  elicitation:
+    value: y
+    method: changelog
+    source: https://example.com/changelog#1-0-0
+    evidence: Form and URL elicitation in 1.0.0
+    checked: 2026-10-27
+    since:                      # optional, on y or p only: the first release that shipped it
+      date: 2026-01-15
+      version: "1.0.0"
+      source: https://example.com/changelog#1-0-0

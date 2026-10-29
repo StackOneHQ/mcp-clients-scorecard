@@ -4,7 +4,7 @@ The probe checks which protocol version a CLI really sends, rather than what its
 
 ## What it runs
 
-[probe/run.sh](../probe/run.sh) installs each CLI at its npm latest into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request and reply.
+[probe/run.sh](../probe/run.sh) installs each CLI at its npm latest into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request it receives and the reply it sends to each handshake.
 
 | Client | npm package | How it is started |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ The probe checks which protocol version a CLI really sends, rather than what its
 | opencode | `opencode-ai` | `opencode mcp list` |
 | Droid | `@factory/cli` | `droid mcp add`, then `droid exec` |
 
-[probe/report.mjs](../probe/report.mjs) turns the log into `probe/results.json`: per package, the installed version, the versions it asked for, and the version the server agreed. It exits 1 when no client completed a handshake, since that means the probe itself broke.
+[probe/report.mjs](../probe/report.mjs) turns the log into `probe/results.json`: per package, the installed version, the versions it asked for, and the version the server agreed. It exits 1 when no client completed a handshake. Check the per-client output in `PROBE_OUT` first: a CLI that needs sign-in or failed to install also gives no handshake.
 
 ## Reproducing it
 

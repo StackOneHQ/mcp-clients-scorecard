@@ -3,6 +3,8 @@ on:
   pull_request:
   push:
     branches: [main]
+  # started by the build workflow after it commits regenerated files
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:

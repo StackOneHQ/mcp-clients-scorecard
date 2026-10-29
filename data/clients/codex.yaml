@@ -31,7 +31,7 @@ cells:
   tool_search:
     value: y
     label: BM25
-    quality: basic
+    quality: strong
     method: issue
     source: https://github.com/openai/codex/pull/29486
     evidence: BM25 tool_search over MCP tools

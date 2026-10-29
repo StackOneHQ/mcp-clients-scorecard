@@ -24,7 +24,7 @@ cells:
     value: n
     method: source
     source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/tool.ts#L258
-    evidence: V2 packages/core/src/tool.ts:258 `codeModeEnabled = !whollyDisabled("execute", rules)`; schema/mcp.ts:35,60 MCP tools `codemode` "Defaults to true"; codemode/tool.ts:72 "Run JavaScript in a confined Code Mode runtime"
+    evidence: Rated on V1 1.19.4, which has no code mode. Only V2 has it, on by default; V2 packages/core/src/tool.ts:258 `codeModeEnabled = !whollyDisabled("execute", rules)`; schema/mcp.ts:35,60 MCP tools `codemode` "Defaults to true"; codemode/tool.ts:72 "Run JavaScript in a confined Code Mode runtime"
     checked: 2026-10-27
   tool_search:
     value: n

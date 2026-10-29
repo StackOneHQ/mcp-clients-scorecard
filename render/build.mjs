@@ -1,5 +1,6 @@
 // npm run build                   regenerate the README sections, EVIDENCE.md, the history snapshot and the PNGs
 // npm run build -- --no-images    skip the PNGs (no Chrome needed)
+// npm run build -- --all-images   re-render every PNG, not only the ones whose chart changed
 // npm run check                   validate data/ and fail if any generated file is out of date
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -64,9 +65,12 @@ for (const [f, s] of Object.entries(outputs)) {
 console.log(`wrote README.md, EVIDENCE.md, ${historyFile} and ${model.data.clients.length} badges`);
 
 if (!args.has('--no-images')) {
-  const chrome = findChrome();
+  // Only re-render an image whose HTML changed, so a rebuild on another machine does not churn PNG bytes
+  const built = fs.existsSync(ROOT + IMAGE_HASHES) ? JSON.parse(fs.readFileSync(ROOT + IMAGE_HASHES, 'utf8')) : {};
+  const todo = images.filter(([name]) => args.has('--all-images') || built[name] !== hashes[name] || !fs.existsSync(ROOT + `assets/${name}.png`));
+  const chrome = todo.length ? findChrome() : null;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-scorecard-'));
-  for (const [name, html, w, h] of images) {
+  for (const [name, html, w, h] of todo) {
     const src = path.join(tmp, name + '.html');
     fs.writeFileSync(src, html);
     const png = ROOT + `assets/${name}.png`;

@@ -24,7 +24,8 @@ for (const pkg of pkgs) {
   }
   // initialize replies with the agreed version; server/discover replies with a list, which only agrees if it holds a requested version
   const reply = mine.filter(l => l.reply).at(-1)?.reply ?? null;
-  const negotiated = Array.isArray(reply) ? reply.find(v => requested.includes(v)) ?? null : reply;
+  // A reply only counts as agreed when it is a version the client asked for
+  const negotiated = Array.isArray(reply) ? reply.find(v => requested.includes(v)) ?? null : requested.includes(reply) ? reply : null;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
   results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, errors, client_info: clientInfo, connected: negotiated !== null };
   console.log(pkg.padEnd(28), String(version).padEnd(10), negotiated ? `agreed ${negotiated} (asked ${requested.join(', ')})` : requested.length ? `asked ${requested.join(', ')}, no agreement: ${errors[0] || 'no reply'}` : 'no handshake');
