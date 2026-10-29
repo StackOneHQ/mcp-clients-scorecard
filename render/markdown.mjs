@@ -83,9 +83,9 @@ export function adoption(model) {
   const { dated, undated } = datedCounts(model);
   const series = featureSeries(model);
   const out = [
-    '![Clients supporting each feature over time](assets/history-features.png)',
+    '![Which MCP clients shipped each feature, and when](assets/history-features.png)',
     '',
-    '![Features supported per client over time](assets/history-clients.png)',
+    '![Features supported per client, one dot per feature at the release that shipped it](assets/history-clients.png)',
     '',
   ];
   if (firsts.length) {

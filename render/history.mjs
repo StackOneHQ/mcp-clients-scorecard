@@ -54,16 +54,18 @@ export function featureSeries({ data }) {
   });
 }
 
-export function clientSeries({ data }, limit = 8) {
+// One row per client with a dated feature: the month index of each feature it shipped (f is the feature's index, matching
+// featureSeries and so its colour), plus how many supported features carry no date and so cannot be placed.
+export function clientSeries({ data }) {
   const ms = months(data);
   return data.clients
-    .map(c => {
-      const shipped = FEATURE_COLS.map(([k]) => ({ c, d: datedMonth(c.cells[k]) })).filter(s => s.d);
-      return { label: c.name, tier: c.tier, logo: c.logo, jumps: jumps(ms, shipped), values: ms.map(m => shipped.filter(s => s.d <= m).length) };
-    })
-    .filter(s => s.values.at(-1) > 0)
-    .sort((a, b) => b.values.at(-1) - a.values.at(-1) || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.label.localeCompare(b.label))
-    .slice(0, limit);
+    .map(c => ({
+      label: c.name, tier: c.tier, logo: c.logo,
+      shipped: FEATURE_COLS.map(([k], f) => ({ f, at: ms.indexOf(datedMonth(c.cells[k])) })).filter(s => s.at >= 0),
+      undated: FEATURE_COLS.filter(([k]) => supported(c.cells[k]) && !c.cells[k].since).length,
+    }))
+    .filter(s => s.shipped.length)
+    .sort((a, b) => b.shipped.length - a.shipped.length || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.label.localeCompare(b.label));
 }
 
 // The earliest dated release per feature, with every client that shipped it that month

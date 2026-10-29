@@ -30,11 +30,12 @@ const outputs = {
   ...Object.fromEntries(model.data.clients.map(c => [`assets/badges/${c.slug}.svg`, badgeSvg(c)])),
 };
 const ms = months(model.data);
+const features = featureSeries(model);
 const images = [
   ['tiers', tiersHtml(model), 1080, 1350],
   ['matrix', matrixHtml(model), 1080, 1350],
-  ['history-features', historyFeaturesHtml(model, ms, featureSeries(model)), 1200, 700],
-  ['history-clients', historyClientsHtml(model, ms, clientSeries(model)), 1200, 700],
+  ['history-features', historyFeaturesHtml(model, ms, features), 1200, 700],
+  ['history-clients', historyClientsHtml(model, ms, clientSeries(model), features.map(f => f.label)), 1200, 700],
 ];
 // PNG bytes differ between Chrome versions, so check compares a hash of the HTML each image was rendered from
 const IMAGE_HASHES = 'assets/images.json';

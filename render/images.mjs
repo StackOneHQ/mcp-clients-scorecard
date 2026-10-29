@@ -116,6 +116,23 @@ const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F5F5F5', 
 const lineStyle = i => ({ color: LINE[i % LINE.length], dash: i % LINE.length >= 4 ? '12 8' : '' });
 
 
+// Month ticks under a chart: the first month, each January and July, and the last month, skipping labels closer than four months
+function monthAxis(months, x, y0) {
+  const marks = [];
+  months.forEach((m, i) => {
+    if (!(i === 0 || m.endsWith('-01') || m.endsWith('-07') || i === months.length - 1)) return;
+    if (marks.length && i - marks.at(-1) < 4) {
+      if (i !== months.length - 1) return;
+      if (marks.length > 1) marks.pop(); else return;
+    }
+    marks.push(i);
+  });
+  return marks.map(i => {
+    const lab = new Date(months[i] + '-01T00:00:00Z').toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+    return `<line x1="${x(i)}" x2="${x(i)}" y1="${y0}" y2="${y0 + 8}" stroke="#55554F"/><text x="${x(i)}" y="${y0 + 34}" text-anchor="middle" class="ax">${lab}</text>`;
+  }).join('');
+}
+
 function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const W = 1200, H = 700, L = 84, R = 300, T = 186, B = 92;
   const pw = W - L - R, ph = H - T - B;
@@ -126,22 +143,7 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const y = v => T + ph - (v / top) * ph;
   let grid = '';
   for (let v = 0; v <= top; v += step) grid += `<line x1="${L}" x2="${L + pw}" y1="${y(v)}" y2="${y(v)}" stroke="#2A2A26"/><text x="${L - 14}" y="${y(v) + 6}" text-anchor="end" class="ax">${v}</text>`;
-  // Label the first month, each January and July, and the last month, skipping labels closer than four months
-  const marks = [];
-  months.forEach((m, i) => {
-    if (!(i === 0 || m.endsWith('-01') || m.endsWith('-07') || i === months.length - 1)) return;
-    if (marks.length && i - marks.at(-1) < 4) {
-      if (i !== months.length - 1) return;
-      if (marks.length > 1) marks.pop(); else return;
-    }
-    marks.push(i);
-  });
-  months.forEach((m, i) => {
-    if (marks.includes(i)) {
-      const lab = new Date(m + '-01T00:00:00Z').toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
-      grid += `<line x1="${x(i)}" x2="${x(i)}" y1="${T + ph}" y2="${T + ph + 8}" stroke="#55554F"/><text x="${x(i)}" y="${T + ph + 34}" text-anchor="middle" class="ax">${lab}</text>`;
-    }
-  });
+  grid += monthAxis(months, x, T + ph);
   // Small vertical offsets keep equal lines from hiding each other
   const off = i => (i - (series.length - 1) / 2) * 2.2;
   const lines = series.map((s, i) => {
@@ -195,11 +197,46 @@ svg{position:absolute;left:0;top:0}
 }
 
 export function historyFeaturesHtml({ data }, ms, series) {
-  return lineChart({ title: 'MCP clients supporting each feature', subtitle: 'Clients with full or partial support, counted from the first release that shipped it', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
+  return lineChart({ title: 'Which MCP clients shipped each feature, and when', subtitle: 'Each step is a client release adding full or partial support, marked with that client\'s logo', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
 }
 
-export function historyClientsHtml({ data }, ms, series) {
-  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of });
+// One row per client, one dot per feature at the month of the release that shipped it, in the feature's colour from the chart above.
+// Features shipped in the same month sit side by side, centred on that month.
+export function historyClientsHtml({ data }, ms, rows, features) {
+  const W = 1200, H = 700, L = 250, R = 140, T = 186, B = 100;
+  const pw = W - L - R, ph = H - T - B;
+  const x = i => L + (ms.length === 1 ? pw / 2 : (i * pw) / (ms.length - 1));
+  const rh = ph / Math.max(1, rows.length), D = 9;
+  const body = rows.map((r, i) => {
+    const cy = T + rh * (i + 0.5);
+    const byMonth = Map.groupBy(r.shipped, s => s.at);
+    const dots = [...byMonth].map(([at, ss]) => ss.map((s, j) => {
+      const cx = Math.min(x(at) + (j - (ss.length - 1) / 2) * (2 * D + 2), L + pw + D);
+      return `<circle cx="${cx}" cy="${cy}" r="${D}" fill="${LINE[s.f % LINE.length]}" stroke="#000" stroke-width="2"/>`;
+    }).join('')).join('');
+    const first = Math.min(...r.shipped.map(s => s.at));
+    const extra = r.undated ? `<text x="${L + pw + 22}" y="${cy + 6}" class="ud">+${r.undated} undated</text>` : '';
+    return `<line x1="${L}" x2="${L + pw}" y1="${cy}" y2="${cy}" stroke="#1E1E1B"/><line x1="${x(first)}" x2="${L + pw}" y1="${cy}" y2="${cy}" stroke="#3A3A35" stroke-width="2"/>${dots}${extra}`
+      + `<text x="${L - 20}" y="${cy + 7}" text-anchor="end" class="nm">${esc(r.label)}</text>`;
+  }).join('');
+  const names = rows.map((r, i) => r.logo ? `<img src="${logo(r.logo)}"${logoClass(r.logo)} style="left:${40}px;top:${T + rh * (i + 0.5) - 13}px">` : '').join('');
+  const legend = features.map((f, i) => `<div><i style="background:${LINE[i % LINE.length]}"></i>${esc(f)}</div>`).join('');
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Features supported per client</title>${FONT}
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:${W}px;height:${H}px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;position:relative;overflow:hidden}
+h1{position:absolute;left:44px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
+h2{position:absolute;left:44px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
+svg{position:absolute;left:0;top:0}
+.ax,.ud{font-size:18px;fill:#9A9A94;font-family:Inter,system-ui,sans-serif}.ud{font-size:15px}
+.nm{font-size:20px;font-weight:600;fill:#EDEDED;font-family:Inter,system-ui,sans-serif}
+body>img{position:absolute;width:26px;height:26px;object-fit:contain;background:#fff;border-radius:6px;padding:3px}body>img.av,body>img.png{padding:0}
+.leg{position:absolute;left:44px;top:138px;display:flex;gap:26px;font-size:18px;font-weight:600}
+.leg div{display:flex;align-items:center;gap:10px;white-space:nowrap}.leg i{width:16px;height:16px;border-radius:50%}
+.foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
+</style></head><body><h1>Features supported per client</h1><h2>Each dot is a feature, placed at the release that shipped it</h2>
+<svg width="${W}" height="${H}">${body}${monthAxis(ms, x, T + ph + 6)}</svg>${names}
+<div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(data.as_of)}</div></body></html>`;
 }
 
 // Per-client badge for client READMEs, regenerated with the table so it follows the tier
