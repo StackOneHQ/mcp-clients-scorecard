@@ -1,5 +1,5 @@
 {
-  "name": "mcp-client-compat-probe",
+  "name": "mcp-clients-scorecard-probe",
   "private": true,
   "description": "Probe server for live MCP handshakes",
   "dependencies": {
