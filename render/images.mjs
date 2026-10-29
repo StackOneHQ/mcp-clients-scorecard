@@ -171,5 +171,5 @@ export function historyFeaturesHtml({ data }, ms, series) {
 }
 
 export function historyClientsHtml({ data }, ms, series) {
-  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series: series.map(s => ({ label: s.name, values: s.values })), yLabel: 'Features', asOf: data.as_of });
+  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of });
 }

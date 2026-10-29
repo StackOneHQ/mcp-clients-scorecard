@@ -1,7 +1,7 @@
 // Time series built from the `since` dates on each cell, and the per-date snapshot in data/history/
 import { COLUMNS, TIERS } from './data.mjs';
 
-export const SERIES_START = '2024-11';
+const SERIES_START = '2024-11';
 const FEATURE_COLS = COLUMNS.filter(([k]) => k !== 'protocol');
 const supported = cell => cell.value === 'y' || cell.value === 'p';
 
@@ -35,7 +35,7 @@ export function featureSeries({ data }) {
   return FEATURE_COLS.map(([k, label]) => {
     const dated = data.clients.map(c => datedMonth(c.cells[k])).filter(Boolean);
     const undated = data.clients.filter(c => supported(c.cells[k]) && !c.cells[k].since).length;
-    return { id: k, label, values: ms.map(m => dated.filter(d => d <= m).length), undated };
+    return { label, values: ms.map(m => dated.filter(d => d <= m).length), undated };
   });
 }
 
@@ -44,10 +44,10 @@ export function clientSeries({ data }, limit = 8) {
   return data.clients
     .map(c => {
       const dated = FEATURE_COLS.map(([k]) => datedMonth(c.cells[k])).filter(Boolean);
-      return { name: c.name, tier: c.tier, values: ms.map(m => dated.filter(d => d <= m).length), dated: dated.length };
+      return { label: c.name, tier: c.tier, values: ms.map(m => dated.filter(d => d <= m).length) };
     })
-    .filter(s => s.dated > 0)
-    .sort((a, b) => b.dated - a.dated || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.name.localeCompare(b.name))
+    .filter(s => s.values.at(-1) > 0)
+    .sort((a, b) => b.values.at(-1) - a.values.at(-1) || TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || a.label.localeCompare(b.label))
     .slice(0, limit);
 }
 
@@ -59,7 +59,7 @@ export function firstShippers({ data }) {
     if (!dated.length) continue;
     const first = dated.reduce((a, b) => (b.date < a.date ? b : a)).date;
     const names = dated.filter(d => d.date.slice(0, 7) === first.slice(0, 7)).map(d => d.name).sort();
-    out.push({ id: k, label, date: first, names });
+    out.push({ label, date: first, names });
   }
   return out.sort((a, b) => a.date.localeCompare(b.date) || a.label.localeCompare(b.label));
 }

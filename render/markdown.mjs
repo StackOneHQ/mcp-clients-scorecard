@@ -13,8 +13,7 @@ const cellText = (key, cell, versions) => {
   return MARK[cell.value];
 };
 const pipe = s => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
-// Link text and URL both land inside a table cell, so neither may carry a raw pipe, bracket or newline
-// Escapes brackets in link text, except inside the status icons
+// Link text and URL land inside a table cell, so brackets in the text are escaped, except inside the status icons
 const ICON = /(!\[[a-z ]+\]\(assets\/icons\/[a-z-]+\.svg\))/;
 const escText = s => pipe(s).split(ICON).map((part, i) => (i % 2 ? part : part.replace(/[[\]]/g, m => '\\' + m))).join('');
 const link = (text, url) => `[${escText(text)}](${encodeURI(decodeURI(url)).replace(/\|/g, '%7C').replace(/\)/g, '%29')})`;

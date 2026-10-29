@@ -4,14 +4,14 @@ import YAML from 'yaml';
 export const ROOT = new URL('..', import.meta.url).pathname;
 const readYaml = f => YAML.parse(fs.readFileSync(ROOT + f, 'utf8'));
 // Column order and labels come from data/features.yaml
-export const FEATURES = readYaml('data/features.yaml');
+const FEATURES = readYaml('data/features.yaml');
 export const COLUMNS = FEATURES.map(f => [f.id, f.label]);
 export const TIERS = ['S', 'A', 'B', 'C', 'D'];
 export const GROUPS = [['cli', 'CLIs'], ['app', 'Apps and IDEs']];
 const MARKS = new Set(['y', 'p', 'n']);
-export const METHODS = new Set(['probe', 'source', 'docs', 'changelog', 'issue']);
+const METHODS = new Set(['probe', 'source', 'docs', 'changelog', 'issue']);
 // Protocol cell value for hosted clients that do not say which spec version they speak
-export const NOT_PUBLISHED = 'not published';
+const NOT_PUBLISHED = 'not published';
 // A fix rate needs at least this many non-duplicate issues to be shown
 export const MIN_ISSUES = 20;
 
@@ -21,7 +21,7 @@ const SINCE_KEYS = new Set(['date', 'version', 'source']);
 const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_date', 'spec_source', 'spec_event']);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS = /^https:\/\/\S+$/;
-export const slugOf = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const slugOf = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 // Pass { counts: false } to load the clients without data/bugs.json (npm run bugs does this to rebuild it)
 export function load({ counts = true } = {}) {
@@ -44,7 +44,7 @@ export function load({ counts = true } = {}) {
 }
 
 // Share of MCP issues opened since the window start that were closed as completed, duplicates removed
-export function fixRate(client, bugs) {
+function fixRate(client, bugs) {
   if (!client.tracker) return { kind: 'none' };
   const r = bugs.repos[client.tracker.repo];
   const n = r.issues - r.duplicates;
