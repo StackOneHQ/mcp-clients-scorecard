@@ -156,19 +156,16 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
     const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
     return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
-  // A logo chip where a line steps up (s.jumps): the client's own logo on client charts, and on feature charts the logos of the
-  // clients whose release caused that step, overlapping like an avatar row. A row stays on its month; if it would cover another
-  // row it moves up or down a chip at a time, never sideways, so the month it marks stays right. i is the line's index, matching its colour.
+  // A row of logo chips where a line steps up, one per client behind the step. A row stays on its month and moves up or down
+  // a chip at a time to clear other rows, never sideways, so the month it marks stays right. i is the line's index, matching its colour.
   const placed = [];
   const free = (x0, x1, cy) => !placed.some(p => x0 < p.x1 + 2 && p.x0 < x1 + 2 && Math.abs(p.cy - cy) < 30);
-  const chips = series.flatMap((s, i) => (s.jumps || []).map(({ at, logos }) => {
-    const x0 = Math.min(x(at) - 15, L + pw + 15 - 30 - 22 * (logos.length - 1)), x1 = x0 + 30 + 22 * (logos.length - 1);
+  const chips = series.flatMap((s, i) => s.jumps.map(({ at, logos }) => {
+    const width = 30 + 22 * (logos.length - 1);
+    const x0 = Math.min(x(at) - 15, L + pw + 15 - width), x1 = x0 + width;
     const base = y(s.values[at]) + off(i);
-    let cy = base;
-    for (let k = 1; !free(x0, x1, cy) && k < 12; k++) {
-      const up = base - 32 * Math.ceil(k / 2), down = base + 32 * Math.ceil(k / 2);
-      cy = k % 2 ? (up - 15 >= T - 20 ? up : down) : (down + 15 <= T + ph ? down : up);
-    }
+    const shifted = [1, -1, 2, -2, 3, -3, 4, -4, 5, -5].map(n => base - 32 * n).filter(cy => cy - 15 >= T - 20 && cy + 15 <= T + ph);
+    const cy = [base, ...shifted].find(c => free(x0, x1, c)) ?? base;
     placed.push({ x0, x1, cy });
     return logos.map((f, j) => `<div class="mk" style="left:${x0 + 22 * j}px;top:${cy - 15}px;border-color:${lineStyle(i).color};z-index:${j + 1}"><img src="${logo(f)}"${logoClass(f)}></div>`).join('');
   })).join('');

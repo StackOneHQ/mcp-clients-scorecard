@@ -30,11 +30,11 @@ export function months(asOf) {
 // A cell counts from the month of its since date. Cells that are y or p today but carry no since are "undated".
 const datedMonth = cell => (supported(cell) && cell.since ? String(cell.since.date).slice(0, 7) : null);
 
-// Month index a dated cell counts from; dates before SERIES_START count from the first month
+// Dates before SERIES_START count from the first month
 const monthIndex = (ms, d) => Math.max(0, ms.findIndex(m => d <= m));
 
 // Where a line steps up: the month index and the logos of the clients whose release caused it, ordered by client name.
-// Clients that share a logo (Claude Code and the Claude app) show it once per step.
+// A logo two clients share shows once per step.
 function jumps(ms, shipped) {
   const by = new Map();
   for (const s of [...shipped].sort((a, b) => a.c.name.localeCompare(b.c.name))) {
