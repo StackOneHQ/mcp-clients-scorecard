@@ -5,17 +5,17 @@ import { ROOT, COLUMNS, TIERS, GROUPS, protocolGrade, formatDate } from './data.
 const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
 
+// Each logo is read once: the client chart embeds the same logo at every step of its line
+const logos = new Map();
 const logo = f => {
-  const b = fs.readFileSync(ROOT + 'assets/logos/' + f);
-  return `data:${f.endsWith('.png') ? 'image/png' : 'image/svg+xml'};base64,${b.toString('base64')}`;
+  if (!logos.has(f)) logos.set(f, `data:${f.endsWith('.png') ? 'image/png' : 'image/svg+xml'};base64,${fs.readFileSync(ROOT + 'assets/logos/' + f).toString('base64')}`);
+  return logos.get(f);
 };
+const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export function tiersHtml({ data }) {
-  const item = c => {
-    const cls = c.logo === 'gh-continue.png' ? ' class="png"' : c.logo.endsWith('.png') ? ' class="av"' : '';
-    return `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${cls}></div><span>${esc(c.name)}</span></div>`;
-  };
+  const item = c => `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${logoClass(c.logo)}></div><span>${esc(c.name)}</span></div>`;
   const cell = (g, t) => data.clients.filter(c => c.group === g && c.tier === t).map(item).join('');
   const rows = TIERS.map(t => `<div class="tier" style="background:${TIER_COLOR[t]}">${t}</div><div class="items">${cell('cli', t)}</div><div class="bar"></div><div class="items">${cell('app', t)}</div>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients tier list</title>${FONT}
@@ -115,10 +115,8 @@ ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 const LINE = ['#76D6AE', '#60A5FA', '#FBBF24', '#F87171', '#C084FC', '#F5F5F5', '#A3E635', '#FB923C'];
 const lineStyle = i => ({ color: LINE[i % LINE.length], dash: i % LINE.length >= 4 ? '12 8' : '' });
 
-const SHORT = { 'Code mode': 'Code', 'Tool search': 'Search', 'MCP Apps': 'Apps', Elicitation: 'Elicit' };
-const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
 
-function lineChart({ title, subtitle, months, series, yLabel, asOf, labels = false }) {
+function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const W = 1200, H = 700, L = 84, R = 300, T = 186, B = 92;
   const pw = W - L - R, ph = H - T - B;
   const max = Math.max(1, ...series.flatMap(s => s.values));
@@ -158,17 +156,17 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf, labels = fal
     const img = s.logo ? `<img src="${logo(s.logo)}"${logoClass(s.logo)}>` : '';
     return `<div class="lg"><svg width="34" height="8"><line x1="0" x2="34" y1="4" y2="4" stroke="${color}" stroke-width="4" stroke-dasharray="${dash ? '8 5' : ''}"/></svg>${img}<span>${esc(s.label)}</span><b>${s.values.at(-1)}</b></div>`;
   }).join('');
-  // Client charts: a logo chip where a line steps up, with the feature it added. Chips that would overlap shift sideways, like an avatar row:
-  // right, or left in the last month so they stay inside the plot and clear of the legend.
+  // Client charts: a logo chip where a line steps up. Chips that would overlap shift sideways, like an avatar row: right, or left
+  // once a chip would pass the right edge of the plot, so they stay clear of the legend. i is the line's index, matching its colour.
   const placed = [];
-  const chips = series.filter(s => s.steps).flatMap((s, i) => s.steps.map(st => {
-    let cx = x(st.i), cy = y(s.values[st.i]) + off(i);
-    const step = st.i === months.length - 1 ? -22 : 22;
-    while (placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30)) cx += step;
+  const free = (cx, cy) => !placed.some(p => Math.abs(p.cx - cx) < 30 && Math.abs(p.cy - cy) < 30);
+  const chips = series.flatMap((s, i) => (s.steps || []).map(si => {
+    const cy = y(s.values[si]) + off(i);
+    let cx = x(si);
+    while (!free(cx, cy) && cx + 22 + 15 <= L + pw) cx += 22;
+    if (!free(cx, cy)) for (cx = x(si); !free(cx, cy) && cx - 22 - 15 >= L; ) cx -= 22;
     placed.push({ cx, cy });
-    const tag = st.features.map(l => SHORT[l] || l).join(' + ');
-    return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(s.logo)}"${logoClass(s.logo)}></div>`
-      + (labels ? `<div class="mt" style="left:${cx}px;top:${cy - 38}px">${esc(tag)}</div>` : '');
+    return `<div class="mk" style="left:${cx - 15}px;top:${cy - 15}px;border-color:${lineStyle(i).color}"><img src="${logo(s.logo)}"${logoClass(s.logo)}></div>`;
   })).join('');
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
@@ -189,7 +187,6 @@ svg{position:absolute;left:0;top:0}
 .lg img{width:26px;height:26px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:6px;padding:3px}.lg img.av,.lg img.png{padding:0}
 .mk{position:absolute;width:30px;height:30px;border-radius:8px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
 .mk img{width:20px;height:20px;object-fit:contain}.mk img.av{width:26px;height:26px;border-radius:6px}.mk img.png{width:26px;height:26px}
-.mt{position:absolute;transform:translateX(-50%);font-size:13px;font-weight:700;color:#EDEDED;background:#000;padding:0 3px;white-space:nowrap}
 </style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
 <svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>${chips}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(asOf)}</div></body></html>`;
@@ -199,8 +196,8 @@ export function historyFeaturesHtml({ data }, ms, series) {
   return lineChart({ title: 'MCP clients supporting each feature', subtitle: 'Clients with full or partial support, counted from the first release that shipped it', months: ms, series, yLabel: 'Clients', asOf: data.as_of });
 }
 
-export function historyClientsHtml({ data }, ms, series, labels = false) {
-  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of, labels });
+export function historyClientsHtml({ data }, ms, series) {
+  return lineChart({ title: 'Features supported per client', subtitle: 'Features with full or partial support, counted from the first release that shipped each', months: ms, series, yLabel: 'Features', asOf: data.as_of });
 }
 
 // Per-client badge for client READMEs, regenerated with the table so it follows the tier

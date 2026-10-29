@@ -40,7 +40,7 @@ Tier **A** · CLI · checked on `1.0.103` · tracker [github/copilot-cli](https:
 | Events | [![no](assets/icons/n.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | Not documented in the changelog | changelog | 2026-10-27 |  |
 | CIMD | [![yes](assets/icons/y.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | CIMD in 1.0.83 | changelog | 2026-10-27 | [2026-09-04 (1.0.83)](https://github.com/github/copilot-cli/releases/tag/v1.0.83) |
 | ID-JAG | [![no](assets/icons/n.svg)](https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners/) | Not in the Okta XAA requesting-app list and not in the changelog | changelog | 2026-10-27 |  |
-| Elicitation | [![yes](assets/icons/y.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | 0.0.421 "structured form input ... using MCP Elicitations (experimental)"; 0.0.423 "MCP servers can now request users to visit a URL" (URL mode) | changelog | 2026-10-27 | [2026-03-03 (0.0.421)](https://github.com/github/copilot-cli/releases/tag/v0.0.421) |
+| Elicitation | [![yes](assets/icons/y.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | 0.0.421 "MCP elicitation form displays taller multi-line text input" (form mode, no flag; the "(experimental)" line in the same release is the ask_user tool reusing the form); 0.0.423 "MCP servers can now request users to visit a URL" (URL mode) | changelog | 2026-10-27 | [2026-03-03 (0.0.421)](https://github.com/github/copilot-cli/releases/tag/v0.0.421) |
 
 ## Pi
 

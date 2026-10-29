@@ -235,6 +235,7 @@ Field reference for every data file: [data/README.md](data/README.md).
 | `npm run check` | Validates the data and fails if a generated file or image is stale |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
+| `npm test` | Tests the probe report on sample handshake logs |
 
 ## Why StackOne tracks this
 

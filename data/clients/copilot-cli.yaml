@@ -78,7 +78,7 @@ cells:
     value: y
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: '0.0.421 "structured form input ... using MCP Elicitations (experimental)"; 0.0.423 "MCP servers can now request users to visit a URL" (URL mode)'
+    evidence: '0.0.421 "MCP elicitation form displays taller multi-line text input" (form mode, no flag; the "(experimental)" line in the same release is the ask_user tool reusing the form); 0.0.423 "MCP servers can now request users to visit a URL" (URL mode)'
     checked: 2026-10-27
     since:
       date: 2026-03-03

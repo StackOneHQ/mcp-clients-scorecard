@@ -2,7 +2,7 @@
 # Field reference: data/README.md. Evidence rules: CONTRIBUTING.md. After editing, run npm run build.
 name: Your Client
 group: cli                      # cli, or app for apps and IDEs
-tier: D                         # the build prints the tier the rubric gives; set it to that
+tier: C                         # the build prints the tier the rubric gives; set it to that
 logo: icon-your-client.svg      # square SVG in assets/logos/
 website: https://example.com
 docs: https://example.com/docs/mcp
