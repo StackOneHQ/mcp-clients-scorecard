@@ -6,6 +6,8 @@ export function listTools(command, args, { env = {}, cwd, timeoutMs = 60000 } = 
     // Pass only what npx needs, so no credential in our environment reaches a third-party server.
     const base = Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'npm_config_cache'].filter((k) => process.env[k] !== undefined).map((k) => [k, process.env[k]]));
     const child = spawn(command, args, { cwd, env: { ...base, ...env }, stdio: ['pipe', 'pipe', 'pipe'] });
+    // A server that exits at startup closes stdin; the exit handler reports it, so ignore EPIPE here.
+    child.stdin.on('error', () => {});
     let buf = '';
     let stderr = '';
     let nextId = 1;
@@ -34,7 +36,8 @@ export function listTools(command, args, { env = {}, cwd, timeoutMs = 60000 } = 
         if (!line.startsWith('{')) continue;
         let msg;
         try { msg = JSON.parse(line); } catch { continue; }
-        if (msg.id != null && pending.has(msg.id)) {
+        // Server-to-client requests also carry an id, so only messages without a method are responses.
+        if (msg.method === undefined && msg.id != null && pending.has(msg.id)) {
           const p = pending.get(msg.id);
           pending.delete(msg.id);
           msg.error ? p.rej(new Error(JSON.stringify(msg.error))) : p.res(msg.result);

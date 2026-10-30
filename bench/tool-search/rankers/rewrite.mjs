@@ -4,8 +4,7 @@
 // sources in its tool_search description), not the tool names.
 import { chat } from '../lib/openai.mjs';
 import { rank as bm25 } from './bm25.mjs';
-import { rrf } from './hybrid.mjs';
-import { rank as embeddings } from './embeddings.mjs';
+import { rank as hybrid } from './hybrid.mjs';
 
 const MODEL = 'gpt-4.1-mini';
 
@@ -22,6 +21,5 @@ export async function rankBm25(query, catalogue) {
 }
 
 export async function rankHybrid(query, catalogue) {
-  const q = await rewrite(query, catalogue);
-  return rrf([bm25(q, catalogue), await embeddings(q, catalogue)]);
+  return hybrid(await rewrite(query, catalogue), catalogue);
 }

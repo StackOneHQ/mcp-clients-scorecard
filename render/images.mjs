@@ -85,7 +85,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .gh{height:34px;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9A9A94;text-align:center}
 .gh div{border-bottom:2px solid #3A3A35;margin:0 6px;padding-bottom:4px}.gh .hz{color:#76D6AE;border-color:#76D6AE}
 .dv{align-self:stretch;justify-self:center;width:2px;background:#3A3A35}
-.h{height:68px;font-size:18px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
+.h{height:68px;font-size:16px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
 .h div:first-child{text-align:left;padding-left:16px}
 .grp{font-size:20px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#76D6AE;padding:14px 20px 4px}
 .r{flex:1;border-top:1px solid #2A2A26}

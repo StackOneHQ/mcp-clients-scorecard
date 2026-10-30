@@ -3,13 +3,14 @@
 // list tools fail here and are recorded as skipped.
 // Usage: node bench/tool-search/scripts/fetch-catalogue.mjs [serverId ...]
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { listTools } from '../lib/list-tools.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = join(here, '..', 'data', 'servers');
-const tmp = process.env.BENCH_TMP || '/workspace/.scratch/bench-tmp';
+const tmp = process.env.BENCH_TMP || join(tmpdir(), 'tool-search-bench');
 const fsRoot = join(tmp, 'fsroot');
 mkdirSync(outDir, { recursive: true });
 mkdirSync(fsRoot, { recursive: true });
@@ -17,7 +18,7 @@ mkdirSync(fsRoot, { recursive: true });
 // id, npm package pinned to the version the committed catalogue came from, extra args, dummy env.
 // These are third-party packages that npx runs with your filesystem and network access: bump a pin
 // only after reviewing that release, and run a refresh inside a throwaway container.
-export const SERVERS = [
+const SERVERS = [
   { id: 'filesystem', pkg: '@modelcontextprotocol/server-filesystem@1.0.0', args: [fsRoot] },
   { id: 'memory', pkg: '@modelcontextprotocol/server-memory@1.0.0' },
   { id: 'everything', pkg: '@modelcontextprotocol/server-everything@1.0.0', args: ['stdio'] },

@@ -69,7 +69,8 @@ for (const R of RANKERS) {
 
 const s = spend();
 results.spend = s;
-writeFileSync(join(here, 'results.json'), JSON.stringify(results, null, 1) + '\n');
+// An offline run has no embeddings or rewrite rows, so it must not replace the committed results.
+writeFileSync(join(here, offline ? 'results-offline.json' : 'results.json'), JSON.stringify(results, null, 1) + '\n');
 
 const f = (x) => x.toFixed(2);
 const lines = [];

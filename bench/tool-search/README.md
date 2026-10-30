@@ -42,7 +42,7 @@ node bench/tool-search/scripts/build-catalogue.mjs
 
 The refetch runs third-party packages with your filesystem and network access. Each package is pinned to the version the committed catalogue came from; review a release before bumping its pin, and run the refetch in a throwaway container.
 
-OpenAI responses are cached in `cache/`, which is gitignored, so a rerun costs nothing. `run.mjs` writes `results.json` with the top 5 for every query and prints the table and the estimated spend. It stops if spend passes $5.
+OpenAI responses are cached in `cache/`, which is gitignored, so a rerun costs nothing. `run.mjs` writes `results.json` (or the gitignored `results-offline.json` for an offline run) with the top 5 for every query and prints the table and the estimated spend. It stops if spend passes $5.
 
 ## Results (2026-10-30)
 

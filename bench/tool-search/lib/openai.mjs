@@ -94,7 +94,8 @@ export async function chat(messages, model = 'gpt-4.1-mini') {
   if (existsSync(p)) { track(model, 0, 0, true); return JSON.parse(readFileSync(p, 'utf8')); }
   const r = await post('chat/completions', { model, messages, temperature: 0, max_tokens: 60 });
   track(model, r.usage?.prompt_tokens || 0, r.usage?.completion_tokens || 0);
-  const text = r.choices[0].message.content.trim();
+  // content is null on a refusal; an empty query then ranks nothing rather than aborting the run.
+  const text = (r.choices[0].message.content ?? '').trim();
   writeFileSync(p, JSON.stringify(text));
   return text;
 }
