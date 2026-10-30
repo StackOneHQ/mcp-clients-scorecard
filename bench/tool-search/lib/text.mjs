@@ -18,9 +18,8 @@ export function splitWords(text) {
     .filter(Boolean);
 }
 
-export function tokenize(text, { stem = true, stop = true } = {}) {
-  let words = splitWords(text);
-  if (stop) words = words.filter((w) => !STOPWORDS.has(w));
+export function tokenize(text, { stem = true } = {}) {
+  const words = splitWords(text).filter((w) => !STOPWORDS.has(w));
   return stem ? words.map(porter) : words;
 }
 
@@ -33,7 +32,7 @@ const meq1 = new RegExp('^(' + C + ')?' + V + C + '(' + V + ')?$');
 const mgr1 = new RegExp('^(' + C + ')?' + V + C + V + C);
 const sV = new RegExp('^(' + C + ')?' + v);
 
-export function porter(w) {
+function porter(w) {
   if (w.length < 3 || /\d/.test(w)) return w;
   let stem, suffix, re, re2, re3, re4;
   const first = w[0];

@@ -1,19 +1,13 @@
-// Regex over the tool name, a proxy for the regex variant of tool search where the model
-// writes a pattern such as "issue|ticket". The pattern here is the alternation of the query
-// words, matched case-insensitively against the server-qualified name only. Score = number of
-// distinct alternatives that match; ties are broken by the same count over the description.
+// Proxy for the regex variant of tool search, where the model writes a pattern such as
+// "issue|ticket": score = distinct query words found in the server-qualified name, ties
+// broken by the same count over the description. Matching ignores case.
 import { qualifiedName, splitWords, STOPWORDS } from '../lib/text.mjs';
-
-const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export function rank(query, catalogue) {
   const words = [...new Set(splitWords(query).filter((w) => !STOPWORDS.has(w)))];
-  const res = words.map((w) => new RegExp(esc(w), 'i'));
+  const hits = (text) => { const lower = text.toLowerCase(); return words.filter((w) => lower.includes(w)).length; };
   return catalogue
-    .map((t, i) => {
-      const name = qualifiedName(t);
-      return { id: t.id, i, s: res.filter((r) => r.test(name)).length, d: res.filter((r) => r.test(t.description)).length };
-    })
+    .map((t, i) => ({ id: t.id, i, s: hits(qualifiedName(t)), d: hits(t.description) }))
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s || b.d - a.d || a.i - b.i)
     .map((x) => x.id);

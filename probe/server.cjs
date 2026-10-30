@@ -10,8 +10,7 @@ const label = process.argv[2] || 'unknown';
 const LOG = process.env.PROBE_LOG || path.join(process.cwd(), 'probe.log');
 const log = o => fs.appendFileSync(LOG, JSON.stringify({ label, at: new Date().toISOString(), ...o }) + '\n');
 
-// Where a client declares its capabilities (extensions and experimental sit inside them):
-// initialize sends params.capabilities; the 2026-07-28 era sends them in _meta on every request, server/discover included.
+// initialize carries params.capabilities; from 2026-07-28 every request, server/discover included, carries them in _meta.
 const CAPS_META_KEY = 'io.modelcontextprotocol/clientCapabilities';
 const declared = p => p?.capabilities ?? p?._meta?.[CAPS_META_KEY];
 

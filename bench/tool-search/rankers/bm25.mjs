@@ -20,7 +20,7 @@ function buildIndex(catalogue, { nameBoost, stem }) {
   return { docs, df, avgdl, N: docs.length };
 }
 
-export function scores(query, catalogue, { k1 = 1.2, b = 0.75, nameBoost = 1, stem = true } = {}) {
+function scores(query, catalogue, { k1 = 1.2, b = 0.75, nameBoost = 1, stem = true } = {}) {
   const key = `${nameBoost}:${stem}`;
   let byCat = indexes.get(catalogue);
   if (!byCat) indexes.set(catalogue, (byCat = new Map()));

@@ -18,7 +18,7 @@ const derive = c => {
   const e = caps.elicitation;
   return {
     // A bare elicitation: {} is the pre-mode way of declaring form support
-    elicitation_form: has(e) && (has(e.form) || (!has(e.url))),
+    elicitation_form: has(e) && (has(e.form) || !has(e.url)),
     elicitation_url: has(e) && has(e.url),
     // Tasks sit in capabilities.tasks (2025-11-25) or in the io.modelcontextprotocol/tasks extension (2026-07-28)
     tasks: has(caps.tasks) || has(caps.extensions?.[EXT_TASKS]) || has(caps.experimental?.tasks),

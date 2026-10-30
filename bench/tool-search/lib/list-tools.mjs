@@ -21,11 +21,11 @@ export function listTools(command, args, { env = {}, cwd, timeoutMs = 60000 } = 
       child.kill('SIGKILL');
       err ? reject(err) : resolve(value);
     }
-    function send(method, params, notify = false) {
-      const msg = { jsonrpc: '2.0', method, params };
-      if (!notify) msg.id = nextId++;
-      child.stdin.write(JSON.stringify(msg) + '\n');
-      if (!notify) return new Promise((res, rej) => pending.set(msg.id, { res, rej }));
+    const write = (msg) => child.stdin.write(JSON.stringify({ jsonrpc: '2.0', ...msg }) + '\n');
+    function request(method, params) {
+      const id = nextId++;
+      write({ id, method, params });
+      return new Promise((res, rej) => pending.set(id, { res, rej }));
     }
     child.stdout.on('data', (d) => {
       buf += d.toString();
@@ -48,16 +48,16 @@ export function listTools(command, args, { env = {}, cwd, timeoutMs = 60000 } = 
     child.on('exit', (code) => finish(new Error(`server exited ${code}; stderr: ${stderr.slice(-800)}`)));
     child.on('error', (e) => finish(e));
     (async () => {
-      const init = await send('initialize', {
+      const init = await request('initialize', {
         protocolVersion: '2025-06-18',
         capabilities: {},
         clientInfo: { name: 'tool-search-bench', version: '1.0.0' },
       });
-      send('notifications/initialized', {}, true);
+      write({ method: 'notifications/initialized', params: {} });
       const tools = [];
       let cursor;
       do {
-        const r = await send('tools/list', cursor ? { cursor } : {});
+        const r = await request('tools/list', cursor ? { cursor } : {});
         tools.push(...r.tools);
         cursor = r.nextCursor;
       } while (cursor);

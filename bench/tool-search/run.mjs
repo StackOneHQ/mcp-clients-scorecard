@@ -17,8 +17,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const catalogue = JSON.parse(readFileSync(join(here, 'data', 'catalogue.json'), 'utf8'));
 const queries = JSON.parse(readFileSync(join(here, 'data', 'queries.json'), 'utf8'));
 const offline = process.argv.includes('--offline') || !process.env.OPENAI_API_KEY;
-const SPEND_CAP_USD = 5;
-setSpendCap(SPEND_CAP_USD);
+setSpendCap(5);
 
 const ids = new Set(catalogue.map((t) => t.id));
 for (const q of queries) for (const g of q.gold) if (!ids.has(g)) throw new Error(`query ${q.id}: unknown gold id ${g}`);
@@ -26,7 +25,7 @@ for (const q of queries) for (const g of q.gold) if (!ids.has(g)) throw new Erro
 const RANKERS = [
   { name: 'keyword (substring)', rank: keyword.rank },
   { name: 'regex over name', rank: regexName.rank },
-  { name: 'BM25', rank: (q, c) => bm25.rank(q, c) },
+  { name: 'BM25', rank: bm25.rank },
   { name: 'BM25, name x3', rank: bm25.rankBoosted },
   { name: 'embeddings (3-small)', rank: embeddings.rank, online: true, prepare: () => embeddings.prepare(catalogue, queries.map((q) => q.query)) },
   { name: 'hybrid RRF (BM25 + emb)', rank: hybrid.rank, online: true },
@@ -55,7 +54,6 @@ const results = { date: '2026-10-30', catalogue: { tools: catalogue.length, serv
 
 for (const R of RANKERS) {
   if (R.online && offline) { console.error(`skip ${R.name} (no OPENAI_API_KEY or --offline)`); continue; }
-  if (spend().total >= SPEND_CAP_USD) throw new Error('spend cap reached');
   if (R.prepare) await R.prepare();
   const per = [];
   for (const q of queries) {

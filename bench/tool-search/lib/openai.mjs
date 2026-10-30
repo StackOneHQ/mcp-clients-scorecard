@@ -19,16 +19,16 @@ export function setSpendCap(usd) { spendCap = usd; }
 
 export const usage = {}; // model -> { input, output, cachedCalls, apiCalls }
 
-function track(model, input = 0, output = 0, cached = false) {
-  const u = (usage[model] ||= { input: 0, output: 0, cachedCalls: 0, apiCalls: 0 });
-  if (cached) { u.cachedCalls++; return; }
+const usageOf = (model) => (usage[model] ||= { input: 0, output: 0, cachedCalls: 0, apiCalls: 0 });
+function track(model, input, output = 0) {
+  const u = usageOf(model);
   u.apiCalls++; u.input += input; u.output += output;
 }
 
 export function spend() {
   let total = 0;
   const rows = Object.entries(usage).map(([model, u]) => {
-    const p = PRICES[model] || { input: 0, output: 0 };
+    const p = PRICES[model] || {};
     const usd = (u.input * (p.input || 0) + u.output * (p.output || 0)) / 1e6;
     total += usd;
     return { model, ...u, usd };
@@ -69,7 +69,7 @@ export async function embed(texts, model = 'text-embedding-3-small') {
   const missing = [];
   texts.forEach((t, i) => {
     const p = cachePath('emb', model, t);
-    if (existsSync(p)) { out[i] = JSON.parse(readFileSync(p, 'utf8')); track(model, 0, 0, true); }
+    if (existsSync(p)) { out[i] = JSON.parse(readFileSync(p, 'utf8')); usageOf(model).cachedCalls++; }
     else missing.push(i);
   });
   for (let s = 0; s < missing.length; s += 100) {
@@ -93,7 +93,7 @@ function normalise(v) {
 export async function chat(messages, model = 'gpt-4.1-mini') {
   const key = JSON.stringify({ model, messages });
   const p = cachePath('chat', model, key);
-  if (existsSync(p)) { track(model, 0, 0, true); return JSON.parse(readFileSync(p, 'utf8')); }
+  if (existsSync(p)) { usageOf(model).cachedCalls++; return JSON.parse(readFileSync(p, 'utf8')); }
   const r = await post('chat/completions', { model, messages, temperature: 0, max_tokens: 60 });
   track(model, r.usage?.prompt_tokens || 0, r.usage?.completion_tokens || 0);
   // content is null on a refusal; an empty query then ranks nothing rather than aborting the run.
