@@ -1,6 +1,6 @@
 // HTML for the PNGs in assets/: the tier board and per-feature matrix (1080x1350), and the two adoption charts (1200x700)
 import fs from 'node:fs';
-import { ROOT, COLUMNS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
+import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
 
 const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
@@ -46,7 +46,10 @@ const ICON = {
 const mark = m => `<div class="m ${m}">${ICON[m]}</div>`;
 const rateClass = r => (r >= 0.4 ? 'g' : r >= 0.15 ? 'a' : 'rd');
 // Matrix heading and track width per column; columns not listed use their label and share the rest of the row
-const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '60px'], tool_search: ['Tool<br>search', '124px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
+// A divider track goes before the first harness column, so spec and harness columns read as two groups
+const SPEC_COLS = COLUMNS.filter(([k]) => !HARNESS.has(k)), HARNESS_COLS = COLUMNS.filter(([k]) => HARNESS.has(k));
+const withDivider = (list, divider) => [...SPEC_COLS.map(list), ...(HARNESS_COLS.length ? [divider] : []), ...HARNESS_COLS.map(list)];
+const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '64px'], tool_search: ['Tool<br>search', '146px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
 
 export function matrixHtml({ data }) {
   const fix = f =>
@@ -63,20 +66,25 @@ export function matrixHtml({ data }) {
   for (const [g, label] of GROUPS) {
     body += `<div class="grp">${label}</div>`;
     for (const c of data.clients.filter(c => c.group === g)) {
-      const cells = COLUMNS.map(([k]) => (k === 'protocol' ? proto(c.cells[k]) : k === 'tool_search' ? search(c.cells[k]) : mark(c.cells[k].value))).join('');
+      const cells = withDivider(([k]) => (k === 'protocol' ? proto(c.cells[k]) : k === 'tool_search' ? search(c.cells[k]) : mark(c.cells[k].value)), '<div class="dv"></div>').join('');
       const png = c.logo.endsWith('.png') ? ' class="png"' : '';
       body += `<div class="r"><div class="name"><div class="tb" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div><div class="lg"><img src="${logo(c.logo)}"${png}></div><span>${esc(c.name)}</span></div>${fix(c.fix)}${cells}</div>`;
     }
   }
-  const heads = ['MCP bugs<br>fixed', ...COLUMNS.map(([k, l]) => MATRIX_COL[k]?.[0] ?? esc(l))];
-  const tracks = `240px 106px ${COLUMNS.map(([k]) => MATRIX_COL[k]?.[1] ?? '1fr').join(' ')}`;
+  const heads = ['MCP bugs<br>fixed', ...withDivider(([k, l]) => MATRIX_COL[k]?.[0] ?? esc(l), '')];
+  const tracks = `248px 96px ${withDivider(([k]) => MATRIX_COL[k]?.[1] ?? '1fr', '12px').join(' ')}`;
+  // Group labels over the spec and harness columns; the client and bugs columns take the first two tracks
+  const groupRow = HARNESS_COLS.length ? `<div class="gh"><div style="grid-column:3 / span ${SPEC_COLS.length}">MCP spec</div><div class="hz" style="grid-column:${SPEC_COLS.length + 4} / span ${HARNESS_COLS.length}">Harness</div></div>` : '';
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients: the receipts</title>${FONT}
 <style>
 *{box-sizing:border-box;margin:0}
 body{width:1080px;height:1350px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26px 16px}
 .t{flex:1;display:flex;flex-direction:column;background:#1A1A17;border-radius:18px;padding:8px 0 10px}
-.h,.r{display:grid;grid-template-columns:${tracks};align-items:center}
+.h,.r,.gh{display:grid;grid-template-columns:${tracks};align-items:center}
+.gh{height:34px;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9A9A94;text-align:center}
+.gh div{border-bottom:2px solid #3A3A35;margin:0 6px;padding-bottom:4px}.gh .hz{color:#76D6AE;border-color:#76D6AE}
+.dv{align-self:stretch;justify-self:center;width:2px;background:#3A3A35}
 .h{height:68px;font-size:18px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
 .h div:first-child{text-align:left;padding-left:16px}
 .grp{font-size:20px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#76D6AE;padding:14px 20px 4px}
@@ -87,11 +95,11 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .tb{width:30px;height:30px;border-radius:6px;color:#1a1a17;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
 .lg{width:44px;height:44px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center}
 .lg img{width:30px;height:30px;object-fit:contain}.lg img.png{width:42px;height:42px;filter:brightness(1.08) contrast(1.25)}
-.name span{font-size:23px;font-weight:600;color:#fff;white-space:nowrap}
+.name span{font-size:22px;font-weight:600;color:#fff;white-space:nowrap}
 .m{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .m svg{width:26px;height:26px}
 .m.y{background:#4ADE80}.m.p{background:#FBBF24}.m.n{background:#F87171}
-.pill{white-space:nowrap;font-size:17px;font-weight:700;padding:7px 12px;border-radius:999px;color:#0B0B0A}
+.pill{white-space:nowrap;font-size:16px;font-weight:700;padding:7px 10px;border-radius:999px;color:#0B0B0A}
 .pill.g{background:#4ADE80}.pill.a{background:#FBBF24}
 .conn{display:flex;flex-direction:column;align-items:center;line-height:1.05}
 .conn b{font-size:28px;font-weight:800}.conn i{font-style:normal;font-size:18px;color:#8A8A85}
@@ -104,7 +112,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .leg{display:flex;gap:18px;align-items:center}.leg div{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .leg .m{width:30px;height:30px}.leg .m svg{width:17px;height:17px}
 </style></head><body><h1>MCP clients: the receipts</h1>
-<div class="t"><div class="h"><div>Client</div>${heads.map(h => `<div>${h}</div>`).join('')}</div>${body}</div>
+<div class="t">${groupRow}<div class="h"><div>Client</div>${heads.map(h => `<div>${h}</div>`).join('')}</div>${body}</div>
 ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 <div class="foot"><div class="leg"><div>${mark('y')}yes</div><div>${mark('p')}partial</div><div>${mark('n')}no</div></div><div style="white-space:nowrap">${formatDate(data.as_of)}</div></div>
 </body></html>`;

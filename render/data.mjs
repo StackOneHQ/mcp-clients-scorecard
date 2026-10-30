@@ -7,6 +7,8 @@ const readYaml = f => YAML.parse(fs.readFileSync(ROOT + f, 'utf8'));
 // Column order and labels come from data/features.yaml
 const FEATURES = readYaml('data/features.yaml');
 export const COLUMNS = FEATURES.map(f => [f.id, f.label]);
+// Harness columns are client designs outside the MCP spec, drawn as their own group
+export const HARNESS = new Set(FEATURES.filter(f => f.kind === 'harness').map(f => f.id));
 export const TIERS = ['S', 'A', 'B', 'C', 'D'];
 export const GROUPS = [['cli', 'CLIs'], ['app', 'Apps and IDEs']];
 const MARKS = new Set(['y', 'p', 'n']);
@@ -22,7 +24,7 @@ const SINCE_KEYS = new Set(['date', 'version', 'source']);
 const META_KEYS = new Set(['as_of', 'spec_versions', 'bug_window_start', 'image_note']);
 const TRACKER_KEYS = new Set(['repo', 'mcp_in_title']);
 const QUALITIES = new Set(['strong', 'basic']);
-const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_date', 'spec_source', 'spec_event']);
+const FEATURE_KEYS = new Set(['id', 'label', 'definition', 'ref', 'url', 'spec_date', 'spec_source', 'spec_event', 'kind']);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS = /^https:\/\/\S+$/;
 // A real calendar day: 2026-02-31 matches the pattern but does not survive the round trip
@@ -80,12 +82,15 @@ function validate(data, bugs) {
     ids.add(f.id);
     for (const k of Object.keys(f)) if (!FEATURE_KEYS.has(k)) errs.push(`${at}: unknown key ${k}`);
     for (const k of ['id', 'label', 'definition', 'ref']) if (!f[k]) errs.push(`${at}: ${k} is empty`);
+    if (f.kind !== undefined && f.kind !== 'harness') errs.push(`${at}: kind must be harness when set`);
     if (!isUrl(f.url)) errs.push(`${at}: url must be an https URL`);
     if (f.spec_date !== undefined && (!isDate(f.spec_date) || !isUrl(f.spec_source))) errs.push(`${at}: spec_date must be YYYY-MM-DD with an https spec_source`);
     if (f.spec_date !== undefined && !f.spec_event) errs.push(`${at}: spec_date needs a spec_event that says what happened on that date`);
     if (f.spec_date !== undefined && String(f.spec_date) > String(data.as_of)) errs.push(`${at}: spec_date is after as_of`);
   }
   if (!ids.has('protocol')) errs.push('data/features.yaml: the protocol column is required');
+  const firstHarness = data.features.findIndex(f => f.kind === 'harness');
+  if (firstHarness >= 0 && data.features.slice(firstHarness).some(f => f.kind !== 'harness')) errs.push('data/features.yaml: harness features must come after every spec feature');
   if (bugs) {
     if (String(bugs.window_start) !== String(data.bug_window_start)) errs.push(`data/bugs.json window_start ${bugs.window_start} does not match bug_window_start ${data.bug_window_start}. Run npm run bugs.`);
     for (const [repo, r] of Object.entries(bugs.repos || {})) {

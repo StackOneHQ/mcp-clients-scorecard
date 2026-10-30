@@ -81,7 +81,7 @@ Rules:
 
 - `since` is set only from a public release note, changelog entry, release tag or dated vendor announcement that names the feature, or from a vendor docs page that names the first version with the feature, dated by that version's release. A commit date, or a docs page with neither a date nor a version, is not enough.
 - The date is the release date of the first version that shipped the feature to users, including behind a flag. A later change from partial to full support does not move it.
-- A cell that is `y` or `p` with no `since` is treated as date unknown. It counts in the scorecard and the bar chart, and is left out of the time series. The README lists how many cells per feature are undated.
+- A cell that is `y` or `p` with no `since` is treated as date unknown. It counts in the scorecard and the feature counts table, and is left out of the time series. The README lists how many cells per feature are undated.
 - `since.date` may not be after `as_of`, and its source must be https. `npm run check` enforces both.
 
 Because undated cells are left out, the lines show a lower bound on adoption. A feature with many undated cells will look later and smaller than it is.

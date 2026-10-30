@@ -1,5 +1,5 @@
 // README sections and EVIDENCE.md, all generated from data/
-import { COLUMNS, GROUPS, MIN_ISSUES, protocolGrade, formatDate } from './data.mjs';
+import { COLUMNS, HARNESS, GROUPS, MIN_ISSUES, protocolGrade, formatDate } from './data.mjs';
 import { featureSeries, firstShippers, datedCounts } from './history.mjs';
 
 const KIND = { cli: 'CLI', app: 'App or IDE' };
@@ -25,12 +25,14 @@ const anchor = name => name.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ 
 // Mermaid labels: drop characters that end a label or start a comment
 const mm = s => String(s).replace(/["%:;#]/g, '');
 const month = iso => String(iso).slice(0, 7);
+// Harness columns are tagged in every header so they read as a separate group from the spec columns
+const head = (k, l) => (HARNESS.has(k) ? `${l} <sub>harness</sub>` : l);
 
 export function readmeTable({ data }) {
   const out = [];
   for (const [g, label] of GROUPS) {
     out.push(`### ${label}`, '');
-    out.push(`| Tier | Client | Checked on | MCP bugs fixed | ${COLUMNS.map(([, l]) => l).join(' | ')} |`);
+    out.push(`| Tier | Client | Checked on | MCP bugs fixed | ${COLUMNS.map(([k, l]) => head(k, l)).join(' | ')} |`);
     out.push(`|${' --- |'.repeat(4 + COLUMNS.length)}`);
     for (const c of data.clients.filter(c => c.group === g)) {
       const cells = COLUMNS.map(([k]) => link(cellText(k, c.cells[k], data.spec_versions), c.cells[k].source));
@@ -39,6 +41,8 @@ export function readmeTable({ data }) {
     }
     out.push('');
   }
+  const harness = COLUMNS.filter(([k]) => HARNESS.has(k)).map(([, l]) => l);
+  if (harness.length) out.push(`${harness.join(' and ')} are marked harness: they are how the client handles tools, not part of the MCP spec. They sit after the spec columns and still count toward the tier.`, '');
   const notes = data.clients.filter(c => c.note).map(c => `- **${c.name}**: ${c.note}`);
   if (notes.length) out.push(...notes, '');
   return out.join('\n');
@@ -46,33 +50,19 @@ export function readmeTable({ data }) {
 
 export function columnsTable({ data }) {
   const out = ['| Column | Meaning | Defined in |', '| --- | --- | --- |'];
-  for (const f of data.features) out.push(`| ${pipe(f.label)} | ${pipe(f.definition)} | ${link(f.ref, f.url)} |`);
+  for (const f of data.features) out.push(`| ${head(f.id, pipe(f.label))} | ${pipe(f.definition)} | ${link(f.ref, f.url)} |`);
   out.push('| MCP bugs fixed | The share of the client\'s MCP issues closed as completed. | [Methodology](methodology/METHODOLOGY.md#mcp-bugs-fixed) |', '');
   return out.join('\n');
 }
 
-// Bar chart of clients per feature. xychart-beta has no legend, so partial counts go in the axis label.
+// Clients per feature, as a table
 export function featureBars({ data }) {
   const cols = COLUMNS.filter(([k]) => k !== 'protocol');
   const count = (k, v) => data.clients.filter(c => c.cells[k].value === v).length;
-  const labels = cols.map(([k, l]) => `"${mm(l)}${count(k, 'p') ? ` +${count(k, 'p')}p` : ''}"`);
-  const rows = cols.map(([k, l]) => `| ${l} | ${count(k, 'y')} | ${count(k, 'p')} | ${count(k, 'n')} |`);
   return [
-    '```mermaid',
-    'xychart-beta',
-    `    title "Clients with full support, of ${data.clients.length} (+Np = N more partial)"`,
-    `    x-axis [${labels.join(', ')}]`,
-    `    y-axis "Clients" 0 --> ${data.clients.length}`,
-    `    bar [${cols.map(([k]) => count(k, 'y')).join(', ')}]`,
-    '```',
-    '',
-    '<details><summary>Counts as a table</summary>',
-    '',
     `| Feature | ${MARK.y} Yes | ${MARK.p} Partial | ${MARK.n} No |`,
     '| --- | --- | --- | --- |',
-    ...rows,
-    '',
-    '</details>',
+    ...cols.map(([k, l]) => `| ${head(k, l)} | ${count(k, 'y')} | ${count(k, 'p')} | ${count(k, 'n')} |`),
     '',
   ].join('\n');
 }

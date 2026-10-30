@@ -53,3 +53,47 @@ test('a client that stops after an older version is offered did not connect', ()
   assert.equal(r['@openai/codex'].connected, false);
   assert.equal(r['@openai/codex'].accepted_downgrade, null);
 });
+
+// The report exits 1 unless some client connected, so each log carries a matching reply
+const initialize = (label, capabilities) => [{ label, method: 'initialize', params: { protocolVersion: '2025-11-25', capabilities }, capabilities }, { label, reply: '2025-11-25' }];
+const declares = capabilities => report(initialize('@openai/codex', capabilities))['@openai/codex'].declares;
+const none = { elicitation_form: false, elicitation_url: false, tasks: false, apps: false, roots: false, sampling: false };
+
+test('a client that declares nothing declares none of the features', () => {
+  assert.deepEqual(declares({}), none);
+  const r = report([{ label: '@openai/codex', method: 'initialize', params: { protocolVersion: '2025-11-25' } }, { label: '@openai/codex', reply: '2025-11-25' }]);
+  assert.equal(r['@openai/codex'].capabilities, null);
+  assert.deepEqual(r['@openai/codex'].declares, none);
+});
+
+test('a bare elicitation capability counts as form mode only', () => {
+  assert.deepEqual(declares({ elicitation: {} }), { ...none, elicitation_form: true });
+});
+
+test('elicitation modes are read one by one', () => {
+  assert.deepEqual(declares({ elicitation: { form: {}, url: {} } }), { ...none, elicitation_form: true, elicitation_url: true });
+  assert.deepEqual(declares({ elicitation: { url: {} } }), { ...none, elicitation_url: true });
+});
+
+test('tasks count from the capability, the extension or experimental', () => {
+  assert.equal(declares({ tasks: { requests: {} } }).tasks, true);
+  assert.equal(declares({ extensions: { 'io.modelcontextprotocol/tasks': {} } }).tasks, true);
+  assert.equal(declares({ experimental: { tasks: {} } }).tasks, true);
+  assert.equal(declares({ extensions: { 'io.modelcontextprotocol/ui': {} } }).tasks, false);
+});
+
+test('MCP Apps, roots and sampling come from their own keys', () => {
+  const d = declares({ roots: { listChanged: true }, sampling: {}, extensions: { 'io.modelcontextprotocol/ui': { mimeTypes: ['text/html;profile=mcp-app'] } } });
+  assert.deepEqual(d, { ...none, apps: true, roots: true, sampling: true });
+});
+
+test('capabilities in the 2026-07-28 request _meta are recorded from the first request that has them', () => {
+  const capabilities = { elicitation: { form: {} }, extensions: { 'io.modelcontextprotocol/tasks': {} } };
+  const r = report([
+    { label: '@anthropic-ai/claude-code', method: 'server/discover', params: {} },
+    { label: '@anthropic-ai/claude-code', method: 'tools/list', params: { _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28', 'io.modelcontextprotocol/clientCapabilities': capabilities } }, capabilities },
+    { label: '@anthropic-ai/claude-code', reply: ['2026-07-28'] },
+  ]);
+  assert.deepEqual(r['@anthropic-ai/claude-code'].capabilities, capabilities);
+  assert.deepEqual(r['@anthropic-ai/claude-code'].declares, { ...none, elicitation_form: true, tasks: true });
+});
