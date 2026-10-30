@@ -6,7 +6,7 @@ logo: si-githubcopilot.svg
 website: https://github.com/features/copilot
 docs: https://docs.github.com/en/copilot/how-tos/copilot-cli
 repo: https://github.com/github/copilot-cli
-version_checked: 1.0.103
+version_checked: 1.0.105
 npm: "@github/copilot"
 tracker:
   repo: github/copilot-cli
@@ -16,22 +16,22 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Live probe: 2026-07-28; changelog 1.0.81 adds the 2026-07-28 spec"
-    checked: 2026-10-27
+    evidence: "Live probe of 1.0.105: initialize carries 2026-07-28; changelog 1.0.81 ships MCP 2026-07-28 support"
+    checked: 2026-10-30
   code_mode:
     value: n
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: Not documented in the changelog or docs
-    checked: 2026-10-27
+    evidence: "Not documented in the changelog or docs, and no code mode feature in the 1.0.105 bundle"
+    checked: 2026-10-30
   tool_search:
     value: y
-    label: Deferred
-    quality: basic
-    method: docs
-    source: https://docs.github.com/en/copilot/concepts/agents/copilot-cli/tool-search
-    evidence: Tool search defers MCP tools; ranking method not documented
-    checked: 2026-10-27
+    label: Regex
+    quality: strong
+    method: source
+    source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105
+    evidence: "Docs: on by default above roughly 30 tools on supported Claude and GPT 5.4+ models, deferring MCP tools and matching against tool name, description and parameter names and descriptions; the 1.0.105 runtime sends Anthropic tool_search_tool_regex_20251119 with defer_loading for Claude and OpenAI hosted tool search for GPT, so ranking is done by the model provider and GitHub does not document it"
+    checked: 2026-10-30
     since:
       date: 2026-05-19
       version: "1.0.49"
@@ -40,46 +40,46 @@ cells:
     value: n
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: No ui extension in the probe handshake or changelog
-    checked: 2026-10-27
+    evidence: "Live probe of 1.0.105 declares no io.modelcontextprotocol/ui extension; the runtime has an undocumented copilot_cli_mcp_apps flag for UI passthrough to a host, and nothing in the changelog"
+    checked: 2026-10-30
   tasks:
     value: p
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: Experimental tasks in 1.0.41
-    checked: 2026-10-27
+    evidence: "Changelog 1.0.41 adds experimental MCP Tasks, available only with experimental mode (off by default, --experimental or /settings experimental on); the default-mode probe of 1.0.105 declares no tasks, which matches"
+    checked: 2026-10-30
     since:
       date: 2026-05-05
       version: "1.0.41"
       source: https://github.com/github/copilot-cli/releases/tag/v1.0.41
   events:
     value: n
-    method: changelog
-    source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: Not documented in the changelog
-    checked: 2026-10-27
+    method: source
+    source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105
+    evidence: "No events/list or events/subscribe in the 1.0.105 bundle and nothing in the changelog"
+    checked: 2026-10-30
   cimd:
     value: y
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: CIMD in 1.0.83
-    checked: 2026-10-27
+    evidence: "Changelog 1.0.83 adds Client ID Metadata Document (CIMD) support for MCP OAuth sign-in, and the 1.0.105 bundle checks client_id_metadata_document_supported"
+    checked: 2026-10-30
     since:
       date: 2026-09-04
       version: "1.0.83"
       source: https://github.com/github/copilot-cli/releases/tag/v1.0.83
   id_jag:
     value: n
-    method: changelog
-    source: https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners/
-    evidence: Not in the Okta XAA requesting-app list and not in the changelog
-    checked: 2026-10-27
+    method: source
+    source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105
+    evidence: "No ID-JAG token type or enterprise-managed authorization extension in the 1.0.105 bundle, and nothing in the changelog"
+    checked: 2026-10-30
   elicitation:
     value: y
-    method: changelog
+    method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: '0.0.421 "MCP elicitation form displays taller multi-line text input" (form mode, no flag; the "(experimental)" line in the same release is the ask_user tool reusing the form); 0.0.423 "MCP servers can now request users to visit a URL" (URL mode)'
-    checked: 2026-10-27
+    evidence: "Live probe of 1.0.105 declares elicitation form and url; changelog 0.0.421 shows the form dialog and 0.0.423 adds URL mode"
+    checked: 2026-10-30
     since:
       date: 2026-03-03
       version: "0.0.421"

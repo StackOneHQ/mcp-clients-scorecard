@@ -6,7 +6,7 @@ logo: icon-visual-studio-code.svg
 website: https://code.visualstudio.com
 docs: https://code.visualstudio.com/docs/agent-customization/mcp-servers
 repo: https://github.com/microsoft/vscode
-version_checked: 1.143.1
+version_checked: 1.144.0
 tracker:
   repo: microsoft/vscode
   mcp_in_title: true
@@ -14,23 +14,23 @@ cells:
   protocol:
     value: 2025-11-25
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L116
-    evidence: 'mcpServerRequestHandler.ts:116 `protocolVersion: MCP.LATEST_PROTOCOL_VERSION`; modelContextProtocol.ts:43 = "2025-11-25"'
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L116
+    evidence: 'At tag 1.144.0, mcpServerRequestHandler.ts:116 sends `protocolVersion: MCP.LATEST_PROTOCOL_VERSION` and platform/mcp/common/modelContextProtocol.ts:43 sets it to "2025-11-25"; no 2026-07-28 in src/vs, and the 1.144 release notes name no protocol change'
+    checked: 2026-10-30
   code_mode:
     value: n
     method: source
-    source: https://github.com/microsoft/vscode/tree/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp
-    evidence: No match for "execute_javascript", "code mode", "codemode" in microsoft/vscode (gh search code, empty); not found in contrib/mcp
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp
+    evidence: 'At tag 1.144.0, no "execute_javascript" or code mode in contrib/mcp or extensions/copilot; the only "code_mode" hit is a generated type for the separate Codex agent host (agentHost/node/codex/protocol/generated/ToolExposureSurface.ts)'
+    checked: 2026-10-30
   tool_search:
     value: y
     label: Embeddings
     quality: strong
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/extensions/copilot/src/extension/tools/node/toolSearchTool.ts
-    evidence: "toolSearchTool.ts uses `IToolEmbeddingsComputer.searchToolsByQuery`; agentHost AGENTS.md: \"client's semantic search ... embeddings rank the runtime/MCP tools\""
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/extensions/copilot/src/extension/tools/node/toolSearchTool.ts
+    evidence: 'Deferred tools are found with a tool_search tool, on for models with supportsToolSearch (agentIntent.ts:277); toolSearchTool.ts calls `searchToolsByQuery`, which embeds the query and each tool''s name plus description through the remote GitHub embeddings service (metis-1024-I16-Binary by default) and ranks by dot product, top 5 by default (toolEmbeddingsComputer.ts:136-202)'
+    checked: 2026-10-30
     since:
       date: 2026-02-04
       version: "1.109"
@@ -38,9 +38,9 @@ cells:
   apps:
     value: y
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L130
-    evidence: "mcpServerRequestHandler.ts:130 declares `'io.modelcontextprotocol/ui': {mimeTypes:['text/html;profile=mcp-app']}`; modelContextProtocolApps.ts:86 LATEST \"2026-01-26\""
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L130
+    evidence: "At tag 1.144.0, mcpServerRequestHandler.ts:130 declares `'io.modelcontextprotocol/ui': {mimeTypes:['text/html;profile=mcp-app']}` in initialize; modelContextProtocolApps.ts:86 LATEST \"2026-01-26\""
+    checked: 2026-10-30
     since:
       date: 2026-02-04
       version: "1.109"
@@ -48,9 +48,9 @@ cells:
   tasks:
     value: y
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L1404
-    evidence: 'mcpServerRequestHandler.ts:121 declares `tasks:{list,cancel,requests}`; handles tasks/get, result, cancel, list (331-337); mcpServer.ts:1404-1412 sends `task: {}` on tools/call when server advertises tasks.requests.tools.call. No hit for "io.modelcontextprotocol/tasks"'
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L1404
+    evidence: 'At tag 1.144.0, mcpServerRequestHandler.ts:121 declares `tasks:{list,cancel,requests}` and handles tasks/get, result, cancel, list (331-337); mcpServer.ts:1403-1411 sends `task: {}` on tools/call when the server advertises tasks.requests.tools.call. Uses the 2025-11-25 experimental shape, no "io.modelcontextprotocol/tasks" extension key'
+    checked: 2026-10-30
     since:
       date: 2025-12-10
       version: "1.107"
@@ -58,15 +58,15 @@ cells:
   events:
     value: n
     method: source
-    source: https://github.com/microsoft/vscode/tree/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp
-    evidence: 'gh search code in microsoft/vscode for "events/subscribe", "notifications/events", "io.modelcontextprotocol/events": 0 results; local grep of src/vs: none'
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp
+    evidence: 'At tag 1.144.0, grep of src and extensions for "events/subscribe", "notifications/events", "io.modelcontextprotocol/events": no hits'
+    checked: 2026-10-30
   cimd:
     value: y
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/api/browser/mainThreadAuthentication.ts#L193
-    evidence: mainThreadAuthentication.ts:193-194 `else if (serverMetadata.client_id_metadata_document_supported) { clientId = this.productService.authClientIdMetadataUrl; }` (URL comes from product config at build time, not in OSS product.json)
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/api/browser/mainThreadAuthentication.ts#L193
+    evidence: At tag 1.144.0, mainThreadAuthentication.ts:193-194 `else if (serverMetadata.client_id_metadata_document_supported) { clientId = this.productService.authClientIdMetadataUrl; }` (URL comes from product config at build time, not in OSS product.json)
+    checked: 2026-10-30
     since:
       date: 2025-11-12
       version: "1.106"
@@ -74,9 +74,9 @@ cells:
   id_jag:
     value: y
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/base/common/oauth.ts#L35
-    evidence: base/common/oauth.ts:35 `TOKEN_TYPE_ID_JAG = 'urn:ietf:params:oauth:token-type:id-jag'`, :41 jwt-bearer; mainThreadMcp.ts:304-306 enterpriseManaged route; mcpConfiguration.ts:336 "(Preview) ... using OAuth Identity Assertion Authorization Grant (ID-JAG)". Needs `oauth.enterpriseManaged` + `mcp.enterpriseManagedAuth.idp` (policy-delivered, hidden setting)
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/base/common/oauth.ts#L35
+    evidence: At tag 1.144.0, base/common/oauth.ts:35 `TOKEN_TYPE_ID_JAG = 'urn:ietf:params:oauth:token-type:id-jag'`, :41 jwt-bearer; mainThreadMcp.ts:306 enterpriseManaged route; mcpConfiguration.ts:336 "(Preview) ... using OAuth Identity Assertion Authorization Grant (ID-JAG)". Needs `oauth.enterpriseManaged` + `mcp.enterpriseManagedAuth.idp` (policy-delivered, hidden setting)
+    checked: 2026-10-30
     since:
       date: 2026-06-03
       version: "1.123"
@@ -84,9 +84,9 @@ cells:
   elicitation:
     value: y
     method: source
-    source: https://github.com/microsoft/vscode/blob/ed3d9c11647cf2d6c7b0e4f327fd1c7c5f0afc6e/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L120
-    evidence: "mcpServerRequestHandler.ts:120 `elicitation: ... { form: {}, url: {} }`; handler for `elicitation/create` at :318"
-    checked: 2026-10-27
+    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L120
+    evidence: "At tag 1.144.0, mcpServerRequestHandler.ts:120 `elicitation: ... { form: {}, url: {} }`; handler for `elicitation/create` at :318"
+    checked: 2026-10-30
     since:
       date: 2025-07-09
       version: "1.102"

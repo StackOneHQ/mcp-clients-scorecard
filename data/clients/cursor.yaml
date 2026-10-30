@@ -6,71 +6,72 @@ logo: icon-cursor.svg
 website: https://cursor.com
 docs: https://cursor.com/docs/mcp
 repo: null
+version_checked: 3.27.22
 tracker: null
 cells:
   protocol:
-    value: not published
-    method: docs
-    source: https://zuplo.com/learn/mcp/compatibility/clients/cursor
-    evidence: 'Cursor docs and changelog state no protocol revision (third party Zuplo: "Not published")'
-    checked: 2026-10-27
+    value: 2025-11-25
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'Docs and changelog name no revision, but the shipped 3.27.22 bundle (extensions/cursor-mcp/dist/main.js) initializes through the bundled TypeScript SDK with LATEST "2025-11-25"; a 2026-07-28 server/discover fallback wrapper is bundled but its export is never referenced'
+    checked: 2026-10-30
   code_mode:
     value: n
-    method: docs
-    source: https://cursor.com/docs/mcp
-    evidence: No hit in cursor.com/docs/mcp or searches
-    checked: 2026-10-27
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'No "execute_javascript" or code mode in the 3.27.22 cursor-mcp or cursor-agent-exec bundles, and none in cursor.com/docs/mcp'
+    checked: 2026-10-30
   tool_search:
     value: y
     label: Files
     quality: basic
     method: docs
     source: https://cursor.com/blog/dynamic-context-discovery
-    evidence: 'Cursor blog 2026-01-06: "we support dynamic context discovery for MCP by syncing tool descriptions to a folder"; the agent gets tool names and looks tools up with file search. Ranking not documented'
-    checked: 2026-10-27
+    evidence: 'Blog 2026-01-06: tool descriptions are synced to one folder per server and the agent gets only tool names, then reads or filters the files with rg or jq; the 3.27.22 agent-exec bundle writes mcps/<server>/tools/<tool>.json. No ranking: the model picks from names and greps the files'
+    checked: 2026-10-30
     since:
       date: 2026-01-06
       source: https://cursor.com/blog/dynamic-context-discovery
   apps:
     value: y
-    method: docs
-    source: https://cursor.com/docs/mcp
-    evidence: '"Cursor supports the MCP Apps extension."'
-    checked: 2026-10-27
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'The 3.27.22 cursor-mcp bundle declares `extensions: {"io.modelcontextprotocol/ui": {mimeTypes: ["text/html;profile=mcp-app"]}}` in createSdkClient; docs: "Cursor supports the MCP Apps extension."'
+    checked: 2026-10-30
     since:
       date: 2026-03-03
       version: "2.6"
       source: https://cursor.com/changelog/2-6
   tasks:
     value: n
-    method: docs
-    source: https://cursor.com/docs/mcp
-    evidence: Support table lists Tools, Prompts, Resources, Roots, Elicitation, Apps only
-    checked: 2026-10-27
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'The 3.27.22 client capabilities have no tasks entry (tasks/get appears only in the bundled SDK schema); the docs support table lists Tools, Prompts, Resources, Roots, Elicitation, Apps only'
+    checked: 2026-10-30
   events:
     value: n
-    method: docs
-    source: https://cursor.com/docs/mcp
-    evidence: Same table, no Events row
-    checked: 2026-10-27
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'No "notifications/events" or "events/subscribe" in the 3.27.22 cursor-mcp or cursor-agent-exec bundles; no Events row in the docs support table'
+    checked: 2026-10-30
   cimd:
     value: n
-    method: docs
-    source: https://forum.cursor.com/t/mcp-oauth-cimd-support-plans-and-timelines/148096
-    evidence: '"Right now, Cursor supports OAuth for MCP servers via DCR and static credentials"; docs OAuth section lists only DCR and static'
-    checked: 2026-10-27
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'The bundled SDK checks client_id_metadata_document_supported but Cursor never sets clientMetadataUrl in 3.27.22; docs list only DCR and static client credentials, and the CIMD forum thread (latest staff reply 2026-05-13) has no timeline'
+    checked: 2026-10-30
   id_jag:
-    value: y
-    method: changelog
-    source: https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners
-    evidence: '"XAA requesting app integrations (client AI agents): Claude, Cursor, Docker, VS Code, and Zoom"'
-    checked: 2026-10-27
+    value: n
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'No "id-jag" token type or requested_token_type in the 3.27.22 bundles (jwt-bearer and token-exchange appear only in a grant-type telemetry classifier) and no Cursor docs or changelog entry; Okta''s 2026-06-23 press release lists Cursor as an XAA requesting app with availability from August 2026, unconfirmed by Cursor'
+    checked: 2026-10-30
   elicitation:
-    value: y
-    method: docs
-    source: https://cursor.com/docs/mcp
-    evidence: 'Support table: Elicitation "Supported"'
-    checked: 2026-10-27
+    value: p
+    method: source
+    source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
+    evidence: 'The 3.27.22 cursor-mcp bundle declares `elicitation: {form: {}}` only, no url mode; docs support table says Elicitation "Supported"'
+    checked: 2026-10-30
     since:
       date: 2025-08-21
       version: "1.5"

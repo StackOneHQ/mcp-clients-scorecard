@@ -7,34 +7,36 @@ logo: icon-goose.svg
 website: https://goose-docs.ai
 docs: https://goose-docs.ai/docs
 repo: https://github.com/aaif-goose/goose
-version_checked: 1.56.0
+version_checked: 1.57.0
 tracker:
   repo: aaif-goose/goose
   mcp_in_title: true
 cells:
   protocol:
     value: 2026-07-28
-    method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L532
-    evidence: "Cargo.toml:21 rmcp 3.4.1 (LATEST 2025-11-25); mcp_client.rs:532-560 default `ClientLifecycleMode::Auto { preferred_versions: [2026-07-28, 2025-11-25], legacy_version: 2025-11-25 }`"
-    checked: 2026-10-27
+    method: probe
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/agents/mcp_client.rs#L549
+    evidence: "Own probe of the goose CLI 1.57.0 release binary on 2026-10-30 sent server/discover with protocolVersion 2026-07-28 first and, when the server rejected it, initialize with 2025-11-25, matching mcp_client.rs:549-555 ClientLifecycleMode::Auto with legacy_version 2025-11-25"
+    checked: 2026-10-30
     fallback: 2025-11-25
   code_mode:
-    value: p
-    method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/platform_extensions/code_execution.rs#L24
-    evidence: Off by default. platform_extensions/mod.rs:155-162 "Code Mode" extension, default_enabled false, turned on per session; code_execution.rs:24 list_functions / get_function_details / execute_javascript (Boa JS); goose-cli Cargo.toml:95 `code-mode` in default features; docs guides/managing-tools/code-mode.md
-    checked: 2026-10-27
+    value: y
+    method: docs
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/documentation/docs/guides/managing-tools/code-mode.md#L25
+    evidence: "Code Mode is a documented built-in extension (platform_extensions/mod.rs:159-162, default_enabled false) that the user turns on in settings or goose configure; it exposes list_functions, get_function_details and execute_javascript running in a Boa JavaScript context (code_execution.rs:277-279). Off by default but enabled by a documented setting and not marked experimental, so y under the methodology"
+    checked: 2026-10-30
     since:
       date: 2025-12-18
       version: "1.17.0"
       source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0
   tool_search:
     value: p
+    label: LLM picks
+    quality: basic
     method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/platform_extensions/code_execution.rs#L277
-    evidence: "Only on-demand discovery inside Code Mode: `list_functions` lists all callable tools, `get_function_details` by exact name (code_execution.rs:277-278). No query/ranked search tool found (grep tool_search/search_tools in crates: none)"
-    checked: 2026-10-27
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/agents/platform_extensions/code_execution.rs#L277
+    evidence: "Only inside Code Mode: list_functions returns every callable tool name with a short description, the model picks names, and get_function_details loads full schemas by exact name (code_execution.rs:277-278); there is no query or ranking, and grep for tool_search, search_tools and bm25 in crates finds nothing"
+    checked: 2026-10-30
     since:
       date: 2025-12-18
       version: "1.17.0"
@@ -42,31 +44,31 @@ cells:
   apps:
     value: y
     method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L47
-    evidence: mcp_client.rs:47-58 `io.modelcontextprotocol/ui` mimeTypes text/html;profile=mcp-app; agent.rs:257-264 `GooseDesktop => true, GooseCli => false`
-    checked: 2026-10-27
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/agents/mcp_client.rs#L47
+    evidence: "mcp_client.rs:47-59 declares the io.modelcontextprotocol/ui extension with mimeTypes text/html;profile=mcp-app, enabled for goose Desktop and off for the CLI (agent.rs:262-263); the CLI probe declared extensions {} as expected"
+    checked: 2026-10-30
     since:
       date: 2026-01-06
       version: "1.19.0"
       source: https://github.com/aaif-goose/goose/releases/tag/v1.19.0
   tasks:
     value: n
-    method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L438
-    evidence: "grep enable_tasks, io.modelcontextprotocol/tasks in crates: none"
-    checked: 2026-10-27
+    method: probe
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/agents/mcp_client.rs#L443
+    evidence: "Own probe of 1.57.0 declared roots, elicitation and extensions only; get_info at mcp_client.rs:443-453 enables no tasks, and grep for enable_tasks and io.modelcontextprotocol/tasks in crates finds nothing"
+    checked: 2026-10-30
   events:
     value: n
     method: source
-    source: https://github.com/aaif-goose/goose/tree/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates
-    evidence: "grep events/subscribe, notifications/events: none"
-    checked: 2026-10-27
+    source: https://github.com/aaif-goose/goose/tree/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates
+    evidence: "grep for events/subscribe and notifications/events in crates at tag v1.57.0 finds nothing"
+    checked: 2026-10-30
   cimd:
     value: y
     method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/oauth/mod.rs#L25
-    evidence: oauth/mod.rs:25 `CLIENT_METADATA_URL = "https://goose-docs.ai/oauth/client-metadata.json"`; :167-170 env override; :273-275 `with_client_metadata_url(...)`
-    checked: 2026-10-27
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/oauth/mod.rs#L25
+    evidence: "oauth/mod.rs:25 CLIENT_METADATA_URL https://goose-docs.ai/oauth/client-metadata.json, overridable with GOOSE_MCP_OAUTH_CLIENT_METADATA_URL (:168), sent with with_client_metadata_url (:274)"
+    checked: 2026-10-30
     since:
       date: 2026-04-23
       version: "1.32.0"
@@ -74,15 +76,15 @@ cells:
   id_jag:
     value: n
     method: source
-    source: https://github.com/aaif-goose/goose/tree/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/oauth
-    evidence: "grep id-jag: none; only gcpauth.rs jwt-bearer for Google provider auth, not MCP"
-    checked: 2026-10-27
+    source: https://github.com/aaif-goose/goose/tree/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/oauth
+    evidence: "grep for id-jag and id_jag in crates at tag v1.57.0 finds nothing; the only jwt-bearer use is Google provider auth, not MCP"
+    checked: 2026-10-30
   elicitation:
-    value: y
-    method: source
-    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L438
-    evidence: "mcp_client.rs:438-462 `.enable_elicitation()` (declares `elicitation: {}`); url params handler at :412"
-    checked: 2026-10-27
+    value: p
+    method: probe
+    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/documentation/docs/guides/mcp-elicitation.md#L16
+    evidence: "Own probe of 1.57.0 declared elicitation {} (form only under the 2025-11-25 spec, from enable_elicitation at mcp_client.rs:451), and the elicitation guide says goose supports form mode requests; URL requests are only passed to the same form UI (mcp_client.rs:412), so form without URL mode is p"
+    checked: 2026-10-30
     since:
       date: 2025-12-18
       version: "1.17.0"

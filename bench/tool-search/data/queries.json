@@ -1,0 +1,1290 @@
+[
+ {
+  "id": "l01",
+  "bucket": "lexical",
+  "query": "create a new GitHub repository",
+  "gold": [
+   "github-legacy__create_repository"
+  ]
+ },
+ {
+  "id": "l02",
+  "bucket": "lexical",
+  "query": "merge a pull request on GitHub",
+  "gold": [
+   "github-legacy__merge_pull_request"
+  ]
+ },
+ {
+  "id": "l03",
+  "bucket": "lexical",
+  "query": "list commits of a branch in a GitHub repo",
+  "gold": [
+   "github-legacy__list_commits"
+  ]
+ },
+ {
+  "id": "l04",
+  "bucket": "lexical",
+  "query": "fork a repository to my organization",
+  "gold": [
+   "github-legacy__fork_repository"
+  ]
+ },
+ {
+  "id": "l05",
+  "bucket": "lexical",
+  "query": "get the list of files changed in a pull request",
+  "gold": [
+   "github-legacy__get_pull_request_files"
+  ]
+ },
+ {
+  "id": "l06",
+  "bucket": "lexical",
+  "query": "get merge request approval state and approvers",
+  "gold": [
+   "gitlab-community__get_merge_request_approval_state"
+  ]
+ },
+ {
+  "id": "l07",
+  "bucket": "lexical",
+  "query": "resolve a thread on a merge request",
+  "gold": [
+   "gitlab-community__resolve_merge_request_thread"
+  ]
+ },
+ {
+  "id": "l08",
+  "bucket": "lexical",
+  "query": "git blame for a file in a GitLab project",
+  "gold": [
+   "gitlab-community__get_file_blame"
+  ]
+ },
+ {
+  "id": "l09",
+  "bucket": "lexical",
+  "query": "list members of a GitLab project",
+  "gold": [
+   "gitlab-community__list_project_members"
+  ]
+ },
+ {
+  "id": "l10",
+  "bucket": "lexical",
+  "query": "cherry-pick commits onto the current branch",
+  "gold": [
+   "git__git_cherry_pick"
+  ]
+ },
+ {
+  "id": "l11",
+  "bucket": "lexical",
+  "query": "add a new worktree for parallel work",
+  "gold": [
+   "git__git_worktree"
+  ]
+ },
+ {
+  "id": "l12",
+  "bucket": "lexical",
+  "query": "show the working tree status",
+  "gold": [
+   "git__git_status"
+  ]
+ },
+ {
+  "id": "l13",
+  "bucket": "lexical",
+  "query": "read the entire knowledge graph",
+  "gold": [
+   "memory__read_graph"
+  ]
+ },
+ {
+  "id": "l14",
+  "bucket": "lexical",
+  "query": "list allowed directories",
+  "gold": [
+   "filesystem__list_allowed_directories"
+  ]
+ },
+ {
+  "id": "l15",
+  "bucket": "lexical",
+  "query": "recursive directory tree as JSON",
+  "gold": [
+   "filesystem__directory_tree"
+  ]
+ },
+ {
+  "id": "l16",
+  "bucket": "lexical",
+  "query": "geocode an address",
+  "gold": [
+   "google-maps__maps_geocode"
+  ]
+ },
+ {
+  "id": "l17",
+  "bucket": "lexical",
+  "query": "travel distance matrix for multiple origins and destinations",
+  "gold": [
+   "google-maps__maps_distance_matrix"
+  ]
+ },
+ {
+  "id": "l18",
+  "bucket": "lexical",
+  "query": "get elevation data for locations",
+  "gold": [
+   "google-maps__maps_elevation"
+  ]
+ },
+ {
+  "id": "l19",
+  "bucket": "lexical",
+  "query": "enable maintenance mode for a Heroku app",
+  "gold": [
+   "heroku__maintenance_on"
+  ]
+ },
+ {
+  "id": "l20",
+  "bucket": "lexical",
+  "query": "scale Heroku app dynos",
+  "gold": [
+   "heroku__ps_scale"
+  ]
+ },
+ {
+  "id": "l21",
+  "bucket": "lexical",
+  "query": "promote an app between pipeline stages",
+  "gold": [
+   "heroku__pipelines_promote"
+  ]
+ },
+ {
+  "id": "l22",
+  "bucket": "lexical",
+  "query": "upgrade PostgreSQL version on Heroku",
+  "gold": [
+   "heroku__pg_upgrade"
+  ]
+ },
+ {
+  "id": "l23",
+  "bucket": "lexical",
+  "query": "list add-on service plans and pricing",
+  "gold": [
+   "heroku__list_addon_plans"
+  ]
+ },
+ {
+  "id": "l24",
+  "bucket": "lexical",
+  "query": "get association definitions between HubSpot object types",
+  "gold": [
+   "hubspot__hubspot-get-association-definitions"
+  ]
+ },
+ {
+  "id": "l25",
+  "bucket": "lexical",
+  "query": "create an index for a MongoDB collection",
+  "gold": [
+   "mongodb__create-index"
+  ]
+ },
+ {
+  "id": "l26",
+  "bucket": "lexical",
+  "query": "describe the schema for a collection",
+  "gold": [
+   "mongodb__collection-schema"
+  ]
+ },
+ {
+  "id": "l27",
+  "bucket": "lexical",
+  "query": "count documents in a MongoDB collection",
+  "gold": [
+   "mongodb__count"
+  ]
+ },
+ {
+  "id": "l28",
+  "bucket": "lexical",
+  "query": "list MongoDB Atlas local deployments",
+  "gold": [
+   "mongodb__atlas-local-list-deployments"
+  ]
+ },
+ {
+  "id": "l29",
+  "bucket": "lexical",
+  "query": "append block children in Notion",
+  "gold": [
+   "notion__API-patch-block-children"
+  ]
+ },
+ {
+  "id": "l30",
+  "bucket": "lexical",
+  "query": "retrieve a Notion page as Markdown",
+  "gold": [
+   "notion__API-retrieve-page-markdown"
+  ]
+ },
+ {
+  "id": "l31",
+  "bucket": "lexical",
+  "query": "start a performance trace on the page",
+  "gold": [
+   "chrome-devtools__performance_start_trace"
+  ]
+ },
+ {
+  "id": "l32",
+  "bucket": "lexical",
+  "query": "capture a heap snapshot",
+  "gold": [
+   "chrome-devtools__take_heapsnapshot"
+  ]
+ },
+ {
+  "id": "l33",
+  "bucket": "lexical",
+  "query": "run a Lighthouse audit",
+  "gold": [
+   "chrome-devtools__lighthouse_audit"
+  ]
+ },
+ {
+  "id": "l34",
+  "bucket": "lexical",
+  "query": "emulate the dark color scheme",
+  "gold": [
+   "playwright__browser_emulate_media",
+   "chrome-devtools__emulate"
+  ]
+ },
+ {
+  "id": "l35",
+  "bucket": "lexical",
+  "query": "add a reaction emoji to a Slack message",
+  "gold": [
+   "slack__slack_add_reaction"
+  ]
+ },
+ {
+  "id": "l36",
+  "bucket": "lexical",
+  "query": "reply to a Slack message thread",
+  "gold": [
+   "slack__slack_reply_to_thread"
+  ]
+ },
+ {
+  "id": "l37",
+  "bucket": "lexical",
+  "query": "generate TypeScript types for a project",
+  "gold": [
+   "supabase__generate_typescript_types"
+  ]
+ },
+ {
+  "id": "l38",
+  "bucket": "lexical",
+  "query": "get security advisory notices for a Supabase project",
+  "gold": [
+   "supabase__get_advisors"
+  ]
+ },
+ {
+  "id": "l39",
+  "bucket": "lexical",
+  "query": "mark a Todoist task as complete",
+  "gold": [
+   "todoist__todoist_complete_task"
+  ]
+ },
+ {
+  "id": "l40",
+  "bucket": "lexical",
+  "query": "search for local businesses with Brave",
+  "gold": [
+   "brave-search__brave_local_search"
+  ]
+ },
+ {
+  "id": "l41",
+  "bucket": "lexical",
+  "query": "analyze an issue with Seer",
+  "gold": [
+   "sentry__analyze_issue_with_seer"
+  ]
+ },
+ {
+  "id": "l42",
+  "bucket": "lexical",
+  "query": "search research paper abstracts",
+  "gold": [
+   "firecrawl__firecrawl_research_search_papers"
+  ]
+ },
+ {
+  "id": "l43",
+  "bucket": "lexical",
+  "query": "upload an attachment to an Airtable record",
+  "gold": [
+   "airtable__upload_attachment"
+  ]
+ },
+ {
+  "id": "l44",
+  "bucket": "lexical",
+  "query": "add a comment to a Linear issue",
+  "gold": [
+   "linear-community__linear_add_comment"
+  ]
+ },
+ {
+  "id": "l45",
+  "bucket": "lexical",
+  "query": "resolve a library ID for Context7",
+  "gold": [
+   "context7__resolve-library-id"
+  ]
+ },
+ {
+  "id": "l46",
+  "bucket": "lexical",
+  "query": "validate Liquid theme files",
+  "gold": [
+   "shopify-dev__validate_theme"
+  ]
+ },
+ {
+  "id": "l47",
+  "bucket": "lexical",
+  "query": "create a PDF file",
+  "gold": [
+   "desktop-commander__write_pdf"
+  ]
+ },
+ {
+  "id": "l48",
+  "bucket": "lexical",
+  "query": "create Jira resources",
+  "gold": [
+   "jira-community__jira_post"
+  ]
+ },
+ {
+  "id": "p01",
+  "bucket": "paraphrase",
+  "query": "save this fact so you still know it next session",
+  "gold": [
+   "memory__create_entities",
+   "memory__add_observations"
+  ]
+ },
+ {
+  "id": "p02",
+  "bucket": "paraphrase",
+  "query": "what do you recall about me from before",
+  "gold": [
+   "memory__search_nodes",
+   "memory__read_graph",
+   "memory__open_nodes"
+  ]
+ },
+ {
+  "id": "p03",
+  "bucket": "paraphrase",
+  "query": "which person most recently changed line 40 here",
+  "gold": [
+   "git__git_blame",
+   "gitlab-community__get_file_blame"
+  ]
+ },
+ {
+  "id": "p04",
+  "bucket": "paraphrase",
+  "query": "set aside my half-done work so I can switch tasks",
+  "gold": [
+   "git__git_stash"
+  ]
+ },
+ {
+  "id": "p05",
+  "bucket": "paraphrase",
+  "query": "undo the last commit but keep my edits",
+  "gold": [
+   "git__git_reset"
+  ]
+ },
+ {
+  "id": "p06",
+  "bucket": "paraphrase",
+  "query": "download a codebase from a hosting site onto this laptop",
+  "gold": [
+   "git__git_clone"
+  ]
+ },
+ {
+  "id": "p07",
+  "bucket": "paraphrase",
+  "query": "throw away junk the repo is not tracking",
+  "gold": [
+   "git__git_clean"
+  ]
+ },
+ {
+  "id": "p08",
+  "bucket": "paraphrase",
+  "query": "what are the lat and lng for 10 Downing Street",
+  "gold": [
+   "google-maps__maps_geocode"
+  ]
+ },
+ {
+  "id": "p09",
+  "bucket": "paraphrase",
+  "query": "how long would it take to drive from Paris to Lyon",
+  "gold": [
+   "google-maps__maps_directions",
+   "google-maps__maps_distance_matrix"
+  ]
+ },
+ {
+  "id": "p10",
+  "bucket": "paraphrase",
+  "query": "how high above sea level is Denver",
+  "gold": [
+   "google-maps__maps_elevation"
+  ]
+ },
+ {
+  "id": "p11",
+  "bucket": "paraphrase",
+  "query": "put the site into a we will be back soon state while we migrate",
+  "gold": [
+   "heroku__maintenance_on"
+  ]
+ },
+ {
+  "id": "p12",
+  "bucket": "paraphrase",
+  "query": "add more web workers on Heroku to handle the traffic spike",
+  "gold": [
+   "heroku__ps_scale"
+  ]
+ },
+ {
+  "id": "p13",
+  "bucket": "paraphrase",
+  "query": "which SQL statements are hogging the Heroku Postgres server",
+  "gold": [
+   "heroku__pg_outliers"
+  ]
+ },
+ {
+  "id": "p14",
+  "bucket": "paraphrase",
+  "query": "two Postgres sessions seem stuck waiting on each other",
+  "gold": [
+   "heroku__pg_locks"
+  ]
+ },
+ {
+  "id": "p15",
+  "bucket": "paraphrase",
+  "query": "ship this folder to production on Heroku",
+  "gold": [
+   "heroku__deploy_to_heroku"
+  ]
+ },
+ {
+  "id": "p16",
+  "bucket": "paraphrase",
+  "query": "why is this web page slow, profile it",
+  "gold": [
+   "chrome-devtools__performance_start_trace",
+   "chrome-devtools__lighthouse_audit"
+  ]
+ },
+ {
+  "id": "p17",
+  "bucket": "paraphrase",
+  "query": "find memory leaks in the page's JS",
+  "gold": [
+   "chrome-devtools__take_heapsnapshot"
+  ]
+ },
+ {
+  "id": "p18",
+  "bucket": "paraphrase",
+  "query": "score this page for a11y and search ranking best practices",
+  "gold": [
+   "chrome-devtools__lighthouse_audit"
+  ]
+ },
+ {
+  "id": "p19",
+  "bucket": "paraphrase",
+  "query": "return to where I was before in the browser",
+  "gold": [
+   "playwright__browser_navigate_back",
+   "chrome-devtools__navigate_page"
+  ]
+ },
+ {
+  "id": "p20",
+  "bucket": "paraphrase",
+  "query": "ping the team channel with a status update",
+  "gold": [
+   "slack__slack_post_message"
+  ]
+ },
+ {
+  "id": "p21",
+  "bucket": "paraphrase",
+  "query": "who works here, show everyone in our chat",
+  "gold": [
+   "slack__slack_get_users"
+  ]
+ },
+ {
+  "id": "p22",
+  "bucket": "paraphrase",
+  "query": "catch me up on what was said in #general",
+  "gold": [
+   "slack__slack_get_channel_history"
+  ]
+ },
+ {
+  "id": "p23",
+  "bucket": "paraphrase",
+  "query": "add buy milk to my to-do list for tomorrow",
+  "gold": [
+   "todoist__todoist_create_task"
+  ]
+ },
+ {
+  "id": "p24",
+  "bucket": "paraphrase",
+  "query": "tick off the dentist reminder",
+  "gold": [
+   "todoist__todoist_complete_task"
+  ]
+ },
+ {
+  "id": "p25",
+  "bucket": "paraphrase",
+  "query": "file a bug about the login page in Linear",
+  "gold": [
+   "linear-community__linear_create_issue"
+  ]
+ },
+ {
+  "id": "p26",
+  "bucket": "paraphrase",
+  "query": "mark the Sentry error as fixed",
+  "gold": [
+   "sentry__update_issue"
+  ]
+ },
+ {
+  "id": "p27",
+  "bucket": "paraphrase",
+  "query": "explain why this crash keeps happening in prod and suggest a fix",
+  "gold": [
+   "sentry__analyze_issue_with_seer"
+  ]
+ },
+ {
+  "id": "p28",
+  "bucket": "paraphrase",
+  "query": "how many 500s did the API throw yesterday",
+  "gold": [
+   "sentry__search_events"
+  ]
+ },
+ {
+  "id": "p29",
+  "bucket": "paraphrase",
+  "query": "put my Supabase project to sleep",
+  "gold": [
+   "supabase__pause_project"
+  ]
+ },
+ {
+  "id": "p30",
+  "bucket": "paraphrase",
+  "query": "what is the price of spinning up another Supabase instance",
+  "gold": [
+   "supabase__get_cost"
+  ]
+ },
+ {
+  "id": "p31",
+  "bucket": "paraphrase",
+  "query": "fetch current reference material for React useEffect",
+  "gold": [
+   "context7__query-docs",
+   "context7__resolve-library-id"
+  ]
+ },
+ {
+  "id": "p32",
+  "bucket": "paraphrase",
+  "query": "give me every page address on example.com",
+  "gold": [
+   "firecrawl__firecrawl_map"
+  ]
+ },
+ {
+  "id": "p33",
+  "bucket": "paraphrase",
+  "query": "alert me when this pricing page changes",
+  "gold": [
+   "firecrawl__firecrawl_monitor_create"
+  ]
+ },
+ {
+  "id": "p34",
+  "bucket": "paraphrase",
+  "query": "find case law about data privacy in California",
+  "gold": [
+   "firecrawl__firecrawl_gov_search"
+  ]
+ },
+ {
+  "id": "p35",
+  "bucket": "paraphrase",
+  "query": "which folders am I permitted to touch",
+  "gold": [
+   "filesystem__list_allowed_directories"
+  ]
+ },
+ {
+  "id": "p36",
+  "bucket": "paraphrase",
+  "query": "run npm test in a shell",
+  "gold": [
+   "desktop-commander__start_process"
+  ]
+ },
+ {
+  "id": "p37",
+  "bucket": "paraphrase",
+  "query": "stop the runaway node program, PID 4242",
+  "gold": [
+   "desktop-commander__kill_process",
+   "desktop-commander__force_terminate"
+  ]
+ },
+ {
+  "id": "p38",
+  "bucket": "paraphrase",
+  "query": "why is my Mongo lookup slow, show how the optimizer runs it",
+  "gold": [
+   "mongodb__explain"
+  ]
+ },
+ {
+  "id": "p39",
+  "bucket": "paraphrase",
+  "query": "what fields do user docs usually have in Mongo",
+  "gold": [
+   "mongodb__collection-schema"
+  ]
+ },
+ {
+  "id": "p40",
+  "bucket": "paraphrase",
+  "query": "add a row to my Airtable",
+  "gold": [
+   "airtable__create_record"
+  ]
+ },
+ {
+  "id": "p41",
+  "bucket": "paraphrase",
+  "query": "who am I logged in as on GitLab",
+  "gold": [
+   "gitlab-community__whoami"
+  ]
+ },
+ {
+  "id": "p42",
+  "bucket": "paraphrase",
+  "query": "what did this GitLab commit change",
+  "gold": [
+   "gitlab-community__get_commit_diff"
+  ]
+ },
+ {
+  "id": "p43",
+  "bucket": "paraphrase",
+  "query": "leave a looks good to me on the GitHub PR",
+  "gold": [
+   "github-legacy__create_pull_request_review"
+  ]
+ },
+ {
+  "id": "p44",
+  "bucket": "paraphrase",
+  "query": "are the CI checks green on GitHub PR 42",
+  "gold": [
+   "github-legacy__get_pull_request_status"
+  ]
+ },
+ {
+  "id": "p45",
+  "bucket": "paraphrase",
+  "query": "look up a developer's GitHub account by handle",
+  "gold": [
+   "github-legacy__search_users"
+  ]
+ },
+ {
+  "id": "p46",
+  "bucket": "paraphrase",
+  "query": "send three changed sources to GitHub as a single snapshot",
+  "gold": [
+   "github-legacy__push_files"
+  ]
+ },
+ {
+  "id": "p47",
+  "bucket": "paraphrase",
+  "query": "add a bullet list at the end of my Notion doc",
+  "gold": [
+   "notion__API-patch-block-children",
+   "notion__API-update-page-markdown"
+  ]
+ },
+ {
+  "id": "p48",
+  "bucket": "paraphrase",
+  "query": "log a call I just had with a customer in HubSpot",
+  "gold": [
+   "hubspot__hubspot-create-engagement"
+  ]
+ },
+ {
+  "id": "p49",
+  "bucket": "paraphrase",
+  "query": "add 50 new contacts to the HubSpot CRM in one go",
+  "gold": [
+   "hubspot__hubspot-batch-create-objects"
+  ]
+ },
+ {
+  "id": "p50",
+  "bucket": "paraphrase",
+  "query": "link this contact to that company in HubSpot",
+  "gold": [
+   "hubspot__hubspot-batch-create-associations"
+  ]
+ },
+ {
+  "id": "p51",
+  "bucket": "paraphrase",
+  "query": "reason through this problem one step at a time",
+  "gold": [
+   "sequential-thinking__sequentialthinking"
+  ]
+ },
+ {
+  "id": "p52",
+  "bucket": "paraphrase",
+  "query": "check the Shopify GraphQL I wrote compiles against the schema",
+  "gold": [
+   "shopify-dev__validate"
+  ]
+ },
+ {
+  "id": "a01",
+  "bucket": "ambiguous",
+  "query": "open a pull request",
+  "gold": [
+   "github-legacy__create_pull_request",
+   "gitlab-community__create_merge_request"
+  ]
+ },
+ {
+  "id": "a02",
+  "bucket": "ambiguous",
+  "query": "read a file",
+  "gold": [
+   "filesystem__read_text_file",
+   "filesystem__read_file",
+   "desktop-commander__read_file"
+  ]
+ },
+ {
+  "id": "a03",
+  "bucket": "ambiguous",
+  "query": "take a screenshot of the page",
+  "gold": [
+   "playwright__browser_take_screenshot",
+   "chrome-devtools__take_screenshot",
+   "puppeteer__puppeteer_screenshot"
+  ]
+ },
+ {
+  "id": "a04",
+  "bucket": "ambiguous",
+  "query": "grab a picture of what the browser is showing",
+  "gold": [
+   "playwright__browser_take_screenshot",
+   "chrome-devtools__take_screenshot",
+   "puppeteer__puppeteer_screenshot"
+  ]
+ },
+ {
+  "id": "a05",
+  "bucket": "ambiguous",
+  "query": "click the submit button",
+  "gold": [
+   "playwright__browser_click",
+   "chrome-devtools__click",
+   "puppeteer__puppeteer_click"
+  ]
+ },
+ {
+  "id": "a06",
+  "bucket": "ambiguous",
+  "query": "go to https://example.com",
+  "gold": [
+   "playwright__browser_navigate",
+   "chrome-devtools__navigate_page",
+   "chrome-devtools__new_page",
+   "puppeteer__puppeteer_navigate"
+  ]
+ },
+ {
+  "id": "a07",
+  "bucket": "ambiguous",
+  "query": "fill in the login form",
+  "gold": [
+   "playwright__browser_fill_form",
+   "chrome-devtools__fill_form",
+   "chrome-devtools__fill",
+   "puppeteer__puppeteer_fill",
+   "playwright__browser_type"
+  ]
+ },
+ {
+  "id": "a08",
+  "bucket": "ambiguous",
+  "query": "run some JavaScript in the page",
+  "gold": [
+   "playwright__browser_evaluate",
+   "chrome-devtools__evaluate_script",
+   "puppeteer__puppeteer_evaluate",
+   "playwright__browser_run_code_unsafe"
+  ]
+ },
+ {
+  "id": "a09",
+  "bucket": "ambiguous",
+  "query": "show me the console errors",
+  "gold": [
+   "playwright__browser_console_messages",
+   "chrome-devtools__list_console_messages"
+  ]
+ },
+ {
+  "id": "a10",
+  "bucket": "ambiguous",
+  "query": "which network calls did the page make",
+  "gold": [
+   "playwright__browser_network_requests",
+   "chrome-devtools__list_network_requests"
+  ]
+ },
+ {
+  "id": "a11",
+  "bucket": "ambiguous",
+  "query": "pick an option from the dropdown",
+  "gold": [
+   "playwright__browser_select_option",
+   "puppeteer__puppeteer_select",
+   "chrome-devtools__fill"
+  ]
+ },
+ {
+  "id": "a12",
+  "bucket": "ambiguous",
+  "query": "drag the card to the done column",
+  "gold": [
+   "playwright__browser_drag",
+   "chrome-devtools__drag"
+  ]
+ },
+ {
+  "id": "a13",
+  "bucket": "ambiguous",
+  "query": "wait until the text Loaded appears",
+  "gold": [
+   "playwright__browser_wait_for",
+   "chrome-devtools__wait_for"
+  ]
+ },
+ {
+  "id": "a14",
+  "bucket": "ambiguous",
+  "query": "attach a file through the page's file picker",
+  "gold": [
+   "playwright__browser_file_upload",
+   "chrome-devtools__upload_file"
+  ]
+ },
+ {
+  "id": "a15",
+  "bucket": "ambiguous",
+  "query": "make the browser window phone-sized",
+  "gold": [
+   "playwright__browser_resize",
+   "chrome-devtools__resize_page",
+   "chrome-devtools__emulate"
+  ]
+ },
+ {
+  "id": "a16",
+  "bucket": "ambiguous",
+  "query": "click OK on the alert popup",
+  "gold": [
+   "playwright__browser_handle_dialog",
+   "chrome-devtools__handle_dialog"
+  ]
+ },
+ {
+  "id": "a17",
+  "bucket": "ambiguous",
+  "query": "take an accessibility snapshot of the page",
+  "gold": [
+   "playwright__browser_snapshot",
+   "chrome-devtools__take_snapshot"
+  ]
+ },
+ {
+  "id": "a18",
+  "bucket": "ambiguous",
+  "query": "close the tab",
+  "gold": [
+   "playwright__browser_close",
+   "playwright__browser_tabs",
+   "chrome-devtools__close_page"
+  ]
+ },
+ {
+  "id": "a19",
+  "bucket": "ambiguous",
+  "query": "create an issue for this bug",
+  "gold": [
+   "github-legacy__create_issue",
+   "gitlab-community__create_issue",
+   "linear-community__linear_create_issue",
+   "jira-community__jira_post"
+  ]
+ },
+ {
+  "id": "a20",
+  "bucket": "ambiguous",
+  "query": "comment on the issue",
+  "gold": [
+   "github-legacy__add_issue_comment",
+   "gitlab-community__create_issue_note",
+   "linear-community__linear_add_comment"
+  ]
+ },
+ {
+  "id": "a21",
+  "bucket": "ambiguous",
+  "query": "list open issues",
+  "gold": [
+   "github-legacy__list_issues",
+   "gitlab-community__list_issues",
+   "gitlab-community__my_issues",
+   "linear-community__linear_search_issues",
+   "sentry__search_issues"
+  ]
+ },
+ {
+  "id": "a22",
+  "bucket": "ambiguous",
+  "query": "search issues mentioning timeout",
+  "gold": [
+   "github-legacy__search_issues",
+   "linear-community__linear_search_issues",
+   "gitlab-community__list_issues",
+   "sentry__search_issues"
+  ]
+ },
+ {
+  "id": "a23",
+  "bucket": "ambiguous",
+  "query": "search for code that calls parseConfig",
+  "gold": [
+   "github-legacy__search_code",
+   "desktop-commander__start_search",
+   "firecrawl__firecrawl_developer_search"
+  ]
+ },
+ {
+  "id": "a24",
+  "bucket": "ambiguous",
+  "query": "find a JS repo with example OAuth code",
+  "gold": [
+   "github-legacy__search_repositories",
+   "github-legacy__search_code",
+   "firecrawl__firecrawl_developer_search",
+   "gitlab-community__search_repositories"
+  ]
+ },
+ {
+  "id": "a25",
+  "bucket": "ambiguous",
+  "query": "commit history for this branch",
+  "gold": [
+   "git__git_log",
+   "github-legacy__list_commits",
+   "gitlab-community__list_commits"
+  ]
+ },
+ {
+  "id": "a26",
+  "bucket": "ambiguous",
+  "query": "create a new branch",
+  "gold": [
+   "git__git_branch",
+   "git__git_checkout",
+   "github-legacy__create_branch",
+   "supabase__create_branch"
+  ]
+ },
+ {
+  "id": "a27",
+  "bucket": "ambiguous",
+  "query": "show the diff",
+  "gold": [
+   "git__git_diff",
+   "git__git_show",
+   "gitlab-community__get_merge_request_diffs",
+   "gitlab-community__get_commit_diff"
+  ]
+ },
+ {
+  "id": "a28",
+  "bucket": "ambiguous",
+  "query": "bring my branch up to date with main",
+  "gold": [
+   "git__git_pull",
+   "git__git_rebase",
+   "git__git_merge",
+   "github-legacy__update_pull_request_branch"
+  ]
+ },
+ {
+  "id": "a29",
+  "bucket": "ambiguous",
+  "query": "read the contents of a file in the hosted repo",
+  "gold": [
+   "github-legacy__get_file_contents",
+   "gitlab-community__get_file_contents"
+  ]
+ },
+ {
+  "id": "a30",
+  "bucket": "ambiguous",
+  "query": "search the web for news on MCP",
+  "gold": [
+   "brave-search__brave_web_search",
+   "firecrawl__firecrawl_search"
+  ]
+ },
+ {
+  "id": "a31",
+  "bucket": "ambiguous",
+  "query": "where can I get coffee around here",
+  "gold": [
+   "brave-search__brave_local_search",
+   "google-maps__maps_search_places"
+  ]
+ },
+ {
+  "id": "a32",
+  "bucket": "ambiguous",
+  "query": "run a SQL query",
+  "gold": [
+   "postgres__query",
+   "supabase__execute_sql",
+   "heroku__pg_psql"
+  ]
+ },
+ {
+  "id": "a33",
+  "bucket": "ambiguous",
+  "query": "list the tables in the database",
+  "gold": [
+   "supabase__list_tables",
+   "airtable__list_tables"
+  ]
+ },
+ {
+  "id": "a34",
+  "bucket": "ambiguous",
+  "query": "delete records matching a filter",
+  "gold": [
+   "airtable__delete_records",
+   "mongodb__delete-many"
+  ]
+ },
+ {
+  "id": "a35",
+  "bucket": "ambiguous",
+  "query": "list my projects",
+  "gold": [
+   "supabase__list_projects",
+   "gitlab-community__list_projects",
+   "sentry__find_projects"
+  ]
+ },
+ {
+  "id": "a36",
+  "bucket": "ambiguous",
+  "query": "save this note somewhere permanent",
+  "gold": [
+   "memory__create_entities",
+   "memory__add_observations",
+   "notion__API-post-page",
+   "filesystem__write_file",
+   "desktop-commander__write_file"
+  ]
+ },
+ {
+  "id": "a37",
+  "bucket": "ambiguous",
+  "query": "move this file to the archive folder",
+  "gold": [
+   "filesystem__move_file",
+   "desktop-commander__move_file"
+  ]
+ },
+ {
+  "id": "a38",
+  "bucket": "ambiguous",
+  "query": "list files in this directory",
+  "gold": [
+   "filesystem__list_directory",
+   "filesystem__list_directory_with_sizes",
+   "desktop-commander__list_directory"
+  ]
+ },
+ {
+  "id": "a39",
+  "bucket": "ambiguous",
+  "query": "find files named *.test.ts",
+  "gold": [
+   "filesystem__search_files",
+   "desktop-commander__start_search"
+  ]
+ },
+ {
+  "id": "a40",
+  "bucket": "ambiguous",
+  "query": "fix a typo on line 12 without rewriting the whole file",
+  "gold": [
+   "filesystem__edit_file",
+   "desktop-commander__edit_block"
+  ]
+ },
+ {
+  "id": "a41",
+  "bucket": "ambiguous",
+  "query": "how big is this file and when was it last changed",
+  "gold": [
+   "filesystem__get_file_info",
+   "desktop-commander__get_file_info"
+  ]
+ },
+ {
+  "id": "a42",
+  "bucket": "ambiguous",
+  "query": "pull the text out of this article URL",
+  "gold": [
+   "firecrawl__firecrawl_scrape",
+   "desktop-commander__read_file"
+  ]
+ },
+ {
+  "id": "a43",
+  "bucket": "ambiguous",
+  "query": "send a message to the team",
+  "gold": [
+   "slack__slack_post_message",
+   "slack__slack_reply_to_thread"
+  ]
+ },
+ {
+  "id": "a44",
+  "bucket": "ambiguous",
+  "query": "search the documentation",
+  "gold": [
+   "context7__query-docs",
+   "supabase__search_docs",
+   "shopify-dev__search_docs_chunks",
+   "mongodb__search-knowledge"
+  ]
+ },
+ {
+  "id": "a45",
+  "bucket": "ambiguous",
+  "query": "deploy my code",
+  "gold": [
+   "heroku__deploy_to_heroku",
+   "supabase__deploy_edge_function"
+  ]
+ },
+ {
+  "id": "a46",
+  "bucket": "ambiguous",
+  "query": "show the logs",
+  "gold": [
+   "heroku__get_app_logs",
+   "supabase__query_logs",
+   "mongodb__mongodb-logs"
+  ]
+ },
+ {
+  "id": "a47",
+  "bucket": "ambiguous",
+  "query": "find a user named Alice",
+  "gold": [
+   "github-legacy__search_users",
+   "slack__slack_get_users",
+   "notion__API-get-users",
+   "gitlab-community__list_project_members"
+  ]
+ },
+ {
+  "id": "a48",
+  "bucket": "ambiguous",
+  "query": "update the status of a task",
+  "gold": [
+   "todoist__todoist_update_task",
+   "linear-community__linear_update_issue",
+   "github-legacy__update_issue",
+   "gitlab-community__update_issue"
+  ]
+ }
+]

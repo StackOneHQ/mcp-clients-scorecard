@@ -1,0 +1,101 @@
+{
+  "id": "everything",
+  "origin": "npx -y @modelcontextprotocol/server-everything (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "mcp-servers/everything",
+    "title": "Everything Reference Server",
+    "version": "1.0.0"
+  },
+  "tools": [
+    {
+      "name": "echo",
+      "description": "Echoes back the input string",
+      "params": [
+        "message"
+      ]
+    },
+    {
+      "name": "get-annotated-message",
+      "description": "Demonstrates how annotations can be used to provide metadata about content.",
+      "params": [
+        "messageType",
+        "includeImage"
+      ]
+    },
+    {
+      "name": "get-env",
+      "description": "Returns all environment variables, helpful for debugging MCP server configuration",
+      "params": []
+    },
+    {
+      "name": "get-resource-links",
+      "description": "Returns up to ten resource links that reference different types of resources",
+      "params": [
+        "count"
+      ]
+    },
+    {
+      "name": "get-resource-reference",
+      "description": "Returns a resource reference that can be used by MCP clients",
+      "params": [
+        "resourceType",
+        "resourceId"
+      ]
+    },
+    {
+      "name": "get-structured-content",
+      "description": "Returns structured content along with an output schema for client data validation",
+      "params": [
+        "location"
+      ]
+    },
+    {
+      "name": "get-sum",
+      "description": "Returns the sum of two numbers",
+      "params": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "get-tiny-image",
+      "description": "Returns a tiny MCP logo image.",
+      "params": []
+    },
+    {
+      "name": "gzip-file-as-resource",
+      "description": "Compresses a single file using gzip compression. Depending upon the selected output type, returns either the compressed data as a gzipped resource or a resource link, allowing it to be downloaded in a subsequent request during the current session.",
+      "params": [
+        "name",
+        "data",
+        "outputType"
+      ]
+    },
+    {
+      "name": "toggle-simulated-logging",
+      "description": "Toggles simulated, random-leveled logging on or off.",
+      "params": []
+    },
+    {
+      "name": "toggle-subscriber-updates",
+      "description": "Toggles simulated resource subscription updates on or off.",
+      "params": []
+    },
+    {
+      "name": "trigger-long-running-operation",
+      "description": "Demonstrates a long running operation with progress updates.",
+      "params": [
+        "duration",
+        "steps"
+      ]
+    },
+    {
+      "name": "simulate-research-query",
+      "description": "Simulates a deep research operation that gathers, analyzes, and synthesizes information. Demonstrates MCP task-based operations with progress through multiple stages. If 'ambiguous' is true and client supports elicitation, sends an elicitation request for clarification.",
+      "params": [
+        "topic",
+        "ambiguous"
+      ]
+    }
+  ]
+}

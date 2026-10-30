@@ -13,7 +13,8 @@
     "check": "node render/build.mjs --check",
     "bugs": "node scripts/bugs.mjs",
     "probe": "bash probe/run.sh",
-    "test": "node --test probe/report.test.mjs"
+    "test": "node --test probe/report.test.mjs",
+    "bench:tool-search": "node bench/tool-search/run.mjs"
   },
   "dependencies": {
     "yaml": "^2.9.1"

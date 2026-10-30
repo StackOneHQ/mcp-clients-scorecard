@@ -1,0 +1,300 @@
+{
+  "id": "heroku",
+  "origin": "npx -y @heroku/mcp-server (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "Heroku MCP Server",
+    "version": "1.2.13"
+  },
+  "tools": [
+    {
+      "name": "list_apps",
+      "description": "List Heroku apps: owned, collaborator access, team/space filtering",
+      "params": [
+        "all",
+        "personal",
+        "space",
+        "team"
+      ]
+    },
+    {
+      "name": "get_app_info",
+      "description": "Get app details: config, dynos, addons, access, domains",
+      "params": [
+        "app",
+        "json"
+      ]
+    },
+    {
+      "name": "create_app",
+      "description": "Create app: custom name, region (US/EU), team, private space",
+      "params": [
+        "app",
+        "region",
+        "space",
+        "team"
+      ]
+    },
+    {
+      "name": "rename_app",
+      "description": "Rename app: validate and update app name",
+      "params": [
+        "app",
+        "newName"
+      ]
+    },
+    {
+      "name": "maintenance_on",
+      "description": "Enable maintenance mode and redirect traffic for a Heroku app",
+      "params": [
+        "app"
+      ]
+    },
+    {
+      "name": "maintenance_off",
+      "description": "Disable maintenance mode and restore normal app operations",
+      "params": [
+        "app"
+      ]
+    },
+    {
+      "name": "get_app_logs",
+      "description": "App logs: monitor/debug/filter by dyno/process/source",
+      "params": [
+        "app",
+        "dynoName",
+        "source",
+        "processType"
+      ]
+    },
+    {
+      "name": "list_private_spaces",
+      "description": "Lists Heroku Private Spaces with CIDR blocks, regions, compliance and capacity details. JSON output supported.",
+      "params": [
+        "json"
+      ]
+    },
+    {
+      "name": "list_teams",
+      "description": "Lists accessible Heroku Teams. Use for: viewing teams, checking membership, getting team metadata, and verifying access. JSON output available.",
+      "params": [
+        "json"
+      ]
+    },
+    {
+      "name": "list_addons",
+      "description": "List add-ons: all apps or specific app, detailed metadata",
+      "params": [
+        "all",
+        "app"
+      ]
+    },
+    {
+      "name": "get_addon_info",
+      "description": "Get add-on details: plan, state, billing",
+      "params": [
+        "addon",
+        "app"
+      ]
+    },
+    {
+      "name": "create_addon",
+      "description": "Create add-on: specify service, plan, custom names",
+      "params": [
+        "app",
+        "as",
+        "name",
+        "serviceAndPlan"
+      ]
+    },
+    {
+      "name": "list_addon_services",
+      "description": "List available add-on services and features",
+      "params": [
+        "json"
+      ]
+    },
+    {
+      "name": "list_addon_plans",
+      "description": "List service plans: features, pricing, availability",
+      "params": [
+        "service",
+        "json"
+      ]
+    },
+    {
+      "name": "pg_psql",
+      "description": "Execute SQL queries: analyze, debug, modify schema, manage data",
+      "params": [
+        "command",
+        "file",
+        "credential",
+        "app",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_info",
+      "description": "View database status: config, metrics, resources, health",
+      "params": [
+        "app",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_ps",
+      "description": "Monitor active queries: progress, resources, performance",
+      "params": [
+        "app",
+        "verbose",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_locks",
+      "description": "Analyze locks: blocked queries, deadlocks, concurrency",
+      "params": [
+        "app",
+        "truncate",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_outliers",
+      "description": "Find resource-heavy queries: performance, patterns, optimization",
+      "params": [
+        "app",
+        "num",
+        "reset",
+        "truncate",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_credentials",
+      "description": "Manage access: credentials, permissions, security, monitoring",
+      "params": [
+        "app",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_kill",
+      "description": "Stop processes: stuck queries, blocking transactions, runaway operations",
+      "params": [
+        "app",
+        "pid",
+        "force",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_maintenance",
+      "description": "Track maintenance: windows, schedules, progress, planning",
+      "params": [
+        "app",
+        "database"
+      ]
+    },
+    {
+      "name": "pg_backups",
+      "description": "Manage backups: schedules, status, verification, recovery",
+      "params": [
+        "app"
+      ]
+    },
+    {
+      "name": "pg_upgrade",
+      "description": "Upgrade PostgreSQL: version migration, compatibility, safety",
+      "params": [
+        "app",
+        "version",
+        "confirm",
+        "database"
+      ]
+    },
+    {
+      "name": "ps_list",
+      "description": "List and monitor Heroku app dynos. View running dynos, check status/health, monitor process states, verify configurations.",
+      "params": [
+        "app",
+        "json"
+      ]
+    },
+    {
+      "name": "ps_scale",
+      "description": "Scale Heroku app dynos. Adjust quantities, change sizes, view formation details, manage resources.",
+      "params": [
+        "app",
+        "dyno"
+      ]
+    },
+    {
+      "name": "ps_restart",
+      "description": "Restart Heroku app processes. Restart specific dynos, process types, or all dynos. Reset dyno states selectively.",
+      "params": [
+        "app",
+        "dyno-name",
+        "process-type"
+      ]
+    },
+    {
+      "name": "pipelines_create",
+      "description": "Creates new Heroku deployment pipeline with configurable stages, apps, and team settings",
+      "params": [
+        "name",
+        "stage",
+        "app",
+        "team"
+      ]
+    },
+    {
+      "name": "pipelines_promote",
+      "description": "Promotes apps between pipeline stages with configurable target applications",
+      "params": [
+        "app",
+        "to"
+      ]
+    },
+    {
+      "name": "pipelines_list",
+      "description": "Lists accessible Heroku pipelines with ownership and configuration details",
+      "params": [
+        "json"
+      ]
+    },
+    {
+      "name": "pipelines_info",
+      "description": "Displays detailed pipeline configuration, stages, and connected applications",
+      "params": [
+        "pipeline",
+        "json"
+      ]
+    },
+    {
+      "name": "deploy_to_heroku",
+      "description": "Use for all deployments. Deploys new/existing apps, with or without teams/spaces, and env vars to Heroku. Ask for app name if missing. Requires valid app.json via appJson param.",
+      "params": [
+        "name",
+        "rootUri",
+        "tarballUri",
+        "teamId",
+        "spaceId",
+        "internalRouting",
+        "env",
+        "appJson"
+      ]
+    },
+    {
+      "name": "deploy_one_off_dyno",
+      "description": "\nRun code/commands in Heroku one-off dyno with network and filesystem access.\n\nRequirements:\n- Show command output\n- Use app_info for buildpack detection\n- Support shell setup commands\n- Use stdout/stderr\n\nFeatures:\n- Network/filesystem access\n- Environment variables\n- File operations\n- Temp directory handling\n\nUsage:\n1. Use Heroku runtime\n2. Proper syntax/imports\n3. Organized code structure\n4. Package management:\n   - Define dependencies\n   - Minimize external deps\n   - Prefer native modules\n\nExample package.json:\n```json\n{\n  \"type\": \"module\",\n  \"dependencies\": {\n    \"axios\": \"^1.6.0\"\n  }\n}\n```\n",
+      "params": [
+        "name",
+        "command",
+        "sources",
+        "size",
+        "timeToLive",
+        "env"
+      ]
+    }
+  ]
+}

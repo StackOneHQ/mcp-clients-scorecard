@@ -6,7 +6,7 @@ logo: icon-codex.svg
 website: https://openai.com/codex/
 docs: https://developers.openai.com/codex
 repo: https://github.com/openai/codex
-version_checked: 0.164.0
+version_checked: 0.166.0
 npm: "@openai/codex"
 tracker:
   repo: openai/codex
@@ -15,15 +15,15 @@ cells:
   protocol:
     value: 2025-06-18
     method: probe
-    source: https://github.com/openai/codex/releases
-    evidence: "Live probe: initialize carries 2025-06-18"
-    checked: 2026-10-27
+    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/features/src/lib.rs#L1641
+    evidence: "Live probe of 0.166.0: initialize carries 2025-06-18; the mcp_2026_07_28 feature is under development and off by default"
+    checked: 2026-10-30
   code_mode:
     value: p
     method: docs
     source: https://developers.openai.com/codex/config-reference
-    evidence: features.code_mode is under development and off by default
-    checked: 2026-10-27
+    evidence: "features.code_mode is under development and off by default, matching `codex features list` on 0.166.0"
+    checked: 2026-10-30
     since:
       date: 2026-03-11
       version: "0.114.0"
@@ -32,58 +32,58 @@ cells:
     value: y
     label: BM25
     quality: strong
-    method: issue
-    source: https://github.com/openai/codex/pull/29486
-    evidence: BM25 tool_search over MCP tools
-    checked: 2026-10-27
+    method: source
+    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core/src/tools/handlers/tool_search.rs#L171
+    evidence: "When the model supports the search tool, MCP tools are deferred and tool_search ranks them with BM25 (bm25 crate, English, fit to the corpus) over each tool name, the name with underscores as spaces, description, parameter names and descriptions, plus namespace name and description"
+    checked: 2026-10-30
     since:
       date: 2026-04-10
       version: "0.119.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.119.0
   apps:
     value: n
-    method: issue
+    method: probe
     source: https://github.com/openai/codex/issues/52524
-    evidence: MCP Apps host extension in app-server only; the TUI does not render apps
-    checked: 2026-10-27
+    evidence: "Live probe of 0.166.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"
+    checked: 2026-10-30
   tasks:
     value: n
-    method: issue
+    method: probe
     source: https://github.com/openai/codex/issues/48617
-    evidence: Open feature request
-    checked: 2026-10-27
+    evidence: "Live probe of 0.166.0 declares no tasks capability, and the feature request is still open"
+    checked: 2026-10-30
   events:
     value: n
-    method: issue
-    source: https://github.com/openai/codex/issues/49665
-    evidence: Open feature request
-    checked: 2026-10-27
+    method: source
+    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/codex-mcp/src/resource_client.rs#L353
+    evidence: "events/list and events/stream are sent only to the built-in codex_apps hosted server, not to user-configured MCP servers; issue 49665 about event subscriptions is still open"
+    checked: 2026-10-30
   cimd:
     value: y
     method: docs
     source: https://developers.openai.com/codex/mcp
-    evidence: CIMD and DCR documented
-    checked: 2026-10-27
+    evidence: "Docs say Codex picks CIMD when the authorization server advertises client_id_metadata_document_supported, otherwise DCR"
+    checked: 2026-10-30
     since:
       date: 2026-08-18
       version: "0.148.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.148.0
   id_jag:
     value: p
-    method: issue
-    source: https://github.com/openai/codex/pull/55334
-    evidence: XAA support merged behind the use_xaa feature, default off
-    checked: 2026-10-27
+    method: source
+    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/features/src/lib.rs#L1671
+    evidence: "Enterprise-managed authorization (PR 55334) runs only with use_xaa, which is under development and off by default in 0.166.0, and needs the 2026-07-28 protocol flag"
+    checked: 2026-10-30
     since:
       date: 2026-10-23
       version: "0.164.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.164.0
   elicitation:
     value: y
-    method: issue
+    method: probe
     source: https://github.com/openai/codex/pull/22188
-    evidence: Form and URL elicitation
-    checked: 2026-10-27
+    evidence: "Live probe of 0.166.0 declares elicitation form and url"
+    checked: 2026-10-30
     since:
       date: 2025-12-02
       version: "0.64.0"

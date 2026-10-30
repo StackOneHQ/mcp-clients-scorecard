@@ -6,7 +6,7 @@ logo: icon-zed.svg
 website: https://zed.dev
 docs: https://zed.dev/docs/ai/mcp
 repo: https://github.com/zed-industries/zed
-version_checked: main@6b985a8
+version_checked: v1.26.2
 tracker:
   repo: zed-industries/zed
   mcp_in_title: true
@@ -14,54 +14,54 @@ cells:
   protocol:
     value: 2025-11-25
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server/src/protocol.rs#L42
-    evidence: context_server/src/types.rs:11 `LATEST_PROTOCOL_VERSION = "2025-11-25"`; protocol.rs:42 sends it in InitializeParams (own implementation, no SDK)
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/protocol.rs#L42
+    evidence: 'At tag v1.26.2, context_server/src/types.rs:11 `LATEST_PROTOCOL_VERSION = "2025-11-25"` (2025-06-18 also accepted, :16); protocol.rs:42 sends it in InitializeParams (own implementation, no SDK)'
+    checked: 2026-10-30
   code_mode:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/tree/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server
-    evidence: "grep of crates/*.rs for code mode / execute_javascript: no MCP hit"
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/tree/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server
+    evidence: 'At tag v1.26.2, grep of crates/*.rs for "execute_javascript", "code_mode", "codemode": no MCP hit (only OpenCodeModel names in the opencode provider)'
+    checked: 2026-10-30
   tool_search:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/agent_ui/src/conversation_view/thread_view.rs#L11319
-    evidence: "grep for tool_search / deferred tool / search_tools: only an icon name (`IconName::ToolSearch`) in thread_view.rs:11319"
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/agent_ui/src/conversation_view/thread_view.rs#L11062
+    evidence: 'At tag v1.26.2, grep for "tool_search", "deferred_tool", "search_tools", "defer_loading": only an icon name (`IconName::ToolSearch`, thread_view.rs:11058-11062); every MCP tool is sent to the model'
+    checked: 2026-10-30
   apps:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server/src/types.rs#L467
-    evidence: No "ui://" or "io.modelcontextprotocol" in crates; ClientCapabilities has only experimental, sampling, roots
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/types.rs#L467
+    evidence: 'At tag v1.26.2, no "ui://" or "io.modelcontextprotocol" in context_server, context_server_store or project; ClientCapabilities (types.rs:467-474) has only experimental, sampling, roots'
+    checked: 2026-10-30
   tasks:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server/src/types.rs#L467
-    evidence: No tasks/get, tasks/result in crates; capabilities struct has no tasks
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/types.rs#L467
+    evidence: At tag v1.26.2, no tasks/get or tasks/result in context_server; the capabilities struct has no tasks
+    checked: 2026-10-30
   events:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/tree/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server
-    evidence: "grep events/subscribe, notifications/events: no hits"
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/tree/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server
+    evidence: 'At tag v1.26.2, grep for "events/subscribe", "notifications/events": no hits'
+    checked: 2026-10-30
   cimd:
     value: y
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server/src/oauth.rs#L515
-    evidence: oauth.rs:37 `CIMD_URL = "https://zed.dev/oauth/client-metadata.json"`; :515-518 uses it when `client_id_metadata_document_supported`, DCR fallback
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/oauth.rs#L515
+    evidence: At tag v1.26.2, oauth.rs:37 `CIMD_URL = "https://zed.dev/oauth/client-metadata.json"`; :515-517 uses it when `client_id_metadata_document_supported`, DCR fallback
+    checked: 2026-10-30
   id_jag:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/tree/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server
-    evidence: "grep id-jag, jwt-bearer: no hits"
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/tree/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server
+    evidence: 'At tag v1.26.2, grep for "id-jag", "jwt-bearer": no hits'
+    checked: 2026-10-30
   elicitation:
     value: n
     method: source
-    source: https://github.com/zed-industries/zed/blob/6b985a8b264165f2bf4cd04a8be1cdb40286ebe5/crates/context_server/src/protocol.rs#L43
-    evidence: 'protocol.rs:43-47 capabilities = {experimental: None, sampling: None, roots: None}. "elicitation" hits in crates/agent, acp_thread are ACP/ask_user, not MCP (none in context_server or context_server_store)'
-    checked: 2026-10-27
+    source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/protocol.rs#L43
+    evidence: 'At tag v1.26.2, protocol.rs:43-47 capabilities = {experimental: None, sampling: None, roots: None} and context_server has no elicitation handler. The elicitation forms in crates/agent (thread.rs:6740) are ACP forms for the built-in agent''s own tools, not MCP'
+    checked: 2026-10-30
