@@ -1,0 +1,77 @@
+# Cursor. Field reference: data/README.md. After editing, run npm run build.
+name: Cursor
+group: app
+tier: B
+logo: icon-cursor.svg
+website: https://cursor.com
+docs: https://cursor.com/docs/mcp
+repo: null
+tracker: null
+cells:
+  protocol:
+    value: not published
+    method: docs
+    source: https://zuplo.com/learn/mcp/compatibility/clients/cursor
+    evidence: 'Cursor docs and changelog state no protocol revision (third party Zuplo: "Not published")'
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: No hit in cursor.com/docs/mcp or searches
+    checked: 2026-10-27
+  tool_search:
+    value: y
+    label: Files
+    quality: basic
+    method: docs
+    source: https://cursor.com/blog/dynamic-context-discovery
+    evidence: 'Cursor blog 2026-01-06: "we support dynamic context discovery for MCP by syncing tool descriptions to a folder"; the agent gets tool names and looks tools up with file search. Ranking not documented'
+    checked: 2026-10-27
+    since:
+      date: 2026-01-06
+      source: https://cursor.com/blog/dynamic-context-discovery
+  apps:
+    value: y
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: '"Cursor supports the MCP Apps extension."'
+    checked: 2026-10-27
+    since:
+      date: 2026-03-03
+      version: "2.6"
+      source: https://cursor.com/changelog/2-6
+  tasks:
+    value: n
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: Support table lists Tools, Prompts, Resources, Roots, Elicitation, Apps only
+    checked: 2026-10-27
+  events:
+    value: n
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: Same table, no Events row
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: docs
+    source: https://forum.cursor.com/t/mcp-oauth-cimd-support-plans-and-timelines/148096
+    evidence: '"Right now, Cursor supports OAuth for MCP servers via DCR and static credentials"; docs OAuth section lists only DCR and static'
+    checked: 2026-10-27
+  id_jag:
+    value: y
+    method: changelog
+    source: https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners
+    evidence: '"XAA requesting app integrations (client AI agents): Claude, Cursor, Docker, VS Code, and Zoom"'
+    checked: 2026-10-27
+  elicitation:
+    value: y
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: 'Support table: Elicitation "Supported"'
+    checked: 2026-10-27
+    since:
+      date: 2025-08-21
+      version: "1.5"
+      source: https://cursor.com/changelog/1-5

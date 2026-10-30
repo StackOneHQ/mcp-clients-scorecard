@@ -1,0 +1,74 @@
+# Claude app. Field reference: data/README.md. After editing, run npm run build.
+name: Claude app
+group: app
+tier: A
+logo: icon-claude.svg
+website: https://claude.com/product/overview
+docs: https://claude.com/docs/connectors/building
+repo: https://github.com/anthropics/claude-ai-mcp
+tracker:
+  repo: anthropics/claude-ai-mcp
+  mcp_in_title: false
+cells:
+  protocol:
+    value: not published
+    method: docs
+    source: https://claude.com/docs/connectors/building
+    evidence: Connector docs cite auth specs 2025-03-26, 2025-06-18, 2025-11-25
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: changelog
+    source: https://claude.com/docs/cowork/changelog
+    evidence: Nothing in connectors, Desktop config or Cowork changelog
+    checked: 2026-10-27
+  tool_search:
+    value: y
+    label: Deferred
+    quality: basic
+    method: changelog
+    source: https://claude.com/docs/cowork/changelog
+    evidence: '"Chat now loads them on demand when the key is true, as Cowork and Code do." (v3.6556.1/.2)'
+    checked: 2026-10-27
+  apps:
+    value: y
+    method: docs
+    source: https://claude.com/docs/connectors/building/mcp-apps/getting-started
+    evidence: MCP Apps getting-started for Claude Desktop; interactive connectors article
+    checked: 2026-10-27
+    since:
+      date: 2026-01-26
+      source: https://claude.com/resources/articles/interactive-tools-in-claude
+  tasks:
+    value: n
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: "\"Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks\""
+    checked: 2026-10-27
+  events:
+    value: n
+    method: docs
+    source: https://claude.com/docs/connectors/building
+    evidence: "Connector build doc \"doesn't yet support: Resource subscriptions, Sampling, Advanced or draft capabilities\""
+    checked: 2026-10-27
+  cimd:
+    value: y
+    method: docs
+    source: https://claude.com/docs/connectors/building/authentication
+    evidence: CIMD "Supported by default" in connector authentication docs
+    checked: 2026-10-27
+  id_jag:
+    value: y
+    method: docs
+    source: https://claude.com/resources/articles/enterprise-managed-auth
+    evidence: Enterprise-managed auth GA; Okta XAA requesting-app list names Claude
+    checked: 2026-10-27
+    since:
+      date: 2026-06-18
+      source: https://claude.com/resources/articles/enterprise-managed-auth
+  elicitation:
+    value: n
+    method: docs
+    source: https://x.com/ClaudeDevs/status/2113698007892070527
+    evidence: '"Tasks and Elicitations are available today in the Claude Code CLI, rolling out to more Claude products soon"'
+    checked: 2026-10-27

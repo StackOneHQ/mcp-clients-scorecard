@@ -1,0 +1,64 @@
+# Windsurf. Field reference: data/README.md. After editing, run npm run build.
+name: Windsurf
+group: app
+tier: C
+logo: icon-windsurf.svg
+website: https://devin.ai/desktop
+docs: https://docs.devin.ai/desktop
+repo: null
+tracker: null
+cells:
+  protocol:
+    value: 2026-07-28
+    method: changelog
+    source: https://docs.devin.ai/desktop/changelog
+    evidence: '"Added support for connecting to MCP servers on protocol revision 2026-07-28" (Desktop v3.10.67; CLI stable same)'
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: changelog
+    source: https://docs.devin.ai/cli/changelog/stable
+    evidence: Devin docs/changelogs searched, no hit
+    checked: 2026-10-27
+  tool_search:
+    value: n
+    method: docs
+    source: https://docs.devin.ai/desktop/cascade/mcp
+    evidence: Legacy Cascade had a 100-tool cap; Devin Local docs show no tool search
+    checked: 2026-10-27
+  apps:
+    value: n
+    method: docs
+    source: https://docs.devin.ai/cli/extensibility/mcp/configuration
+    evidence: No ui:// or Apps entry in Desktop or CLI changelog/MCP docs
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: changelog
+    source: https://docs.devin.ai/cli/changelog/stable
+    evidence: Same
+    checked: 2026-10-27
+  events:
+    value: n
+    method: changelog
+    source: https://docs.devin.ai/cli/changelog/stable
+    evidence: Same
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: docs
+    source: https://docs.devin.ai/cli/extensibility/mcp/configuration
+    evidence: Docs show pre-registered OAuth client and `oauthResource` override only
+    checked: 2026-10-27
+  id_jag:
+    value: n
+    method: changelog
+    source: https://www.okta.com/newsroom/press-releases/okta-announces-cross-app-access-partners
+    evidence: Not in Okta XAA partner list
+    checked: 2026-10-27
+  elicitation:
+    value: n
+    method: changelog
+    source: https://docs.devin.ai/desktop/changelog
+    evidence: 'Desktop v3.11.1108: "Improved handling for less common MCP server features" (unspecific)'
+    checked: 2026-10-27

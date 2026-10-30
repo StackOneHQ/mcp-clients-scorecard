@@ -1,0 +1,68 @@
+# Gemini CLI. Field reference: data/README.md. After editing, run npm run build.
+name: Gemini CLI
+group: cli
+tier: D
+logo: icon-gemini.svg
+website: https://geminicli.com
+docs: https://geminicli.com/docs
+repo: https://github.com/google-gemini/gemini-cli
+version_checked: 0.65.0
+npm: "@google/gemini-cli"
+tracker:
+  repo: google-gemini/gemini-cli
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2025-06-18
+    method: probe
+    source: https://github.com/google-gemini/gemini-cli/blob/363a13119a57354f469732577518b9d6b319d1d6/packages/core/package.json#L34
+    evidence: "SDK pinned exactly 1.23.0 (packages/core/package.json:34; package-lock.json:2058-2059): LATEST 2025-06-18; no override. Matches live probe"
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/tree/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/tools
+    evidence: "grep code mode / execute_javascript in packages: none"
+    checked: 2026-10-27
+  tool_search:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/tree/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/tools
+    evidence: "grep tool search / deferred: none for MCP tools"
+    checked: 2026-10-27
+  apps:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/blob/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/tools/mcp-client.ts#L1869
+    evidence: No ext-apps / `ui://` / io.modelcontextprotocol/ui in packages
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/blob/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/tools/mcp-client.ts#L1869
+    evidence: session client declares only roots; no tasks
+    checked: 2026-10-27
+  events:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/tree/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src
+    evidence: "grep events/subscribe, notifications/events: none"
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/blob/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/mcp/oauth-provider.ts#L105
+    evidence: oauth-provider.ts:105-149 own RFC 7591 `registerClient` (DCR); no clientMetadataUrl
+    checked: 2026-10-27
+  id_jag:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/tree/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/mcp
+    evidence: "grep id-jag, jwt-bearer for MCP: none"
+    checked: 2026-10-27
+  elicitation:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/blob/363a13119a57354f469732577518b9d6b319d1d6/packages/core/src/tools/mcp-client.ts#L1869
+    evidence: mcp-client.ts:1869-1884 `new Client({...},{jsonSchemaValidator})` then `registerCapabilities({roots:{listChanged:true}})`; ListRoots handler :1886. Hits for "elicitation" under agent/ are unrelated agent protocol
+    checked: 2026-10-27

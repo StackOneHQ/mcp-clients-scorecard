@@ -1,0 +1,86 @@
+# Claude Code. Field reference: data/README.md. After editing, run npm run build.
+name: Claude Code
+group: cli
+tier: S
+logo: icon-claude.svg
+website: https://claude.com/product/claude-code
+docs: https://code.claude.com/docs/en/overview
+repo: https://github.com/anthropics/claude-code
+version_checked: 2.1.311
+npm: "@anthropic-ai/claude-code"
+tracker:
+  repo: anthropics/claude-code
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2026-07-28
+    method: probe
+    source: https://code.claude.com/docs/en/changelog
+    evidence: "Live probe: initialize/discover carries 2026-07-28"
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: Not documented in the MCP docs or changelog
+    checked: 2026-10-27
+  tool_search:
+    value: y
+    label: Deferred
+    quality: strong
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: MCP tool search defers tool definitions until the model searches for them
+    checked: 2026-10-27
+    since:
+      date: 2026-01-14
+      version: "2.1.7"
+      source: https://github.com/anthropics/claude-code/releases/tag/v2.1.7
+  apps:
+    value: n
+    method: issue
+    source: https://github.com/anthropics/claude-code/issues/95149
+    evidence: Claude Code is described as a text-only client for MCP Apps; open feature request
+    checked: 2026-10-27
+  tasks:
+    value: y
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: MCP tasks in public beta from v2.1.304
+    checked: 2026-10-27
+    since:
+      date: 2026-10-19
+      version: "2.1.304"
+      source: https://code.claude.com/docs/en/mcp
+  events:
+    value: n
+    method: issue
+    source: https://github.com/anthropics/claude-code/issues/101434
+    evidence: Open feature request, no support shipped
+    checked: 2026-10-27
+  cimd:
+    value: y
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: Supports servers that use a Client ID Metadata Document
+    checked: 2026-10-27
+    since:
+      date: 2026-03-20
+      version: "2.1.81"
+      source: https://github.com/anthropics/claude-code/releases/tag/v2.1.81
+  id_jag:
+    value: y
+    method: docs
+    source: https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth
+    evidence: Anthropic implemented enterprise-managed authorization in Claude Code
+    checked: 2026-10-27
+  elicitation:
+    value: y
+    method: docs
+    source: https://code.claude.com/docs/en/mcp
+    evidence: Form mode and URL mode
+    checked: 2026-10-27
+    since:
+      date: 2026-03-14
+      version: "2.1.76"
+      source: https://github.com/anthropics/claude-code/releases/tag/v2.1.76

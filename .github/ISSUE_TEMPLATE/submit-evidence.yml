@@ -1,0 +1,82 @@
+# Issue form for vendors and users. The feature list matches data/features.yaml.
+name: Submit evidence
+description: Correct a cell or date a feature, with a public source
+title: "[evidence] CLIENT: FEATURE"
+labels:
+  - evidence
+body:
+  - type: markdown
+    attributes:
+      value: "Use this form to correct a cell in the scorecard or to add the release that first shipped a feature. Every claim needs a public https source: a docs page, a changelog entry, a release or a code permalink. See CONTRIBUTING.md for what we accept. A maintainer checks the source and opens the pull request."
+  - type: input
+    id: client
+    attributes:
+      label: Client
+      description: "Name as it appears in the table, or the new client to add. Listed today: ChatGPT, Claude app, Claude Code, Cline, Codex, Continue, Copilot CLI, Cursor, Droid, Gemini CLI, goose, opencode, Pi, VS Code, Windsurf, Zed"
+      placeholder: Claude Code
+    validations:
+      required: true
+  - type: dropdown
+    id: feature
+    attributes:
+      label: Feature
+      options:
+        - Spec version
+        - Code mode
+        - Tool search
+        - MCP Apps
+        - Tasks
+        - Events
+        - CIMD
+        - ID-JAG
+        - Elicitation
+    validations:
+      required: true
+  - type: dropdown
+    id: value
+    attributes:
+      label: Claimed value
+      description: For Spec version, pick the closest and give the version in Notes
+      options:
+        - y (supported)
+        - "p (partial: flag, off by default, experimental or one of two modes)"
+        - n (not supported)
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: Public https link that shows the claim. Code links should be permalinks with a commit hash.
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Version that has the feature, if known
+    validations:
+      required: false
+  - type: input
+    id: shipped
+    attributes:
+      label: Date shipped
+      description: Release date of the first version with the feature, YYYY-MM-DD, if a release note or changelog dates it
+      placeholder: YYYY-MM-DD
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: What the source shows, any flag or setting needed, and a link that dates the release if it is not the source above
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: The source is public and describes a released version, not a plan
+          required: true

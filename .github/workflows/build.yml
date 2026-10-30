@@ -1,0 +1,68 @@
+# On every push, main included, rebuild the README sections, EVIDENCE.md, the history
+# snapshot, the badges and the PNG charts from data/, and commit the result back to that branch.
+# A merged pull request that only edits data/ therefore gets its tables and charts redrawn on main.
+# Commits made with GITHUB_TOKEN start no new push runs, so this cannot loop. It then starts
+# the check workflow on the new commit, because a GITHUB_TOKEN push does not start it either.
+name: build
+on:
+  push:
+    branches: ['**']
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: build-${{ github.ref }}
+  # main queues instead of cancelling, so a run is never stopped halfway through its push
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # The branch tip, not the pushed commit: a queued run then builds on the previous run's commit
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build tables and charts
+        run: CHROME_PATH="$(command -v google-chrome)" npm run build
+      - name: Commit generated files
+        id: commit
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git add README.md EVIDENCE.md data/history assets
+          if git diff --cached --quiet; then
+            echo "Generated files already up to date"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASE=$(git rev-parse HEAD)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate tables and charts from data/"
+          if ! git push origin "HEAD:refs/heads/$BRANCH" 2> "$RUNNER_TEMP/push.err"; then
+            cat "$RUNNER_TEMP/push.err" >&2
+            # A rejected push is only fine when it lost a race: someone pushed while this ran, and their
+            # push queued a run that rebuilds from the new tip. Anything else, such as branch protection,
+            # fails the run, even if the branch also moved.
+            git fetch -q origin "$BRANCH"
+            grep -qE "fetch first|non-fast-forward" "$RUNNER_TEMP/push.err" || exit 1
+            [ "$(git rev-parse FETCH_HEAD)" != "$BASE" ] || exit 1
+            echo "::notice::$BRANCH moved during the build; the queued run regenerates from the new tip"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+      - name: Check the new commit
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+        # Best effort: the npm run check and npm test steps below already validate this commit
+        run: gh workflow run check.yml --ref "$BRANCH" || echo "::warning::Could not start the check workflow on the regenerated commit"
+      - run: npm run check
+      - run: npm test

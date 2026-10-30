@@ -1,0 +1,78 @@
+# Droid. Field reference: data/README.md. After editing, run npm run build.
+name: Droid
+group: cli
+tier: B
+logo: gh-Factory-AI.png
+website: https://factory.com
+docs: https://docs.factory.com
+repo: https://github.com/Factory-AI/factory
+version_checked: 0.249.0
+npm: "@factory/cli"
+tracker:
+  repo: Factory-AI/factory
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2025-11-25
+    method: probe
+    source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.251.0
+    evidence: 'Live probe of 0.251.0, newer than the 0.249.0 binary the source cells were read from: initialize requested and negotiated 2025-11-25 (clientInfo factory-cli). The 0.249.0 binary also carries flag `mcp_2026_07_28` with defaultValue false'
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: docs
+    source: https://docs.factory.ai/harness/mcp
+    evidence: docs.factory.ai MCP/connectors/changelog searched, no hit
+    checked: 2026-10-27
+  tool_search:
+    value: y
+    label: On demand
+    quality: basic
+    method: changelog
+    source: https://docs.factory.ai/changelog/release-notes
+    evidence: '"MCP tool search - Droid can now search and load MCP tools on demand" (flag McpToolSearch default true)'
+    checked: 2026-10-27
+    since:
+      date: 2026-06-03
+      version: "0.140.0"
+      source: https://docs.factory.ai/changelog/release-notes
+  apps:
+    value: n
+    method: source
+    source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.249.0
+    evidence: 0 hits for io.modelcontextprotocol/ui and ui:// in binary | npm @factory/cli-linux-x64@0.249.0
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: source
+    source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.249.0
+    evidence: 0 hits for io.modelcontextprotocol/tasks | same
+    checked: 2026-10-27
+  events:
+    value: n
+    method: source
+    source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.249.0
+    evidence: 0 hits for events/subscribe | same
+    checked: 2026-10-27
+  cimd:
+    value: y
+    method: docs
+    source: https://docs.factory.ai/harness/mcp
+    evidence: "Docs: uses Factory's published client metadata when the server supports CIMD"
+    checked: 2026-10-27
+    since:
+      date: 2026-06-12
+      version: "0.147.0"
+      source: https://docs.factory.ai/changelog/release-notes
+  id_jag:
+    value: n
+    method: source
+    source: https://www.npmjs.com/package/@factory/cli-linux-x64/v/0.249.0
+    evidence: Only an SDK schema (IdJagTokenExchangeResponseSchema); no product wiring; not in Okta list | npm @factory/cli-linux-x64@0.249.0
+    checked: 2026-10-27
+  elicitation:
+    value: p
+    method: changelog
+    source: https://docs.factory.ai/changelog/release-notes
+    evidence: Changelog "Resume MCP elicitations"; binary has elicitation/create and ElicitRequestURLParams
+    checked: 2026-10-27

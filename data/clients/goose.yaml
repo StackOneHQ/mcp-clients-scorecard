@@ -1,0 +1,89 @@
+# goose. Field reference: data/README.md. After editing, run npm run build.
+name: goose
+group: app
+tier: A
+note: Tries the 2026-07-28 handshake first, then falls back to 2025-11-25.
+logo: icon-goose.svg
+website: https://goose-docs.ai
+docs: https://goose-docs.ai/docs
+repo: https://github.com/aaif-goose/goose
+version_checked: 1.56.0
+tracker:
+  repo: aaif-goose/goose
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2026-07-28
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L532
+    evidence: "Cargo.toml:21 rmcp 3.4.1 (LATEST 2025-11-25); mcp_client.rs:532-560 default `ClientLifecycleMode::Auto { preferred_versions: [2026-07-28, 2025-11-25], legacy_version: 2025-11-25 }`"
+    checked: 2026-10-27
+    fallback: 2025-11-25
+  code_mode:
+    value: p
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/platform_extensions/code_execution.rs#L24
+    evidence: Off by default. platform_extensions/mod.rs:155-162 "Code Mode" extension, default_enabled false, turned on per session; code_execution.rs:24 list_functions / get_function_details / execute_javascript (Boa JS); goose-cli Cargo.toml:95 `code-mode` in default features; docs guides/managing-tools/code-mode.md
+    checked: 2026-10-27
+    since:
+      date: 2025-12-18
+      version: "1.17.0"
+      source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0
+  tool_search:
+    value: p
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/platform_extensions/code_execution.rs#L277
+    evidence: "Only on-demand discovery inside Code Mode: `list_functions` lists all callable tools, `get_function_details` by exact name (code_execution.rs:277-278). No query/ranked search tool found (grep tool_search/search_tools in crates: none)"
+    checked: 2026-10-27
+    since:
+      date: 2025-12-18
+      version: "1.17.0"
+      source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0
+  apps:
+    value: y
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L47
+    evidence: mcp_client.rs:47-58 `io.modelcontextprotocol/ui` mimeTypes text/html;profile=mcp-app; agent.rs:257-264 `GooseDesktop => true, GooseCli => false`
+    checked: 2026-10-27
+    since:
+      date: 2026-01-06
+      version: "1.19.0"
+      source: https://github.com/aaif-goose/goose/releases/tag/v1.19.0
+  tasks:
+    value: n
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L438
+    evidence: "grep enable_tasks, io.modelcontextprotocol/tasks in crates: none"
+    checked: 2026-10-27
+  events:
+    value: n
+    method: source
+    source: https://github.com/aaif-goose/goose/tree/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates
+    evidence: "grep events/subscribe, notifications/events: none"
+    checked: 2026-10-27
+  cimd:
+    value: y
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/oauth/mod.rs#L25
+    evidence: oauth/mod.rs:25 `CLIENT_METADATA_URL = "https://goose-docs.ai/oauth/client-metadata.json"`; :167-170 env override; :273-275 `with_client_metadata_url(...)`
+    checked: 2026-10-27
+    since:
+      date: 2026-04-23
+      version: "1.32.0"
+      source: https://github.com/aaif-goose/goose/releases/tag/v1.32.0
+  id_jag:
+    value: n
+    method: source
+    source: https://github.com/aaif-goose/goose/tree/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/oauth
+    evidence: "grep id-jag: none; only gcpauth.rs jwt-bearer for Google provider auth, not MCP"
+    checked: 2026-10-27
+  elicitation:
+    value: y
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/0a2f30681566ec83e6359c375c7f5b36aa3567b2/crates/goose/src/agents/mcp_client.rs#L438
+    evidence: "mcp_client.rs:438-462 `.enable_elicitation()` (declares `elicitation: {}`); url params handler at :412"
+    checked: 2026-10-27
+    since:
+      date: 2025-12-18
+      version: "1.17.0"
+      source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0

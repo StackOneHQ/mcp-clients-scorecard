@@ -1,0 +1,65 @@
+# One entry per column of the scorecard, in column order. Field reference: data/README.md.
+# ref names where the feature is defined. Features marked "client feature" are client designs, not part of the MCP spec.
+- id: protocol
+  label: Spec version
+  definition: The newest protocol version the client negotiates. Green is the current spec, orange is one version behind, red is older, and an empty circle means the client does not publish one.
+  ref: MCP specification
+  url: https://modelcontextprotocol.io/specification/2026-07-28/changelog
+- id: code_mode
+  label: Code mode
+  definition: The client lets the model write a script that calls MCP tools, instead of making one tool call per step.
+  ref: Client feature (described by Cloudflare and Anthropic)
+  url: https://www.anthropic.com/engineering/code-execution-with-mcp
+- id: tool_search
+  label: Tool search
+  definition: The client loads tool definitions on demand instead of putting every tool into the context window. The label says how it searches.
+  ref: Client feature (described by Anthropic)
+  url: https://www.anthropic.com/engineering/advanced-tool-use
+- id: apps
+  label: MCP Apps
+  definition: The client renders interactive UI that a server returns.
+  ref: MCP Apps extension (io.modelcontextprotocol/ui)
+  url: https://modelcontextprotocol.io/extensions/apps/overview
+  spec_date: 2026-01-26
+  spec_source: https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/
+  spec_event: MCP Apps becomes an official extension
+- id: tasks
+  label: Tasks
+  definition: The client supports tasks for long-running tool calls that the client polls for a result. Experimental in the 2025-11-25 spec, moved to an official extension in 2026-07-28.
+  ref: MCP Tasks extension (io.modelcontextprotocol/tasks)
+  url: https://modelcontextprotocol.io/extensions/tasks/overview
+  spec_date: 2025-11-25
+  spec_source: https://modelcontextprotocol.io/specification/2025-11-25/changelog
+  spec_event: Tasks enter the spec as experimental
+- id: events
+  label: Events
+  definition: The client accepts events that a server pushes, without the client polling for them. The working group has a draft design sketch; no spec release defines events yet.
+  ref: Triggers and Events working group (draft design sketch, not a released spec)
+  url: https://github.com/modelcontextprotocol/experimental-ext-triggers-events
+  spec_date: 2026-04-09
+  spec_source: https://github.com/modelcontextprotocol/experimental-ext-triggers-events/commits/main
+  spec_event: Events design sketch published (draft, not a released spec)
+- id: cimd
+  label: CIMD
+  definition: The client registers with OAuth servers through a Client ID Metadata Document, which the 2026-07-28 spec prefers over dynamic client registration.
+  ref: MCP authorization, client registration
+  url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration
+  spec_date: 2025-11-25
+  spec_source: https://modelcontextprotocol.io/specification/2025-11-25/changelog
+  spec_event: CIMD enters the spec
+- id: id_jag
+  label: ID-JAG
+  definition: The client supports enterprise-managed authorization, where the company's identity provider issues the token for the MCP server.
+  ref: Enterprise-Managed Authorization extension
+  url: https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization
+  spec_date: 2025-10-21
+  spec_source: https://github.com/modelcontextprotocol/ext-auth/pull/4
+  spec_event: Enterprise-Managed Authorization merged into ext-auth
+- id: elicitation
+  label: Elicitation
+  definition: The client lets a server ask the user for input mid-call, in a form or by sending them to a URL.
+  ref: MCP specification, client elicitation
+  url: https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation
+  spec_date: 2025-06-18
+  spec_source: https://modelcontextprotocol.io/specification/2025-06-18/changelog
+  spec_event: Elicitation enters the spec

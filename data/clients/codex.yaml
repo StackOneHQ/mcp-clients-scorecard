@@ -1,0 +1,90 @@
+# Codex. Field reference: data/README.md. After editing, run npm run build.
+name: Codex
+group: cli
+tier: C
+logo: icon-codex.svg
+website: https://openai.com/codex/
+docs: https://developers.openai.com/codex
+repo: https://github.com/openai/codex
+version_checked: 0.164.0
+npm: "@openai/codex"
+tracker:
+  repo: openai/codex
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2025-06-18
+    method: probe
+    source: https://github.com/openai/codex/releases
+    evidence: "Live probe: initialize carries 2025-06-18"
+    checked: 2026-10-27
+  code_mode:
+    value: p
+    method: docs
+    source: https://developers.openai.com/codex/config-reference
+    evidence: features.code_mode is under development and off by default
+    checked: 2026-10-27
+    since:
+      date: 2026-03-11
+      version: "0.114.0"
+      source: https://github.com/openai/codex/releases/tag/rust-v0.114.0
+  tool_search:
+    value: y
+    label: BM25
+    quality: strong
+    method: issue
+    source: https://github.com/openai/codex/pull/29486
+    evidence: BM25 tool_search over MCP tools
+    checked: 2026-10-27
+    since:
+      date: 2026-04-10
+      version: "0.119.0"
+      source: https://github.com/openai/codex/releases/tag/rust-v0.119.0
+  apps:
+    value: n
+    method: issue
+    source: https://github.com/openai/codex/issues/52524
+    evidence: MCP Apps host extension in app-server only; the TUI does not render apps
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: issue
+    source: https://github.com/openai/codex/issues/48617
+    evidence: Open feature request
+    checked: 2026-10-27
+  events:
+    value: n
+    method: issue
+    source: https://github.com/openai/codex/issues/49665
+    evidence: Open feature request
+    checked: 2026-10-27
+  cimd:
+    value: y
+    method: docs
+    source: https://developers.openai.com/codex/mcp
+    evidence: CIMD and DCR documented
+    checked: 2026-10-27
+    since:
+      date: 2026-08-18
+      version: "0.148.0"
+      source: https://github.com/openai/codex/releases/tag/rust-v0.148.0
+  id_jag:
+    value: p
+    method: issue
+    source: https://github.com/openai/codex/pull/55334
+    evidence: XAA support merged behind the use_xaa feature, default off
+    checked: 2026-10-27
+    since:
+      date: 2026-10-23
+      version: "0.164.0"
+      source: https://github.com/openai/codex/releases/tag/rust-v0.164.0
+  elicitation:
+    value: y
+    method: issue
+    source: https://github.com/openai/codex/pull/22188
+    evidence: Form and URL elicitation
+    checked: 2026-10-27
+    since:
+      date: 2025-12-02
+      version: "0.64.0"
+      source: https://github.com/openai/codex/releases/tag/rust-v0.64.0

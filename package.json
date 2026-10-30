@@ -1,0 +1,21 @@
+{
+  "name": "mcp-clients-scorecard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Which MCP clients support which parts of the Model Context Protocol, with a source for every cell",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node render/build.mjs",
+    "check": "node render/build.mjs --check",
+    "bugs": "node scripts/bugs.mjs",
+    "probe": "bash probe/run.sh",
+    "test": "node --test probe/report.test.mjs"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}

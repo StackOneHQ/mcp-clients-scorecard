@@ -1,0 +1,70 @@
+# opencode. Field reference: data/README.md. After editing, run npm run build.
+name: opencode
+group: cli
+tier: B
+tier_note: The rubric gives 1.19.4 a C. Held at B because the V2 build, which opencode's own README installs, turns code mode on by default and adds tool search, CIMD and elicitation.
+note: Rated on 1.19.4, the npm latest. The V2 dev build adds code mode, tool search, CIMD and elicitation.
+logo: icon-opencode.svg
+website: https://opencode.ai
+docs: https://opencode.ai/docs
+repo: https://github.com/anomalyco/opencode
+version_checked: 1.19.4
+npm: opencode-ai
+tracker:
+  repo: anomalyco/opencode
+  mcp_in_title: true
+cells:
+  protocol:
+    value: 2025-11-25
+    method: probe
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/schema/src/mcp.ts#L20
+    evidence: 'V1 1.19.4: SDK 1.29.0 (bun.lock:1826). V2 v2.1.4: `@modelcontextprotocol/client` 2.3.1 (bun.lock:1865); packages/schema/src/mcp.ts:20-23 protocol "legacy" (default, initialize up to 2025-11-25) / "auto" / "2026-07-28" opt-in. Matches live probe'
+    checked: 2026-10-27
+  code_mode:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/tool.ts#L258
+    evidence: Rated on V1 1.19.4, which has no code mode. Only V2 has it, on by default; V2 packages/core/src/tool.ts:258 `codeModeEnabled = !whollyDisabled("execute", rules)`; schema/mcp.ts:35,60 MCP tools `codemode` "Defaults to true"; codemode/tool.ts:72 "Run JavaScript in a confined Code Mode runtime"
+    checked: 2026-10-27
+  tool_search:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/codemode/catalog.ts#L49
+    evidence: packages/core/src/codemode/catalog.ts:49 `INLINE_BUDGET = 2_000`; instructions.ts:13 "The catalog is partial. Inside `execute`, use `search(...)`"; packages/codemode/src/tool-runtime.ts `rank`
+    checked: 2026-10-27
+  apps:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/mcp/client.ts#L214
+    evidence: "grep ext-apps, ui://, io.modelcontextprotocol/ui in V1 and V2: none"
+    checked: 2026-10-27
+  tasks:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/148842ef7cb1bc34192b3fff57d0f9721ab9c801/packages/opencode/src/mcp/index.ts#L40
+    evidence: V2 capabilities = roots + elicitation only; V1 mcp/index.ts:40-49 `{roots:{}}` with `// tasks` commented out (issue 28567)
+    checked: 2026-10-27
+  events:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/tree/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/mcp
+    evidence: "grep events/subscribe, notifications/events, SEP-3415: none"
+    checked: 2026-10-27
+  cimd:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/mcp/oauth.ts#L29
+    evidence: V2 packages/core/src/mcp/oauth.ts:29 `CLIENT_METADATA_URL = "https://opencode.ai/oauth/opencode/client.json"`, :442-446 used when `client_id_metadata_document_supported === true`. V1 uses DCR only
+    checked: 2026-10-27
+  id_jag:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/tree/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/mcp
+    evidence: "grep id-jag, jwt-bearer, enterprise-managed: none in V1 or V2"
+    checked: 2026-10-27
+  elicitation:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/cd15a6a38b3852e40a2bea215e2393fe17700789/packages/core/src/mcp/client.ts#L214
+    evidence: 'V2 core/src/mcp/client.ts:214 `elicitation ? { elicitation: { form: {}, url: {} } }`, handler :234 (`elicitation/create`); changelog v2.1.4 "MCP Input Forms Now Appear". V1 mcp/index.ts:44 `// elicitation: {}` commented out (issue 23066); live probe shows capabilities {"roots":{}}'
+    checked: 2026-10-27
