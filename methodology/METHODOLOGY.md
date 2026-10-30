@@ -26,7 +26,7 @@ The values mean:
 
 A feature the vendor calls beta or preview is `y` when it is on by default or turned on by a documented setting or admin policy, and `p` when it needs an experimental flag or an undocumented switch. The evidence names the vendor's label.
 
-For tool search, `quality: strong` marks a search the vendor documents (BM25, embeddings, deferred loading with a search tool), and `basic` marks one whose ranking is not documented. Strong labels show green in the matrix image, basic ones amber.
+For tool search, `quality: strong` marks a search tool the vendor documents, or one that ranks with BM25 or embeddings. `basic` marks an undocumented search with simpler matching (keyword or substring), or no search query at all (the model reads files or picks from a list). Strong labels show green in the matrix image, basic ones amber.
 
 [bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers yet.
 

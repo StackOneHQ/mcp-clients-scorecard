@@ -25,7 +25,7 @@ cells:
   tool_search:
     value: y
     label: Deferred
-    quality: basic
+    quality: strong
     method: docs
     source: https://support.claude.com/en/articles/13730515-manage-claude-s-tool-access
     evidence: 'The default Auto mode lets Claude decide "dynamically which connectors to load", and On demand mode loads no connector "until Claude searches for the right one based on your request"; ranking not documented.'

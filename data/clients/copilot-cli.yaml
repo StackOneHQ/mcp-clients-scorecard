@@ -26,7 +26,7 @@ cells:
     checked: 2026-10-30
   tool_search:
     value: y
-    label: Regex
+    label: Hosted
     quality: strong
     method: source
     source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105

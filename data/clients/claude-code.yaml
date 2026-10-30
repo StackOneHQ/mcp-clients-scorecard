@@ -72,7 +72,7 @@ cells:
     value: y
     method: docs
     source: https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth
-    evidence: "The MCP blog says Anthropic implemented enterprise-managed authorization so admins can authorize MCP servers across Claude, Claude Code and Cowork; local XAA setup in the CLI still needs an undocumented switch"
+    evidence: "The MCP blog says Anthropic implemented enterprise-managed authorization so admins can authorize MCP servers across Claude, Claude Code and Cowork, which is a documented admin policy and so counts as y. Setting up XAA locally in the CLI without that policy needs an undocumented switch"
     checked: 2026-10-30
   elicitation:
     value: y

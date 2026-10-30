@@ -11,13 +11,14 @@ import * as bm25 from './rankers/bm25.mjs';
 import * as embeddings from './rankers/embeddings.mjs';
 import * as hybrid from './rankers/hybrid.mjs';
 import * as rewrite from './rankers/rewrite.mjs';
-import { spend } from './lib/openai.mjs';
+import { setSpendCap, spend } from './lib/openai.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const catalogue = JSON.parse(readFileSync(join(here, 'data', 'catalogue.json'), 'utf8'));
 const queries = JSON.parse(readFileSync(join(here, 'data', 'queries.json'), 'utf8'));
 const offline = process.argv.includes('--offline') || !process.env.OPENAI_API_KEY;
 const SPEND_CAP_USD = 5;
+setSpendCap(SPEND_CAP_USD);
 
 const ids = new Set(catalogue.map((t) => t.id));
 for (const q of queries) for (const g of q.gold) if (!ids.has(g)) throw new Error(`query ${q.id}: unknown gold id ${g}`);

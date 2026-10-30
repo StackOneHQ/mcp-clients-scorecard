@@ -3,7 +3,9 @@ import { spawn } from 'node:child_process';
 
 export function listTools(command, args, { env = {}, cwd, timeoutMs = 60000 } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, env: { ...process.env, ...env }, stdio: ['pipe', 'pipe', 'pipe'] });
+    // Pass only what npx needs, so no credential in our environment reaches a third-party server.
+    const base = Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'npm_config_cache'].filter((k) => process.env[k] !== undefined).map((k) => [k, process.env[k]]));
+    const child = spawn(command, args, { cwd, env: { ...base, ...env }, stdio: ['pipe', 'pipe', 'pipe'] });
     let buf = '';
     let stderr = '';
     let nextId = 1;

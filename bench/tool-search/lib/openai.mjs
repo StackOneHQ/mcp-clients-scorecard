@@ -13,6 +13,10 @@ export const PRICES = {
   'text-embedding-3-small': { input: 0.02 },
   'gpt-4.1-mini': { input: 0.4, output: 1.6 },
 };
+// run.mjs sets this; post() refuses any billable request once spend passes it.
+export let spendCap = Infinity;
+export function setSpendCap(usd) { spendCap = usd; }
+
 export const usage = {}; // model -> { input, output, cachedCalls, apiCalls }
 
 function track(model, input = 0, output = 0, cached = false) {
@@ -35,6 +39,7 @@ export function spend() {
 async function post(path, body) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) throw new Error('OPENAI_API_KEY is not set');
+  if (spend().total > spendCap) throw new Error(`spend cap of ${spendCap} reached`);
   for (let attempt = 0; ; attempt++) {
     const res = await fetch(`https://api.openai.com/v1/${path}`, {
       method: 'POST',
@@ -42,7 +47,8 @@ async function post(path, body) {
       body: JSON.stringify(body),
     });
     if (res.ok) return res.json();
-    const text = (await res.text()).slice(0, 300);
+    // Error bodies can echo request details, so strip the key and anything key-shaped.
+    const text = (await res.text()).split(key).join('[redacted]').replace(/sk-[A-Za-z0-9_-]{8,}/g, '[redacted]').slice(0, 300);
     if (attempt < 4 && (res.status === 429 || res.status >= 500)) {
       await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
       continue;
