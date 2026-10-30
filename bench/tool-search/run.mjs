@@ -55,7 +55,7 @@ const results = { date: '2026-10-30', catalogue: { tools: catalogue.length, serv
 
 for (const R of RANKERS) {
   if (R.online && offline) { console.error(`skip ${R.name} (no OPENAI_API_KEY or --offline)`); continue; }
-  if (spend().total > SPEND_CAP_USD) throw new Error('spend cap reached');
+  if (spend().total >= SPEND_CAP_USD) throw new Error('spend cap reached');
   if (R.prepare) await R.prepare();
   const per = [];
   for (const q of queries) {
