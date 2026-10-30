@@ -12,38 +12,38 @@ cells:
     value: 2026-07-28
     method: docs
     source: https://developers.openai.com/plugins/build/mcp-events
-    evidence: '"requires MCP 2.0 (2026-07-28)" for MCP Events (paraphrase of docs page, not verbatim)'
-    checked: 2026-10-27
+    evidence: 'The MCP Events page says "MCP Events in ChatGPT requires MCP 2.0 (protocol version `2026-07-28`)."'
+    checked: 2026-10-30
   code_mode:
     value: n
     method: docs
     source: https://developers.openai.com/api/docs/guides/tools
-    evidence: 'No ChatGPT-app doc found. API-side only: "Programmatic Tool Calling" in OpenAI API tools guide'
-    checked: 2026-10-27
+    evidence: Programmatic Tool Calling ("Let models compose and run JavaScript that orchestrates tool calls") is documented only for the OpenAI API, and no ChatGPT app doc offers it for MCP tools.
+    checked: 2026-10-30
   tool_search:
     value: n
     method: docs
     source: https://developers.openai.com/api/docs/guides/tools-connectors-mcp
-    evidence: 'API: "set defer_loading: true on the MCP server tool definition" (strategy: deferred MCP server tools, namespaces, hosted tool_search, gpt-5.4+)'
-    checked: 2026-10-27
+    evidence: 'Deferred MCP tools with `defer_loading: true` and the hosted tool_search tool are documented for the Responses API only, while the ChatGPT custom MCP server guide says all tools an app exposes are available, with no tool search.'
+    checked: 2026-10-30
   apps:
     value: y
     method: docs
     source: https://developers.openai.com/apps-sdk/mcp-apps-in-chatgpt.md
-    evidence: '"ChatGPT supports the MCP Apps open standard for embedded app UIs."'
-    checked: 2026-10-27
+    evidence: The Apps SDK page says "ChatGPT implements the open MCP Apps standard for UI returned by an MCP server."
+    checked: 2026-10-30
   tasks:
     value: n
     method: docs
     source: https://developers.openai.com/plugins/build/mcp-server
-    evidence: No mention of io.modelcontextprotocol/tasks in plugin/MCP/developer-mode docs
-    checked: 2026-10-27
+    evidence: The plugin MCP server, auth and custom MCP server docs never mention io.modelcontextprotocol/tasks, and an open community request for tasks got an OpenAI reply on 2026-09-07 with no timeline.
+    checked: 2026-10-30
   events:
     value: p
     method: docs
     source: https://developers.openai.com/plugins/build/mcp-events
-    evidence: Webhook delivery only, needs 2026-07-28, Work chats, no polling or streaming, no explicit "beta" label on page
-    checked: 2026-10-27
+    evidence: 'The page says ChatGPT supports "webhook delivery and callback verification" from the draft MCP Events spec, while polling, streaming and the `gap` and `terminated` notifications are not supported, in Work chats only.'
+    checked: 2026-10-30
     since:
       date: 2026-09-29
       source: https://help.openai.com/en/articles/6825453-chatgpt-release-notes
@@ -51,17 +51,17 @@ cells:
     value: y
     method: docs
     source: https://developers.openai.com/plugins/build/auth
-    evidence: '"ChatGPT prioritizes CIMD when it is available" (stable client.json URL)'
-    checked: 2026-10-27
+    evidence: The plugin auth page says "ChatGPT prioritizes CIMD when it is available", with DCR as the builder's alternative.
+    checked: 2026-10-30
   id_jag:
     value: n
     method: docs
     source: https://developers.openai.com/plugins/build/auth
-    evidence: Auth docs list "CIMD, DCR, predefined OAuth clients, and PKCE" plus mTLS; OpenAI not in Okta XAA requesting-app list
-    checked: 2026-10-27
+    evidence: The plugin auth page lists CIMD, DCR, predefined OAuth clients and PKCE with no enterprise-managed auth or ID-JAG, and Okta's Cross App Access partner list (2026-09-24) names no OpenAI app.
+    checked: 2026-10-30
   elicitation:
-    value: y
+    value: p
     method: docs
     source: https://developers.openai.com/plugins/build/mcp-server
-    evidence: '"Use MCP elicitation when the server needs structured information that was not provided in the original tool call."'
-    checked: 2026-10-27
+    evidence: 'The plugin MCP server page says "Use MCP elicitation when the server needs structured information that was not provided in the original tool call", without saying whether form or URL mode is meant, so this is p until both modes are confirmed.'
+    checked: 2026-10-30

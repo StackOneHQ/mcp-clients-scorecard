@@ -1,20 +1,10 @@
 # One entry per column of the scorecard, in column order. Field reference: data/README.md.
-# ref names where the feature is defined. Features marked "client feature" are client designs, not part of the MCP spec.
+# ref names where the feature is defined. kind: harness marks a client design that is not part of the MCP spec; those columns sit last, in their own group.
 - id: protocol
   label: Spec version
   definition: The newest protocol version the client negotiates. Green is the current spec, orange is one version behind, red is older, and an empty circle means the client does not publish one.
   ref: MCP specification
   url: https://modelcontextprotocol.io/specification/2026-07-28/changelog
-- id: code_mode
-  label: Code mode
-  definition: The client lets the model write a script that calls MCP tools, instead of making one tool call per step.
-  ref: Client feature (described by Cloudflare and Anthropic)
-  url: https://www.anthropic.com/engineering/code-execution-with-mcp
-- id: tool_search
-  label: Tool search
-  definition: The client loads tool definitions on demand instead of putting every tool into the context window. The label says how it searches.
-  ref: Client feature (described by Anthropic)
-  url: https://www.anthropic.com/engineering/advanced-tool-use
 - id: apps
   label: MCP Apps
   definition: The client renders interactive UI that a server returns.
@@ -63,3 +53,15 @@
   spec_date: 2025-06-18
   spec_source: https://modelcontextprotocol.io/specification/2025-06-18/changelog
   spec_event: Elicitation enters the spec
+- id: code_mode
+  kind: harness
+  label: Code mode
+  definition: The client lets the model write a script that calls MCP tools, instead of making one tool call per step.
+  ref: Client feature (described by Cloudflare and Anthropic)
+  url: https://www.anthropic.com/engineering/code-execution-with-mcp
+- id: tool_search
+  kind: harness
+  label: Tool search
+  definition: The client loads tool definitions on demand instead of putting every tool into the context window. The label says how it searches.
+  ref: Client feature (described by Anthropic)
+  url: https://www.anthropic.com/engineering/advanced-tool-use

@@ -1,5 +1,5 @@
-// Turn the probe log into probe/results.json: per package, the installed version, the versions it asked for
-// and the version the server agreed. Exits 1 when no client completed a handshake, since that means the probe broke.
+// Turn the probe log into probe/results.json: per package, the installed version, the versions it asked for,
+// the version the server agreed, and the capabilities the client declared. Exits 1 when no client completed a handshake, since that means the probe broke.
 import fs from 'node:fs';
 
 const [logFile, prefix, out] = process.argv.slice(2);
@@ -9,6 +9,24 @@ if (!fs.existsSync(logFile)) {
 }
 const lines = fs.readFileSync(logFile, 'utf8').trim().split('\n').filter(Boolean).map(l => JSON.parse(l));
 const pkgs = ['@anthropic-ai/claude-code', '@github/copilot', '@openai/codex', '@google/gemini-cli', 'opencode-ai', '@factory/cli'];
+// What a declared capabilities object means for the scorecard columns
+const EXT_TASKS = 'io.modelcontextprotocol/tasks';
+const EXT_UI = 'io.modelcontextprotocol/ui';
+const has = v => v !== undefined && v !== null;
+const derive = c => {
+  const caps = c || {};
+  const e = caps.elicitation;
+  return {
+    // A bare elicitation: {} is the pre-mode way of declaring form support
+    elicitation_form: has(e) && (has(e.form) || !has(e.url)),
+    elicitation_url: has(e) && has(e.url),
+    // Tasks sit in capabilities.tasks (2025-11-25) or in the io.modelcontextprotocol/tasks extension (2026-07-28)
+    tasks: has(caps.tasks) || has(caps.extensions?.[EXT_TASKS]) || has(caps.experimental?.tasks),
+    apps: has(caps.extensions?.[EXT_UI]),
+    roots: has(caps.roots),
+    sampling: has(caps.sampling),
+  };
+};
 const results = {};
 for (const pkg of pkgs) {
   const pj = `${prefix}/node_modules/${pkg}/package.json`;
@@ -30,9 +48,12 @@ for (const pkg of pkgs) {
   // it connects, but on the server's version, not the newest it supports
   const replyAt = mine.findLastIndex(l => l.reply);
   const accepted = !negotiated && typeof reply === 'string' && mine.slice(replyAt + 1).some(l => l.method === 'notifications/initialized') ? reply : null;
+  // The first request that carried capabilities: params.capabilities on initialize, _meta on the 2026-07-28 path
+  const capabilities = mine.find(l => l.method && l.capabilities)?.capabilities ?? null;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
-  results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, accepted_downgrade: accepted, errors, client_info: clientInfo, connected: negotiated !== null || accepted !== null };
-  console.log(pkg.padEnd(28), String(version).padEnd(10), negotiated ? `agreed ${negotiated} (asked ${requested.join(', ')})` : accepted ? `asked ${requested.join(', ')}, accepted the server's ${accepted}` : requested.length ? `asked ${requested.join(', ')}, no agreement: ${errors[0] || 'no reply'}` : 'no handshake');
+  results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, accepted_downgrade: accepted, errors, client_info: clientInfo, capabilities, declares: derive(capabilities), connected: negotiated !== null || accepted !== null };
+  const declares = Object.entries(results[pkg].declares).filter(([, v]) => v).map(([k]) => k).join(', ') || 'none';
+  console.log(pkg.padEnd(28), String(version).padEnd(10), negotiated ? `agreed ${negotiated} (asked ${requested.join(', ')})` : accepted ? `asked ${requested.join(', ')}, accepted the server's ${accepted}` : requested.length ? `asked ${requested.join(', ')}, no agreement: ${errors[0] || 'no reply'}` : 'no handshake', `| declares: ${declares}`);
 }
 fs.writeFileSync(out, JSON.stringify({ as_of: new Date().toISOString().slice(0, 10), results }, null, 2) + '\n');
 if (!Object.values(results).some(r => r.connected)) {

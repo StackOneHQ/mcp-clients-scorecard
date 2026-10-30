@@ -1,0 +1,555 @@
+{
+  "id": "gitlab-community",
+  "origin": "npx -y @zereight/mcp-gitlab (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "zereight-gitlab-mcp-server",
+    "version": "2.3.16",
+    "description": "GitLab MCP server for projects, merge requests, issues, pipelines, wiki, releases, and more.",
+    "websiteUrl": "https://zereight.github.io/gitlab-mcp/"
+  },
+  "tools": [
+    {
+      "name": "get_merge_request_approval_state",
+      "description": "Get merge request approval details including approvers. Inspect approval rules and approvers before merging. Use `approve_merge_request` to change approval state.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for GitLab projects. If the identifier is known, use a typed get or list tool.",
+      "params": [
+        "search",
+        "query",
+        "page",
+        "per_page",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get contents of a file or directory from a GitLab project.",
+      "params": [
+        "project_id",
+        "file_path",
+        "path",
+        "ref",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue. Open a new issue. Use `update_issue` for an existing issue and `create_issue_note` for discussion.",
+      "params": [
+        "project_id",
+        "title",
+        "description",
+        "assignee_ids",
+        "labels",
+        "milestone_id",
+        "issue_type",
+        "weight",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "create_merge_request",
+      "description": "Create a new merge request. Open a merge request from an existing source branch to a target. Use `update_merge_request` after it exists.",
+      "params": [
+        "project_id",
+        "title",
+        "description",
+        "source_branch",
+        "target_branch",
+        "target_project_id",
+        "assignee_ids",
+        "reviewer_ids",
+        "labels",
+        "draft",
+        "allow_collaboration",
+        "remove_source_branch",
+        "squash",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_branch",
+      "description": "Get branch details (commit, protection status). To find resources, use the matching list or search tool.",
+      "params": [
+        "project_id",
+        "branch_name",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_branches",
+      "description": "List branches in project with search filter. For one known resource, use the matching get tool.",
+      "params": [
+        "project_id",
+        "search",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_merge_request",
+      "description": "Get details of a merge request (merge_request_iid or source_branch required). Set include_summaries=true for deployment/commit/approval summaries. To find resources, use the matching list or search tool.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "include_summaries",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_merge_request_diffs",
+      "description": "Get the changes/diffs of a merge request (merge_request_iid or source_branch required). To find resources, use the matching list or search tool.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "view",
+        "excluded_file_patterns",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_merge_request_changed_files",
+      "description": "List changed file paths in a merge request without diff content (merge_request_iid or source_branch required).",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "excluded_file_patterns",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "list_merge_request_diffs",
+      "description": "List merge request diffs with pagination (merge_request_iid or source_branch required). For one known resource, use the matching get tool.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "page",
+        "per_page",
+        "unidiff",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_merge_request_file_diff",
+      "description": "Get diffs for specific files from a merge request (merge_request_iid or source_branch required).",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "file_paths",
+        "unidiff",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "update_merge_request",
+      "description": "Update a merge request (merge_request_iid or source_branch required). Use the create tool for new resources and a note tool for comments.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "source_branch",
+        "title",
+        "description",
+        "target_branch",
+        "assignee_ids",
+        "reviewer_ids",
+        "labels",
+        "state_event",
+        "remove_source_branch",
+        "squash",
+        "draft",
+        "milestone_id",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "create_merge_request_thread",
+      "description": "Create a new thread on a merge request. Start a review thread. Use `create_merge_request_note` for an unthreaded note and `create_merge_request_discussion_note` to reply.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "body",
+        "position",
+        "created_at",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "resolve_merge_request_thread",
+      "description": "Resolve a thread on a merge request. Mark an existing review thread resolved. Use `update_merge_request_discussion_note` to change note text.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "discussion_id",
+        "resolved",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "mr_discussions",
+      "description": "List discussion items for a merge request. List complete discussion threads. Use `get_merge_request_notes` for flat notes.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_merge_request_discussion",
+      "description": "Get a single discussion item for a merge request. Fetch one discussion by id. Use `mr_discussions` for a collection and `get_merge_request_note` for a flat note.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "discussion_id",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_merge_request_note",
+      "description": "Get a specific note for a merge request. Fetch one note by id. Use `get_merge_request_notes` for a collection and `mr_discussions` for threads.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "note_id",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_merge_request_notes",
+      "description": "List notes for a merge request. List flat notes. Use `mr_discussions` when thread structure and resolution state are required.",
+      "params": [
+        "project_id",
+        "merge_request_iid",
+        "sort",
+        "order_by",
+        "per_page",
+        "page",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "create_issue_note",
+      "description": "Add a note to an issue, optionally replying to a discussion thread. Add a note to an existing issue, optionally as a reply. Use `update_issue` for issue fields.",
+      "params": [
+        "project_id",
+        "issue_iid",
+        "discussion_id",
+        "body",
+        "created_at",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues (default: created by current user; use scope='all' for all). Use this for issue management: list GitLab issues, optionally scoped with `project_id`. Use `get_issue` when the iid is known and `my_issues` for the current user's assignments.",
+      "params": [
+        "project_id",
+        "assignee_id",
+        "assignee_username",
+        "author_id",
+        "author_username",
+        "confidential",
+        "created_after",
+        "created_before",
+        "due_date",
+        "labels",
+        "milestone",
+        "issue_type",
+        "iteration_id",
+        "scope",
+        "search",
+        "state",
+        "updated_after",
+        "updated_before",
+        "with_labels_details",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "my_issues",
+      "description": "List issues assigned to the authenticated user. Use this for issue management: list issues assigned to the authenticated user. Use `list_issues` for project-wide listing and `get_issue` for one issue. Requires classic read_user or fine-grained User:Read.",
+      "params": [
+        "project_id",
+        "state",
+        "labels",
+        "milestone",
+        "search",
+        "created_after",
+        "created_before",
+        "updated_after",
+        "updated_before",
+        "per_page",
+        "page",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_issue",
+      "description": "Get details of a specific issue. Returns the issue with a slim nested milestone by default; set full_response=true for the complete milestone object. Use this for issue management: inspect one issue. Use `list_issues` or `my_issues` to discover issues first.",
+      "params": [
+        "project_id",
+        "issue_iid",
+        "full_response",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an issue. Returns a slim confirmation by default; set full_response=true for the complete updated issue object. Change fields on an existing issue. Use `update_issue_description_patch` for a targeted description edit and `create_issue_note` for discussion.",
+      "params": [
+        "project_id",
+        "issue_iid",
+        "title",
+        "description",
+        "assignee_ids",
+        "confidential",
+        "discussion_locked",
+        "due_date",
+        "labels",
+        "milestone_id",
+        "state_event",
+        "weight",
+        "issue_type",
+        "full_response",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "update_issue_description_patch",
+      "description": "Apply a patch (search/replace or unified diff) to an issue description. Reduces token usage by allowing small changes without sending the full description. Supports dry_run to preview changes and create_note to summarize updates.",
+      "params": [
+        "project_id",
+        "issue_iid",
+        "patch_type",
+        "patch",
+        "dry_run",
+        "create_note",
+        "allow_multiple",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_issue_discussions",
+      "description": "List discussions for an issue. List threaded discussions for an issue. Use `list_issues` or `get_issue` for issue records.",
+      "params": [
+        "project_id",
+        "issue_iid",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_project",
+      "description": "Get details of a specific project. To find resources, use the matching list or search tool.",
+      "params": [
+        "project_id",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_projects",
+      "description": "List projects accessible by the current user. For one known resource, use the matching get tool.",
+      "params": [
+        "search",
+        "search_namespaces",
+        "owned",
+        "membership",
+        "simple",
+        "archived",
+        "visibility",
+        "order_by",
+        "sort",
+        "with_issues_enabled",
+        "with_merge_requests_enabled",
+        "min_access_level",
+        "topic",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "list_project_members",
+      "description": "List members of a GitLab project. Search project members by name or username. Use `list_group_members` for a group.",
+      "params": [
+        "project_id",
+        "query",
+        "user_ids",
+        "skip_users",
+        "include_inheritance",
+        "per_page",
+        "page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "list_labels",
+      "description": "List labels for a project. For one known resource, use the matching get tool.",
+      "params": [
+        "project_id",
+        "with_counts",
+        "include_ancestor_groups",
+        "search",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_repository_tree",
+      "description": "List files and directories in a repository.",
+      "params": [
+        "project_id",
+        "path",
+        "ref",
+        "recursive",
+        "per_page",
+        "page_token",
+        "pagination",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_merge_requests",
+      "description": "List merge requests (without project_id: user's MRs; with project_id: project MRs). For one known resource, use the matching get tool.",
+      "params": [
+        "project_id",
+        "assignee_id",
+        "assignee_username",
+        "author_id",
+        "author_username",
+        "reviewer_id",
+        "reviewer_username",
+        "approved_by_usernames",
+        "created_after",
+        "created_before",
+        "updated_after",
+        "updated_before",
+        "labels",
+        "milestone",
+        "scope",
+        "search",
+        "state",
+        "order_by",
+        "sort",
+        "target_branch",
+        "source_branch",
+        "wip",
+        "with_labels_details",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "whoami",
+      "description": "Get current authenticated user details. Requires classic read_user or fine-grained User:Read. Use `get_user` or `get_users` to look up another user.",
+      "params": [
+        "jmespath"
+      ]
+    },
+    {
+      "name": "list_commits",
+      "description": "List repository commits with filtering options. For one known resource, use the matching get tool.",
+      "params": [
+        "project_id",
+        "ref_name",
+        "since",
+        "until",
+        "path",
+        "author",
+        "all",
+        "with_stats",
+        "first_parent",
+        "order",
+        "trailers",
+        "page",
+        "per_page",
+        "jmespath",
+        "summary"
+      ]
+    },
+    {
+      "name": "get_commit",
+      "description": "Get details of a specific commit. To find resources, use the matching list or search tool.",
+      "params": [
+        "project_id",
+        "sha",
+        "stats",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_commit_diff",
+      "description": "Get changes/diffs of a specific commit. Return the file diffs for one commit. Use `get_commit` for metadata without the patch.",
+      "params": [
+        "project_id",
+        "sha",
+        "full_diff",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "get_file_blame",
+      "description": "Get git blame for a file at a given ref. Each entry maps a contiguous range of source lines to the commit that last changed them (id, author, authored_date, message). Use range_start/range_end to limit blame to specific lines.",
+      "params": [
+        "project_id",
+        "file_path",
+        "ref",
+        "range_start",
+        "range_end",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "health_check",
+      "description": "Verify server status and authentication. Always reports the MCP server version (mcp_server_version). When authenticated, also reports the GitLab instance version from GET /api/v4/version (version, revision, enterprise). Version lookup failures do not fail the health check  -  those fields are omitted.",
+      "params": [
+        "jmespath"
+      ]
+    },
+    {
+      "name": "discover_tools",
+      "description": "Discover and activate additional tool categories for this session. Available categories: core, merge_requests, issues, repositories, branches, projects, labels, ci, groups, pipelines, milestones, wiki, releases, tags, snippets, users, workitems, webhooks, search, variables, dependency_proxy, vulnerabilities, orbit. Already-active categories are listed in the response. Explicit-only toolsets are omitted; list them in GITLAB_TOOLSETS.",
+      "params": [
+        "category",
+        "jmespath"
+      ]
+    },
+    {
+      "name": "help",
+      "description": "Return a short GitLab workflow guide. Omit topic for the overview and topic list. Use this for a short workflow guide (code-review, pipelines, issues, token-saving). Omit topic for the overview. Detailed GitLab operations stay on the typed tools.",
+      "params": [
+        "topic",
+        "jmespath"
+      ]
+    }
+  ]
+}

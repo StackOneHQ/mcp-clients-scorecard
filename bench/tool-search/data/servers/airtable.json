@@ -1,0 +1,167 @@
+{
+  "id": "airtable",
+  "origin": "npx -y airtable-mcp-server (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "airtable-mcp-server",
+    "version": "1.14.0"
+  },
+  "tools": [
+    {
+      "name": "list_records",
+      "description": "List records from a table",
+      "params": [
+        "baseId",
+        "tableId",
+        "view",
+        "maxRecords",
+        "filterByFormula",
+        "sort",
+        "fields"
+      ]
+    },
+    {
+      "name": "search_records",
+      "description": "Search for records containing specific text",
+      "params": [
+        "baseId",
+        "tableId",
+        "searchTerm",
+        "fieldIds",
+        "maxRecords",
+        "view"
+      ]
+    },
+    {
+      "name": "list_bases",
+      "description": "List all accessible Airtable bases",
+      "params": []
+    },
+    {
+      "name": "list_tables",
+      "description": "List all tables in a specific base",
+      "params": [
+        "baseId",
+        "detailLevel"
+      ]
+    },
+    {
+      "name": "describe_table",
+      "description": "Get detailed information about a specific table",
+      "params": [
+        "baseId",
+        "tableId",
+        "detailLevel"
+      ]
+    },
+    {
+      "name": "get_record",
+      "description": "Get a specific record by ID",
+      "params": [
+        "baseId",
+        "tableId",
+        "recordId"
+      ]
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new record in a table",
+      "params": [
+        "baseId",
+        "tableId",
+        "fields"
+      ]
+    },
+    {
+      "name": "update_records",
+      "description": "Update up to 10 records in a table",
+      "params": [
+        "baseId",
+        "tableId",
+        "records"
+      ]
+    },
+    {
+      "name": "delete_records",
+      "description": "Delete records from a table",
+      "params": [
+        "baseId",
+        "tableId",
+        "recordIds"
+      ]
+    },
+    {
+      "name": "create_table",
+      "description": "Create a new table in a base",
+      "params": [
+        "baseId",
+        "name",
+        "fields",
+        "description"
+      ]
+    },
+    {
+      "name": "update_table",
+      "description": "Update a table's name or description",
+      "params": [
+        "baseId",
+        "tableId",
+        "name",
+        "description"
+      ]
+    },
+    {
+      "name": "create_field",
+      "description": "Create a new field in a table",
+      "params": [
+        "baseId",
+        "tableId",
+        "nested"
+      ]
+    },
+    {
+      "name": "update_field",
+      "description": "Update a field's name or description",
+      "params": [
+        "baseId",
+        "tableId",
+        "fieldId",
+        "name",
+        "description"
+      ]
+    },
+    {
+      "name": "create_comment",
+      "description": "Create a comment on a record",
+      "params": [
+        "baseId",
+        "tableId",
+        "recordId",
+        "text",
+        "parentCommentId"
+      ]
+    },
+    {
+      "name": "list_comments",
+      "description": "List comments on a record",
+      "params": [
+        "baseId",
+        "tableId",
+        "recordId",
+        "pageSize",
+        "offset"
+      ]
+    },
+    {
+      "name": "upload_attachment",
+      "description": "Upload a file directly to an attachment field on an existing record using Airtable's upload API. Supports files up to 5 MB. For larger files, use create_record or update_records with a public URL. The record must already exist.",
+      "params": [
+        "baseId",
+        "recordId",
+        "attachmentFieldIdOrName",
+        "file",
+        "filename",
+        "contentType"
+      ]
+    }
+  ]
+}

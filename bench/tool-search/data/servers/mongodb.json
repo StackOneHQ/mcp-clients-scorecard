@@ -1,0 +1,292 @@
+{
+  "id": "mongodb",
+  "origin": "npx -y mongodb-mcp-server (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "MongoDB MCP Server",
+    "version": "3.2.2"
+  },
+  "tools": [
+    {
+      "name": "aggregate-db",
+      "description": "Run an aggregation against a MongoDB database",
+      "params": [
+        "connectionId",
+        "database",
+        "pipeline",
+        "responseBytesLimit"
+      ]
+    },
+    {
+      "name": "aggregate",
+      "description": "Run an aggregation against a MongoDB collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "pipeline",
+        "responseBytesLimit"
+      ]
+    },
+    {
+      "name": "collection-indexes",
+      "description": "Describe the indexes for a collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection"
+      ]
+    },
+    {
+      "name": "collection-schema",
+      "description": "Describe the schema for a collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "sampleSize",
+        "responseBytesLimit"
+      ]
+    },
+    {
+      "name": "collection-storage-size",
+      "description": "Gets the size of the collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection"
+      ]
+    },
+    {
+      "name": "connect",
+      "description": "Connect to a MongoDB instance and get back a connectionId to pass to the other MongoDB tools. Each call establishes a new, independent connection  -  multiple connections can be active at the same time.",
+      "params": [
+        "connectionString",
+        "connectionName"
+      ]
+    },
+    {
+      "name": "count",
+      "description": "Gets the number of documents in a MongoDB collection using db.collection.count() and query as an optional filter parameter",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "query"
+      ]
+    },
+    {
+      "name": "create-collection",
+      "description": "Creates a new collection in a database. If the database doesn't exist, it will be created automatically.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection"
+      ]
+    },
+    {
+      "name": "create-index",
+      "description": "Create an index for a collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "name",
+        "definition"
+      ]
+    },
+    {
+      "name": "db-stats",
+      "description": "Returns statistics that reflect the use state of a single database",
+      "params": [
+        "connectionId",
+        "database"
+      ]
+    },
+    {
+      "name": "delete-many",
+      "description": "Removes all documents that match the filter from a MongoDB collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "filter"
+      ]
+    },
+    {
+      "name": "disconnect",
+      "description": "Close a MongoDB connection and revoke its connectionId.",
+      "params": [
+        "connectionId"
+      ]
+    },
+    {
+      "name": "drop-collection",
+      "description": "Removes a collection or view from the database. The method also removes any indexes associated with the dropped collection.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection"
+      ]
+    },
+    {
+      "name": "drop-database",
+      "description": "Removes the specified database, deleting the associated data files",
+      "params": [
+        "connectionId",
+        "database"
+      ]
+    },
+    {
+      "name": "drop-index",
+      "description": "Drop an index for the provided database and collection.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "indexName",
+        "type"
+      ]
+    },
+    {
+      "name": "explain",
+      "description": "Returns statistics describing the execution of the winning plan chosen by the query optimizer for the evaluated method",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "method",
+        "verbosity"
+      ]
+    },
+    {
+      "name": "export",
+      "description": "Export a query or aggregation results in the specified EJSON format.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "exportTitle",
+        "exportTarget",
+        "jsonExportFormat"
+      ]
+    },
+    {
+      "name": "find",
+      "description": "Run a find query against a MongoDB collection",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "filter",
+        "projection",
+        "limit",
+        "sort",
+        "responseBytesLimit"
+      ]
+    },
+    {
+      "name": "insert-many",
+      "description": "Insert an array of documents into a MongoDB collection. If the list of documents is above com.mongodb/maxRequestPayloadBytes, consider inserting them in batches.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "documents"
+      ]
+    },
+    {
+      "name": "list-collections",
+      "description": "List all collections for a given database",
+      "params": [
+        "connectionId",
+        "database"
+      ]
+    },
+    {
+      "name": "list-connections",
+      "description": "List the active MongoDB connections and their connectionIds. Use this to find a connectionId established earlier.",
+      "params": []
+    },
+    {
+      "name": "list-databases",
+      "description": "List all databases for a MongoDB connection",
+      "params": [
+        "connectionId"
+      ]
+    },
+    {
+      "name": "mongodb-logs",
+      "description": "Returns the most recent logged mongod events",
+      "params": [
+        "connectionId",
+        "type",
+        "limit"
+      ]
+    },
+    {
+      "name": "rename-collection",
+      "description": "Renames a collection in a MongoDB database",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "newName",
+        "dropTarget"
+      ]
+    },
+    {
+      "name": "update-many",
+      "description": "Updates all documents that match the specified filter for a collection. If the list of documents is above com.mongodb/maxRequestPayloadBytes, consider updating them in batches.",
+      "params": [
+        "connectionId",
+        "database",
+        "collection",
+        "filter",
+        "update",
+        "upsert"
+      ]
+    },
+    {
+      "name": "atlas-local-create-deployment",
+      "description": "Create a MongoDB Atlas local deployment. Default image is preview. When the user does not specify an image tag, inform them that preview is used by default and provide this link for more information: https://hub.docker.com/r/mongodb/mongodb-atlas-local",
+      "params": [
+        "deploymentName",
+        "loadSampleData",
+        "imageTag"
+      ]
+    },
+    {
+      "name": "atlas-local-list-deployments",
+      "description": "List MongoDB Atlas local deployments",
+      "params": []
+    },
+    {
+      "name": "atlas-local-delete-deployment",
+      "description": "Delete a MongoDB Atlas local deployment",
+      "params": [
+        "deploymentName"
+      ]
+    },
+    {
+      "name": "atlas-local-connect-deployment",
+      "description": "Connect to a MongoDB Atlas Local deployment and get back a connectionId to pass to the other MongoDB tools",
+      "params": [
+        "deploymentName"
+      ]
+    },
+    {
+      "name": "search-knowledge",
+      "description": "Search for information in the MongoDB Assistant knowledge base. This includes official documentation, curated expert guidance, and other resources provided by MongoDB. Supports filtering by data source and version.",
+      "params": [
+        "query",
+        "limit",
+        "dataSources"
+      ]
+    },
+    {
+      "name": "list-knowledge-sources",
+      "description": "List available data sources in the MongoDB Assistant knowledge base. Use this to explore available data sources or to find search filter parameters to use in search-knowledge.",
+      "params": []
+    }
+  ]
+}

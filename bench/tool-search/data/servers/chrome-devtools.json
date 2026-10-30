@@ -1,0 +1,323 @@
+{
+  "id": "chrome-devtools",
+  "origin": "npx -y chrome-devtools-mcp (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "chrome_devtools",
+    "title": "Chrome DevTools MCP server",
+    "version": "1.12.0"
+  },
+  "tools": [
+    {
+      "name": "click",
+      "description": "Clicks on the provided element",
+      "params": [
+        "pageId",
+        "uid",
+        "dblClick",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "close_page",
+      "description": "Closes the page by its index. The last open page cannot be closed.",
+      "params": [
+        "pageId"
+      ]
+    },
+    {
+      "name": "drag",
+      "description": "Drag an element onto another element",
+      "params": [
+        "pageId",
+        "from_uid",
+        "to_uid",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "emulate",
+      "description": "Emulates various features on the target page. Each call replaces all emulation settings (except extraHttpHeaders), so pass all desired settings in a single call.",
+      "params": [
+        "pageId",
+        "networkConditions",
+        "cpuThrottlingRate",
+        "geolocation",
+        "userAgent",
+        "colorScheme",
+        "forcedColors",
+        "prefersContrast",
+        "prefersReducedMotion",
+        "viewport",
+        "extraHttpHeaders"
+      ]
+    },
+    {
+      "name": "evaluate_script",
+      "description": "Evaluate JavaScript inside the target page. The source can be provided inline or loaded from a local file. Returns the response as JSON, so returned values have to be JSON-serializable.",
+      "params": [
+        "pageId",
+        "function",
+        "sourcePath",
+        "format",
+        "args",
+        "filePath",
+        "dialogAction",
+        "waitForStableDom"
+      ]
+    },
+    {
+      "name": "fill",
+      "description": "Type text into an input, text area or select an option from a <select> element.",
+      "params": [
+        "pageId",
+        "uid",
+        "value",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "fill_form",
+      "description": "Fill out multiple form elements (inputs, selects, checkboxes, radios) at once. ALWAYS prefer this tool over multiple individual 'fill' or 'click' calls when interacting with forms. It is significantly faster, more reliable, and reduces turn count. Example: Fill username, password, and check \"Remember Me\" in one call.",
+      "params": [
+        "pageId",
+        "elements",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "get_console_message",
+      "description": "Gets a console message by its ID. You can get all messages by calling list_console_messages.",
+      "params": [
+        "pageId",
+        "msgid"
+      ]
+    },
+    {
+      "name": "get_css_styles",
+      "description": "Retrieve matched CSS rules, inline styles (element.style), inherited styles, custom properties, and cascade wrappers (@layer, @media, @container, @scope) for an element identified by its UID.\nRules are ordered from highest to lowest cascade precedence and include source line numbers (e.g. index:196). Active (winning) declarations have no prefix tag, while (losing) overridden declarations are prefixed with [overloaded].\nTreat the output as authoritative and complete.\nResults are paginated (10 rules per page by default); use pageIdx to page through the remaining rules. Requires a UID from take_snapshot.",
+      "params": [
+        "pageId",
+        "uid",
+        "pageSize",
+        "pageIdx"
+      ]
+    },
+    {
+      "name": "get_network_request",
+      "description": "Gets a network request by an optional reqid, if omitted returns the currently selected request in the DevTools Network panel. Useful for inspecting request headers (including 'Cookie') and response headers (including 'Set-Cookie' and directives).",
+      "params": [
+        "pageId",
+        "reqid",
+        "requestFilePath",
+        "responseFilePath"
+      ]
+    },
+    {
+      "name": "handle_dialog",
+      "description": "If a browser dialog was opened, use this command to handle it",
+      "params": [
+        "pageId",
+        "action",
+        "promptText"
+      ]
+    },
+    {
+      "name": "hover",
+      "description": "Hover over the provided element",
+      "params": [
+        "pageId",
+        "uid",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "lighthouse_audit",
+      "description": "Get Lighthouse scores, failing audits, and the DOM nodes they flag for accessibility, SEO, best practices, and agentic browsing. Full reports are saved to disk. This excludes performance. For performance audits, run performance_start_trace",
+      "params": [
+        "pageId",
+        "mode",
+        "device",
+        "outputDirPath"
+      ]
+    },
+    {
+      "name": "list_console_messages",
+      "description": "List all console messages for the target page since the last navigation.",
+      "params": [
+        "pageId",
+        "pageSize",
+        "pageIdx",
+        "types",
+        "includePreservedMessages",
+        "includeStackTraces",
+        "serviceWorkerId"
+      ]
+    },
+    {
+      "name": "list_network_requests",
+      "description": "Lists the most recent requests for the target page since the last navigation.",
+      "params": [
+        "pageId",
+        "pageSize",
+        "pageIdx",
+        "resourceTypes",
+        "includePreservedRequests"
+      ]
+    },
+    {
+      "name": "list_pages",
+      "description": "Get a list of pages open in the browser.",
+      "params": []
+    },
+    {
+      "name": "navigate_page",
+      "description": "Go to a URL, or back, forward, or reload. Use project URL if not specified otherwise.",
+      "params": [
+        "pageId",
+        "type",
+        "url",
+        "ignoreCache",
+        "handleBeforeUnload",
+        "initScript",
+        "timeout"
+      ]
+    },
+    {
+      "name": "new_page",
+      "description": "Open a new tab and load a URL. Use project URL if not specified otherwise.",
+      "params": [
+        "url",
+        "background",
+        "isolatedContext",
+        "timeout"
+      ]
+    },
+    {
+      "name": "performance_analyze_insight",
+      "description": "Provides more detailed information on a specific Performance Insight of an insight set that was highlighted in the results of a trace recording.",
+      "params": [
+        "pageId",
+        "insightSetId",
+        "insightName"
+      ]
+    },
+    {
+      "name": "performance_start_trace",
+      "description": "Start a performance trace on the target webpage. Use to find frontend performance issues, Core Web Vitals (LCP, INP, CLS), and improve page load speed.",
+      "params": [
+        "pageId",
+        "reload",
+        "autoStop",
+        "ignoreCache",
+        "filePath"
+      ]
+    },
+    {
+      "name": "performance_stop_trace",
+      "description": "Stop the active performance trace recording on the target webpage.",
+      "params": [
+        "pageId",
+        "filePath"
+      ]
+    },
+    {
+      "name": "press_key",
+      "description": "Press a key or key combination. Use this when other input methods like fill() cannot be used (e.g., keyboard shortcuts, navigation keys, or special key combinations).",
+      "params": [
+        "pageId",
+        "key",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "resize_page",
+      "description": "Resizes the page's window so that the page has specified dimension",
+      "params": [
+        "pageId",
+        "width",
+        "height"
+      ]
+    },
+    {
+      "name": "screencast_start",
+      "description": "Starts recording a screencast (video) of the target page.",
+      "params": [
+        "pageId",
+        "filePath"
+      ]
+    },
+    {
+      "name": "screencast_stop",
+      "description": "Stops the active screencast recording on the target page.",
+      "params": [
+        "pageId"
+      ]
+    },
+    {
+      "name": "select_page",
+      "description": "Select a page as a context for future tool calls.",
+      "params": [
+        "pageId",
+        "bringToFront"
+      ]
+    },
+    {
+      "name": "take_heapsnapshot",
+      "description": "Capture a heap snapshot of the target page. Use to analyze the memory distribution of JavaScript objects and debug memory leaks.",
+      "params": [
+        "pageId",
+        "filePath"
+      ]
+    },
+    {
+      "name": "take_screenshot",
+      "description": "Take a screenshot of the page or element.",
+      "params": [
+        "pageId",
+        "format",
+        "quality",
+        "uid",
+        "fullPage",
+        "filePath"
+      ]
+    },
+    {
+      "name": "take_snapshot",
+      "description": "Take a text snapshot of the target page based on the a11y tree. The snapshot lists page elements along with a unique\nidentifier (uid). Always use the latest snapshot. Prefer taking a snapshot over taking a screenshot. The snapshot indicates the element selected\nin the DevTools Elements panel (if any).",
+      "params": [
+        "pageId",
+        "verbose",
+        "filePath"
+      ]
+    },
+    {
+      "name": "type_text",
+      "description": "Type text using keyboard into a previously focused input",
+      "params": [
+        "pageId",
+        "text",
+        "submitKey"
+      ]
+    },
+    {
+      "name": "upload_file",
+      "description": "Upload a file through a provided element.",
+      "params": [
+        "pageId",
+        "uid",
+        "filePaths",
+        "includeSnapshot"
+      ]
+    },
+    {
+      "name": "wait_for",
+      "description": "Wait for the specified text to appear on the selected page. By default, hidden text is also matched. Set visible to true to wait until the matched text is visible.",
+      "params": [
+        "pageId",
+        "text",
+        "timeout",
+        "visible"
+      ]
+    }
+  ]
+}

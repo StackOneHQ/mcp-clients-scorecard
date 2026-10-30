@@ -26,7 +26,9 @@ The values mean:
 
 A feature the vendor calls beta or preview is `y` when it is on by default or turned on by a documented setting or admin policy, and `p` when it needs an experimental flag or an undocumented switch. The evidence names the vendor's label.
 
-For tool search, `quality: strong` marks a search the vendor documents (BM25, embeddings, deferred loading with a search tool), and `basic` marks one whose ranking is not documented. Strong labels show green in the matrix image, basic ones amber.
+For tool search, `quality: strong` marks a search tool the vendor documents, or one that ranks with BM25 or embeddings. `basic` marks an undocumented search with simpler matching (keyword or substring), or no search query at all (the model reads files or picks from a list). Strong labels show green in the matrix image, basic ones amber.
+
+[bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers yet.
 
 ## Evidence methods
 
@@ -81,7 +83,7 @@ Rules:
 
 - `since` is set only from a public release note, changelog entry, release tag or dated vendor announcement that names the feature, or from a vendor docs page that names the first version with the feature, dated by that version's release. A commit date, or a docs page with neither a date nor a version, is not enough.
 - The date is the release date of the first version that shipped the feature to users, including behind a flag. A later change from partial to full support does not move it.
-- A cell that is `y` or `p` with no `since` is treated as date unknown. It counts in the scorecard and the bar chart, and is left out of the time series. The README lists how many cells per feature are undated.
+- A cell that is `y` or `p` with no `since` is treated as date unknown. It counts in the scorecard and the feature counts table, and is left out of the time series. The README lists how many cells per feature are undated.
 - `since.date` may not be after `as_of`, and its source must be https. `npm run check` enforces both.
 
 Because undated cells are left out, the lines show a lower bound on adoption. A feature with many undated cells will look later and smaller than it is.

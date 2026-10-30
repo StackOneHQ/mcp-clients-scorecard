@@ -15,59 +15,59 @@ tracker:
 cells:
   protocol:
     value: 2025-11-25
-    method: source
-    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
-    evidence: core/package-lock.json:4431-4432 SDK 1.29.0 (LATEST 2025-11-25); core/package.json:67 ^1.25.2; MCPConnection.ts:88-96 no override
-    checked: 2026-10-27
+    method: probe
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/extensions/cli/src/services/MCPService.ts#L405
+    evidence: 'A live probe of cn 1.5.47 (the last npm release, empty HOME, local stdio server) sent initialize with protocolVersion 2025-11-25 and `capabilities: {}`, matching MCPService.ts:405-408 and the IDE core MCPConnection.ts:88-96 on SDK 1.29.0.'
+    checked: 2026-10-30
   code_mode:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
-    evidence: "grep code mode / execute_javascript: none"
-    checked: 2026-10-27
+    evidence: A grep of core and extensions/cli at the final commit for code mode and execute_javascript finds nothing.
+    checked: 2026-10-30
   tool_search:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
-    evidence: "grep tool search / deferred: none"
-    checked: 2026-10-27
+    evidence: A grep of core and extensions/cli at the final commit for tool_search, defer_loading and deferred tools finds nothing; the only BM25 is the codebase index, not MCP tools.
+    checked: 2026-10-30
   apps:
     value: p
     method: source
     source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/gui/src/pages/gui/ToolCallDiv/MCPAppRenderer.tsx
-    evidence: 'gui MCPAppRenderer.tsx imports `AppBridge` from `@modelcontextprotocol/ext-apps/app-bridge`; core/tools/callTool.ts:117-118 reads `mcpMeta.ui.resourceUri`; commit a7a5351b "feat: limited MCP App support (#10132)" 2026-02-06. But client declares `capabilities: {}` (no ui extension advertised)'
-    checked: 2026-10-27
+    evidence: 'The IDE GUI renders MCP App UI through `AppBridge` in MCPAppRenderer.tsx when a tool carries `_meta.ui.resourceUri` (core/tools/callTool.ts:115-118), but the client declares `capabilities: {}` and never advertises the ui extension.'
+    checked: 2026-10-30
     since:
       date: 2026-02-17
       version: "1.2.16"
       source: https://github.com/continuedev/continue/releases/tag/v1.2.16-vscode
   tasks:
     value: n
-    method: source
-    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
-    evidence: "grep tasks/ , io.modelcontextprotocol/tasks: none; capabilities {}"
-    checked: 2026-10-27
+    method: probe
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/extensions/cli/src/services/MCPService.ts#L405
+    evidence: 'The cn 1.5.47 probe declared `capabilities: {}` with no tasks extension, and a grep of core and extensions/cli for tasks/get and io.modelcontextprotocol/tasks finds nothing.'
+    checked: 2026-10-30
   events:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core
-    evidence: "grep events/subscribe, notifications/events: none"
-    checked: 2026-10-27
+    evidence: A grep of core and extensions/cli at the final commit for events/subscribe and notifications/events finds nothing.
+    checked: 2026-10-30
   cimd:
     value: n
     method: source
     source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPOauth.ts#L119
-    evidence: MCPOauth.ts:119-132 `clientMetadata` (redirect_uris, client_name) is DCR only; no clientMetadataUrl
-    checked: 2026-10-27
+    evidence: MCPOauth.ts:119-133 registers with DCR clientMetadata (redirect_uris, client_name) and has no clientMetadataUrl.
+    checked: 2026-10-30
   id_jag:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core
-    evidence: "grep id-jag, jwt-bearer: none"
-    checked: 2026-10-27
+    evidence: A grep of core and extensions/cli at the final commit for id-jag, jwt-bearer and token-exchange finds nothing.
+    checked: 2026-10-30
   elicitation:
     value: n
-    method: source
-    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp/MCPConnection.ts#L88
-    evidence: "MCPConnection.ts:88-96 `capabilities: {}`; grep elicit: none"
-    checked: 2026-10-27
+    method: probe
+    source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/extensions/cli/src/services/MCPService.ts#L405
+    evidence: 'The cn 1.5.47 probe declared `capabilities: {}` with no elicitation, and MCPConnection.ts:88-96 in the IDE core declares the same; a grep for elicit finds no handler.'
+    checked: 2026-10-30

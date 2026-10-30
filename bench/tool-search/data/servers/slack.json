@@ -1,0 +1,75 @@
+{
+  "id": "slack",
+  "origin": "npx -y @modelcontextprotocol/server-slack (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "Slack MCP Server",
+    "version": "1.0.0"
+  },
+  "tools": [
+    {
+      "name": "slack_list_channels",
+      "description": "List public or pre-defined channels in the workspace with pagination",
+      "params": [
+        "limit",
+        "cursor"
+      ]
+    },
+    {
+      "name": "slack_post_message",
+      "description": "Post a new message to a Slack channel",
+      "params": [
+        "channel_id",
+        "text"
+      ]
+    },
+    {
+      "name": "slack_reply_to_thread",
+      "description": "Reply to a specific message thread in Slack",
+      "params": [
+        "channel_id",
+        "thread_ts",
+        "text"
+      ]
+    },
+    {
+      "name": "slack_add_reaction",
+      "description": "Add a reaction emoji to a message",
+      "params": [
+        "channel_id",
+        "timestamp",
+        "reaction"
+      ]
+    },
+    {
+      "name": "slack_get_channel_history",
+      "description": "Get recent messages from a channel",
+      "params": [
+        "channel_id",
+        "limit"
+      ]
+    },
+    {
+      "name": "slack_get_thread_replies",
+      "description": "Get all replies in a message thread",
+      "params": [
+        "channel_id",
+        "thread_ts"
+      ]
+    },
+    {
+      "name": "slack_get_users",
+      "description": "Get a list of all users in the workspace with their basic profile information",
+      "params": [
+        "cursor",
+        "limit"
+      ]
+    },
+    {
+      "name": "slack_get_user_profile",
+      "description": "Get detailed profile information for a specific user",
+      "params": [
+        "user_id"
+      ]
+    }
+  ]
+}

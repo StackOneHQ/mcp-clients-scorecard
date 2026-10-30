@@ -1,0 +1,66 @@
+{
+  "id": "linear-community",
+  "origin": "npx -y linear-mcp-server (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "linear-mcp-server",
+    "version": "1.0.0"
+  },
+  "tools": [
+    {
+      "name": "linear_create_issue",
+      "description": "Creates a new Linear issue with specified details. Use this to create tickets for tasks, bugs, or feature requests. Returns the created issue's identifier and URL. Required fields are title and teamId, with optional description, priority (0-4, where 0 is no priority and 1 is urgent), and status.",
+      "params": [
+        "title",
+        "teamId",
+        "description",
+        "priority",
+        "status"
+      ]
+    },
+    {
+      "name": "linear_update_issue",
+      "description": "Updates an existing Linear issue's properties. Use this to modify issue details like title, description, priority, or status. Requires the issue ID and accepts any combination of updatable fields. Returns the updated issue's identifier and URL.",
+      "params": [
+        "id",
+        "title",
+        "description",
+        "priority",
+        "status"
+      ]
+    },
+    {
+      "name": "linear_search_issues",
+      "description": "Searches Linear issues using flexible criteria. Supports filtering by any combination of: title/description text, team, status, assignee, labels, priority (1=urgent, 2=high, 3=normal, 4=low), and estimate. Returns up to 10 issues by default (configurable via limit).",
+      "params": [
+        "query",
+        "teamId",
+        "status",
+        "assigneeId",
+        "labels",
+        "priority",
+        "estimate",
+        "includeArchived",
+        "limit"
+      ]
+    },
+    {
+      "name": "linear_get_user_issues",
+      "description": "Retrieves issues assigned to a specific user or the authenticated user if no userId is provided. Returns issues sorted by last updated, including priority, status, and other metadata. Useful for finding a user's workload or tracking assigned tasks.",
+      "params": [
+        "userId",
+        "includeArchived",
+        "limit"
+      ]
+    },
+    {
+      "name": "linear_add_comment",
+      "description": "Adds a comment to an existing Linear issue. Supports markdown formatting in the comment body. Can optionally specify a custom user name and avatar for the comment. Returns the created comment's details including its URL.",
+      "params": [
+        "issueId",
+        "body",
+        "createAsUser",
+        "displayIconUrl"
+      ]
+    }
+  ]
+}

@@ -13,16 +13,16 @@ tracker:
 cells:
   protocol:
     value: 2025-11-25
-    method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/mcp/src/protocol/types.ts#L4
-    evidence: 'packages/mcp/src/protocol/types.ts:4 `LATEST_PROTOCOL_VERSION = "2025-11-25"`; client.ts:223 `protocolVersion: this.options.protocolVersion ?? LATEST_PROTOCOL_VERSION`. First-party client (packages/mcp, built-in extension), not an adapter'
-    checked: 2026-10-27
+    method: probe
+    source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
+    evidence: "Own probe of pi 1.4.0 (pi mcp list against a local stdio server, empty HOME) on 2026-10-30 sent initialize with protocolVersion 2025-11-25, matching packages/mcp/src/protocol/types.ts:4 LATEST_PROTOCOL_VERSION at tag v1.4.0"
+    checked: 2026-10-30
   code_mode:
     value: y
     method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/coding-agent/docs/mcp.md#L195
-    evidence: docs/mcp.md:195 `codemode` exposure (default), QuickJS sandbox (docs/cli.md "How codemode works")
-    checked: 2026-10-27
+    source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L195
+    evidence: "docs/mcp.md:195 makes codemode the default MCP exposure, and :204 says Pi activates the codemode tool (model-written JavaScript in a QuickJS sandbox) when such a server connects; the probe listed the server as codemode"
+    checked: 2026-10-30
     since:
       date: 2026-09-29
       version: "0.99.0"
@@ -30,11 +30,11 @@ cells:
   tool_search:
     value: y
     label: BM25
-    quality: basic
+    quality: strong
     method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/coding-agent/docs/codemode.md#L32
-    evidence: 'docs/cli.md:182 `"defaultTools": ["+tool_search"]`; docs/codemode.md:32 `searchTools()` BM25; `deferred` exposure'
-    checked: 2026-10-27
+    source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/extensions/tool-search/tool.ts#L118
+    evidence: "Okapi BM25 (k1 1.2, b 0.75) over each tool's name, name with underscores as spaces, description, schema property names and descriptions, and namespace name, description and instructions, with camelCase splitting, stop words and naive singular stemming; shared by searchTools() in codemode and the tool_search tool, and documented as BM25 in docs/codemode.md:32"
+    checked: 2026-10-30
     since:
       date: 2026-09-29
       version: "0.99.0"
@@ -42,27 +42,27 @@ cells:
   apps:
     value: n
     method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/coding-agent/docs/mcp.md#L246
-    evidence: docs/mcp.md:246 "Resources for MCP Apps ... omitted because Pi does not render them"
-    checked: 2026-10-27
+    source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L246
+    evidence: "docs/mcp.md:246 says resources for MCP Apps (ui:// or text/html;profile=mcp-app) are omitted because Pi does not render them, and extensions/mcp/resources.ts:49 filters them out"
+    checked: 2026-10-30
   tasks:
     value: n
-    method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/mcp/src/runtime.ts#L360
-    evidence: "runtime.ts:360-365 McpClient created with roots only; grep tasks/get, io.modelcontextprotocol/tasks: none"
-    checked: 2026-10-27
+    method: probe
+    source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
+    evidence: "Own probe of 1.4.0 declared only roots; extensions/mcp/runtime.ts:360-365 builds McpClient with roots only, and grep for tasks/get and io.modelcontextprotocol/tasks finds nothing at tag v1.4.0"
+    checked: 2026-10-30
   events:
     value: n
     method: source
-    source: https://github.com/earendil-works/pi/tree/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/mcp/src
-    evidence: "grep events/subscribe, notifications/events: none"
-    checked: 2026-10-27
+    source: https://github.com/earendil-works/pi/tree/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/mcp/src
+    evidence: "grep for events/subscribe and notifications/events finds nothing in packages/mcp or the coding agent at tag v1.4.0"
+    checked: 2026-10-30
   cimd:
     value: y
-    method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/coding-agent/docs/mcp.md#L162
-    evidence: 'docs/mcp.md:162 `oauth.clientRegistration: "cimd"`, client ID `https://pi.dev/oauth/client.json`; oauth.ts:70; added v1.0.1 (2026-10-03)'
-    checked: 2026-10-27
+    method: docs
+    source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L162
+    evidence: "docs/mcp.md:162-172 documents oauth.clientRegistration cimd, which identifies Pi by https://pi.dev/oauth/client.json instead of dynamic registration (extensions/mcp/oauth.ts:246-265); a documented setting, so y"
+    checked: 2026-10-30
     since:
       date: 2026-10-03
       version: "1.0.1"
@@ -70,12 +70,12 @@ cells:
   id_jag:
     value: n
     method: source
-    source: https://github.com/earendil-works/pi/tree/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/mcp/src
-    evidence: "grep id-jag, jwt-bearer, enterprise-managed: none"
-    checked: 2026-10-27
+    source: https://github.com/earendil-works/pi/tree/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/mcp/src
+    evidence: "grep for id-jag, jwt-bearer and enterprise-managed finds nothing in packages/mcp or the coding agent at tag v1.4.0"
+    checked: 2026-10-30
   elicitation:
     value: n
-    method: source
-    source: https://github.com/earendil-works/pi/blob/6c384aa30f619d7b28963f2bab24d8dacbe73cb6/packages/mcp/src/runtime.ts#L360
-    evidence: runtime.ts:360-365 declares only roots; no elicitation handler or capability anywhere in packages/mcp
-    checked: 2026-10-27
+    method: probe
+    source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
+    evidence: "Own probe of 1.4.0 declared capabilities {roots: {}} only; runtime.ts:360-365 passes no elicitation capability or handler, and the docs never mention elicitation"
+    checked: 2026-10-30

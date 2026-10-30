@@ -14,28 +14,28 @@ cells:
     value: not published
     method: docs
     source: https://claude.com/docs/connectors/building
-    evidence: Connector docs cite auth specs 2025-03-26, 2025-06-18, 2025-11-25
-    checked: 2026-10-27
+    evidence: The connector build page names only the 2025-03-26, 2025-06-18 and 2025-11-25 authorization specs and publishes no protocol version for the client.
+    checked: 2026-10-30
   code_mode:
     value: n
     method: changelog
     source: https://claude.com/docs/cowork/changelog
-    evidence: Nothing in connectors, Desktop config or Cowork changelog
-    checked: 2026-10-27
+    evidence: Neither the connector docs nor the Claude Desktop and Cowork changelog through v4.4212.0 (2026-10-29) mention a code mode for MCP tools.
+    checked: 2026-10-30
   tool_search:
     value: y
     label: Deferred
-    quality: basic
-    method: changelog
-    source: https://claude.com/docs/cowork/changelog
-    evidence: '"Chat now loads them on demand when the key is true, as Cowork and Code do." (v3.6556.1/.2)'
-    checked: 2026-10-27
+    quality: strong
+    method: docs
+    source: https://support.claude.com/en/articles/13730515-manage-claude-s-tool-access
+    evidence: 'The default Auto mode lets Claude decide "dynamically which connectors to load", and On demand mode loads no connector "until Claude searches for the right one based on your request"; ranking not documented.'
+    checked: 2026-10-30
   apps:
     value: y
     method: docs
     source: https://claude.com/docs/connectors/building/mcp-apps/getting-started
-    evidence: MCP Apps getting-started for Claude Desktop; interactive connectors article
-    checked: 2026-10-27
+    evidence: The MCP Apps getting-started page describes an MCP App as interactive UI "that your MCP server renders inside a Claude conversation", built with the MCP Apps SDK.
+    checked: 2026-10-30
     since:
       date: 2026-01-26
       source: https://claude.com/resources/articles/interactive-tools-in-claude
@@ -43,32 +43,32 @@ cells:
     value: n
     method: docs
     source: https://code.claude.com/docs/en/mcp
-    evidence: "\"Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks\""
-    checked: 2026-10-27
+    evidence: The Claude Code MCP page limits MCP tasks to terminal, Agent SDK and GitHub Actions sessions and says "Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks".
+    checked: 2026-10-30
   events:
     value: n
     method: docs
     source: https://claude.com/docs/connectors/building
-    evidence: "Connector build doc \"doesn't yet support: Resource subscriptions, Sampling, Advanced or draft capabilities\""
-    checked: 2026-10-27
+    evidence: 'The connector build page says Claude "doesn''t yet support" resource subscriptions, sampling, or advanced or draft capabilities, and nothing documents MCP Events.'
+    checked: 2026-10-30
   cimd:
     value: y
     method: docs
     source: https://claude.com/docs/connectors/building/authentication
-    evidence: CIMD "Supported by default" in connector authentication docs
-    checked: 2026-10-27
+    evidence: The authentication page lists `oauth_cimd` as "Supported by default", used when the authorization server advertises `client_id_metadata_document_supported` and `none` auth, else falling back to DCR.
+    checked: 2026-10-30
   id_jag:
     value: y
     method: docs
-    source: https://claude.com/resources/articles/enterprise-managed-auth
-    evidence: Enterprise-managed auth GA; Okta XAA requesting-app list names Claude
-    checked: 2026-10-27
+    source: https://claude.com/docs/connectors/building/enterprise-managed-auth
+    evidence: The Enterprise Managed Auth page says Claude exchanges a signed identity assertion from the IdP at the server's token endpoint with the JWT bearer grant, per the MCP enterprise managed authorization extension, and the announcement says it became generally available on 2026-08-24.
+    checked: 2026-10-30
     since:
       date: 2026-06-18
       source: https://claude.com/resources/articles/enterprise-managed-auth
   elicitation:
     value: n
-    method: docs
-    source: https://x.com/ClaudeDevs/status/2113698007892070527
-    evidence: '"Tasks and Elicitations are available today in the Claude Code CLI, rolling out to more Claude products soon"'
-    checked: 2026-10-27
+    method: issue
+    source: https://github.com/anthropics/claude-ai-mcp/issues/1085
+    evidence: Cowork declares `elicitation` with form and url but never renders the request (still reproducing on 2.1.310 on 2026-10-25), and the claude.ai request for elicitation (issue 153) is still open, while the connector docs list no elicitation support.
+    checked: 2026-10-30

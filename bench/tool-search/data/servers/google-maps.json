@@ -1,0 +1,66 @@
+{
+  "id": "google-maps",
+  "origin": "npx -y @modelcontextprotocol/server-google-maps (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "mcp-server/google-maps",
+    "version": "0.1.0"
+  },
+  "tools": [
+    {
+      "name": "maps_geocode",
+      "description": "Convert an address into geographic coordinates",
+      "params": [
+        "address"
+      ]
+    },
+    {
+      "name": "maps_reverse_geocode",
+      "description": "Convert coordinates into an address",
+      "params": [
+        "latitude",
+        "longitude"
+      ]
+    },
+    {
+      "name": "maps_search_places",
+      "description": "Search for places using Google Places API",
+      "params": [
+        "query",
+        "location",
+        "radius"
+      ]
+    },
+    {
+      "name": "maps_place_details",
+      "description": "Get detailed information about a specific place",
+      "params": [
+        "place_id"
+      ]
+    },
+    {
+      "name": "maps_distance_matrix",
+      "description": "Calculate travel distance and time for multiple origins and destinations",
+      "params": [
+        "origins",
+        "destinations",
+        "mode"
+      ]
+    },
+    {
+      "name": "maps_elevation",
+      "description": "Get elevation data for locations on the earth",
+      "params": [
+        "locations"
+      ]
+    },
+    {
+      "name": "maps_directions",
+      "description": "Get directions between two points",
+      "params": [
+        "origin",
+        "destination",
+        "mode"
+      ]
+    }
+  ]
+}

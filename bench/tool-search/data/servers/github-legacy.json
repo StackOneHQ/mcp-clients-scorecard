@@ -1,0 +1,296 @@
+{
+  "id": "github-legacy",
+  "origin": "npx -y @modelcontextprotocol/server-github (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "github-mcp-server",
+    "version": "0.6.2"
+  },
+  "tools": [
+    {
+      "name": "create_or_update_file",
+      "description": "Create or update a single file in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "path",
+        "content",
+        "message",
+        "branch",
+        "sha"
+      ]
+    },
+    {
+      "name": "search_repositories",
+      "description": "Search for GitHub repositories",
+      "params": [
+        "query",
+        "page",
+        "perPage"
+      ]
+    },
+    {
+      "name": "create_repository",
+      "description": "Create a new GitHub repository in your account",
+      "params": [
+        "name",
+        "description",
+        "private",
+        "autoInit"
+      ]
+    },
+    {
+      "name": "get_file_contents",
+      "description": "Get the contents of a file or directory from a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "path",
+        "branch"
+      ]
+    },
+    {
+      "name": "push_files",
+      "description": "Push multiple files to a GitHub repository in a single commit",
+      "params": [
+        "owner",
+        "repo",
+        "branch",
+        "files",
+        "message"
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "title",
+        "body",
+        "assignees",
+        "milestone",
+        "labels"
+      ]
+    },
+    {
+      "name": "create_pull_request",
+      "description": "Create a new pull request in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "title",
+        "body",
+        "head",
+        "base",
+        "draft",
+        "maintainer_can_modify"
+      ]
+    },
+    {
+      "name": "fork_repository",
+      "description": "Fork a GitHub repository to your account or specified organization",
+      "params": [
+        "owner",
+        "repo",
+        "organization"
+      ]
+    },
+    {
+      "name": "create_branch",
+      "description": "Create a new branch in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "branch",
+        "from_branch"
+      ]
+    },
+    {
+      "name": "list_commits",
+      "description": "Get list of commits of a branch in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "sha",
+        "page",
+        "perPage"
+      ]
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues in a GitHub repository with filtering options",
+      "params": [
+        "owner",
+        "repo",
+        "direction",
+        "labels",
+        "page",
+        "per_page",
+        "since",
+        "sort",
+        "state"
+      ]
+    },
+    {
+      "name": "update_issue",
+      "description": "Update an existing issue in a GitHub repository",
+      "params": [
+        "owner",
+        "repo",
+        "issue_number",
+        "title",
+        "body",
+        "assignees",
+        "milestone",
+        "labels",
+        "state"
+      ]
+    },
+    {
+      "name": "add_issue_comment",
+      "description": "Add a comment to an existing issue",
+      "params": [
+        "owner",
+        "repo",
+        "issue_number",
+        "body"
+      ]
+    },
+    {
+      "name": "search_code",
+      "description": "Search for code across GitHub repositories",
+      "params": [
+        "q",
+        "order",
+        "page",
+        "per_page"
+      ]
+    },
+    {
+      "name": "search_issues",
+      "description": "Search for issues and pull requests across GitHub repositories",
+      "params": [
+        "q",
+        "order",
+        "page",
+        "per_page",
+        "sort"
+      ]
+    },
+    {
+      "name": "search_users",
+      "description": "Search for users on GitHub",
+      "params": [
+        "q",
+        "order",
+        "page",
+        "per_page",
+        "sort"
+      ]
+    },
+    {
+      "name": "get_issue",
+      "description": "Get details of a specific issue in a GitHub repository.",
+      "params": [
+        "owner",
+        "repo",
+        "issue_number"
+      ]
+    },
+    {
+      "name": "get_pull_request",
+      "description": "Get details of a specific pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number"
+      ]
+    },
+    {
+      "name": "list_pull_requests",
+      "description": "List and filter repository pull requests",
+      "params": [
+        "owner",
+        "repo",
+        "state",
+        "head",
+        "base",
+        "sort",
+        "direction",
+        "per_page",
+        "page"
+      ]
+    },
+    {
+      "name": "create_pull_request_review",
+      "description": "Create a review on a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number",
+        "commit_id",
+        "body",
+        "event",
+        "comments"
+      ]
+    },
+    {
+      "name": "merge_pull_request",
+      "description": "Merge a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number",
+        "commit_title",
+        "commit_message",
+        "merge_method"
+      ]
+    },
+    {
+      "name": "get_pull_request_files",
+      "description": "Get the list of files changed in a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number"
+      ]
+    },
+    {
+      "name": "get_pull_request_status",
+      "description": "Get the combined status of all status checks for a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number"
+      ]
+    },
+    {
+      "name": "update_pull_request_branch",
+      "description": "Update a pull request branch with the latest changes from the base branch",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number",
+        "expected_head_sha"
+      ]
+    },
+    {
+      "name": "get_pull_request_comments",
+      "description": "Get the review comments on a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number"
+      ]
+    },
+    {
+      "name": "get_pull_request_reviews",
+      "description": "Get the reviews on a pull request",
+      "params": [
+        "owner",
+        "repo",
+        "pull_number"
+      ]
+    }
+  ]
+}

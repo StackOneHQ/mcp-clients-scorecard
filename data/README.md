@@ -29,6 +29,7 @@ A list, in column order.
 | `label` | yes | Column header |
 | `definition` | yes | One sentence, shown in the README |
 | `ref` | yes | Where the feature is defined, or "Client feature" when it is not in the spec |
+| `kind` | no | `harness` for a client design that is not part of the MCP spec. Harness features go last and are drawn as their own group. |
 | `url` | yes | https link to that definition |
 | `spec_date` | no | Date the feature entered the spec, became an official extension, or was first published as a draft, YYYY-MM-DD |
 | `spec_source` | with `spec_date` | https link that dates it |

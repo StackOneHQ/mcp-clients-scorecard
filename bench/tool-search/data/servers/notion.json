@@ -1,0 +1,224 @@
+{
+  "id": "notion",
+  "origin": "npx -y @notionhq/notion-mcp-server (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "Notion API",
+    "version": "1.0.0"
+  },
+  "tools": [
+    {
+      "name": "API-get-user",
+      "description": "Notion | Retrieve a user\nError Responses:\n400: 400",
+      "params": [
+        "user_id"
+      ]
+    },
+    {
+      "name": "API-get-users",
+      "description": "Notion | List all users\nError Responses:\n400: 400",
+      "params": [
+        "start_cursor",
+        "page_size"
+      ]
+    },
+    {
+      "name": "API-get-self",
+      "description": "Notion | Retrieve your token's bot user\nError Responses:\n400: Bad request",
+      "params": []
+    },
+    {
+      "name": "API-post-search",
+      "description": "Notion | Search by title\nError Responses:\n400: Bad request",
+      "params": [
+        "query",
+        "sort",
+        "filter",
+        "start_cursor",
+        "page_size"
+      ]
+    },
+    {
+      "name": "API-get-block-children",
+      "description": "Notion | Retrieve block children\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id",
+        "start_cursor",
+        "page_size"
+      ]
+    },
+    {
+      "name": "API-patch-block-children",
+      "description": "Notion | Append block children\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id",
+        "children",
+        "after"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-block",
+      "description": "Notion | Retrieve a block\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id"
+      ]
+    },
+    {
+      "name": "API-update-a-block",
+      "description": "Notion | Update a block\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id",
+        "type",
+        "archived"
+      ]
+    },
+    {
+      "name": "API-delete-a-block",
+      "description": "Notion | Delete a block\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-page",
+      "description": "Notion | Retrieve a page\nError Responses:\n400: Bad request",
+      "params": [
+        "page_id",
+        "filter_properties"
+      ]
+    },
+    {
+      "name": "API-patch-page",
+      "description": "Notion | Update page properties\nError Responses:\n400: Bad request",
+      "params": [
+        "page_id",
+        "properties",
+        "in_trash",
+        "archived",
+        "icon",
+        "cover"
+      ]
+    },
+    {
+      "name": "API-post-page",
+      "description": "Notion | Create a page\nError Responses:\n400: Bad request",
+      "params": [
+        "parent",
+        "properties",
+        "children",
+        "icon",
+        "cover"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-page-property",
+      "description": "Notion | Retrieve a page property item\nError Responses:\n400: Bad request",
+      "params": [
+        "page_id",
+        "property_id",
+        "page_size",
+        "start_cursor"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-comment",
+      "description": "Notion | Retrieve comments\nError Responses:\n400: Bad request",
+      "params": [
+        "block_id",
+        "start_cursor",
+        "page_size"
+      ]
+    },
+    {
+      "name": "API-create-a-comment",
+      "description": "Notion | Create comment\nError Responses:\n400: Bad request",
+      "params": [
+        "parent",
+        "rich_text"
+      ]
+    },
+    {
+      "name": "API-query-data-source",
+      "description": "Notion | Query a data source\nError Responses:\n400: Bad request",
+      "params": [
+        "data_source_id",
+        "filter_properties",
+        "filter",
+        "sorts",
+        "start_cursor",
+        "page_size",
+        "archived",
+        "in_trash"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-data-source",
+      "description": "Notion | Retrieve a data source\nError Responses:\n400: Bad request",
+      "params": [
+        "data_source_id"
+      ]
+    },
+    {
+      "name": "API-update-a-data-source",
+      "description": "Notion | Update a data source\nError Responses:\n400: Bad request",
+      "params": [
+        "data_source_id",
+        "title",
+        "description",
+        "properties"
+      ]
+    },
+    {
+      "name": "API-create-a-data-source",
+      "description": "Notion | Create a data source\nError Responses:\n400: Bad request",
+      "params": [
+        "parent",
+        "properties",
+        "title"
+      ]
+    },
+    {
+      "name": "API-list-data-source-templates",
+      "description": "Notion | List templates in a data source\nError Responses:\n400: Bad request",
+      "params": [
+        "data_source_id",
+        "start_cursor",
+        "page_size"
+      ]
+    },
+    {
+      "name": "API-retrieve-a-database",
+      "description": "Notion | Retrieve a database\nError Responses:\n400: Bad request",
+      "params": [
+        "database_id"
+      ]
+    },
+    {
+      "name": "API-move-page",
+      "description": "Notion | Move a page\nError Responses:\n400: Bad request",
+      "params": [
+        "page_id",
+        "parent"
+      ]
+    },
+    {
+      "name": "API-retrieve-page-markdown",
+      "description": "Notion | Retrieve a page as Markdown\nError Responses:\n400: Bad request\n403: The integration lacks the read/update content capability required for this page.\n404: Page not found or not shared with the integration.\n429: Rate limited.",
+      "params": [
+        "page_id",
+        "include_transcript"
+      ]
+    },
+    {
+      "name": "API-update-page-markdown",
+      "description": "Notion | Update a page's content as Markdown\nError Responses:\n400: Bad request\n403: The integration lacks the read/update content capability required for this page.\n404: Page not found or not shared with the integration.\n409: Conflict (e.g. row limit exceeded).\n429: Rate limited.",
+      "params": [
+        "page_id",
+        "type",
+        "replace_content",
+        "update_content",
+        "insert_content",
+        "replace_content_range"
+      ]
+    }
+  ]
+}

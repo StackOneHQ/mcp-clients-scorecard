@@ -1,0 +1,228 @@
+{
+  "id": "playwright",
+  "origin": "npx -y @playwright/mcp (tools/list, run 2026-10-30)",
+  "serverInfo": {
+    "name": "Playwright",
+    "version": "1.64.0-alpha-1790635538000"
+  },
+  "tools": [
+    {
+      "name": "browser_close",
+      "description": "Close the page",
+      "params": []
+    },
+    {
+      "name": "browser_resize",
+      "description": "Resize the browser window",
+      "params": [
+        "width",
+        "height"
+      ]
+    },
+    {
+      "name": "browser_console_messages",
+      "description": "Returns all console messages",
+      "params": [
+        "level",
+        "all",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_handle_dialog",
+      "description": "Handle a dialog",
+      "params": [
+        "accept",
+        "promptText"
+      ]
+    },
+    {
+      "name": "browser_emulate_media",
+      "description": "Emulate CSS media features for the page, for example switch between the light and dark color scheme. Omitted parameters are left unchanged; null clears an override.",
+      "params": [
+        "colorScheme",
+        "reducedMotion",
+        "forcedColors",
+        "contrast",
+        "media"
+      ]
+    },
+    {
+      "name": "browser_evaluate",
+      "description": "Evaluate JavaScript expression on page or element",
+      "params": [
+        "element",
+        "target",
+        "function",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_file_upload",
+      "description": "Upload one or multiple files",
+      "params": [
+        "paths"
+      ]
+    },
+    {
+      "name": "browser_drop",
+      "description": "Drop files or MIME-typed data onto an element, as if dragged from outside the page. At least one of \"paths\" or \"data\" must be provided.",
+      "params": [
+        "element",
+        "target",
+        "paths",
+        "data"
+      ]
+    },
+    {
+      "name": "browser_find",
+      "description": "Search the accessibility snapshot of the current page for text or a regular expression. Returns matching snapshot nodes with a few lines of surrounding context (like search snippets), each shown under its path from the root of the tree, which is cheaper than capturing the whole snapshot when you only need to locate an element and its ref.",
+      "params": [
+        "text",
+        "regex",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_fill_form",
+      "description": "Fill multiple form fields",
+      "params": [
+        "fields"
+      ]
+    },
+    {
+      "name": "browser_press_key",
+      "description": "Press a key on the keyboard",
+      "params": [
+        "key"
+      ]
+    },
+    {
+      "name": "browser_type",
+      "description": "Type text into editable element",
+      "params": [
+        "element",
+        "target",
+        "text",
+        "submit",
+        "slowly"
+      ]
+    },
+    {
+      "name": "browser_navigate",
+      "description": "Navigate to a URL",
+      "params": [
+        "url"
+      ]
+    },
+    {
+      "name": "browser_navigate_back",
+      "description": "Go back to the previous page in the history",
+      "params": []
+    },
+    {
+      "name": "browser_network_requests",
+      "description": "Returns a numbered list of network requests since loading the page. Use browser_network_request with the number to get full details.",
+      "params": [
+        "static",
+        "filter",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_network_request",
+      "description": "Returns full details (headers and body) of a single network request, or a single part if `part` is set. Use the number from browser_network_requests.",
+      "params": [
+        "index",
+        "part",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_run_code_unsafe",
+      "description": "Run a Playwright code snippet. Unsafe: executes arbitrary JavaScript in the Playwright server process and is RCE-equivalent.",
+      "params": [
+        "code",
+        "filename"
+      ]
+    },
+    {
+      "name": "browser_take_screenshot",
+      "description": "Take a screenshot of the current page. You can't perform actions based on the screenshot, use browser_snapshot for actions.",
+      "params": [
+        "element",
+        "target",
+        "type",
+        "filename",
+        "fullPage",
+        "scale"
+      ]
+    },
+    {
+      "name": "browser_snapshot",
+      "description": "Capture accessibility snapshot of the current page, this is better than screenshot",
+      "params": [
+        "target",
+        "filename",
+        "depth",
+        "boxes"
+      ]
+    },
+    {
+      "name": "browser_click",
+      "description": "Perform click on a web page",
+      "params": [
+        "element",
+        "target",
+        "doubleClick",
+        "button",
+        "modifiers"
+      ]
+    },
+    {
+      "name": "browser_drag",
+      "description": "Perform drag and drop between two elements",
+      "params": [
+        "startElement",
+        "startTarget",
+        "endElement",
+        "endTarget"
+      ]
+    },
+    {
+      "name": "browser_hover",
+      "description": "Hover over element on page",
+      "params": [
+        "element",
+        "target"
+      ]
+    },
+    {
+      "name": "browser_select_option",
+      "description": "Select an option in a dropdown",
+      "params": [
+        "element",
+        "target",
+        "values"
+      ]
+    },
+    {
+      "name": "browser_tabs",
+      "description": "List, create, close, or select a browser tab.",
+      "params": [
+        "action",
+        "index",
+        "url"
+      ]
+    },
+    {
+      "name": "browser_wait_for",
+      "description": "Wait for text to appear or disappear or a specified time to pass",
+      "params": [
+        "time",
+        "text",
+        "textGone"
+      ]
+    }
+  ]
+}
