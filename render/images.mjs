@@ -4,6 +4,8 @@ import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from
 
 const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
+const pageCss = (w, h, rest) => `*{box-sizing:border-box;margin:0}
+body{width:${w}px;height:${h}px;background:#000;font-family:Inter,system-ui,sans-serif;${rest}}`;
 
 // Each logo is read once: the feature chart embeds a client's logo at every step that client caused
 const logos = new Map();
@@ -20,8 +22,7 @@ export function tiersHtml({ data }) {
   const rows = TIERS.map(t => `<div class="tier" style="background:${TIER_COLOR[t]}">${t}</div><div class="items">${cell('cli', t)}</div><div class="bar"></div><div class="items">${cell('app', t)}</div>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients tier list</title>${FONT}
 <style>
-*{box-sizing:border-box;margin:0}
-body{width:1080px;height:1350px;background:#000;font-family:Inter,system-ui,sans-serif;color:#fff;padding:60px 28px 48px;display:flex;flex-direction:column}
+${pageCss(1080, 1350, 'color:#fff;padding:60px 28px 48px;display:flex;flex-direction:column')}
 h1{font-size:60px;font-weight:800;letter-spacing:-1.5px;margin:0 0 34px 12px}
 .board{flex:1;display:grid;grid-template-columns:100px minmax(0,1fr) 10px minmax(0,1fr);grid-template-rows:60px repeat(5,1fr);gap:4px}
 .hd{display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;color:#EDEDED}
@@ -77,8 +78,7 @@ export function matrixHtml({ data }) {
   const groupRow = HARNESS_COLS.length ? `<div class="gh"><div style="grid-column:3 / span ${SPEC_COLS.length}">MCP spec</div><div class="hz" style="grid-column:${SPEC_COLS.length + 4} / span ${HARNESS_COLS.length}">Harness</div></div>` : '';
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients: the receipts</title>${FONT}
 <style>
-*{box-sizing:border-box;margin:0}
-body{width:1080px;height:1350px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column}
+${pageCss(1080, 1350, 'color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column')}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26px 16px}
 .t{flex:1;display:flex;flex-direction:column;background:#1A1A17;border-radius:18px;padding:8px 0 10px}
 .h,.r,.gh{display:grid;grid-template-columns:${tracks};align-items:center}
@@ -182,8 +182,7 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
 <style>
-*{box-sizing:border-box;margin:0}
-body{width:${W}px;height:${H}px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;position:relative;overflow:hidden}
+${pageCss(W, H, 'color:#EDEDED;position:relative;overflow:hidden')}
 h1{position:absolute;left:${L - 40}px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
 h2{position:absolute;left:${L - 40}px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
 svg{position:absolute;left:0;top:0}
@@ -240,8 +239,7 @@ export function historyClientsHtml({ data }, ms, rows, features) {
   const legend = features.map((f, i) => `<div><svg width="20" height="20">${dot(i, 10, 10, 9)}</svg>${esc(f)}</div>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><title>Features supported per client</title>${FONT}
 <style>
-*{box-sizing:border-box;margin:0}
-body{width:${W}px;height:${H}px;background:#000;font-family:Inter,system-ui,sans-serif;color:#EDEDED;position:relative;overflow:hidden}
+${pageCss(W, H, 'color:#EDEDED;position:relative;overflow:hidden')}
 h1{position:absolute;left:44px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
 h2{position:absolute;left:44px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
 body>svg{position:absolute;left:0;top:0}
