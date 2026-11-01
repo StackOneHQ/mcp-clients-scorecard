@@ -6,4 +6,4 @@ spec_versions: [2026-07-28, 2025-11-25, 2025-06-18, 2025-03-26, 2024-11-05]
 # MCP issues opened on or after this date count toward "MCP bugs fixed". Set to the release date of the current spec.
 bug_window_start: 2026-07-28
 # Footnote printed under assets/matrix.png
-image_note: opencode rated on 1.19.4, the npm latest; the V2 dev build adds code mode, search, CIMD and elicitation. *goose tries 2026-07-28 first, then falls back to 2025-11-25.
+image_note: opencode rated on 1.19.5, the npm latest; the V2 dev build adds code mode, search, CIMD and elicitation. *goose tries 2026-07-28 first, then falls back to 2025-11-25.

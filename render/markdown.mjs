@@ -32,7 +32,7 @@ export function readmeTable({ data }) {
   const out = [];
   for (const [g, label] of GROUPS) {
     out.push(`### ${label}`, '');
-    out.push(`| Tier | Client | Checked on | MCP bugs fixed | ${COLUMNS.map(([k, l]) => head(k, l)).join(' | ')} |`);
+    out.push(`| Tier | Client | Version checked | MCP bugs fixed | ${COLUMNS.map(([k, l]) => head(k, l)).join(' | ')} |`);
     out.push(`|${' --- |'.repeat(4 + COLUMNS.length)}`);
     for (const c of data.clients.filter(c => c.group === g)) {
       const cells = COLUMNS.map(([k]) => link(cellText(k, c.cells[k], data.spec_versions), c.cells[k].source));

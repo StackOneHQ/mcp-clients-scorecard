@@ -41,4 +41,4 @@ Applied in order. The first rule that matches sets the tier.
 
 A client can sit in a tier the rubric does not give it only with a `tier_note` in its file in [data/clients/](../data/clients/), listed below. The build fails on any other mismatch.
 
-- **opencode** is held at B. On 1.19.4, the npm latest, the rubric gives C. The V2 build, which opencode's own README installs, turns code mode on by default and adds tool search, CIMD and elicitation.
+- **opencode** is held at B. On 1.19.5, the npm latest, the rubric gives C. The V2 build, which opencode's own README installs, turns code mode on by default and adds tool search, CIMD and elicitation.
