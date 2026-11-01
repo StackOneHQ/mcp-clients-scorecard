@@ -115,7 +115,7 @@ export function evidence({ data }) {
   for (const c of data.clients) {
     out.push(`## ${c.name}`, '');
     const meta = [`Tier **${c.tier}**`, KIND[c.group]];
-    if (c.version_checked) meta.push(`checked on \`${c.version_checked}\``);
+    if (c.version_checked) meta.push(`version checked \`${c.version_checked}\``);
     if (c.tracker) meta.push(`tracker [${c.tracker.repo}](https://github.com/${c.tracker.repo}/issues)`);
     meta.push(`MCP bugs fixed: ${fixText(c.fix)}`);
     out.push(meta.join(' · '), '');

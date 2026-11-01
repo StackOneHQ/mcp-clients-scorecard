@@ -8,7 +8,7 @@ Methods: `probe` is a live handshake against a local MCP server (see [methodolog
 
 ## Claude Code
 
-Tier **S** · CLI · checked on `2.1.314` · tracker [anthropics/claude-code](https://github.com/anthropics/claude-code/issues) · MCP bugs fixed: 8% of 769
+Tier **S** · CLI · version checked `2.1.314` · tracker [anthropics/claude-code](https://github.com/anthropics/claude-code/issues) · MCP bugs fixed: 8% of 769
 
 [website](https://claude.com/product/claude-code) · [docs](https://code.claude.com/docs/en/overview) · [repo](https://github.com/anthropics/claude-code) · [data file](data/clients/claude-code.yaml)
 
@@ -26,7 +26,7 @@ Tier **S** · CLI · checked on `2.1.314` · tracker [anthropics/claude-code](ht
 
 ## Copilot CLI
 
-Tier **A** · CLI · checked on `1.0.105` · tracker [github/copilot-cli](https://github.com/github/copilot-cli/issues) · MCP bugs fixed: 24% of 133
+Tier **A** · CLI · version checked `1.0.105` · tracker [github/copilot-cli](https://github.com/github/copilot-cli/issues) · MCP bugs fixed: 24% of 133
 
 [website](https://github.com/features/copilot) · [docs](https://docs.github.com/en/copilot/how-tos/copilot-cli) · [repo](https://github.com/github/copilot-cli) · [data file](data/clients/copilot-cli.yaml)
 
@@ -44,7 +44,7 @@ Tier **A** · CLI · checked on `1.0.105` · tracker [github/copilot-cli](https:
 
 ## Pi
 
-Tier **A** · CLI · checked on `1.4.0` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 80
+Tier **A** · CLI · version checked `1.4.0` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 80
 
 [website](https://pi.dev) · [docs](https://pi.dev/docs/latest) · [repo](https://github.com/earendil-works/pi) · [data file](data/clients/pi.yaml)
 
@@ -62,7 +62,7 @@ Tier **A** · CLI · checked on `1.4.0` · tracker [earendil-works/pi](https://g
 
 ## Droid
 
-Tier **B** · CLI · checked on `1.0.0` · tracker [Factory-AI/factory](https://github.com/Factory-AI/factory/issues) · MCP bugs fixed: too few issues
+Tier **B** · CLI · version checked `1.0.0` · tracker [Factory-AI/factory](https://github.com/Factory-AI/factory/issues) · MCP bugs fixed: too few issues
 
 [website](https://factory.com) · [docs](https://docs.factory.com) · [repo](https://github.com/Factory-AI/factory) · [data file](data/clients/droid.yaml)
 
@@ -80,7 +80,7 @@ Tier **B** · CLI · checked on `1.0.0` · tracker [Factory-AI/factory](https://
 
 ## opencode
 
-Tier **B** · CLI · checked on `1.19.5` · tracker [anomalyco/opencode](https://github.com/anomalyco/opencode/issues) · MCP bugs fixed: 20% of 316
+Tier **B** · CLI · version checked `1.19.5` · tracker [anomalyco/opencode](https://github.com/anomalyco/opencode/issues) · MCP bugs fixed: 20% of 316
 
 [website](https://opencode.ai) · [docs](https://opencode.ai/docs) · [repo](https://github.com/anomalyco/opencode) · [data file](data/clients/opencode.yaml)
 
@@ -100,7 +100,7 @@ Tier **B** · CLI · checked on `1.19.5` · tracker [anomalyco/opencode](https:/
 
 ## Codex
 
-Tier **C** · CLI · checked on `0.166.0` · tracker [openai/codex](https://github.com/openai/codex/issues) · MCP bugs fixed: 5% of 450
+Tier **C** · CLI · version checked `0.166.0` · tracker [openai/codex](https://github.com/openai/codex/issues) · MCP bugs fixed: 5% of 450
 
 [website](https://openai.com/codex/) · [docs](https://developers.openai.com/codex) · [repo](https://github.com/openai/codex) · [data file](data/clients/codex.yaml)
 
@@ -118,7 +118,7 @@ Tier **C** · CLI · checked on `0.166.0` · tracker [openai/codex](https://gith
 
 ## Continue
 
-Tier **D** · CLI · checked on `2.0.0` · tracker [continuedev/continue](https://github.com/continuedev/continue/issues) · MCP bugs fixed: too few issues
+Tier **D** · CLI · version checked `2.0.0` · tracker [continuedev/continue](https://github.com/continuedev/continue/issues) · MCP bugs fixed: too few issues
 
 [website](https://continue.dev) · [docs](https://docs.continue.dev) · [repo](https://github.com/continuedev/continue) · [data file](data/clients/continue.yaml)
 
@@ -138,7 +138,7 @@ Tier **D** · CLI · checked on `2.0.0` · tracker [continuedev/continue](https:
 
 ## Gemini CLI
 
-Tier **D** · CLI · checked on `0.66.0` · tracker [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli/issues) · MCP bugs fixed: 17% of 29
+Tier **D** · CLI · version checked `0.66.0` · tracker [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli/issues) · MCP bugs fixed: 17% of 29
 
 [website](https://geminicli.com) · [docs](https://geminicli.com/docs) · [repo](https://github.com/google-gemini/gemini-cli) · [data file](data/clients/gemini-cli.yaml)
 
@@ -156,7 +156,7 @@ Tier **D** · CLI · checked on `0.66.0` · tracker [google-gemini/gemini-cli](h
 
 ## VS Code
 
-Tier **S** · App or IDE · checked on `1.144.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 43% of 287
+Tier **S** · App or IDE · version checked `1.144.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 43% of 287
 
 [website](https://code.visualstudio.com) · [docs](https://code.visualstudio.com/docs/agent-customization/mcp-servers) · [repo](https://github.com/microsoft/vscode) · [data file](data/clients/vs-code.yaml)
 
@@ -192,7 +192,7 @@ Tier **A** · App or IDE · tracker [anthropics/claude-ai-mcp](https://github.co
 
 ## goose
 
-Tier **A** · App or IDE · checked on `1.57.0` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 56% of 63
+Tier **A** · App or IDE · version checked `1.57.0` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 56% of 63
 
 [website](https://goose-docs.ai) · [docs](https://goose-docs.ai/docs) · [repo](https://github.com/aaif-goose/goose) · [data file](data/clients/goose.yaml)
 
@@ -230,7 +230,7 @@ Tier **A** · App or IDE · MCP bugs fixed: no public tracker
 
 ## Cursor
 
-Tier **B** · App or IDE · checked on `3.27.22` · MCP bugs fixed: no public tracker
+Tier **B** · App or IDE · version checked `3.27.22` · MCP bugs fixed: no public tracker
 
 [website](https://cursor.com) · [docs](https://cursor.com/docs/mcp) · [data file](data/clients/cursor.yaml)
 
@@ -248,7 +248,7 @@ Tier **B** · App or IDE · checked on `3.27.22` · MCP bugs fixed: no public tr
 
 ## Windsurf
 
-Tier **C** · App or IDE · checked on `3.11.234` · MCP bugs fixed: no public tracker
+Tier **C** · App or IDE · version checked `3.11.234` · MCP bugs fixed: no public tracker
 
 [website](https://devin.ai/desktop) · [docs](https://docs.devin.ai/desktop) · [data file](data/clients/windsurf.yaml)
 
@@ -266,7 +266,7 @@ Tier **C** · App or IDE · checked on `3.11.234` · MCP bugs fixed: no public t
 
 ## Zed
 
-Tier **C** · App or IDE · checked on `v1.26.2` · tracker [zed-industries/zed](https://github.com/zed-industries/zed/issues) · MCP bugs fixed: too few issues
+Tier **C** · App or IDE · version checked `v1.26.2` · tracker [zed-industries/zed](https://github.com/zed-industries/zed/issues) · MCP bugs fixed: too few issues
 
 [website](https://zed.dev) · [docs](https://zed.dev/docs/ai/mcp) · [repo](https://github.com/zed-industries/zed) · [data file](data/clients/zed.yaml)
 
@@ -284,7 +284,7 @@ Tier **C** · App or IDE · checked on `v1.26.2` · tracker [zed-industries/zed]
 
 ## Cline
 
-Tier **C** · App or IDE · checked on `4.1.26` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 13% of 39
+Tier **C** · App or IDE · version checked `4.1.26` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 13% of 39
 
 [website](https://cline.bot) · [docs](https://docs.cline.bot) · [repo](https://github.com/cline/cline) · [data file](data/clients/cline.yaml)
 
