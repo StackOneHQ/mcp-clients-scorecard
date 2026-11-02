@@ -32,7 +32,7 @@ export function readmeTable({ data }) {
   const out = [];
   for (const [g, label] of GROUPS) {
     out.push(`### ${label}`, '');
-    out.push(`| Tier | Client | Checked on | MCP bugs fixed | ${COLUMNS.map(([k, l]) => head(k, l)).join(' | ')} |`);
+    out.push(`| Tier | Client | Version checked | MCP bugs fixed | ${COLUMNS.map(([k, l]) => head(k, l)).join(' | ')} |`);
     out.push(`|${' --- |'.repeat(4 + COLUMNS.length)}`);
     for (const c of data.clients.filter(c => c.group === g)) {
       const cells = COLUMNS.map(([k]) => link(cellText(k, c.cells[k], data.spec_versions), c.cells[k].source));
@@ -115,7 +115,7 @@ export function evidence({ data }) {
   for (const c of data.clients) {
     out.push(`## ${c.name}`, '');
     const meta = [`Tier **${c.tier}**`, KIND[c.group]];
-    if (c.version_checked) meta.push(`checked on \`${c.version_checked}\``);
+    if (c.version_checked) meta.push(`version checked \`${c.version_checked}\``);
     if (c.tracker) meta.push(`tracker [${c.tracker.repo}](https://github.com/${c.tracker.repo}/issues)`);
     meta.push(`MCP bugs fixed: ${fixText(c.fix)}`);
     out.push(meta.join(' · '), '');

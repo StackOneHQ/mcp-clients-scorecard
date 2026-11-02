@@ -15,7 +15,7 @@ As of 30 Oct 2026. Click any cell for its source, or a client name for the full 
 
 ### CLIs
 
-| Tier | Client | Checked on | MCP bugs fixed | Spec version | MCP Apps | Tasks | Events | CIMD | ID-JAG | Elicitation | Code mode <sub>harness</sub> | Tool search <sub>harness</sub> |
+| Tier | Client | Version checked | MCP bugs fixed | Spec version | MCP Apps | Tasks | Events | CIMD | ID-JAG | Elicitation | Code mode <sub>harness</sub> | Tool search <sub>harness</sub> |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **S** | [Claude Code](EVIDENCE.md#claude-code) | `2.1.314` | [8% of 769](https://github.com/anthropics/claude-code/issues) | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://code.claude.com/docs/en/changelog) | [![no](assets/icons/n.svg)](https://github.com/anthropics/claude-code/issues/95149) | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | [![no](assets/icons/n.svg)](https://github.com/anthropics/claude-code/issues/101434) | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | [![yes](assets/icons/y.svg)](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth) | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | [![no](assets/icons/n.svg)](https://code.claude.com/docs/en/mcp) | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.314) |
 | **A** | [Copilot CLI](EVIDENCE.md#copilot-cli) | `1.0.105` | [24% of 133](https://github.com/github/copilot-cli/issues) | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![no](assets/icons/n.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![partial](assets/icons/p.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105) | [![yes](assets/icons/y.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105) | [![yes](assets/icons/y.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![no](assets/icons/n.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | [![yes](assets/icons/y.svg) Hosted](https://registry.npmjs.org/@github/copilot-linux-x64/1.0.105) |
@@ -28,7 +28,7 @@ As of 30 Oct 2026. Click any cell for its source, or a client name for the full 
 
 ### Apps and IDEs
 
-| Tier | Client | Checked on | MCP bugs fixed | Spec version | MCP Apps | Tasks | Events | CIMD | ID-JAG | Elicitation | Code mode <sub>harness</sub> | Tool search <sub>harness</sub> |
+| Tier | Client | Version checked | MCP bugs fixed | Spec version | MCP Apps | Tasks | Events | CIMD | ID-JAG | Elicitation | Code mode <sub>harness</sub> | Tool search <sub>harness</sub> |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **S** | [VS Code](EVIDENCE.md#vs-code) | `1.144.0` | [43% of 287](https://github.com/microsoft/vscode/issues) | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L116) | [![yes](assets/icons/y.svg)](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L130) | [![yes](assets/icons/y.svg)](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L1404) | [![no](assets/icons/n.svg)](https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp) | [![yes](assets/icons/y.svg)](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/api/browser/mainThreadAuthentication.ts#L193) | [![yes](assets/icons/y.svg)](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/base/common/oauth.ts#L35) | [![yes](assets/icons/y.svg)](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L120) | [![no](assets/icons/n.svg)](https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp) | [![yes](assets/icons/y.svg) Embeddings](https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/extensions/copilot/src/extension/tools/node/toolSearchTool.ts) |
 | **A** | [Claude app](EVIDENCE.md#claude-app) | hosted | [14% of 436](https://github.com/anthropics/claude-ai-mcp/issues) | [![not published](assets/icons/spec-unknown.svg) not published](https://claude.com/docs/connectors/building) | [![yes](assets/icons/y.svg)](https://claude.com/docs/connectors/building/mcp-apps/getting-started) | [![no](assets/icons/n.svg)](https://code.claude.com/docs/en/mcp) | [![no](assets/icons/n.svg)](https://claude.com/docs/connectors/building) | [![yes](assets/icons/y.svg)](https://claude.com/docs/connectors/building/authentication) | [![yes](assets/icons/y.svg)](https://claude.com/docs/connectors/building/enterprise-managed-auth) | [![no](assets/icons/n.svg)](https://github.com/anthropics/claude-ai-mcp/issues/1085) | [![no](assets/icons/n.svg)](https://claude.com/docs/cowork/changelog) | [![yes](assets/icons/y.svg) Deferred](https://support.claude.com/en/articles/13730515-manage-claude-s-tool-access) |
@@ -191,6 +191,7 @@ No time for a pull request? Use the [list a client form](../../issues/new?templa
 - MCP bugs fixed is completed issues over issues minus duplicates, for MCP issues opened since the current spec shipped. Below 20 issues no rate is shown.
 - Tiers come from the feature score, the spec grade and the fix rate, using the rules in [methodology/RUBRIC.md](methodology/RUBRIC.md).
 - Adoption charts count a cell from the first release that shipped it, and only when a release note or changelog dates that release.
+- Tool search is graded on whether the client has it and whether the vendor documents how it ranks. [bench/tool-search](bench/tool-search/README.md) measures how often each ranking method finds the right tool across 453 real MCP tools; the grade does not use those numbers yet.
 
 Full detail, including limitations, is in [methodology/METHODOLOGY.md](methodology/METHODOLOGY.md).
 
@@ -211,6 +212,8 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 | [data/history/](data/history/) | Generated snapshot of every cell per review date |
 | [methodology/](methodology/) | How each column is graded, the tier rubric, the live probe |
 | [probe/](probe/) | The handshake probe and its MCP server |
+| [bench/tool-search/](bench/tool-search/README.md) | Benchmark of tool-search ranking methods (substring, regex, BM25, embeddings) on 453 real MCP tools |
+| [scripts/](scripts/) | `bugs.mjs`, which recounts MCP issues per tracker |
 | [render/](render/) | Loader, validation and generators for the README, EVIDENCE.md and images |
 
 Field reference for every data file: [data/README.md](data/README.md).
@@ -225,7 +228,8 @@ Field reference for every data file: [data/README.md](data/README.md).
 | `npm run check` | Validates the data and fails if a generated file or image is stale |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
-| `npm test` | Tests the probe report on sample handshake logs |
+| `npm run bench:tool-search` | Reruns the tool-search benchmark (embedding rankers need `OPENAI_API_KEY`) |
+| `npm test` | Tests the probe report on sample handshake logs and the benchmark OpenAI client |
 
 ## Why StackOne tracks this
 

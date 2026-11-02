@@ -42,7 +42,6 @@ for (const pkg of pkgs) {
   }
   // initialize replies with the agreed version; server/discover replies with a list, which only agrees if it holds a requested version
   const reply = mine.filter(l => l.reply).at(-1)?.reply ?? null;
-  // A reply only counts as agreed when it is a version the client asked for
   const negotiated = Array.isArray(reply) ? reply.find(v => requested.includes(v)) ?? null : requested.includes(reply) ? reply : null;
   // A client that sends notifications/initialized after the server offers an older version accepted the downgrade:
   // it connects, but on the server's version, not the newest it supports
