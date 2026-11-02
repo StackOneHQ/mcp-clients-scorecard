@@ -103,13 +103,13 @@ timeline
     2026-09 : Events, first in ChatGPT (partial)
 ```
 
-Dated from the first release that shipped each feature; cells without a verified date are left out. 37 of 48 supported cells carry a date. See [methodology](methodology/METHODOLOGY.md#dating-support).
+Dated from the first release that shipped each feature; cells without a verified date are left out. 38 of 48 supported cells carry a date. See [methodology](methodology/METHODOLOGY.md#dating-support).
 
 <details><summary>Undated supported cells per feature</summary>
 
 | Feature | Dated | Undated |
 | --- | --- | --- |
-| MCP Apps | 5 | 2 |
+| MCP Apps | 6 | 1 |
 | Tasks | 3 | 0 |
 | Events | 1 | 0 |
 | CIMD | 7 | 3 |

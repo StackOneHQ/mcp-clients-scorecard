@@ -31,7 +31,10 @@ cells:
     method: docs
     source: https://developers.openai.com/apps-sdk/mcp-apps-in-chatgpt.md
     evidence: The Apps SDK page says "ChatGPT implements the open MCP Apps standard for UI returned by an MCP server."
-    checked: 2026-10-30
+    checked: 2026-11-02
+    since:
+      date: 2026-02-22
+      source: https://developers.openai.com/apps-sdk/changelog
   tasks:
     value: n
     method: docs
