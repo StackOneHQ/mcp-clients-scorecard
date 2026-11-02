@@ -79,3 +79,9 @@ cells:
     source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
     evidence: "Own probe of 1.4.0 declared capabilities {roots: {}} only; runtime.ts:360-365 passes no elicitation capability or handler, and the docs never mention elicitation"
     checked: 2026-10-30
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/earendil-works/pi/blob/v1.4.0/packages/coding-agent/src/extensions/mcp/runtime.ts#L380-L382
+    evidence: 'The built-in MCP extension handles notifications/tools/list_changed by calling refreshTools, which calls listTools and updates the session active tools'
+    checked: 2026-11-02

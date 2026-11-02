@@ -28,7 +28,7 @@ A feature the vendor calls beta or preview is `y` when it is on by default or tu
 
 For tool search, `quality: strong` marks a search tool the vendor documents, or one that ranks with BM25 or embeddings. `basic` marks an undocumented search with simpler matching (keyword or substring), or no search query at all (the model reads files or picks from a list). Strong labels show green in the matrix image, basic ones amber.
 
-[bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers yet.
+[bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers.
 
 ## Evidence methods
 
@@ -94,7 +94,7 @@ The history snapshots in [data/history/](../data/history/) are a second record. 
 
 `npm run check` runs in CI on every pull request ([.github/workflows/check.yml](../.github/workflows/check.yml)) and fails when:
 
-- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all nine cells), its file name does not match its name, or it carries an unknown key;
+- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all ten cells), its file name does not match its name, or it carries an unknown key;
 - a `y` or `p` cell lacks a known `method`, an https `source`, `evidence`, or a `checked` date in YYYY-MM-DD form;
 - a `since` block has a date after `as_of` or a source that is not https;
 - a client's tier differs from the rubric without a `tier_note`;

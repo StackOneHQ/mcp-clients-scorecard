@@ -84,3 +84,9 @@ cells:
       date: 2026-03-03
       version: "0.0.421"
       source: https://github.com/github/copilot-cli/releases/tag/v0.0.421
+  list_changed:
+    value: y
+    method: changelog
+    source: https://github.com/github/copilot-cli/blob/84ee80ea6490ce02d6000439356a609fcefbb9ae/changelog.md#L454
+    evidence: '1.0.71: "Keep MCP tool lists up to date when servers change". 1.0.85: "Fixed same-turn MCP tool-list refresh after received change notifications, including modern subscription-based servers"'
+    checked: 2026-11-02

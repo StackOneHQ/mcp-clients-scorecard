@@ -1,7 +1,9 @@
 // Time series built from the `since` dates on each cell, and the per-date snapshot in data/history/
 import { COLUMNS, TIERS } from './data.mjs';
 
-const FEATURE_COLS = COLUMNS.filter(([k]) => k !== 'protocol');
+// Live tool lists has been in the spec since the first release (2024-11-05), well before the other features, so it carries
+// no since dates and stays out of the history charts
+const FEATURE_COLS = COLUMNS.filter(([k]) => k !== 'protocol' && k !== 'list_changed');
 const supported = cell => cell.value === 'y' || cell.value === 'p';
 
 // A cell counts from the month of its since date. Cells that are y or p today but carry no since are "undated".

@@ -97,3 +97,22 @@ test('capabilities in the 2026-07-28 request _meta are recorded from the first r
   assert.deepEqual(r['@anthropic-ai/claude-code'].capabilities, capabilities);
   assert.deepEqual(r['@anthropic-ai/claude-code'].declares, { ...none, elicitation_form: true, tasks: true });
 });
+
+const MODERN = { _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' } };
+const liveTools = lines => report(lines)['@openai/codex'].live_tools;
+
+test('a 2025 client that lists tools again after the change notification relisted', () => {
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  const list = { label: '@openai/codex', method: 'tools/list' };
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list, sent, list]), { listened: null, notified: true, relisted: true });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list, sent]), { listened: null, notified: true, relisted: false });
+});
+
+test('a 2026-07-28 client relists only through a listen stream that asks for tool changes', () => {
+  const discover = [{ label: '@openai/codex', method: 'server/discover', params: MODERN }, { label: '@openai/codex', reply: ['2026-07-28'] }];
+  const list = { label: '@openai/codex', method: 'tools/list', params: MODERN };
+  assert.deepEqual(liveTools([...discover, list]), { listened: false, notified: false, relisted: false });
+  const listen = { label: '@openai/codex', method: 'subscriptions/listen', params: { ...MODERN, notifications: { toolsListChanged: true } } };
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  assert.deepEqual(liveTools([...discover, list, listen, sent, list]), { listened: true, notified: true, relisted: true });
+});

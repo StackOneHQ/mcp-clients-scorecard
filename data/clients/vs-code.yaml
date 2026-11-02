@@ -91,3 +91,9 @@ cells:
       date: 2025-07-09
       version: "1.102"
       source: https://code.visualstudio.com/updates/v1_102#_support-for-elicitations
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/microsoft/vscode/blob/1.144.0/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L1238-L1241
+    evidence: 'mcpServerRequestHandler.ts:374 fires onDidChangeToolList on notifications/tools/list_changed; updateTools calls listTools and registers the new tools with the language model tools service'
+    checked: 2026-11-02

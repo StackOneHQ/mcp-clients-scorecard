@@ -53,6 +53,11 @@
   spec_date: 2025-06-18
   spec_source: https://modelcontextprotocol.io/specification/2025-06-18/changelog
   spec_event: Elicitation enters the spec
+- id: list_changed
+  label: Live tool lists
+  definition: The client picks up a tool that a server adds mid-session, by listing tools again when the server says the list changed, without a restart. From 2026-07-28 the client has to ask for that notice on a subscriptions/listen stream.
+  ref: MCP specification, tools list changed notification
+  url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools#list-changed-notification
 - id: code_mode
   kind: harness
   label: Code mode

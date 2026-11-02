@@ -136,6 +136,7 @@ function validate(data, bugs) {
         const s = cell.since || {};
         for (const k of Object.keys(s)) if (!SINCE_KEYS.has(k)) errs.push(`${ca}.since: unknown key ${k}`);
         if (key !== 'protocol' && cell.value === 'n') errs.push(`${ca}.since: only y or p cells take a since date`);
+        if (key === 'list_changed') errs.push(`${ca}.since: list_changed predates the history charts, so it takes no since date`);
         if (!isDate(s.date)) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);
         if (!isUrl(s.source)) errs.push(`${ca}.since: source must be an https URL`);

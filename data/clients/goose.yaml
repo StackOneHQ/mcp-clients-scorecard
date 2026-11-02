@@ -1,7 +1,7 @@
 # goose. Field reference: data/README.md. After editing, run npm run build.
 name: goose
 group: app
-tier: A
+tier: S
 note: Tries the 2026-07-28 handshake first, then falls back to 2025-11-25.
 logo: icon-goose.svg
 website: https://goose-docs.ai
@@ -89,3 +89,9 @@ cells:
       date: 2025-12-18
       version: "1.17.0"
       source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/agents/mcp_client.rs#L358
+    evidence: 'on_tool_list_changed bumps tools_version (L208), so extension_manager public_tools sees a stale cache and lists tools again; the new tool reaches the model on the next turn'
+    checked: 2026-11-02
