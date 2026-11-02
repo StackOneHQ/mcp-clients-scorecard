@@ -172,7 +172,7 @@ flowchart LR
 
 1. Copy [data/clients/_template.yaml](data/clients/_template.yaml) to `data/clients/<slug>.yaml`, where the slug is your client's name in lower case with hyphens.
 2. Add a square SVG logo to [assets/logos/](assets/logos/) and name it in `logo`.
-3. Fill in all nine cells. Each one needs a value, a public https `source`, one sentence of `evidence` and the date you checked it. Add `since` with the release that first shipped a feature, so your client shows up in the adoption charts.
+3. Fill in all ten cells. Each one needs a value, a public https `source`, one sentence of `evidence` and the date you checked it. Add `since` with the release that first shipped a feature, so your client shows up in the adoption charts (every column except Live tool lists).
 4. Run `npm ci && npm run build`. The build validates the file, prints the tier the rubric gives, and regenerates the tables and charts.
 5. Open a pull request. CI runs `npm run check`, and a maintainer opens every source before merging.
 
@@ -207,7 +207,7 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 
 | Path | What it holds |
 | --- | --- |
-| [data/clients/](data/clients/) | One YAML file per client: links, version checked, and the nine cells with their evidence |
+| [data/clients/](data/clients/) | One YAML file per client: links, version checked, and the ten cells with their evidence |
 | [data/features.yaml](data/features.yaml) | One entry per column, with its definition and where the spec or extension defines it |
 | [data/meta.yaml](data/meta.yaml) | Review date, spec versions, bug window |
 | [data/bugs.json](data/bugs.json) | MCP issue counts per tracker, from `npm run bugs` |

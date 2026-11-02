@@ -19,7 +19,7 @@ let firstListId;
 let listed = false;
 let added = 0;
 // Registering a tool on a connected server sends the tools list-changed notification, always after the client's first list.
-// On 2026-07-28 serveStdio delivers it only on a subscriptions/listen stream that opted in, so each new stream gets one too.
+// On 2026-07-28 serveStdio delivers it only on a subscriptions/listen stream that opted in, so each stream that asks for it gets one too.
 const addTool = () => {
   added += 1;
   server.registerTool(`ping_${added}`, { description: 'Returns pong, added mid-session' }, async () => ({ content: [{ type: 'text', text: 'pong' }] }));
@@ -46,7 +46,7 @@ transport.send = async (msg, ...rest) => {
   if (!listed && 'result' in msg && msg.id === firstListId) {
     listed = true;
     addTool();
-  } else if (listed && msg.method === 'notifications/subscriptions/acknowledged') addTool();
+  } else if (listed && msg.method === 'notifications/subscriptions/acknowledged' && msg.params?.notifications?.toolsListChanged) addTool();
 };
 
 serveStdio(() => {

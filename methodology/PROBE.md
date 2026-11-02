@@ -26,7 +26,7 @@ The report also records `live_tools`, for the Live tool lists column:
 
 - `notified`: the server sent `notifications/tools/list_changed`. Before 2026-07-28 every connected client gets it. From 2026-07-28 it goes only to a `subscriptions/listen` stream that asked for `toolsListChanged`.
 - `listened`: the client opened such a stream. It is `null` below 2026-07-28, where no stream is needed.
-- `relisted`: the client sent `tools/list` again after the notice, which is how it picks up the new tool.
+- `relisted`: the client sent a fresh `tools/list` (not a request for a later page) after the notice, which is how it picks up the new tool.
 
 Declared is not the same as working: a client can declare a capability and still handle it badly, and a capability that is absent here may exist in a session path the probe does not start. Check the per-client output in `PROBE_OUT` first: a CLI that needs sign-in or failed to install also gives no handshake.
 

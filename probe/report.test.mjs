@@ -116,3 +116,11 @@ test('a 2026-07-28 client relists only through a listen stream that asks for too
   const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
   assert.deepEqual(liveTools([...discover, list, listen, sent, list]), { listened: true, notified: true, relisted: true });
 });
+
+test('a listen stream that does not ask for tool changes does not count, and neither does a paginated list', () => {
+  const discover = [{ label: '@openai/codex', method: 'server/discover', params: MODERN }, { label: '@openai/codex', reply: ['2026-07-28'] }];
+  const listen = { label: '@openai/codex', method: 'subscriptions/listen', params: { ...MODERN, notifications: { resourcesListChanged: true } } };
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  const page = { label: '@openai/codex', method: 'tools/list', params: { ...MODERN, cursor: 'next' } };
+  assert.deepEqual(liveTools([...discover, listen, sent, page]), { listened: false, notified: true, relisted: false });
+});

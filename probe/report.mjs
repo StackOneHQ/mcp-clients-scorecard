@@ -55,7 +55,7 @@ for (const pkg of pkgs) {
   const live_tools = {
     listened: negotiated !== null && negotiated >= '2026-07-28' ? mine.some(l => l.method === 'subscriptions/listen' && l.params?.notifications?.toolsListChanged === true) : null,
     notified: notifiedAt >= 0,
-    relisted: notifiedAt >= 0 && mine.slice(notifiedAt + 1).some(l => l.method === 'tools/list'),
+    relisted: notifiedAt >= 0 && mine.slice(notifiedAt + 1).some(l => l.method === 'tools/list' && !l.params?.cursor),
   };
   results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, accepted_downgrade: accepted, errors, client_info: clientInfo, capabilities, declares: derive(capabilities), live_tools, connected: negotiated !== null || accepted !== null };
   const declares = Object.entries(results[pkg].declares).filter(([, v]) => v).map(([k]) => k).join(', ') || 'none';

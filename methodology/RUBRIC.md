@@ -4,7 +4,7 @@ Tiers come from three numbers. The rules below are the same ones in `rubricTier`
 
 ## Feature score
 
-Each of the eight feature columns (everything except the spec version) scores 1 for yes, 0.5 for partial and 0 for no. The maximum is 8.
+Each of the nine feature columns (everything except the spec version) scores 1 for yes, 0.5 for partial and 0 for no. The maximum is 9.
 
 ## Spec grade
 
