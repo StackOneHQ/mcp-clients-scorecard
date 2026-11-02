@@ -1,6 +1,6 @@
 # Scorecard settings. Field reference: data/README.md.
 # Date the data was last reviewed. The history snapshot and the charts are cut at this date.
-as_of: 2026-10-30
+as_of: 2026-11-02
 # Newest first. A client on the first entry is current, the second is one version behind.
 spec_versions: [2026-07-28, 2025-11-25, 2025-06-18, 2025-03-26, 2024-11-05]
 # MCP issues opened on or after this date count toward "MCP bugs fixed". Set to the release date of the current spec.

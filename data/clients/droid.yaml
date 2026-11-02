@@ -6,7 +6,7 @@ logo: gh-Factory-AI.png
 website: https://factory.com
 docs: https://docs.factory.com
 repo: https://github.com/Factory-AI/factory
-version_checked: 1.0.0
+version_checked: 1.1.0
 npm: "@factory/cli"
 tracker:
   repo: Factory-AI/factory
@@ -15,23 +15,23 @@ cells:
   protocol:
     value: 2025-11-25
     method: probe
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: "Live probe of 1.0.0 on 2026-10-30 negotiated 2025-11-25 (clientInfo factory-cli); the 1.0.0 binary still ships flag mcp_2026_07_28 with defaultValue false"
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: "Live probe of 1.1.0 on 2026-11-02 negotiated 2025-11-25 (clientInfo factory-cli); the 1.1.0 binary still ships flag mcp_2026_07_28 with defaultValue false"
+    checked: 2026-11-02
   code_mode:
     value: p
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: "The 1.0.0 binary has a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set"
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: "The 1.1.0 binary has a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set"
+    checked: 2026-11-02
   tool_search:
     value: y
     label: Keyword
     quality: basic
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
     evidence: "ToolSearch (flag mcp_tool_search, default true) loads deferred MCP tools by select:<name> or by keywords matched against tool-name words only, scored as matched name tokens over max(name tokens, query words) with a small synonym map, returning the top-scoring ties; docs only say tools load on demand, ranking not documented"
-    checked: 2026-10-30
+    checked: 2026-11-02
     since:
       date: 2026-06-03
       version: "0.140.0"
@@ -39,27 +39,27 @@ cells:
   apps:
     value: n
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.0.0 binary
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.1.0 binary
+    checked: 2026-11-02
   tasks:
     value: n
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: 0 hits for io.modelcontextprotocol/tasks in the 1.0.0 binary; tasks/get appears only in bundled SDK schemas, and the probe saw no tasks capability
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: 0 hits for io.modelcontextprotocol/tasks in the 1.1.0 binary; tasks/get appears only in bundled SDK schemas, and the probe saw no tasks capability
+    checked: 2026-11-02
   events:
     value: n
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: 0 hits for events/subscribe or notifications/events in the 1.0.0 binary
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: 0 hits for events/subscribe or notifications/events in the 1.1.0 binary
+    checked: 2026-11-02
   cimd:
     value: y
     method: docs
     source: https://docs.factory.com/harness/mcp
-    evidence: "Docs: Droid uses Factory's published client metadata when the server supports Client ID Metadata Documents (CIMD), with a clientMetadataUrl override that the 1.0.0 binary handles"
-    checked: 2026-10-30
+    evidence: "Docs: Droid uses Factory's published client metadata when the server supports Client ID Metadata Documents (CIMD), with a clientMetadataUrl override that the 1.1.0 binary handles"
+    checked: 2026-11-02
     since:
       date: 2026-06-12
       version: "0.147.0"
@@ -67,12 +67,12 @@ cells:
   id_jag:
     value: n
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: Only bundled SDK schemas for the ID-JAG token exchange in the 1.0.0 binary, with no product wiring
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: Only bundled SDK schemas for the ID-JAG token exchange in the 1.1.0 binary, with no product wiring
+    checked: 2026-11-02
   elicitation:
     value: n
     method: probe
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
-    evidence: "Live probe of 1.0.0 declared capabilities {}, and the binary builds its MCP client with no capabilities option, so no elicitation/create handler can register; this outranks the v0.112.0 (April 2026) changelog line Resume MCP elicitations"
-    checked: 2026-10-30
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
+    evidence: "Live probe of 1.1.0 declared capabilities {}, and the binary builds its MCP client with no capabilities option, so no elicitation/create handler can register; this outranks the v0.112.0 (April 2026) changelog line Resume MCP elicitations"
+    checked: 2026-11-02

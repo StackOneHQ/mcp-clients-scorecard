@@ -1,71 +1,71 @@
 {
-  "as_of": "2026-10-27",
+  "as_of": "2026-11-02",
   "window_start": "2026-07-28",
   "repos": {
+    "anthropics/claude-ai-mcp": {
+      "issues": 484,
+      "completed": 64,
+      "duplicates": 31
+    },
     "anthropics/claude-code": {
-      "issues": 822,
-      "completed": 60,
-      "duplicates": 53
+      "issues": 867,
+      "completed": 64,
+      "duplicates": 54
     },
-    "anomalyco/opencode": {
-      "issues": 343,
-      "completed": 62,
-      "duplicates": 27
-    },
-    "openai/codex": {
-      "issues": 462,
-      "completed": 22,
-      "duplicates": 12
-    },
-    "github/copilot-cli": {
-      "issues": 136,
-      "completed": 32,
-      "duplicates": 3
-    },
-    "google-gemini/gemini-cli": {
-      "issues": 29,
+    "cline/cline": {
+      "issues": 40,
       "completed": 5,
       "duplicates": 0
+    },
+    "openai/codex": {
+      "issues": 504,
+      "completed": 26,
+      "duplicates": 13
     },
     "continuedev/continue": {
       "issues": 9,
       "completed": 0,
       "duplicates": 0
     },
-    "microsoft/vscode": {
-      "issues": 297,
-      "completed": 122,
-      "duplicates": 10
-    },
-    "aaif-goose/goose": {
-      "issues": 63,
-      "completed": 35,
-      "duplicates": 0
-    },
-    "zed-industries/zed": {
-      "issues": 21,
-      "completed": 2,
-      "duplicates": 2
-    },
-    "cline/cline": {
-      "issues": 39,
-      "completed": 5,
-      "duplicates": 0
-    },
-    "earendil-works/pi": {
-      "issues": 80,
-      "completed": 25,
-      "duplicates": 0
+    "github/copilot-cli": {
+      "issues": 138,
+      "completed": 40,
+      "duplicates": 3
     },
     "Factory-AI/factory": {
       "issues": 3,
       "completed": 1,
       "duplicates": 0
     },
-    "anthropics/claude-ai-mcp": {
-      "issues": 467,
-      "completed": 63,
-      "duplicates": 31
+    "google-gemini/gemini-cli": {
+      "issues": 31,
+      "completed": 6,
+      "duplicates": 0
+    },
+    "aaif-goose/goose": {
+      "issues": 66,
+      "completed": 35,
+      "duplicates": 0
+    },
+    "anomalyco/opencode": {
+      "issues": 374,
+      "completed": 65,
+      "duplicates": 36
+    },
+    "earendil-works/pi": {
+      "issues": 84,
+      "completed": 26,
+      "duplicates": 0
+    },
+    "microsoft/vscode": {
+      "issues": 318,
+      "completed": 141,
+      "duplicates": 13
+    },
+    "zed-industries/zed": {
+      "issues": 21,
+      "completed": 3,
+      "duplicates": 2
     }
   }
 }
