@@ -8,7 +8,7 @@ const { StdioServerTransport, serveStdio } = require('@modelcontextprotocol/serv
 
 const label = process.argv[2] || 'unknown';
 const LOG = process.env.PROBE_LOG || path.join(process.cwd(), 'probe.log');
-const log = o => fs.appendFileSync(LOG, JSON.stringify({ label, at: new Date().toISOString(), ...o }) + '\n');
+const log = o => fs.appendFileSync(LOG, JSON.stringify({ label, pid: process.pid, at: new Date().toISOString(), ...o }) + '\n');
 
 // initialize carries params.capabilities; from 2026-07-28 every request, server/discover included, carries them in _meta.
 const CAPS_META_KEY = 'io.modelcontextprotocol/clientCapabilities';
@@ -19,7 +19,7 @@ let firstListId;
 let listed = false;
 let added = 0;
 // Registering a tool on a connected server sends the tools list-changed notification, always after the client's first list.
-// On 2026-07-28 serveStdio delivers it only on a subscriptions/listen stream that opted in, so each stream that asks for it gets one too.
+// On 2026-07-28 serveStdio delivers it only on a subscriptions/listen stream that opted in, so the first stream that asks for it gets one too.
 const addTool = () => {
   added += 1;
   server.registerTool(`ping_${added}`, { description: 'Returns pong, added mid-session' }, async () => ({ content: [{ type: 'text', text: 'pong' }] }));
@@ -32,7 +32,7 @@ Object.defineProperty(transport, 'onmessage', {
   set(fn) {
     handler = (msg, ...rest) => {
       if (msg.method) log({ method: msg.method, params: msg.params, capabilities: declared(msg.params) });
-      if (msg.method === 'tools/list') firstListId ??= msg.id;
+      if (msg.method === 'tools/list' && !listed) firstListId = msg.id;
       return fn(msg, ...rest);
     };
   },
@@ -41,12 +41,12 @@ const send = transport.send.bind(transport);
 transport.send = async (msg, ...rest) => {
   if (msg.result && (msg.result.protocolVersion || msg.result.supportedVersions)) log({ reply: msg.result.protocolVersion || msg.result.supportedVersions });
   if (msg.error) log({ error: msg.error });
-  if (msg.method) log({ sent: msg.method, params: msg.params });
   await send(msg, ...rest);
+  if (msg.method) log({ sent: msg.method, params: msg.params });
   if (!listed && 'result' in msg && msg.id === firstListId) {
     listed = true;
     addTool();
-  } else if (listed && msg.method === 'notifications/subscriptions/acknowledged' && msg.params?.notifications?.toolsListChanged) addTool();
+  } else if (added === 1 && msg.method === 'notifications/subscriptions/acknowledged' && msg.params?.notifications?.toolsListChanged) addTool();
 };
 
 serveStdio(() => {

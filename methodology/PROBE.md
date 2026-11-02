@@ -4,7 +4,7 @@ The probe checks which protocol version a CLI really sends, and which capabiliti
 
 ## What it runs
 
-[probe/run.sh](../probe/run.sh) installs each CLI at its npm latest into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request it receives, the client capabilities each one carries, and the reply it sends to each handshake. It also adds a tool mid-session: once after it answers the first `tools/list`, and again each time it acknowledges a `subscriptions/listen` stream, so a 2026-07-28 client that opens the stream after its first list still gets a change notice.
+[probe/run.sh](../probe/run.sh) installs each CLI at its npm latest into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request it receives, the client capabilities each one carries, and the reply it sends to each handshake. It also adds a tool mid-session: once after it answers the first `tools/list`, and once more for the first `subscriptions/listen` stream that asks for tool changes, so a 2026-07-28 client that opens the stream after its first list still gets a change notice.
 
 | Client | npm package | How it is started |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ The report also records `live_tools`, for the Live tool lists column:
 
 - `notified`: the server sent `notifications/tools/list_changed`. Before 2026-07-28 every connected client gets it. From 2026-07-28 it goes only to a `subscriptions/listen` stream that asked for `toolsListChanged`.
 - `listened`: the client opened such a stream. It is `null` below 2026-07-28, where no stream is needed.
-- `relisted`: the client sent a fresh `tools/list` (not a request for a later page) after the notice, which is how it picks up the new tool.
+- `relisted`: the client sent a fresh `tools/list` (not a request for a later page) to the same server process after the notice, which is how it picks up the new tool. Each log line carries the server's `pid`, so a client that restarts the server does not count.
 
 Declared is not the same as working: a client can declare a capability and still handle it badly, and a capability that is absent here may exist in a session path the probe does not start. Check the per-client output in `PROBE_OUT` first: a CLI that needs sign-in or failed to install also gives no handshake.
 
@@ -48,4 +48,4 @@ Some clients send the handshake before they check credentials. Others need a sig
 - The probe sees the handshake. It does not exercise tasks, elicitation or other features, which are checked from source, docs and changelogs.
 - Gemini CLI and opencode are started with `mcp list`, which connects with a minimal client. Their declared capabilities (and Gemini's client name, `mcp-test-client`) may differ from a real chat session, so treat an empty `declares` there as unconfirmed.
 - A CLI that stops at sign-in after the handshake (Claude Code, Droid) still shows what it declared, but later requests, such as a tool call, are not seen.
-- A short run can end before the client relists, and `mcp list` lists tools once and exits, so `relisted: false` is unconfirmed rather than a no. A `relisted: true` is a yes.
+- A short run can end before the client relists, and `mcp list` lists tools once and exits, so `relisted: false` is unconfirmed rather than a no. A `relisted: true` shows the client fetched the list again, not that the model saw the new tool: a client that lists tools before every turn also passes, so check it against the client's source before you grade the cell.

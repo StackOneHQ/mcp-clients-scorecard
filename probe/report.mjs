@@ -50,12 +50,13 @@ for (const pkg of pkgs) {
   // The first request that carried capabilities: params.capabilities on initialize, _meta on the 2026-07-28 path
   const capabilities = mine.find(l => l.method && l.capabilities)?.capabilities ?? null;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
-  // Below 2026-07-28 every client gets the change notice; from it, only one with an opted-in subscriptions/listen stream
+  // Below 2026-07-28 every client gets the change notice; from it, only one with an opted-in subscriptions/listen stream.
+  // A relist counts only from the server process that sent the notice, since a client that restarts its server lists again anyway
   const notifiedAt = mine.findIndex(l => l.sent === 'notifications/tools/list_changed');
   const live_tools = {
     listened: negotiated !== null && negotiated >= '2026-07-28' ? mine.some(l => l.method === 'subscriptions/listen' && l.params?.notifications?.toolsListChanged === true) : null,
     notified: notifiedAt >= 0,
-    relisted: notifiedAt >= 0 && mine.slice(notifiedAt + 1).some(l => l.method === 'tools/list' && !l.params?.cursor),
+    relisted: notifiedAt >= 0 && mine.slice(notifiedAt + 1).some(l => l.pid === mine[notifiedAt].pid && l.method === 'tools/list' && !l.params?.cursor),
   };
   results[pkg] = { version, handshake: mine.find(l => l.method)?.method || null, requested, negotiated, accepted_downgrade: accepted, errors, client_info: clientInfo, capabilities, declares: derive(capabilities), live_tools, connected: negotiated !== null || accepted !== null };
   const declares = Object.entries(results[pkg].declares).filter(([, v]) => v).map(([k]) => k).join(', ') || 'none';

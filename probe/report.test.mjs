@@ -124,3 +124,10 @@ test('a listen stream that does not ask for tool changes does not count, and nei
   const page = { label: '@openai/codex', method: 'tools/list', params: { ...MODERN, cursor: 'next' } };
   assert.deepEqual(liveTools([...discover, listen, sent, page]), { listened: false, notified: true, relisted: false });
 });
+
+test('a tool list from a restarted server process is not a relist', () => {
+  const sent = { label: '@openai/codex', pid: 1, sent: 'notifications/tools/list_changed' };
+  const list = pid => ({ label: '@openai/codex', pid, method: 'tools/list' });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(2)]), { listened: null, notified: true, relisted: false });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(1)]), { listened: null, notified: true, relisted: true });
+});

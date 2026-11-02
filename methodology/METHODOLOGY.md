@@ -17,6 +17,7 @@ Each client gets ten cells, one per entry in [data/features.yaml](../data/featur
 | CIMD | `y`, `p` or `n` | [Authorization, client registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration) |
 | ID-JAG | `y`, `p` or `n` | [Enterprise-Managed Authorization extension](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization) |
 | Elicitation | `y`, `p` or `n` | [Client elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation) |
+| Live tool lists | `y`, `p` or `n`, with no `since` date | [Tools, list changed notification](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#list-changed-notification) |
 
 The values mean:
 
