@@ -50,8 +50,7 @@ for (const pkg of pkgs) {
   // The first request that carried capabilities: params.capabilities on initialize, _meta on the 2026-07-28 path
   const capabilities = mine.find(l => l.method && l.capabilities)?.capabilities ?? null;
   const errors = mine.filter(l => l.error).map(l => l.error.message);
-  // Below 2026-07-28 every client gets the change notice; from it, only one with an opted-in subscriptions/listen stream.
-  // A relist counts only from the server process that sent the notice, since a client that restarts its server lists again anyway
+  // From 2026-07-28 only an opted-in subscriptions/listen stream gets the notice. A relist counts only from the process that sent it, since a restarted server is listed anyway
   const notifiedAt = mine.findIndex(l => l.sent === 'notifications/tools/list_changed');
   const live_tools = {
     listened: negotiated !== null && negotiated >= '2026-07-28' ? mine.some(l => l.method === 'subscriptions/listen' && l.params?.notifications?.toolsListChanged === true) : null,
