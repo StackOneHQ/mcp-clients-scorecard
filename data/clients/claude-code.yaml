@@ -37,7 +37,7 @@ cells:
       version: "2.1.7"
       source: https://github.com/anthropics/claude-code/releases/tag/v2.1.7
   apps:
-    value: n
+    value: na
     method: probe
     source: https://github.com/anthropics/claude-code/issues/95149
     evidence: "Live probe of 2.1.314 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open"

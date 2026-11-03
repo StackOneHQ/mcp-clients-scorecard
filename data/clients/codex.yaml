@@ -41,7 +41,7 @@ cells:
       version: "0.119.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.119.0
   apps:
-    value: n
+    value: na
     method: probe
     source: https://github.com/openai/codex/issues/52524
     evidence: "Live probe of 0.166.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"

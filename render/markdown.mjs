@@ -5,7 +5,7 @@ import { featureSeries, firstShippers, datedCounts } from './history.mjs';
 const KIND = { cli: 'CLI', app: 'App or IDE' };
 // Status icons are small SVGs in assets/icons, so the tables keep their colours without emoji
 const icon = (file, alt) => `![${alt}](assets/icons/${file}.svg)`;
-const MARK = { y: icon('y', 'yes'), p: icon('p', 'partial'), n: icon('n', 'no') };
+const MARK = { y: icon('y', 'yes'), p: icon('p', 'partial'), n: icon('n', 'no'), na: icon('na', 'not applicable') };
 const GRADE = { g: icon('spec-current', 'current spec'), a: icon('spec-behind', 'one version behind'), rd: icon('spec-older', 'older spec'), x: icon('spec-unknown', 'not published') };
 const cellText = (key, cell, versions) => {
   if (key === 'protocol') return `${GRADE[protocolGrade(cell.value, versions)]} ${cell.value}${cell.fallback ? ` (falls back to ${cell.fallback})` : ''}`;
@@ -59,9 +59,9 @@ export function featureCounts({ data }) {
   const cols = COLUMNS.filter(([k]) => k !== 'protocol');
   const count = (k, v) => data.clients.filter(c => c.cells[k].value === v).length;
   return [
-    `| Feature | ${MARK.y} Yes | ${MARK.p} Partial | ${MARK.n} No |`,
-    '| --- | --- | --- | --- |',
-    ...cols.map(([k, l]) => `| ${head(k, l)} | ${count(k, 'y')} | ${count(k, 'p')} | ${count(k, 'n')} |`),
+    `| Feature | ${MARK.y} Yes | ${MARK.p} Partial | ${MARK.n} No | ${MARK.na} n/a |`,
+    '| --- | --- | --- | --- | --- |',
+    ...cols.map(([k, l]) => `| ${head(k, l)} | ${count(k, 'y')} | ${count(k, 'p')} | ${count(k, 'n')} | ${count(k, 'na')} |`),
     '',
   ].join('\n');
 }

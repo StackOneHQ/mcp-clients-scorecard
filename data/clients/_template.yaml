@@ -31,7 +31,7 @@ cells:
     checked: 2026-10-27
     # on y or p, add label (shown in the table) and quality (strong or basic)
   apps:
-    value: n
+    value: n                    # na on a cli that has no web view to render the UI
     method: docs
     source: https://example.com/docs/mcp
     evidence: What the source shows

@@ -31,7 +31,7 @@ cells:
     evidence: "No tool search or deferred loading for MCP tools in packages/core at v0.66.0 or in the 0.66.0 bundle"
     checked: 2026-10-30
   apps:
-    value: n
+    value: na
     method: source
     source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools/mcp-client.ts#L1869
     evidence: "No io.modelcontextprotocol/ui extension or ui:// handling at v0.66.0 or in the 0.66.0 bundle"
