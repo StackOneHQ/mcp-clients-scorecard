@@ -41,6 +41,7 @@ body:
         - y (supported)
         - "p (partial: flag, off by default, experimental or one of two modes)"
         - n (not supported)
+        - "na (not applicable: MCP Apps on a terminal CLI only)"
     validations:
       required: true
   - type: input
