@@ -40,7 +40,7 @@ cells:
       version: "0.99.0"
       source: https://github.com/earendil-works/pi/releases/tag/v0.99.0
   apps:
-    value: n
+    value: na
     method: source
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L246
     evidence: "docs/mcp.md:246 says resources for MCP Apps (ui:// or text/html;profile=mcp-app) are omitted because Pi does not render them, and extensions/mcp/resources.ts:49 filters them out"

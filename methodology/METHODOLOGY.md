@@ -11,7 +11,7 @@ Each client gets ten cells, one per entry in [data/features.yaml](../data/featur
 | Spec version | The newest protocol revision the client negotiates | [MCP specification](https://modelcontextprotocol.io/specification/2026-07-28/changelog) |
 | Code mode | `y`, `p` or `n` | Client feature, not in the spec ([Anthropic](https://www.anthropic.com/engineering/code-execution-with-mcp), [Cloudflare](https://blog.cloudflare.com/code-mode/)) |
 | Tool search | `y`, `p` or `n`, plus a label for how it searches | Client feature, not in the spec ([Anthropic](https://www.anthropic.com/engineering/advanced-tool-use)) |
-| MCP Apps | `y`, `p` or `n` | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
+| MCP Apps | `y`, `p` or `n`; `na` for a terminal CLI | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
 | Tasks | `y`, `p` or `n` | [Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview), experimental in the 2025-11-25 spec |
 | Events | `y`, `p` or `n` | [Triggers and Events working group](https://github.com/modelcontextprotocol/experimental-ext-triggers-events) |
 | CIMD | `y`, `p` or `n` | [Authorization, client registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration) |
@@ -24,6 +24,7 @@ The values mean:
 - `y`: the feature works in the version checked, on by default or with a documented setting.
 - `p`: partial. Behind a flag, off by default, marked experimental, or only one of two modes (for example form elicitation without URL elicitation).
 - `n`: not supported, or not documented anywhere we could find. A missing feature and an undocumented one look the same from outside, so a vendor who can show support should [send the source](../CONTRIBUTING.md).
+- `na`: not applicable. Only on the MCP Apps cell of a terminal CLI, which has no web view to render server UI. It scores 0, like `n`, and goes back to `y` or `p` if the CLI starts passing the UI to a host that renders it.
 
 A feature the vendor calls beta or preview is `y` when it is on by default or turned on by a documented setting or admin policy, and `p` when it needs an experimental flag or an undocumented switch. The evidence names the vendor's label.
 
@@ -101,7 +102,7 @@ The history snapshots in [data/history/](../data/history/) are a second record. 
 - a client's tier differs from the rubric without a `tier_note`;
 - the README sections, EVIDENCE.md or the history snapshot for `as_of` differ from what `npm run build` would write.
 
-The same checks apply to `n` cells, which also need a source showing where we looked.
+The same checks apply to `n` and `na` cells, which also need a source showing where we looked.
 
 ## Limitations
 

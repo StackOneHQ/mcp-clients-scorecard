@@ -11,7 +11,7 @@ export const COLUMNS = FEATURES.map(f => [f.id, f.label]);
 export const HARNESS = new Set(FEATURES.filter(f => f.kind === 'harness').map(f => f.id));
 export const TIERS = ['S', 'A', 'B', 'C', 'D'];
 export const GROUPS = [['cli', 'CLIs'], ['app', 'Apps and IDEs']];
-const MARKS = new Set(['y', 'p', 'n']);
+const MARKS = new Set(['y', 'p', 'n', 'na']);
 const METHODS = new Set(['probe', 'source', 'docs', 'changelog', 'issue']);
 // Protocol cell value for hosted clients that do not say which spec version they speak
 const NOT_PUBLISHED = 'not published';
@@ -124,7 +124,8 @@ function validate(data, bugs) {
       const ca = `${at} ${key}`;
       if (!cell) { errs.push(`${at}: missing cell ${key}`); continue; }
       for (const k of Object.keys(cell)) if (!CELL_KEYS.has(k)) errs.push(`${ca}: unknown key ${k}`);
-      if (key !== 'protocol' && !MARKS.has(cell.value)) errs.push(`${ca}: value must be y, p or n`);
+      if (key !== 'protocol' && !MARKS.has(cell.value)) errs.push(`${ca}: value must be y, p, n or na`);
+      if (cell.value === 'na' && !(key === 'apps' && c.group === 'cli')) errs.push(`${ca}: na is only for the apps cell of a CLI`);
       if (key === 'protocol' && cell.value !== NOT_PUBLISHED && !data.spec_versions?.includes(String(cell.value))) errs.push(`${ca}: value must be in spec_versions or "${NOT_PUBLISHED}"`);
       if (cell.quality !== undefined && !QUALITIES.has(cell.quality)) errs.push(`${ca}: quality must be strong or basic`);
       if (!METHODS.has(cell.method)) errs.push(`${ca}: method must be one of ${[...METHODS].join(', ')}`);
@@ -135,7 +136,7 @@ function validate(data, bugs) {
       if (cell.since !== undefined) {
         const s = cell.since || {};
         for (const k of Object.keys(s)) if (!SINCE_KEYS.has(k)) errs.push(`${ca}.since: unknown key ${k}`);
-        if (key !== 'protocol' && cell.value === 'n') errs.push(`${ca}.since: only y or p cells take a since date`);
+        if (key !== 'protocol' && ['n', 'na'].includes(cell.value)) errs.push(`${ca}.since: only y or p cells take a since date`);
         if (key === 'list_changed') errs.push(`${ca}.since: list_changed predates the history charts, so it takes no since date`);
         if (!isDate(s.date)) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);

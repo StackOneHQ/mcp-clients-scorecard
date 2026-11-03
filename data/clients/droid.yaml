@@ -37,7 +37,7 @@ cells:
       version: "0.140.0"
       source: https://docs.factory.com/changelog/release-notes
   apps:
-    value: n
+    value: na
     method: source
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0
     evidence: 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.0.0 binary

@@ -60,7 +60,7 @@ The file name is the client name in lower case with hyphens: `Claude Code` is `c
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `value` | yes | `y`, `p` or `n`. The protocol cell holds a version from `spec_versions`, or `not published`. |
+| `value` | yes | `y`, `p` or `n`, or `na` on the `apps` cell of a `cli` client. The protocol cell holds a version from `spec_versions`, or `not published`. |
 | `method` | yes | `probe`, `source`, `docs`, `changelog` or `issue` |
 | `source` | yes | https URL of the evidence |
 | `evidence` | yes | What the source shows, in a sentence or a code reference |
