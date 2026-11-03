@@ -65,3 +65,9 @@ cells:
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
     evidence: The probe handshake declares no elicitation capability; the elicitation strings in the binary are the rmcp schema and ACP elicitation for the agent's own ask_user_question, and the Desktop line "Improved handling for less common MCP server features" (v3.2.16, not v3.11.1108) names no feature
     checked: 2026-10-30
+  list_changed:
+    value: n
+    method: docs
+    source: https://docs.devin.ai/windsurf/plugins/cascade/mcp
+    evidence: 'The docs and changelog describe only a manual MCP refresh button and say nothing about notifications/tools/list_changed'
+    checked: 2026-11-02

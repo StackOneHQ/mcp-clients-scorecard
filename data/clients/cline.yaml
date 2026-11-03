@@ -65,3 +65,9 @@ cells:
     source: https://github.com/cline/cline/blob/a459f1d04dea030833b558be645011ab739c463b/apps/vscode/src/services/mcp/McpHub.ts#L472
     evidence: 'McpHub.ts:472 at the v4.1.26 tag declares `capabilities: {}` and a grep of apps and sdk for elicit finds no handler.'
     checked: 2026-10-30
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/cline/cline/blob/v4.1.26/apps/vscode/src/services/mcp/McpHub.ts#L769
+    evidence: 'At tag v4.1.26, McpHub registers a ToolListChangedNotificationSchema handler that lists tools again, and sdk-mcp-coordinator restarts the session with the new tools, keeping its messages. This covers the VS Code extension; the Cline CLI has no handler'
+    checked: 2026-11-02

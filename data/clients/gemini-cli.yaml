@@ -66,3 +66,9 @@ cells:
     source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools/mcp-client.ts#L1869
     evidence: "mcp-client.ts:1869-1884 creates the client and registers only roots, with no elicitation handler; the 0.66.0 bundle matches, so source wins over the weak probe that showed an empty capability set"
     checked: 2026-10-30
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/blob/v0.66.0/packages/core/src/tools/mcp-client.ts#L419-L427
+    evidence: 'The ToolListChangedNotification handler calls refreshTools, which rediscovers and re-registers the tools; onContextUpdated then calls geminiClient.setTools()'
+    checked: 2026-11-02

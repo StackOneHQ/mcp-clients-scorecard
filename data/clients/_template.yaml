@@ -70,3 +70,9 @@ cells:
       date: 2026-01-15
       version: "1.0.0"
       source: https://example.com/changelog#1-0-0
+  list_changed:
+    value: n                    # y when the client lists tools again after the change notice; no since date on this cell
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27

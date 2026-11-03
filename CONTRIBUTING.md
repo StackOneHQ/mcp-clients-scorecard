@@ -60,7 +60,7 @@ If you build an MCP client, you can list it yourself.
 
 1. Copy [data/clients/_template.yaml](data/clients/_template.yaml) to `data/clients/<slug>.yaml`, where the slug is the client name in lower case with hyphens (`Claude Code` becomes `claude-code`). The build skips files that start with `_`, so the template itself never shows up in the table.
 2. Add a square logo (SVG preferred) to [assets/logos/](assets/logos/) and set `logo`.
-3. Fill in all nine cells with sources. A feature you do not support is `n` with a link to your MCP docs. For CLIs on npm, set `npm` so the weekly probe checks the handshake.
+3. Fill in all ten cells with sources. A feature you do not support is `n` with a link to your MCP docs. For CLIs on npm, set `npm` so the weekly probe checks the handshake.
 4. Run `npm run build`. If `tier` does not match what [the rubric](methodology/RUBRIC.md) gives, the build prints the expected tier: set it to that.
 5. Open a pull request and say in the Affiliation section that you work on the client.
 

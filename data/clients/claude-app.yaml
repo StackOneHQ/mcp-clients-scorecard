@@ -72,3 +72,9 @@ cells:
     source: https://github.com/anthropics/claude-ai-mcp/issues/1085
     evidence: Cowork declares `elicitation` with form and url but never renders the request (still reproducing on 2.1.310 on 2026-10-25), and the claude.ai request for elicitation (issue 153) is still open, while the connector docs list no elicitation support.
     checked: 2026-10-30
+  list_changed:
+    value: n
+    method: issue
+    source: https://github.com/anthropics/claude-ai-mcp/issues/45
+    evidence: 'Open, labelled bug, known-issue and backlog: after notifications/tools/list_changed the app requests tools/list but keeps a stale cached list, so the new tool cannot be called'
+    checked: 2026-11-02

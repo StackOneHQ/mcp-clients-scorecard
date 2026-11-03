@@ -65,3 +65,9 @@ cells:
     source: https://developers.openai.com/plugins/build/mcp-server
     evidence: 'The plugin MCP server page says "Use MCP elicitation when the server needs structured information that was not provided in the original tool call", without saying whether form or URL mode is meant, so this is p until both modes are confirmed.'
     checked: 2026-10-30
+  list_changed:
+    value: n
+    method: docs
+    source: https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt
+    evidence: 'The FAQ "Do MCP server changes auto-update in my workspace?" answers no: ChatGPT uses a frozen snapshot of tools, and an admin pulls changes with the Refresh button in workspace settings'
+    checked: 2026-11-02

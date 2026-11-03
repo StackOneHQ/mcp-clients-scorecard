@@ -1,7 +1,7 @@
 # Zed. Field reference: data/README.md. After editing, run npm run build.
 name: Zed
 group: app
-tier: C
+tier: B
 logo: icon-zed.svg
 website: https://zed.dev
 docs: https://zed.dev/docs/ai/mcp
@@ -65,3 +65,9 @@ cells:
     source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/protocol.rs#L43
     evidence: 'At tag v1.26.2, protocol.rs:43-47 capabilities = {experimental: None, sampling: None, roots: None} and context_server has no elicitation handler. The elicitation forms in crates/agent (thread.rs:6740) are ACP forms for the built-in agent''s own tools, not MCP'
     checked: 2026-10-30
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/zed-industries/zed/blob/v1.26.2/crates/agent/src/tools/context_server_registry.rs#L142-L158
+    evidence: 'The native agent registry handles notifications/tools/list_changed with reload_tools_for_server, which sends ListTools and emits ToolsChanged'
+    checked: 2026-11-02
