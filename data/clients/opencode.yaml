@@ -2,7 +2,6 @@
 name: opencode
 group: cli
 tier: B
-tier_note: The rubric gives 1.19.5 a C. Held at B because the V2 build, which opencode's own README installs, turns code mode and its tool search on by default and adds CIMD and elicitation.
 note: Rated on 1.19.5, the npm latest, where code mode and its tool search sit behind an experimental flag. The V2 build turns them on and adds CIMD and elicitation.
 logo: icon-opencode.svg
 website: https://opencode.ai
@@ -39,7 +38,7 @@ cells:
     evidence: "Inside code mode (experimental flag in V1), a partial catalog over a 2000 token budget points the model to search(), which tokenizes the query (camelCase split, naive plural stripping) and sums field-weighted substring scores: exact path or segment 20, path substring 8, description 4, parameter names and descriptions 2; ranking not documented in user docs"
     checked: 2026-10-30
   apps:
-    value: n
+    value: na
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L39
     evidence: "V1 1.19.5 declares only roots, and grep for ext-apps, ui:// and io.modelcontextprotocol/ui finds nothing in V1 1.19.5 (apart from a test resource URI), its npm bundle or V2 v2.2.3"
@@ -74,3 +73,9 @@ cells:
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L44
     evidence: "Live probe of V1 1.19.5 declared only roots, and mcp/index.ts:44 has elicitation commented out (issue 23066); V2 v2.2.3 declares elicitation form and url (packages/core/src/mcp/client.ts:214)"
     checked: 2026-10-30
+  list_changed:
+    value: y
+    method: source
+    source: https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/mcp/index.ts#L461-L471
+    evidence: 'The ToolListChangedNotification handler re-lists with McpCatalog.defs, updates s.defs and publishes ToolsChanged; session tools are resolved on every loop step'
+    checked: 2026-11-02

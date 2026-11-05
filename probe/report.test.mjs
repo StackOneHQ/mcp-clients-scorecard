@@ -97,3 +97,37 @@ test('capabilities in the 2026-07-28 request _meta are recorded from the first r
   assert.deepEqual(r['@anthropic-ai/claude-code'].capabilities, capabilities);
   assert.deepEqual(r['@anthropic-ai/claude-code'].declares, { ...none, elicitation_form: true, tasks: true });
 });
+
+const MODERN = { _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' } };
+const liveTools = lines => report(lines)['@openai/codex'].live_tools;
+
+test('a 2025 client that lists tools again after the change notification relisted', () => {
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  const list = { label: '@openai/codex', method: 'tools/list' };
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list, sent, list]), { listened: null, notified: true, relisted: true });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list, sent]), { listened: null, notified: true, relisted: false });
+});
+
+test('a 2026-07-28 client relists only through a listen stream that asks for tool changes', () => {
+  const discover = [{ label: '@openai/codex', method: 'server/discover', params: MODERN }, { label: '@openai/codex', reply: ['2026-07-28'] }];
+  const list = { label: '@openai/codex', method: 'tools/list', params: MODERN };
+  assert.deepEqual(liveTools([...discover, list]), { listened: false, notified: false, relisted: false });
+  const listen = { label: '@openai/codex', method: 'subscriptions/listen', params: { ...MODERN, notifications: { toolsListChanged: true } } };
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  assert.deepEqual(liveTools([...discover, list, listen, sent, list]), { listened: true, notified: true, relisted: true });
+});
+
+test('a listen stream that does not ask for tool changes does not count, and neither does a paginated list', () => {
+  const discover = [{ label: '@openai/codex', method: 'server/discover', params: MODERN }, { label: '@openai/codex', reply: ['2026-07-28'] }];
+  const listen = { label: '@openai/codex', method: 'subscriptions/listen', params: { ...MODERN, notifications: { resourcesListChanged: true } } };
+  const sent = { label: '@openai/codex', sent: 'notifications/tools/list_changed' };
+  const page = { label: '@openai/codex', method: 'tools/list', params: { ...MODERN, cursor: 'next' } };
+  assert.deepEqual(liveTools([...discover, listen, sent, page]), { listened: false, notified: true, relisted: false });
+});
+
+test('a tool list from a restarted server process is not a relist', () => {
+  const sent = { label: '@openai/codex', pid: 1, sent: 'notifications/tools/list_changed' };
+  const list = pid => ({ label: '@openai/codex', pid, method: 'tools/list' });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(2)]), { listened: null, notified: true, relisted: false });
+  assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(1)]), { listened: null, notified: true, relisted: true });
+});

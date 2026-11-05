@@ -37,7 +37,7 @@ cells:
       version: "0.140.0"
       source: https://docs.factory.com/changelog/release-notes
   apps:
-    value: n
+    value: na
     method: source
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
     evidence: 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.1.0 binary
@@ -75,4 +75,10 @@ cells:
     method: probe
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
     evidence: "Live probe of 1.1.0 declared capabilities {}, and the binary builds its MCP client with no capabilities option, so no elicitation/create handler can register; this outranks the v0.112.0 (April 2026) changelog line Resume MCP elicitations"
+    checked: 2026-11-02
+  list_changed:
+    value: n
+    method: docs
+    source: https://docs.factory.ai/cli/configuration/mcp
+    evidence: 'The MCP docs describe reloading when mcp.json changes and say nothing about notifications/tools/list_changed; no changelog entry or issue found'
     checked: 2026-11-02

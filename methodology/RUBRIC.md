@@ -4,7 +4,7 @@ Tiers come from three numbers. The rules below are the same ones in `rubricTier`
 
 ## Feature score
 
-Each of the eight feature columns (everything except the spec version) scores 1 for yes, 0.5 for partial and 0 for no. The maximum is 8.
+Each of the nine feature columns (everything except the spec version) scores 1 for yes, 0.5 for partial and 0 for no or not applicable. The maximum is 9.
 
 ## Spec grade
 
@@ -39,6 +39,4 @@ Applied in order. The first rule that matches sets the tier.
 
 ## Exceptions
 
-A client can sit in a tier the rubric does not give it only with a `tier_note` in its file in [data/clients/](../data/clients/), listed below. The build fails on any other mismatch.
-
-- **opencode** is held at B. On 1.19.5, the npm latest, the rubric gives C. The V2 build, which opencode's own README installs, turns code mode on by default and adds tool search, CIMD and elicitation.
+A client can sit in a tier the rubric does not give it only with a `tier_note` in its file in [data/clients/](../data/clients/). The build fails on any other mismatch. No client has one today.

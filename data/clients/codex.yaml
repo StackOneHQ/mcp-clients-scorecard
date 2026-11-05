@@ -41,7 +41,7 @@ cells:
       version: "0.119.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.119.0
   apps:
-    value: n
+    value: na
     method: probe
     source: https://github.com/openai/codex/issues/52524
     evidence: "Live probe of 0.166.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"
@@ -88,3 +88,9 @@ cells:
       date: 2025-12-02
       version: "0.64.0"
       source: https://github.com/openai/codex/releases/tag/rust-v0.64.0
+  list_changed:
+    value: p
+    method: source
+    source: https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/features/src/lib.rs#L1646-L1651
+    evidence: 'Re-listing on the notification sits behind the feature flag mcp_tool_list_changed (Stage::UnderDevelopment, default_enabled false). Without the flag the notification is only logged'
+    checked: 2026-11-02

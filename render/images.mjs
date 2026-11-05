@@ -43,6 +43,7 @@ const ICON = {
   y: '<svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none" stroke="#0B2814" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   p: '<svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 0 1 0 16z" fill="#3A2A05"/></svg>',
   n: '<svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#3A0D0B" stroke-width="3.2" stroke-linecap="round"/></svg>',
+  na: '<svg viewBox="0 0 24 24"><path d="M7 12h10" fill="none" stroke="#2A2A26" stroke-width="3.2" stroke-linecap="round"/></svg>',
 };
 const mark = m => `<div class="m ${m}">${ICON[m]}</div>`;
 const rateClass = r => (r >= 0.4 ? 'g' : r >= 0.15 ? 'a' : 'rd');
@@ -98,7 +99,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .name span{font-size:22px;font-weight:600;color:#fff;white-space:nowrap}
 .m{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .m svg{width:26px;height:26px}
-.m.y{background:#4ADE80}.m.p{background:#FBBF24}.m.n{background:#F87171}
+.m.y{background:#4ADE80}.m.p{background:#FBBF24}.m.n{background:#F87171}.m.na{background:#55554F}
 .pill{white-space:nowrap;font-size:16px;font-weight:700;padding:7px 10px;border-radius:999px;color:#0B0B0A}
 .pill.g{background:#4ADE80}.pill.a{background:#FBBF24}
 .conn{display:flex;flex-direction:column;align-items:center;line-height:1.05}
@@ -114,7 +115,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 </style></head><body><h1>MCP clients: the receipts</h1>
 <div class="t">${groupRow}<div class="h"><div>Client</div>${heads.map(h => `<div>${h}</div>`).join('')}</div>${body}</div>
 ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
-<div class="foot"><div class="leg"><div>${mark('y')}yes</div><div>${mark('p')}partial</div><div>${mark('n')}no</div></div><div style="white-space:nowrap">${formatDate(data.as_of)}</div></div>
+<div class="foot"><div class="leg"><div>${mark('y')}yes</div><div>${mark('p')}partial</div><div>${mark('n')}no</div><div>${mark('na')}n/a</div></div><div style="white-space:nowrap">${formatDate(data.as_of)}</div></div>
 </body></html>`;
 }
 

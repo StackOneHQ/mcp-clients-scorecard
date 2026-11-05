@@ -60,7 +60,7 @@ The file name is the client name in lower case with hyphens: `Claude Code` is `c
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `value` | yes | `y`, `p` or `n`. The protocol cell holds a version from `spec_versions`, or `not published`. |
+| `value` | yes | `y`, `p` or `n`, or `na` on the `apps` cell of a `cli` client. The protocol cell holds a version from `spec_versions`, or `not published`. |
 | `method` | yes | `probe`, `source`, `docs`, `changelog` or `issue` |
 | `source` | yes | https URL of the evidence |
 | `evidence` | yes | What the source shows, in a sentence or a code reference |
@@ -68,7 +68,7 @@ The file name is the client name in lower case with hyphens: `Claude Code` is `c
 | `label` | tool_search only | How the client searches, shown in the table |
 | `quality` | tool_search only | `strong` or `basic`, colours the pill in the matrix image |
 | `fallback` | protocol only | Older version the client falls back to |
-| `since` | no | The first release that shipped the feature: `date` (YYYY-MM-DD, required), `source` (https, required) and `version` (optional, a quoted string). Only on `y` or `p` cells. |
+| `since` | no | The first release that shipped the feature: `date` (YYYY-MM-DD, required), `source` (https, required) and `version` (optional, a quoted string). Only on `y` or `p` cells, and never on `list_changed`, which predates the history charts. |
 
 Unknown keys fail the check, so a typo in a field name does not pass silently.
 

@@ -37,7 +37,7 @@ cells:
       version: "2.1.7"
       source: https://github.com/anthropics/claude-code/releases/tag/v2.1.7
   apps:
-    value: n
+    value: na
     method: probe
     source: https://github.com/anthropics/claude-code/issues/95149
     evidence: "Live probe of 2.1.316 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open"
@@ -84,3 +84,9 @@ cells:
       date: 2026-03-14
       version: "2.1.76"
       source: https://github.com/anthropics/claude-code/releases/tag/v2.1.76
+  list_changed:
+    value: y
+    method: changelog
+    source: https://github.com/anthropics/claude-code/blob/80c6959d28c4c30ecd14fc1cdf172f19d9adad81/CHANGELOG.md#L8529
+    evidence: '2.1.0: "Added support for MCP `list_changed` notifications, allowing MCP servers to dynamically update their available tools, prompts, and resources without requiring reconnection"'
+    checked: 2026-11-02

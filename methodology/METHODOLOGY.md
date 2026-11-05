@@ -4,31 +4,33 @@ How every cell in the [scorecard](../README.md) is graded, where the evidence co
 
 ## What is graded
 
-Each client gets nine cells, one per entry in [data/features.yaml](../data/features.yaml):
+Each client gets ten cells, one per entry in [data/features.yaml](../data/features.yaml):
 
 | Column | Graded as | Where it is defined |
 | --- | --- | --- |
 | Spec version | The newest protocol revision the client negotiates | [MCP specification](https://modelcontextprotocol.io/specification/2026-07-28/changelog) |
 | Code mode | `y`, `p` or `n` | Client feature, not in the spec ([Anthropic](https://www.anthropic.com/engineering/code-execution-with-mcp), [Cloudflare](https://blog.cloudflare.com/code-mode/)) |
 | Tool search | `y`, `p` or `n`, plus a label for how it searches | Client feature, not in the spec ([Anthropic](https://www.anthropic.com/engineering/advanced-tool-use)) |
-| MCP Apps | `y`, `p` or `n` | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
+| MCP Apps | `y`, `p` or `n`; `na` for a terminal CLI | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
 | Tasks | `y`, `p` or `n` | [Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview), experimental in the 2025-11-25 spec |
 | Events | `y`, `p` or `n` | [Triggers and Events working group](https://github.com/modelcontextprotocol/experimental-ext-triggers-events) |
 | CIMD | `y`, `p` or `n` | [Authorization, client registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration) |
 | ID-JAG | `y`, `p` or `n` | [Enterprise-Managed Authorization extension](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization) |
 | Elicitation | `y`, `p` or `n` | [Client elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation) |
+| Live tool lists | `y`, `p` or `n`, with no `since` date | [Tools, list changed notification](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#list-changed-notification) |
 
 The values mean:
 
 - `y`: the feature works in the version checked, on by default or with a documented setting.
 - `p`: partial. Behind a flag, off by default, marked experimental, or only one of two modes (for example form elicitation without URL elicitation).
 - `n`: not supported, or not documented anywhere we could find. A missing feature and an undocumented one look the same from outside, so a vendor who can show support should [send the source](../CONTRIBUTING.md).
+- `na`: not applicable. Only on the MCP Apps cell of a terminal CLI, which has no web view to render server UI. It scores 0, like `n`, and goes back to `y` or `p` if the CLI starts passing the UI to a host that renders it.
 
 A feature the vendor calls beta or preview is `y` when it is on by default or turned on by a documented setting or admin policy, and `p` when it needs an experimental flag or an undocumented switch. The evidence names the vendor's label.
 
 For tool search, `quality: strong` marks a search tool the vendor documents, or one that ranks with BM25 or embeddings. `basic` marks an undocumented search with simpler matching (keyword or substring), or no search query at all (the model reads files or picks from a list). Strong labels show green in the matrix image, basic ones amber.
 
-[bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers yet.
+[bench/tool-search](../bench/tool-search/README.md) measures how well each ranking finds the right tool: keyword, regex, BM25 and embeddings over 453 tools from 28 public MCP servers, with lexical, paraphrased and ambiguous queries. The grade above does not use those numbers.
 
 ## Evidence methods
 
@@ -66,7 +68,7 @@ Below 20 issues after removing duplicates the rate is not shown. The counts live
 
 ## Tiers
 
-Tiers come from the feature score (`y` = 1, `p` = 0.5 across the eight feature columns), the spec grade and the fix rate. The rules are in [RUBRIC.md](RUBRIC.md) and in `rubricTier` in [render/data.mjs](../render/data.mjs). A client can sit in another tier only with a written `tier_note`, and the build fails on any other mismatch.
+Tiers come from the feature score (`y` = 1, `p` = 0.5 across the nine feature columns), the spec grade and the fix rate. The rules are in [RUBRIC.md](RUBRIC.md) and in `rubricTier` in [render/data.mjs](../render/data.mjs). A client can sit in another tier only with a written `tier_note`, and the build fails on any other mismatch.
 
 ## Dating support
 
@@ -94,13 +96,13 @@ The history snapshots in [data/history/](../data/history/) are a second record. 
 
 `npm run check` runs in CI on every pull request ([.github/workflows/check.yml](../.github/workflows/check.yml)) and fails when:
 
-- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all nine cells), its file name does not match its name, or it carries an unknown key;
+- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all ten cells), its file name does not match its name, or it carries an unknown key;
 - a `y` or `p` cell lacks a known `method`, an https `source`, `evidence`, or a `checked` date in YYYY-MM-DD form;
 - a `since` block has a date after `as_of` or a source that is not https;
 - a client's tier differs from the rubric without a `tier_note`;
 - the README sections, EVIDENCE.md or the history snapshot for `as_of` differ from what `npm run build` would write.
 
-The same checks apply to `n` cells, which also need a source showing where we looked.
+The same checks apply to `n` and `na` cells, which also need a source showing where we looked.
 
 ## Limitations
 
