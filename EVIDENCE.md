@@ -8,26 +8,26 @@ Methods: `probe` is a live handshake against a local MCP server (see [methodolog
 
 ## Claude Code
 
-Tier **S** · CLI · version checked `2.1.314` · tracker [anthropics/claude-code](https://github.com/anthropics/claude-code/issues) · MCP bugs fixed: 8% of 769
+Tier **S** · CLI · version checked `2.1.316` · tracker [anthropics/claude-code](https://github.com/anthropics/claude-code/issues) · MCP bugs fixed: 8% of 813
 
 [website](https://claude.com/product/claude-code) · [docs](https://code.claude.com/docs/en/overview) · [repo](https://github.com/anthropics/claude-code) · [data file](data/clients/claude-code.yaml)
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://code.claude.com/docs/en/changelog) | Live probe of 2.1.314: initialize carries 2026-07-28 | probe | 2026-10-30 |  |
-| MCP Apps | [![not applicable](assets/icons/na.svg)](https://github.com/anthropics/claude-code/issues/95149) | Live probe of 2.1.314 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open | probe | 2026-10-30 |  |
+| Spec version | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://code.claude.com/docs/en/changelog) | Live probe of 2.1.316: server/discover carries 2026-07-28 | probe | 2026-11-02 |  |
+| MCP Apps | [![not applicable](assets/icons/na.svg)](https://github.com/anthropics/claude-code/issues/95149) | Live probe of 2.1.316 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open | probe | 2026-11-02 |  |
 | Tasks | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | Docs: MCP tasks are public beta from v2.1.304, turned on by Anthropic feature flags for terminal, Agent SDK and GitHub Actions sessions on 2026-07-28 connections, and a one-shot claude -p run does not get them, which is why the unauthenticated -p probe saw no tasks | docs | 2026-10-30 | [2026-10-19 (2.1.304)](https://code.claude.com/docs/en/mcp) |
 | Events | [![no](assets/icons/n.svg)](https://github.com/anthropics/claude-code/issues/101434) | Open feature request to start routines from MCP events; channels are a Claude-specific push path, not the working group design | issue | 2026-10-30 |  |
 | CIMD | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | Docs list Client ID Metadata Document support, and the 2.1.81 release note names CIMD (SEP-991) | docs | 2026-10-30 | [2026-03-20 (2.1.81)](https://github.com/anthropics/claude-code/releases/tag/v2.1.81) |
 | ID-JAG | [![yes](assets/icons/y.svg)](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth) | The MCP blog says Anthropic implemented enterprise-managed authorization so admins can authorize MCP servers across Claude, Claude Code and Cowork, which is a documented admin policy and so counts as y. Setting up XAA locally in the CLI without that policy needs an undocumented switch | docs | 2026-10-30 |  |
-| Elicitation | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | Live probe of 2.1.314 declares elicitation form and url, matching the docs | probe | 2026-10-30 | [2026-03-14 (2.1.76)](https://github.com/anthropics/claude-code/releases/tag/v2.1.76) |
+| Elicitation | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | Live probe of 2.1.316 declares elicitation form and url, matching the docs | probe | 2026-11-02 | [2026-03-14 (2.1.76)](https://github.com/anthropics/claude-code/releases/tag/v2.1.76) |
 | Live tool lists | [![yes](assets/icons/y.svg)](https://github.com/anthropics/claude-code/blob/80c6959d28c4c30ecd14fc1cdf172f19d9adad81/CHANGELOG.md#L8529) | 2.1.0: "Added support for MCP `list_changed` notifications, allowing MCP servers to dynamically update their available tools, prompts, and resources without requiring reconnection" | changelog | 2026-11-02 |  |
 | Code mode | [![no](assets/icons/n.svg)](https://code.claude.com/docs/en/mcp) | Not documented in the MCP docs or changelog | docs | 2026-10-30 |  |
-| Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.314) | Docs: tool search is on by default and defers MCP tools behind a search tool (ENABLE_TOOL_SEARCH true, auto, auto:N, false); the 2.1.314 bundle ranks by exact name, select: and mcp__ prefix lookups, then weighted keyword scoring over server and tool name parts plus a word-boundary match on description and search hint, with no BM25 or embeddings | source | 2026-10-30 | [2026-01-14 (2.1.7)](https://github.com/anthropics/claude-code/releases/tag/v2.1.7) |
+| Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.316) | Docs: tool search is on by default and defers MCP tools behind a search tool (ENABLE_TOOL_SEARCH true, auto, auto:N, false); the 2.1.316 bundle ranks by exact name, select: and mcp__ prefix lookups, then weighted keyword scoring over server and tool name parts plus a word-boundary match on description and search hint, with no BM25 or embeddings | source | 2026-11-02 | [2026-01-14 (2.1.7)](https://github.com/anthropics/claude-code/releases/tag/v2.1.7) |
 
 ## Copilot CLI
 
-Tier **A** · CLI · version checked `1.0.105` · tracker [github/copilot-cli](https://github.com/github/copilot-cli/issues) · MCP bugs fixed: 24% of 133
+Tier **A** · CLI · version checked `1.0.105` · tracker [github/copilot-cli](https://github.com/github/copilot-cli/issues) · MCP bugs fixed: 30% of 135
 
 [website](https://github.com/features/copilot) · [docs](https://docs.github.com/en/copilot/how-tos/copilot-cli) · [repo](https://github.com/github/copilot-cli) · [data file](data/clients/copilot-cli.yaml)
 
@@ -46,7 +46,7 @@ Tier **A** · CLI · version checked `1.0.105` · tracker [github/copilot-cli](h
 
 ## Pi
 
-Tier **A** · CLI · version checked `1.4.0` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 80
+Tier **A** · CLI · version checked `1.4.0` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 84
 
 [website](https://pi.dev) · [docs](https://pi.dev/docs/latest) · [repo](https://github.com/earendil-works/pi) · [data file](data/clients/pi.yaml)
 
@@ -65,26 +65,26 @@ Tier **A** · CLI · version checked `1.4.0` · tracker [earendil-works/pi](http
 
 ## Droid
 
-Tier **B** · CLI · version checked `1.0.0` · tracker [Factory-AI/factory](https://github.com/Factory-AI/factory/issues) · MCP bugs fixed: too few issues
+Tier **B** · CLI · version checked `1.1.0` · tracker [Factory-AI/factory](https://github.com/Factory-AI/factory/issues) · MCP bugs fixed: too few issues
 
 [website](https://factory.com) · [docs](https://docs.factory.com) · [repo](https://github.com/Factory-AI/factory) · [data file](data/clients/droid.yaml)
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | Live probe of 1.0.0 on 2026-10-30 negotiated 2025-11-25 (clientInfo factory-cli); the 1.0.0 binary still ships flag mcp_2026_07_28 with defaultValue false | probe | 2026-10-30 |  |
-| MCP Apps | [![not applicable](assets/icons/na.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.0.0 binary | source | 2026-10-30 |  |
-| Tasks | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | 0 hits for io.modelcontextprotocol/tasks in the 1.0.0 binary; tasks/get appears only in bundled SDK schemas, and the probe saw no tasks capability | source | 2026-10-30 |  |
-| Events | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | 0 hits for events/subscribe or notifications/events in the 1.0.0 binary | source | 2026-10-30 |  |
-| CIMD | [![yes](assets/icons/y.svg)](https://docs.factory.com/harness/mcp) | Docs: Droid uses Factory's published client metadata when the server supports Client ID Metadata Documents (CIMD), with a clientMetadataUrl override that the 1.0.0 binary handles | docs | 2026-10-30 | [2026-06-12 (0.147.0)](https://docs.factory.com/changelog/release-notes) |
-| ID-JAG | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | Only bundled SDK schemas for the ID-JAG token exchange in the 1.0.0 binary, with no product wiring | source | 2026-10-30 |  |
-| Elicitation | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | Live probe of 1.0.0 declared capabilities {}, and the binary builds its MCP client with no capabilities option, so no elicitation/create handler can register; this outranks the v0.112.0 (April 2026) changelog line Resume MCP elicitations | probe | 2026-10-30 |  |
+| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | Live probe of 1.1.0 on 2026-11-02 negotiated 2025-11-25 (clientInfo factory-cli); the 1.1.0 binary still ships flag mcp_2026_07_28 with defaultValue false | probe | 2026-11-02 |  |
+| MCP Apps | [![not applicable](assets/icons/na.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | 0 hits for io.modelcontextprotocol/ui or ui:// in the 1.1.0 binary | source | 2026-11-02 |  |
+| Tasks | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | 0 hits for io.modelcontextprotocol/tasks in the 1.1.0 binary; tasks/get appears only in bundled SDK schemas, and the probe saw no tasks capability | source | 2026-11-02 |  |
+| Events | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | 0 hits for events/subscribe or notifications/events in the 1.1.0 binary | source | 2026-11-02 |  |
+| CIMD | [![yes](assets/icons/y.svg)](https://docs.factory.com/harness/mcp) | Docs: Droid uses Factory's published client metadata when the server supports Client ID Metadata Documents (CIMD), with a clientMetadataUrl override that the 1.1.0 binary handles | docs | 2026-11-02 | [2026-06-12 (0.147.0)](https://docs.factory.com/changelog/release-notes) |
+| ID-JAG | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | Only bundled SDK schemas for the ID-JAG token exchange in the 1.1.0 binary, with no product wiring | source | 2026-11-02 |  |
+| Elicitation | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | Live probe of 1.1.0 declared capabilities {}, and the binary builds its MCP client with no capabilities option, so no elicitation/create handler can register; this outranks the v0.112.0 (April 2026) changelog line Resume MCP elicitations | probe | 2026-11-02 |  |
 | Live tool lists | [![no](assets/icons/n.svg)](https://docs.factory.ai/cli/configuration/mcp) | The MCP docs describe reloading when mcp.json changes and say nothing about notifications/tools/list_changed; no changelog entry or issue found | docs | 2026-11-02 |  |
-| Code mode | [![partial](assets/icons/p.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | The 1.0.0 binary has a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set | source | 2026-10-30 |  |
-| Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@factory/cli-linux-x64/1.0.0) | ToolSearch (flag mcp_tool_search, default true) loads deferred MCP tools by select:<name> or by keywords matched against tool-name words only, scored as matched name tokens over max(name tokens, query words) with a small synonym map, returning the top-scoring ties; docs only say tools load on demand, ranking not documented | source | 2026-10-30 | [2026-06-03 (0.140.0)](https://docs.factory.com/changelog/release-notes) |
+| Code mode | [![partial](assets/icons/p.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | The 1.1.0 binary has a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set | source | 2026-11-02 |  |
+| Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | ToolSearch (flag mcp_tool_search, default true) loads deferred MCP tools by select:<name> or by keywords matched against tool-name words only, scored as matched name tokens over max(name tokens, query words) with a small synonym map, returning the top-scoring ties; docs only say tools load on demand, ranking not documented | source | 2026-11-02 | [2026-06-03 (0.140.0)](https://docs.factory.com/changelog/release-notes) |
 
 ## opencode
 
-Tier **B** · CLI · version checked `1.19.5` · tracker [anomalyco/opencode](https://github.com/anomalyco/opencode/issues) · MCP bugs fixed: 20% of 316
+Tier **B** · CLI · version checked `1.19.5` · tracker [anomalyco/opencode](https://github.com/anomalyco/opencode/issues) · MCP bugs fixed: 19% of 338
 
 [website](https://opencode.ai) · [docs](https://opencode.ai/docs) · [repo](https://github.com/anomalyco/opencode) · [data file](data/clients/opencode.yaml)
 
@@ -105,7 +105,7 @@ Tier **B** · CLI · version checked `1.19.5` · tracker [anomalyco/opencode](ht
 
 ## Codex
 
-Tier **C** · CLI · version checked `0.166.0` · tracker [openai/codex](https://github.com/openai/codex/issues) · MCP bugs fixed: 5% of 450
+Tier **C** · CLI · version checked `0.166.0` · tracker [openai/codex](https://github.com/openai/codex/issues) · MCP bugs fixed: 5% of 491
 
 [website](https://openai.com/codex/) · [docs](https://developers.openai.com/codex) · [repo](https://github.com/openai/codex) · [data file](data/clients/codex.yaml)
 
@@ -124,7 +124,7 @@ Tier **C** · CLI · version checked `0.166.0` · tracker [openai/codex](https:/
 
 ## Gemini CLI
 
-Tier **D** · CLI · version checked `0.66.0` · tracker [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli/issues) · MCP bugs fixed: 17% of 29
+Tier **D** · CLI · version checked `0.66.0` · tracker [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli/issues) · MCP bugs fixed: 19% of 31
 
 [website](https://geminicli.com) · [docs](https://geminicli.com/docs) · [repo](https://github.com/google-gemini/gemini-cli) · [data file](data/clients/gemini-cli.yaml)
 
@@ -164,7 +164,7 @@ Tier **D** · CLI · version checked `2.0.0` · tracker [continuedev/continue](h
 
 ## VS Code
 
-Tier **S** · App or IDE · version checked `1.144.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 43% of 287
+Tier **S** · App or IDE · version checked `1.144.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 46% of 305
 
 [website](https://code.visualstudio.com) · [docs](https://code.visualstudio.com/docs/agent-customization/mcp-servers) · [repo](https://github.com/microsoft/vscode) · [data file](data/clients/vs-code.yaml)
 
@@ -183,7 +183,7 @@ Tier **S** · App or IDE · version checked `1.144.0` · tracker [microsoft/vsco
 
 ## goose
 
-Tier **S** · App or IDE · version checked `1.57.0` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 56% of 63
+Tier **S** · App or IDE · version checked `1.57.0` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 53% of 66
 
 [website](https://goose-docs.ai) · [docs](https://goose-docs.ai/docs) · [repo](https://github.com/aaif-goose/goose) · [data file](data/clients/goose.yaml)
 
@@ -204,7 +204,7 @@ Tier **S** · App or IDE · version checked `1.57.0` · tracker [aaif-goose/goos
 
 ## Claude app
 
-Tier **A** · App or IDE · tracker [anthropics/claude-ai-mcp](https://github.com/anthropics/claude-ai-mcp/issues) · MCP bugs fixed: 14% of 436
+Tier **A** · App or IDE · tracker [anthropics/claude-ai-mcp](https://github.com/anthropics/claude-ai-mcp/issues) · MCP bugs fixed: 14% of 453
 
 [website](https://claude.com/product/overview) · [docs](https://claude.com/docs/connectors/building) · [repo](https://github.com/anthropics/claude-ai-mcp) · [data file](data/clients/claude-app.yaml)
 
@@ -249,7 +249,7 @@ Tier **A** · App or IDE · MCP bugs fixed: no public tracker
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
 | Spec version | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://developers.openai.com/plugins/build/mcp-events) | The MCP Events page says "MCP Events in ChatGPT requires MCP 2.0 (protocol version `2026-07-28`)." | docs | 2026-10-30 |  |
-| MCP Apps | [![yes](assets/icons/y.svg)](https://developers.openai.com/apps-sdk/mcp-apps-in-chatgpt.md) | The Apps SDK page says "ChatGPT implements the open MCP Apps standard for UI returned by an MCP server." | docs | 2026-10-30 |  |
+| MCP Apps | [![yes](assets/icons/y.svg)](https://developers.openai.com/apps-sdk/mcp-apps-in-chatgpt.md) | The Apps SDK page says "ChatGPT implements the open MCP Apps standard for UI returned by an MCP server." | docs | 2026-11-02 | [2026-02-22](https://developers.openai.com/apps-sdk/changelog) |
 | Tasks | [![no](assets/icons/n.svg)](https://developers.openai.com/plugins/build/mcp-server) | The plugin MCP server, auth and custom MCP server docs never mention io.modelcontextprotocol/tasks, and an open community request for tasks got an OpenAI reply on 2026-09-07 with no timeline. | docs | 2026-10-30 |  |
 | Events | [![partial](assets/icons/p.svg)](https://developers.openai.com/plugins/build/mcp-events) | The page says ChatGPT supports "webhook delivery and callback verification" from the draft MCP Events spec, while polling, streaming and the `gap` and `terminated` notifications are not supported, in Work chats only. | docs | 2026-10-30 | [2026-09-29](https://help.openai.com/en/articles/6825453-chatgpt-release-notes) |
 | CIMD | [![yes](assets/icons/y.svg)](https://developers.openai.com/plugins/build/auth) | The plugin auth page says "ChatGPT prioritizes CIMD when it is available", with DCR as the builder's alternative. | docs | 2026-10-30 |  |
@@ -299,7 +299,7 @@ Tier **C** · App or IDE · version checked `3.11.234` · MCP bugs fixed: no pub
 
 ## Cline
 
-Tier **C** · App or IDE · version checked `4.1.26` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 13% of 39
+Tier **C** · App or IDE · version checked `4.1.26` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 13% of 40
 
 [website](https://cline.bot) · [docs](https://docs.cline.bot) · [repo](https://github.com/cline/cline) · [data file](data/clients/cline.yaml)
 
