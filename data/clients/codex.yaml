@@ -22,8 +22,8 @@ cells:
     value: p
     method: docs
     source: https://developers.openai.com/codex/config-reference
-    evidence: "features.code_mode is under development and off by default, matching `codex features list` on 0.166.0"
-    checked: 2026-10-30
+    evidence: "features.code_mode is under development and off by default, matching `codex features list` on 0.166.0; still Stage::UnderDevelopment with default_enabled false in features/src/lib.rs at rust-v0.167.0"
+    checked: 2026-11-06
     since:
       date: 2026-03-11
       version: "0.114.0"

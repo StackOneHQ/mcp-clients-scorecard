@@ -21,8 +21,8 @@ cells:
     value: n
     method: source
     source: https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp
-    evidence: 'At tag 1.144.0, no "execute_javascript" or code mode in contrib/mcp or extensions/copilot; the only "code_mode" hit is a generated type for the separate Codex agent host (agentHost/node/codex/protocol/generated/ToolExposureSurface.ts)'
-    checked: 2026-10-30
+    evidence: 'At tag 1.144.0, no "execute_javascript" or code mode in contrib/mcp or extensions/copilot; the only "code_mode" hit is a generated type for the separate Codex agent host (agentHost/node/codex/protocol/generated/ToolExposureSurface.ts). Unchanged at 1.145.1'
+    checked: 2026-11-06
   tool_search:
     value: y
     label: Embeddings

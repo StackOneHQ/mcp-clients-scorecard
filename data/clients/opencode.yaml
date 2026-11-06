@@ -23,8 +23,8 @@ cells:
     value: p
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/effect/runtime-flags.ts#L48
-    evidence: "V1 1.19.5 has code mode behind OPENCODE_EXPERIMENTAL_CODE_MODE (or the OPENCODE_EXPERIMENTAL umbrella), off by default; when on, session/tools.ts:388 stops exposing MCP tools directly and routes them through execute. V2 v2.2.3 turns it on by default (packages/core/src/tool.ts:274)"
-    checked: 2026-10-30
+    evidence: "V1 1.19.5 has code mode behind OPENCODE_EXPERIMENTAL_CODE_MODE (or the OPENCODE_EXPERIMENTAL umbrella), off by default; when on, session/tools.ts:388 stops exposing MCP tools directly and routes them through execute. V2 v2.2.5 turns it on by default (packages/core/src/tool.ts:274), but V2 ships only through the separate opencode.ai/v2/install script and Homebrew tap, and the default installer and npm latest stay on 1.19.5"
+    checked: 2026-11-06
     since:
       date: 2026-07-06
       version: "1.17.14"

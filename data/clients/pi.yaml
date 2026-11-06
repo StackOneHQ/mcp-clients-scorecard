@@ -21,8 +21,8 @@ cells:
     value: y
     method: source
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L195
-    evidence: "docs/mcp.md:195 makes codemode the default MCP exposure, and :204 says Pi activates the codemode tool (model-written JavaScript in a QuickJS sandbox) when such a server connects; the probe listed the server as codemode"
-    checked: 2026-10-30
+    evidence: "docs/mcp.md:195 makes codemode the default MCP exposure, and :204 says Pi activates the codemode tool (model-written JavaScript in a QuickJS sandbox) when such a server connects; the probe listed the server as codemode. Unchanged in v1.5.0 (mcp.md:197)"
+    checked: 2026-11-06
     since:
       date: 2026-09-29
       version: "0.99.0"

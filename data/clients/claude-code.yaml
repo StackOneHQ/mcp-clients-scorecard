@@ -19,11 +19,11 @@ cells:
     evidence: "Live probe of 2.1.316: server/discover carries 2026-07-28"
     checked: 2026-11-02
   code_mode:
-    value: n
-    method: docs
-    source: https://code.claude.com/docs/en/mcp
-    evidence: Not documented in the MCP docs or changelog
-    checked: 2026-10-30
+    value: p
+    method: source
+    source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.318
+    evidence: "The 2.1.318 bundle has \"Code Mode (experimental)\", a REPL where the model writes scripts that call tools, MCP tools included; it is off unless CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 is set, and then still refused when the server-side gate \"isn't open to your account yet\". Interactive terminal, Anthropic API and Opus 5.5 or Sonnet 5.5 only, and not in the docs or changelog"
+    checked: 2026-11-06
   tool_search:
     value: y
     label: Keyword

@@ -19,8 +19,8 @@ cells:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: 'No execute_javascript or code execution over MCP tools in the 3000.11.234 binary; the "code_mode" strings and the changelog''s "Code mode" are the permission mode next to Ask, Plan, Smart and Bypass'
-    checked: 2026-10-30
+    evidence: 'No execute_javascript or code execution over MCP tools in the 3000.11.234 binary; the "code_mode" strings and the changelog''s "Code mode" are the permission mode next to Ask, Plan, Smart and Bypass, and the changelog through 3.11.238 adds no MCP scripting'
+    checked: 2026-11-06
   tool_search:
     value: y
     label: Deferred

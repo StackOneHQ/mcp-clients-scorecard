@@ -18,8 +18,8 @@ cells:
     value: n
     method: docs
     source: https://developers.openai.com/api/docs/guides/tools
-    evidence: Programmatic Tool Calling ("Let models compose and run JavaScript that orchestrates tool calls") is documented only for the OpenAI API, and no ChatGPT app doc offers it for MCP tools.
-    checked: 2026-10-30
+    evidence: Programmatic Tool Calling ("Let models compose and run JavaScript that orchestrates tool calls") is documented only for the OpenAI API, and no ChatGPT app doc or release note through 2026-11-05 offers it for MCP tools.
+    checked: 2026-11-06
   tool_search:
     value: n
     method: docs
