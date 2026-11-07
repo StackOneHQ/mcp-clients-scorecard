@@ -21,8 +21,8 @@ cells:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps
-    evidence: A grep of apps and sdk at the v4.1.26 tag for code mode and execute_javascript finds no MCP code mode.
-    checked: 2026-10-30
+    evidence: A grep of apps and sdk at the v4.1.26 tag for code mode and execute_javascript finds no MCP code mode; v4.1.26 is still the latest tag on 2026-11-06.
+    checked: 2026-11-06
   tool_search:
     value: n
     method: source

@@ -23,8 +23,8 @@ cells:
     value: y
     method: docs
     source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/documentation/docs/guides/managing-tools/code-mode.md#L25
-    evidence: "Code Mode is a documented built-in extension (platform_extensions/mod.rs:159-162, default_enabled false) that the user turns on in settings or goose configure; it exposes list_functions, get_function_details and execute_javascript running in a Boa JavaScript context (code_execution.rs:277-279). Off by default but enabled by a documented setting and not marked experimental, so y under the methodology"
-    checked: 2026-10-30
+    evidence: "Code Mode is a documented built-in extension (platform_extensions/mod.rs:159-162, default_enabled false) that the user turns on in settings or goose configure; it exposes list_functions, get_function_details and execute_javascript running in a Boa JavaScript context (code_execution.rs:277-279). Off by default but enabled by a documented setting and not marked experimental, so y under the methodology. Unchanged in 1.57.0, still the latest release on 2026-11-06"
+    checked: 2026-11-06
     since:
       date: 2025-12-18
       version: "1.17.0"

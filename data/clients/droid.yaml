@@ -21,9 +21,9 @@ cells:
   code_mode:
     value: p
     method: source
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0
-    evidence: "The 1.1.0 binary has a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set"
-    checked: 2026-11-02
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.5.0
+    evidence: "The 1.1.0 and 1.5.0 binaries have a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set; the docs and release notes through 1.5.0 do not mention it"
+    checked: 2026-11-06
   tool_search:
     value: y
     label: Keyword

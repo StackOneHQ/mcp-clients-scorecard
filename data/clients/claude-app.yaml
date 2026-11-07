@@ -20,8 +20,8 @@ cells:
     value: n
     method: changelog
     source: https://claude.com/docs/cowork/changelog
-    evidence: Neither the connector docs nor the Claude Desktop and Cowork changelog through v4.4212.0 (2026-10-29) mention a code mode for MCP tools.
-    checked: 2026-10-30
+    evidence: Neither the connector docs nor the Claude Desktop and Cowork changelog through v4.23118.0 (2026-11-05) mention a code mode for MCP tools; the Claude Code 2.1.318 experiment is not exposed in the app.
+    checked: 2026-11-06
   tool_search:
     value: y
     label: Deferred

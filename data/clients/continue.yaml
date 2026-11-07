@@ -23,8 +23,8 @@ cells:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
-    evidence: A grep of core and extensions/cli at the final commit for code mode and execute_javascript finds nothing.
-    checked: 2026-10-30
+    evidence: A grep of core and extensions/cli at the final commit for code mode and execute_javascript finds nothing; the repository is read-only after the final 2.0.0 release.
+    checked: 2026-11-06
   tool_search:
     value: n
     method: source

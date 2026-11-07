@@ -21,8 +21,8 @@ cells:
     value: n
     method: source
     source: https://github.com/zed-industries/zed/tree/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server
-    evidence: 'At tag v1.26.2, grep of crates/*.rs for "execute_javascript", "code_mode", "codemode": no MCP hit (only OpenCodeModel names in the opencode provider)'
-    checked: 2026-10-30
+    evidence: 'At tag v1.26.2, grep of crates/*.rs for "execute_javascript", "code_mode", "codemode": no MCP hit (only OpenCodeModel names in the opencode provider). Still none at v1.27.0: crates/agent/src/tools has no script or code execution tool'
+    checked: 2026-11-06
   tool_search:
     value: n
     method: source

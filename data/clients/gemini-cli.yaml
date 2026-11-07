@@ -22,8 +22,8 @@ cells:
     value: n
     method: source
     source: https://github.com/google-gemini/gemini-cli/tree/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools
-    evidence: "No code mode or execute-code tool in packages/core at v0.66.0"
-    checked: 2026-10-30
+    evidence: "No code mode or execute-code tool in packages/core at v0.66.0, and still none at v0.67.0"
+    checked: 2026-11-06
   tool_search:
     value: n
     method: source
