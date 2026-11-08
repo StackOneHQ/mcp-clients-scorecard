@@ -183,8 +183,8 @@
       "events": "n",
       "cimd": "n",
       "id_jag": "n",
-      "elicitation": "p",
-      "list_changed": "p",
+      "elicitation": "y",
+      "list_changed": "n",
       "code_mode": "n",
       "tool_search": "y"
     },

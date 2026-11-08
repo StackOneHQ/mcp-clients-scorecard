@@ -60,14 +60,14 @@ cells:
     evidence: Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring
     checked: 2026-11-08
   elicitation:
-    value: p
-    method: changelog
-    source: https://x.ai/build/changelog
-    evidence: "Changelog 1.0.17: MCP tools can request additional input mid-call and resume when you answer, and the binary has session-side elicitation code; the doctor handshake did not declare elicitation and a signed-in session was not probed"
+    value: y
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: "The 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that receives elicitation/create and shows it as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer; the grok mcp doctor handshake did not declare elicitation and a signed-in session was not probed"
     checked: 2026-11-08
   list_changed:
-    value: p
-    method: changelog
-    source: https://x.ai/build/changelog
-    evidence: "Changelog 0.2.112: MCP tools now appear without restart after enrolling or updating a managed service, and the binary has a tools list-changed handler; in the probe, doctor exited after the notification without listing again"
+    value: n
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: "Only the bundled MCP library's ToolListChangedNotification types in the 1.0.77 binary, with no product handler found; in the doctor probe the client did not list again after notifications/tools/list_changed, and changelog 0.2.112 (tools appear without restart after enrolling a managed service) covers Grok's managed services, not this notification"
     checked: 2026-11-08
