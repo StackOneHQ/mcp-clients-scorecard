@@ -25,25 +25,25 @@ cells:
     value: n
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
-    evidence: "No deferred loading or search over MCP tools in the Muse Code docs or the changelog through 1.4.13; the tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client"
+    evidence: "No deferred loading or search over MCP tools in the Muse Code docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13; the tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client"
     checked: 2026-11-08
   apps:
     value: na
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
-    evidence: Terminal client; the docs and the changelog through 1.4.13 do not mention MCP Apps or ui:// resources
+    evidence: Terminal client; the docs and the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 do not mention MCP Apps or ui:// resources
     checked: 2026-11-08
   tasks:
     value: n
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
-    evidence: No MCP tasks support in the docs or the changelog through 1.4.13
+    evidence: No MCP tasks support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
     checked: 2026-11-08
   events:
     value: n
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
-    evidence: No MCP events support in the docs or the changelog through 1.4.13
+    evidence: No MCP events support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
     checked: 2026-11-08
   cimd:
     value: n
@@ -55,7 +55,7 @@ cells:
     value: n
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
-    evidence: No enterprise-managed authorization or ID-JAG token exchange in the docs or the changelog through 1.4.13
+    evidence: No enterprise-managed authorization or ID-JAG token exchange in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
     checked: 2026-11-08
   elicitation:
     value: n

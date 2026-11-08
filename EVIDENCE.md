@@ -82,25 +82,6 @@ Tier **B** · CLI · version checked `1.1.0` · tracker [Factory-AI/factory](htt
 | Code mode | [![partial](assets/icons/p.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.5.0) | The 1.1.0 and 1.5.0 binaries have a Script tool that runs JavaScript calling MCP tools as tools.<server>.<tool>, but execution mode defaults to direct_only unless the model is listed in the server-side script_tool_models config (default empty) or the hidden exec flag --tool-execution-mode script-only is set; the docs and release notes through 1.5.0 do not mention it | source | 2026-11-06 |  |
 | Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@factory/cli-linux-x64/1.1.0) | ToolSearch (flag mcp_tool_search, default true) loads deferred MCP tools by select:<name> or by keywords matched against tool-name words only, scored as matched name tokens over max(name tokens, query words) with a small synonym map, returning the top-scoring ties; docs only say tools load on demand, ranking not documented | source | 2026-11-02 | [2026-06-03 (0.140.0)](https://docs.factory.com/changelog/release-notes) |
 
-## Grok Build
-
-Tier **B** · CLI · version checked `1.0.77` · MCP bugs fixed: no public tracker
-
-[website](https://x.ai/build) · [docs](https://docs.x.ai/build/features/mcp-servers) · [data file](data/clients/grok-build.yaml)
-
-| Feature | Value | Evidence | Method | Checked | Shipped |
-| --- | --- | --- | --- | --- | --- |
-| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Live probe of 1.0.77 on 2026-11-08 with grok mcp doctor negotiated 2025-11-25 (clientInfo grok-shell-probe 1.0.77); a full session was not probed because headless runs need a signed-in account | probe | 2026-11-08 |  |
-| MCP Apps | [![not applicable](assets/icons/na.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Terminal client with no UI to render into: the live probe declared extension io.modelcontextprotocol/ui (mimeType text/html;profile=mcp-app) and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI | probe | 2026-11-08 |  |
-| Tasks | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | tasks/get and tasks/cancel appear only in bundled MCP library schemas in the 1.0.77 binary, and the probe saw no tasks capability | source | 2026-11-08 |  |
-| Events | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | 0 hits for events/subscribe or notifications/events in the 1.0.77 binary | source | 2026-11-08 |  |
-| CIMD | [![no](assets/icons/n.svg)](https://docs.x.ai/build/features/mcp-servers) | Docs: OAuth runs automatically through dynamic client registration or a bundled client ID (changelog 0.2.23); Client ID Metadata Documents are not mentioned | docs | 2026-11-08 |  |
-| ID-JAG | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring | source | 2026-11-08 |  |
-| Elicitation | [![yes](assets/icons/y.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | The 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that receives elicitation/create and shows it as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer; the grok mcp doctor handshake did not declare elicitation and a signed-in session was not probed | source | 2026-11-08 |  |
-| Live tool lists | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Only the bundled MCP library's ToolListChangedNotification types in the 1.0.77 binary, with no product handler found; in the doctor probe the client did not list again after notifications/tools/list_changed, and changelog 0.2.112 (tools appear without restart after enrolling a managed service) covers Grok's managed services, not this notification | source | 2026-11-08 |  |
-| Code mode | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | No tool in the 1.0.77 binary runs model-written code against MCP tools; MCP calls go through use_tool one at a time, and the docs and changelog do not mention a code or script mode | source | 2026-11-08 |  |
-| Tool search | [![yes](assets/icons/y.svg) Deferred](https://x.ai/cli/grok-1.0.77-linux-x86_64) | The 1.0.77 binary defers MCP tools behind search_tools and dispatches them through use_tool; changelog 1.0.46: Tool search activity folds as Ran N tool searches. Ranking is not documented | source | 2026-11-08 |  |
-
 ## opencode
 
 Tier **B** · CLI · version checked `1.19.5` · tracker [anomalyco/opencode](https://github.com/anomalyco/opencode/issues) · MCP bugs fixed: 19% of 338
@@ -140,6 +121,25 @@ Tier **C** · CLI · version checked `0.166.0` · tracker [openai/codex](https:/
 | Live tool lists | [![partial](assets/icons/p.svg)](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/features/src/lib.rs#L1646-L1651) | Re-listing on the notification sits behind the feature flag mcp_tool_list_changed (Stage::UnderDevelopment, default_enabled false). Without the flag the notification is only logged | source | 2026-11-02 |  |
 | Code mode | [![partial](assets/icons/p.svg)](https://developers.openai.com/codex/config-reference) | features.code_mode is under development and off by default, matching `codex features list` on 0.166.0; still Stage::UnderDevelopment with default_enabled false in features/src/lib.rs at rust-v0.167.0 | docs | 2026-11-06 | [2026-03-11 (0.114.0)](https://github.com/openai/codex/releases/tag/rust-v0.114.0) |
 | Tool search | [![yes](assets/icons/y.svg) BM25](https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core/src/tools/handlers/tool_search.rs#L171) | When the model supports the search tool, MCP tools are deferred and tool_search ranks them with BM25 (bm25 crate, English, fit to the corpus) over each tool name, the name with underscores as spaces, description, parameter names and descriptions, plus namespace name and description | source | 2026-10-30 | [2026-04-10 (0.119.0)](https://github.com/openai/codex/releases/tag/rust-v0.119.0) |
+
+## Grok Build
+
+Tier **C** · CLI · version checked `1.0.77` · MCP bugs fixed: no public tracker
+
+[website](https://x.ai/build) · [docs](https://docs.x.ai/build/features/mcp-servers) · [data file](data/clients/grok-build.yaml)
+
+| Feature | Value | Evidence | Method | Checked | Shipped |
+| --- | --- | --- | --- | --- | --- |
+| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Live probe of 1.0.77 on 2026-11-08 with grok mcp doctor negotiated 2025-11-25 (clientInfo grok-shell-probe 1.0.77); a full session was not probed because headless runs need a signed-in account | probe | 2026-11-08 |  |
+| MCP Apps | [![not applicable](assets/icons/na.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Terminal client with no UI to render into: the live probe declared extension io.modelcontextprotocol/ui (mimeType text/html;profile=mcp-app) and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI | probe | 2026-11-08 |  |
+| Tasks | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | tasks/get and tasks/cancel appear only in bundled MCP library schemas in the 1.0.77 binary, and the probe saw no tasks capability | source | 2026-11-08 |  |
+| Events | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | 0 hits for events/subscribe or notifications/events in the 1.0.77 binary | source | 2026-11-08 |  |
+| CIMD | [![no](assets/icons/n.svg)](https://docs.x.ai/build/features/mcp-servers) | Docs: OAuth runs automatically through dynamic client registration or a bundled client ID (changelog 0.2.23); Client ID Metadata Documents are not mentioned | docs | 2026-11-08 |  |
+| ID-JAG | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring | source | 2026-11-08 |  |
+| Elicitation | [![partial](assets/icons/p.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Form mode only shown: the 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that shows elicitation/create as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer. The same module parses notifications/elicitation/complete by elicitationId, but no prompt that opens an elicitation URL was found, the grok mcp doctor handshake did not declare elicitation, and a signed-in session was not probed | source | 2026-11-08 |  |
+| Live tool lists | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | Only the bundled MCP library's ToolListChangedNotification types in the 1.0.77 binary, with no product handler found; in the doctor probe the client did not list again after notifications/tools/list_changed, and changelog 0.2.112 (tools appear without restart after enrolling a managed service) covers Grok's managed services, not this notification | source | 2026-11-08 |  |
+| Code mode | [![no](assets/icons/n.svg)](https://x.ai/cli/grok-1.0.77-linux-x86_64) | No tool in the 1.0.77 binary runs model-written code against MCP tools; MCP calls go through use_tool one at a time, and the docs and changelog do not mention a code or script mode | source | 2026-11-08 |  |
+| Tool search | [![yes](assets/icons/y.svg) Deferred](https://x.ai/cli/grok-1.0.77-linux-x86_64) | The 1.0.77 binary defers MCP tools behind search_tools and dispatches them through use_tool; changelog 1.0.46: Tool search activity folds as Ran N tool searches. Ranking is not documented | source | 2026-11-08 |  |
 
 ## Gemini CLI
 
@@ -190,15 +190,15 @@ Tier **D** · CLI · version checked `1.4.13` · MCP bugs fixed: no public track
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
 | Spec version | [![older spec](assets/icons/spec-older.svg) 2025-06-18](https://dev.meta.ai/docs/muse-code/changelog#v1-2-1) | Changelog 1.2.1: The MCP handshake advertises protocol version 2025-06-18 on both transports, and no later entry through 1.4.13 changes it. Not probed: the CLI is not on npm | changelog | 2026-11-08 |  |
-| MCP Apps | [![not applicable](assets/icons/na.svg)](https://dev.meta.ai/docs/muse-code/extending) | Terminal client; the docs and the changelog through 1.4.13 do not mention MCP Apps or ui:// resources | docs | 2026-11-08 |  |
-| Tasks | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No MCP tasks support in the docs or the changelog through 1.4.13 | docs | 2026-11-08 |  |
-| Events | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No MCP events support in the docs or the changelog through 1.4.13 | docs | 2026-11-08 |  |
+| MCP Apps | [![not applicable](assets/icons/na.svg)](https://dev.meta.ai/docs/muse-code/extending) | Terminal client; the docs and the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 do not mention MCP Apps or ui:// resources | docs | 2026-11-08 |  |
+| Tasks | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No MCP tasks support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 | docs | 2026-11-08 |  |
+| Events | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No MCP events support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 | docs | 2026-11-08 |  |
 | CIMD | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/changelog#v1-1-1) | Changelog 1.1.1: muse mcp login runs OAuth 2.1 with dynamic client registration by default (mcp_oauth_dynamic_client_registration); Client ID Metadata Documents are not mentioned | changelog | 2026-11-08 |  |
-| ID-JAG | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No enterprise-managed authorization or ID-JAG token exchange in the docs or the changelog through 1.4.13 | docs | 2026-11-08 |  |
+| ID-JAG | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No enterprise-managed authorization or ID-JAG token exchange in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 | docs | 2026-11-08 |  |
 | Elicitation | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | User-input dialogs belong to Muse Code's own session protocol; no MCP elicitation/create handler is documented, although the 2025-06-18 version it advertises defines elicitation | docs | 2026-11-08 |  |
 | Live tool lists | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/changelog#v1-1-1) | Changelog 1.1.1 mentions live refreshes of the server list, but no entry through 1.4.13 says tools are listed again on notifications/tools/list_changed | changelog | 2026-11-08 |  |
 | Code mode | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | The extending docs expose MCP tools to the model directly, with no mode that runs model-written code against them | docs | 2026-11-08 |  |
-| Tool search | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No deferred loading or search over MCP tools in the Muse Code docs or the changelog through 1.4.13; the tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client | docs | 2026-11-08 |  |
+| Tool search | [![no](assets/icons/n.svg)](https://dev.meta.ai/docs/muse-code/extending) | No deferred loading or search over MCP tools in the Muse Code docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13; the tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client | docs | 2026-11-08 |  |
 
 ## VS Code
 

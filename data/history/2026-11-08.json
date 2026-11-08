@@ -176,14 +176,14 @@
     "grok-build": {
       "name": "Grok Build",
       "group": "cli",
-      "tier": "B",
+      "tier": "C",
       "protocol": "2025-11-25",
       "apps": "na",
       "tasks": "n",
       "events": "n",
       "cimd": "n",
       "id_jag": "n",
-      "elicitation": "y",
+      "elicitation": "p",
       "list_changed": "n",
       "code_mode": "n",
       "tool_search": "y"

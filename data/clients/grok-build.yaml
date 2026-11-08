@@ -1,7 +1,7 @@
 # Grok Build. Field reference: data/README.md. After editing, run npm run build.
 name: Grok Build
 group: cli
-tier: B
+tier: C
 logo: icon-grok.svg
 website: https://x.ai/build
 docs: https://docs.x.ai/build/features/mcp-servers
@@ -60,10 +60,10 @@ cells:
     evidence: Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring
     checked: 2026-11-08
   elicitation:
-    value: y
+    value: p
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "The 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that receives elicitation/create and shows it as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer; the grok mcp doctor handshake did not declare elicitation and a signed-in session was not probed"
+    evidence: "Form mode only shown: the 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that shows elicitation/create as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer. The same module parses notifications/elicitation/complete by elicitationId, but no prompt that opens an elicitation URL was found, the grok mcp doctor handshake did not declare elicitation, and a signed-in session was not probed"
     checked: 2026-11-08
   list_changed:
     value: n
