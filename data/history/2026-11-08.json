@@ -178,7 +178,7 @@
       "group": "cli",
       "tier": "B",
       "protocol": "2025-11-25",
-      "apps": "p",
+      "apps": "na",
       "tasks": "n",
       "events": "n",
       "cimd": "n",

@@ -30,10 +30,10 @@ cells:
     evidence: "The 1.0.77 binary defers MCP tools behind search_tools and dispatches them through use_tool; changelog 1.0.46: Tool search activity folds as Ran N tool searches. Ranking is not documented"
     checked: 2026-11-08
   apps:
-    value: p
+    value: na
     method: probe
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "Live probe declared extension io.modelcontextprotocol/ui with mimeType text/html;profile=mcp-app, and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI"
+    evidence: "Terminal client with no UI to render into: the live probe declared extension io.modelcontextprotocol/ui (mimeType text/html;profile=mcp-app) and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI"
     checked: 2026-11-08
   tasks:
     value: n
