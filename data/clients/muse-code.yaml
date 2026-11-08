@@ -1,0 +1,71 @@
+# Muse Code. Field reference: data/README.md. After editing, run npm run build.
+name: Muse Code
+group: cli
+tier: D
+logo: si-meta.svg
+website: https://dev.meta.ai/docs/muse-code
+docs: https://dev.meta.ai/docs/muse-code/extending
+repo: null
+version_checked: "1.4.13"
+tracker: null
+cells:
+  protocol:
+    value: 2025-06-18
+    method: changelog
+    source: https://dev.meta.ai/docs/muse-code/changelog#v1-2-1
+    evidence: "Changelog 1.2.1: The MCP handshake advertises protocol version 2025-06-18 on both transports, and no later entry through 1.4.13 changes it. Not probed: the CLI is not on npm"
+    checked: 2026-11-08
+  code_mode:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: The extending docs expose MCP tools to the model directly, with no mode that runs model-written code against them
+    checked: 2026-11-08
+  tool_search:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: "No deferred loading or search over MCP tools in the Muse Code docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13; the tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client"
+    checked: 2026-11-08
+  apps:
+    value: na
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: Terminal client; the docs and the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13 do not mention MCP Apps or ui:// resources
+    checked: 2026-11-08
+  tasks:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: No MCP tasks support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
+    checked: 2026-11-08
+  events:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: No MCP events support in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
+    checked: 2026-11-08
+  cimd:
+    value: n
+    method: changelog
+    source: https://dev.meta.ai/docs/muse-code/changelog#v1-1-1
+    evidence: "Changelog 1.1.1: muse mcp login runs OAuth 2.1 with dynamic client registration by default (mcp_oauth_dynamic_client_registration); Client ID Metadata Documents are not mentioned"
+    checked: 2026-11-08
+  id_jag:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: No enterprise-managed authorization or ID-JAG token exchange in the docs or the changelog (https://dev.meta.ai/docs/muse-code/changelog) through 1.4.13
+    checked: 2026-11-08
+  elicitation:
+    value: n
+    method: docs
+    source: https://dev.meta.ai/docs/muse-code/extending
+    evidence: "User-input dialogs belong to Muse Code's own session protocol; no MCP elicitation/create handler is documented, although the 2025-06-18 version it advertises defines elicitation"
+    checked: 2026-11-08
+  list_changed:
+    value: n
+    method: changelog
+    source: https://dev.meta.ai/docs/muse-code/changelog#v1-1-1
+    evidence: "Changelog 1.1.1 mentions live refreshes of the server list, but no entry through 1.4.13 says tools are listed again on notifications/tools/list_changed"
+    checked: 2026-11-08
