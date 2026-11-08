@@ -1,0 +1,73 @@
+# Grok Build. Field reference: data/README.md. After editing, run npm run build.
+name: Grok Build
+group: cli
+tier: B
+logo: icon-grok.svg
+website: https://x.ai/build
+docs: https://docs.x.ai/build/features/mcp-servers
+repo: null
+version_checked: "1.0.77"
+tracker: null
+cells:
+  protocol:
+    value: 2025-11-25
+    method: probe
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: "Live probe of 1.0.77 on 2026-11-08 with grok mcp doctor negotiated 2025-11-25 (clientInfo grok-shell-probe 1.0.77); a full session was not probed because headless runs need a signed-in account"
+    checked: 2026-11-08
+  code_mode:
+    value: n
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: No tool in the 1.0.77 binary runs model-written code against MCP tools; MCP calls go through use_tool one at a time, and the docs and changelog do not mention a code or script mode
+    checked: 2026-11-08
+  tool_search:
+    value: y
+    label: Deferred
+    quality: basic
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: "The 1.0.77 binary defers MCP tools behind search_tools and dispatches them through use_tool; changelog 1.0.46: Tool search activity folds as Ran N tool searches. Ranking is not documented"
+    checked: 2026-11-08
+  apps:
+    value: p
+    method: probe
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: "Live probe declared extension io.modelcontextprotocol/ui with mimeType text/html;profile=mcp-app, and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI"
+    checked: 2026-11-08
+  tasks:
+    value: n
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: tasks/get and tasks/cancel appear only in bundled MCP library schemas in the 1.0.77 binary, and the probe saw no tasks capability
+    checked: 2026-11-08
+  events:
+    value: n
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: 0 hits for events/subscribe or notifications/events in the 1.0.77 binary
+    checked: 2026-11-08
+  cimd:
+    value: n
+    method: docs
+    source: https://docs.x.ai/build/features/mcp-servers
+    evidence: "Docs: OAuth runs automatically through dynamic client registration or a bundled client ID (changelog 0.2.23); Client ID Metadata Documents are not mentioned"
+    checked: 2026-11-08
+  id_jag:
+    value: n
+    method: source
+    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
+    evidence: Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring
+    checked: 2026-11-08
+  elicitation:
+    value: p
+    method: changelog
+    source: https://x.ai/build/changelog
+    evidence: "Changelog 1.0.17: MCP tools can request additional input mid-call and resume when you answer, and the binary has session-side elicitation code; the doctor handshake did not declare elicitation and a signed-in session was not probed"
+    checked: 2026-11-08
+  list_changed:
+    value: p
+    method: changelog
+    source: https://x.ai/build/changelog
+    evidence: "Changelog 0.2.112: MCP tools now appear without restart after enrolling or updating a managed service, and the binary has a tools list-changed handler; in the probe, doctor exited after the notification without listing again"
+    checked: 2026-11-08
