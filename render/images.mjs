@@ -5,7 +5,8 @@ import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from
 const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
 const pageCss = (w, h, rest) => `*{box-sizing:border-box;margin:0}
-body{width:${w}px;height:${h}px;background:#000;font-family:Inter,system-ui,sans-serif;${rest}}`;
+body{width:${w}px;height:${h}px;background:#000;font-family:Inter,system-ui,sans-serif;position:relative;${rest}}
+.so{position:absolute;right:40px;top:24px;opacity:.8}.so img{display:block;height:18px}`;
 
 // Each logo is read once: the feature chart embeds a client's logo at every step that client caused
 const logos = new Map();
@@ -14,6 +15,8 @@ const logo = f => {
   return logos.get(f);
 };
 const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
+// The StackOne wordmark in the top right corner of every image
+const wordmark = () => `<div class="so"><img src="${logo('stackone-white.svg')}" alt="StackOne"></div>`;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export function tiersHtml({ data }) {
@@ -34,7 +37,7 @@ h1{font-size:60px;font-weight:800;letter-spacing:-1.5px;margin:0 0 34px 12px}
 .chip img{width:58px;height:58px;object-fit:contain}.chip img.png{width:78px;height:78px;filter:brightness(1.08) contrast(1.25)}.chip img.av{width:84px;height:84px}
 .it span{font-size:30px;font-weight:500;color:#EDEDED;text-align:center;line-height:1.1}
 .foot{margin:20px 0 0 12px;font-size:40px;color:#8A8A85}
-</style></head><body><h1>MCP clients: tier list</h1>
+</style></head><body>${wordmark()}<h1>MCP clients: tier list</h1>
 <div class="board"><div></div><div class="hd">${GROUPS[0][1]}</div><div class="bar"></div><div class="hd">${GROUPS[1][1]}</div>${rows}</div>
 <div class="foot">As of ${formatDate(data.as_of)}</div></body></html>`;
 }
@@ -112,7 +115,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .foot{margin:18px 16px 0;display:flex;justify-content:space-between;align-items:center;font-size:26px;color:#8A8A85}
 .leg{display:flex;gap:18px;align-items:center}.leg div{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .leg .m{width:30px;height:30px}.leg .m svg{width:17px;height:17px}
-</style></head><body><h1>MCP clients: the receipts</h1>
+</style></head><body>${wordmark()}<h1>MCP clients: the receipts</h1>
 <div class="t">${groupRow}<div class="h"><div>Client</div>${heads.map(h => `<div>${h}</div>`).join('')}</div>${body}</div>
 ${data.image_note ? `<div class="note">${esc(data.image_note)}</div>` : ''}
 <div class="foot"><div class="leg"><div>${mark('y')}yes</div><div>${mark('p')}partial</div><div>${mark('n')}no</div><div>${mark('na')}n/a</div></div><div style="white-space:nowrap">${formatDate(data.as_of)}</div></div>
@@ -183,7 +186,7 @@ function lineChart({ title, subtitle, months, series, yLabel, asOf }) {
   const empty = series.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`;
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONT}
 <style>
-${pageCss(W, H, 'color:#EDEDED;position:relative;overflow:hidden')}
+${pageCss(W, H, 'color:#EDEDED;overflow:hidden')}
 h1{position:absolute;left:${L - 40}px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
 h2{position:absolute;left:${L - 40}px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
 svg{position:absolute;left:0;top:0}
@@ -197,7 +200,7 @@ svg{position:absolute;left:0;top:0}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
 .mk{position:absolute;border-radius:6px;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #000}
 .mk img{width:15px;height:15px;object-fit:contain}.mk img.av{width:20px;height:20px;border-radius:4px}.mk img.png{width:20px;height:20px}
-</style></head><body><h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
+</style></head><body>${wordmark()}<h1>${esc(title)}</h1><h2>${esc(subtitle)}</h2>
 <svg width="${W}" height="${H}">${grid}<text x="${L - 60}" y="${T - 22}" class="yl">${esc(yLabel)}</text>${lines}${empty}</svg>${chips}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(asOf)}</div></body></html>`;
 }
@@ -240,7 +243,7 @@ export function historyClientsHtml({ data }, ms, rows, features) {
   const legend = features.map((f, i) => `<div><svg width="20" height="20">${dot(i, 10, 10, 9)}</svg>${esc(f)}</div>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><title>Features supported per client</title>${FONT}
 <style>
-${pageCss(W, H, 'color:#EDEDED;position:relative;overflow:hidden')}
+${pageCss(W, H, 'color:#EDEDED;overflow:hidden')}
 h1{position:absolute;left:44px;top:40px;font-size:40px;font-weight:800;letter-spacing:-1px;color:#fff}
 h2{position:absolute;left:44px;top:96px;font-size:20px;font-weight:500;color:#8A8A85}
 body>svg{position:absolute;left:0;top:0}
@@ -250,7 +253,7 @@ body>img{position:absolute;width:26px;height:26px;object-fit:contain;background:
 .leg{position:absolute;left:44px;top:138px;display:flex;gap:26px;font-size:18px;font-weight:600}
 .leg div{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .foot{position:absolute;right:40px;bottom:24px;font-size:18px;color:#8A8A85}
-</style></head><body><h1>Features supported per client</h1><h2>Each dot is a feature, placed at the release that shipped it</h2>
+</style></head><body>${wordmark()}<h1>Features supported per client</h1><h2>Each dot is a feature, placed at the release that shipped it</h2>
 <svg width="${W}" height="${H}">${body}${rows.length ? '' : `<text x="${L + pw / 2}" y="${T + ph / 2}" text-anchor="middle" class="ax">No dated cells yet</text>`}${monthAxis(ms, x, T + ph + 6)}</svg>${names}
 <div class="leg">${legend}</div><div class="foot">From dated releases · as of ${formatDate(data.as_of)}</div></body></html>`;
 }
