@@ -15,7 +15,7 @@ cells:
   protocol:
     value: 2025-06-18
     method: probe
-    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/features/src/lib.rs#L1641
+    source: https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/features/src/lib.rs#L1676-L1681
     evidence: "Live probe of 0.167.0: initialize carries 2025-06-18; the mcp_2026_07_28 feature is under development and off by default"
     checked: 2026-11-09
   code_mode:
@@ -71,7 +71,7 @@ cells:
   id_jag:
     value: p
     method: source
-    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/features/src/lib.rs#L1671
+    source: https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/features/src/lib.rs#L1712-L1717
     evidence: "Enterprise-managed authorization (PR 55334) runs only with use_xaa, which is under development and off by default in 0.167.0, and needs the 2026-07-28 protocol flag"
     checked: 2026-11-09
     since:

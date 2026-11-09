@@ -22,8 +22,8 @@ cells:
     value: n
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Not documented in the changelog or docs, and no code mode feature in the 1.0.105 bundle; the 1.0.106 `copilot help config` lists tool search but no code mode setting"
-    checked: 2026-11-06
+    evidence: "Not documented in the changelog or docs, and no code mode feature in the 1.0.107 bundle; the 1.0.106 `copilot help config` lists tool search but no code mode setting"
+    checked: 2026-11-09
   tool_search:
     value: y
     label: Hosted
