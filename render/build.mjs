@@ -40,6 +40,9 @@ const images = [
 // PNG bytes differ between Chrome versions, so check compares a hash of the HTML each image was rendered from
 const IMAGE_HASHES = 'assets/images.json';
 const hashes = Object.fromEntries(images.map(([name, html]) => [name, crypto.createHash('sha256').update(html).digest('hex')]));
+const built = fs.existsSync(ROOT + IMAGE_HASHES) ? JSON.parse(fs.readFileSync(ROOT + IMAGE_HASHES, 'utf8')) : {};
+const staleImages = images.map(([n]) => n).filter(n => built[n] !== hashes[n] || !fs.existsSync(ROOT + `assets/${n}.png`));
+const staleMessage = `Out of date: ${staleImages.map(n => `assets/${n}.png`).join(', ')}. Run \`npm run build\` with Chrome available and commit the result.`;
 
 if (check) {
   const stale = Object.entries(outputs).filter(([f, s]) => !fs.existsSync(ROOT + f) || fs.readFileSync(ROOT + f, 'utf8') !== s).map(([f]) => f);
@@ -48,10 +51,8 @@ if (check) {
     console.error(`Out of date: ${stale.join(', ')}. Run \`npm run build\` and commit the result.`);
     process.exit(1);
   }
-  const built = fs.existsSync(ROOT + IMAGE_HASHES) ? JSON.parse(fs.readFileSync(ROOT + IMAGE_HASHES, 'utf8')) : {};
-  const staleImages = images.map(([n]) => n).filter(n => built[n] !== hashes[n] || !fs.existsSync(ROOT + `assets/${n}.png`));
   if (staleImages.length) {
-    console.error(`Out of date: ${staleImages.map(n => `assets/${n}.png`).join(', ')}. Run \`npm run build\` with Chrome available and commit the result.`);
+    console.error(staleMessage);
     process.exit(1);
   }
   console.log(`data valid, ${model.data.clients.length} clients; README.md, EVIDENCE.md, ${historyFile}, badges and images up to date`);
@@ -65,10 +66,11 @@ for (const [f, s] of Object.entries(outputs)) {
 }
 console.log(`wrote README.md, EVIDENCE.md, ${historyFile} and ${model.data.clients.length} badges`);
 
-if (!args.has('--no-images')) {
+if (args.has('--no-images')) {
+  if (staleImages.length) console.warn(`Skipped the images. ${staleMessage}`);
+} else {
   // Only re-render an image whose HTML changed, so a rebuild on another machine does not churn PNG bytes
-  const built = fs.existsSync(ROOT + IMAGE_HASHES) ? JSON.parse(fs.readFileSync(ROOT + IMAGE_HASHES, 'utf8')) : {};
-  const todo = images.filter(([name]) => args.has('--all-images') || built[name] !== hashes[name] || !fs.existsSync(ROOT + `assets/${name}.png`));
+  const todo = images.filter(([name]) => args.has('--all-images') || staleImages.includes(name));
   const chrome = todo.length ? findChrome() : null;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-scorecard-'));
   for (const [name, html, w, h] of todo) {
