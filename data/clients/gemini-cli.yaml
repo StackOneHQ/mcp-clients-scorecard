@@ -6,7 +6,7 @@ logo: icon-gemini.svg
 website: https://geminicli.com
 docs: https://geminicli.com/docs
 repo: https://github.com/google-gemini/gemini-cli
-version_checked: 0.66.0
+version_checked: 0.67.0
 npm: "@google/gemini-cli"
 tracker:
   repo: google-gemini/gemini-cli
@@ -15,9 +15,9 @@ cells:
   protocol:
     value: 2025-06-18
     method: probe
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/package.json#L34
-    evidence: "v0.66.0 pins @modelcontextprotocol/sdk 1.23.0 (packages/core/package.json:34), whose LATEST_PROTOCOL_VERSION is 2025-06-18, and the live probe agrees"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/blob/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/package.json#L34
+    evidence: "v0.67.0 still pins @modelcontextprotocol/sdk 1.23.0 (packages/core/package.json:34), whose LATEST_PROTOCOL_VERSION is 2025-06-18, and the live probe agrees"
+    checked: 2026-11-09
   code_mode:
     value: n
     method: source
