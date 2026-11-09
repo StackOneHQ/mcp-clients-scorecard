@@ -17,7 +17,7 @@ To change a chart, change `data/` or the templates in `render/images.mjs`, then 
 ## After any change to data/ or render/
 
 1. Run `npm ci` once, then `npm run build`. It needs Chrome to draw the charts. The build looks for `CHROME_PATH`, then `google-chrome`, `chromium` and the Chrome that `agent-browser` installs under `~/.agent-browser/browsers/`. If none is found, install one (`npx @puppeteer/browsers install chrome@stable`) and set `CHROME_PATH` to it.
-2. Run `npm run check`. It must print `images up to date`. It fails when a chart is stale, which happens when the build ran with `--no-images` or without Chrome.
+2. Run `npm run check`. It must print `images up to date`. It fails when a chart is stale, for example after a build with `--no-images`.
 3. Look at every PNG that changed before you commit it, to catch overlapping labels or a broken layout.
 4. Commit the regenerated files in the same commit as the data or template change.
 
@@ -31,4 +31,4 @@ Only use `npm run build -- --no-images` when no Chrome can be installed. It warn
 ## Other commands
 
 - `npm test` runs the probe and benchmark unit tests.
-- `npm run build -- --all-images` redraws every chart, not only the ones whose HTML changed. Use it after a change to fonts or shared styles.
+- `npm run build -- --all-images` redraws every chart, not only the ones whose HTML changed. Use it when something outside the HTML changed, such as the web font or the Chrome version.

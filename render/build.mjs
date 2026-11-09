@@ -67,7 +67,6 @@ for (const [f, s] of Object.entries(outputs)) {
 console.log(`wrote README.md, EVIDENCE.md, ${historyFile} and ${model.data.clients.length} badges`);
 
 if (args.has('--no-images')) {
-  // Say so loudly: a commit without the new PNGs fails npm run check until a build with Chrome redraws them
   if (staleImages.length) console.warn(`Skipped the images. ${staleMessage}`);
 } else {
   // Only re-render an image whose HTML changed, so a rebuild on another machine does not churn PNG bytes
