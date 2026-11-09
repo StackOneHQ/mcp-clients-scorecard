@@ -6,7 +6,7 @@ logo: icon-claude.svg
 website: https://claude.com/product/claude-code
 docs: https://code.claude.com/docs/en/overview
 repo: https://github.com/anthropics/claude-code
-version_checked: 2.1.316
+version_checked: 2.1.319
 npm: "@anthropic-ai/claude-code"
 tracker:
   repo: anthropics/claude-code
@@ -16,22 +16,22 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://code.claude.com/docs/en/changelog
-    evidence: "Live probe of 2.1.316: server/discover carries 2026-07-28"
-    checked: 2026-11-02
+    evidence: "Live probe of 2.1.319: server/discover carries 2026-07-28"
+    checked: 2026-11-09
   code_mode:
     value: p
     method: source
-    source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.318
-    evidence: "The 2.1.318 bundle has \"Code Mode (experimental)\", a REPL where the model writes scripts that call tools, MCP tools included; it is off unless CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 is set, and then still refused when the server-side gate \"isn't open to your account yet\". Interactive terminal, Anthropic API and Opus 5.5 or Sonnet 5.5 only, and not in the docs or changelog"
-    checked: 2026-11-06
+    source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.319
+    evidence: "The 2.1.319 bundle has \"Code Mode (experimental)\", a REPL where the model writes scripts that call tools, MCP tools included; it is off unless CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 is set, and then still refused when the server-side gate \"isn't open to your account yet\". Interactive terminal, Anthropic API and Opus 5.5 or Sonnet 5.5 only, and not in the docs or changelog"
+    checked: 2026-11-09
   tool_search:
     value: y
     label: Keyword
     quality: strong
     method: source
-    source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.316
-    evidence: "Docs: tool search is on by default and defers MCP tools behind a search tool (ENABLE_TOOL_SEARCH true, auto, auto:N, false); the 2.1.316 bundle ranks by exact name, select: and mcp__ prefix lookups, then weighted keyword scoring over server and tool name parts plus a word-boundary match on description and search hint, with no BM25 or embeddings"
-    checked: 2026-11-02
+    source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.319
+    evidence: "Docs: tool search is on by default and defers MCP tools behind a search tool (ENABLE_TOOL_SEARCH true, auto, auto:N, false); the 2.1.319 bundle ranks by exact name, select: and mcp__ prefix lookups, then weighted keyword scoring over server and tool name parts plus a word-boundary match on description and search hint, with no BM25 or embeddings"
+    checked: 2026-11-09
     since:
       date: 2026-01-14
       version: "2.1.7"
@@ -40,8 +40,8 @@ cells:
     value: na
     method: probe
     source: https://github.com/anthropics/claude-code/issues/95149
-    evidence: "Live probe of 2.1.316 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open"
-    checked: 2026-11-02
+    evidence: "Live probe of 2.1.319 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open"
+    checked: 2026-11-09
   tasks:
     value: y
     method: docs
@@ -78,8 +78,8 @@ cells:
     value: y
     method: probe
     source: https://code.claude.com/docs/en/mcp
-    evidence: "Live probe of 2.1.316 declares elicitation form and url, matching the docs"
-    checked: 2026-11-02
+    evidence: "Live probe of 2.1.319 declares elicitation form and url, matching the docs"
+    checked: 2026-11-09
     since:
       date: 2026-03-14
       version: "2.1.76"

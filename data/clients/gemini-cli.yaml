@@ -6,7 +6,7 @@ logo: icon-gemini.svg
 website: https://geminicli.com
 docs: https://geminicli.com/docs
 repo: https://github.com/google-gemini/gemini-cli
-version_checked: 0.66.0
+version_checked: 0.67.0
 npm: "@google/gemini-cli"
 tracker:
   repo: google-gemini/gemini-cli
@@ -15,39 +15,39 @@ cells:
   protocol:
     value: 2025-06-18
     method: probe
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/package.json#L34
-    evidence: "v0.66.0 pins @modelcontextprotocol/sdk 1.23.0 (packages/core/package.json:34), whose LATEST_PROTOCOL_VERSION is 2025-06-18, and the live probe agrees"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/blob/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/package.json#L34
+    evidence: "v0.67.0 still pins @modelcontextprotocol/sdk 1.23.0 (packages/core/package.json:34), whose LATEST_PROTOCOL_VERSION is 2025-06-18, and the live probe agrees"
+    checked: 2026-11-09
   code_mode:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/tree/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools
+    source: https://github.com/google-gemini/gemini-cli/tree/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/tools
     evidence: "No code mode or execute-code tool in packages/core at v0.66.0, and still none at v0.67.0"
-    checked: 2026-11-06
+    checked: 2026-11-09
   tool_search:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/tree/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools
-    evidence: "No tool search or deferred loading for MCP tools in packages/core at v0.66.0 or in the 0.66.0 bundle"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/tree/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/tools
+    evidence: "No tool search or deferred loading for MCP tools in packages/core at v0.67.0 or in the 0.67.0 bundle"
+    checked: 2026-11-09
   apps:
     value: na
     method: source
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools/mcp-client.ts#L1869
-    evidence: "No io.modelcontextprotocol/ui extension or ui:// handling at v0.66.0 or in the 0.66.0 bundle"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/blob/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/tools/mcp-client.ts#L1869
+    evidence: "No io.modelcontextprotocol/ui extension or ui:// handling at v0.67.0 or in the 0.67.0 bundle"
+    checked: 2026-11-09
   tasks:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools/mcp-client.ts#L1869
+    source: https://github.com/google-gemini/gemini-cli/blob/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/tools/mcp-client.ts#L1869
     evidence: "mcp-client.ts:1880 registers only roots, so no tasks capability; the weak mcp list probe also declared no tasks"
-    checked: 2026-10-30
+    checked: 2026-11-09
   events:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/tree/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src
-    evidence: "No events/list, events/subscribe or notifications/events at v0.66.0 or in the 0.66.0 bundle"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/tree/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src
+    evidence: "No events/list, events/subscribe or notifications/events at v0.67.0 or in the 0.67.0 bundle"
+    checked: 2026-11-09
   cimd:
     value: n
     method: source
@@ -57,18 +57,18 @@ cells:
   id_jag:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/tree/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/mcp
-    evidence: "No ID-JAG token type or enterprise-managed authorization in packages/core/src/mcp at v0.66.0 or in the 0.66.0 bundle"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/tree/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/mcp
+    evidence: "No ID-JAG token type or enterprise-managed authorization in packages/core/src/mcp at v0.67.0 or in the 0.67.0 bundle"
+    checked: 2026-11-09
   elicitation:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/tools/mcp-client.ts#L1869
-    evidence: "mcp-client.ts:1869-1884 creates the client and registers only roots, with no elicitation handler; the 0.66.0 bundle matches, so source wins over the weak probe that showed an empty capability set"
-    checked: 2026-10-30
+    source: https://github.com/google-gemini/gemini-cli/blob/dc6602cec4a6e823aa33937144245dc421e5165f/packages/core/src/tools/mcp-client.ts#L1869
+    evidence: "mcp-client.ts:1869-1884 creates the client and registers only roots, with no elicitation handler; the 0.67.0 bundle matches, so source wins over the weak probe that showed an empty capability set"
+    checked: 2026-11-09
   list_changed:
     value: y
     method: source
-    source: https://github.com/google-gemini/gemini-cli/blob/v0.66.0/packages/core/src/tools/mcp-client.ts#L419-L427
+    source: https://github.com/google-gemini/gemini-cli/blob/v0.67.0/packages/core/src/tools/mcp-client.ts#L419-L427
     evidence: 'The ToolListChangedNotification handler calls refreshTools, which rediscovers and re-registers the tools; onContextUpdated then calls geminiClient.setTools()'
-    checked: 2026-11-02
+    checked: 2026-11-09
