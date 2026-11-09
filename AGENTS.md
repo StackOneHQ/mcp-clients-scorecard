@@ -21,7 +21,7 @@ To change a chart, change `data/` or the templates in `render/images.mjs`, then 
 3. Look at every PNG that changed before you commit it, to catch overlapping labels or a broken layout.
 4. Commit the regenerated files in the same commit as the data or template change.
 
-Only use `npm run build -- --no-images` when no Chrome can be installed. It warns which charts it left stale. Say so in the pull request: the build workflow redraws the charts and commits them to the branch after you push, so wait for that commit and pull it before you push again.
+Only use `npm run build -- --no-images` when no Chrome can be installed. It warns which charts it left stale. Say so in the pull request: the build workflow redraws the charts and commits them to the branch after you push, so wait for that commit and pull it before you push again. On a fork the workflow only runs if Actions is enabled there; otherwise a maintainer has to rebuild the charts.
 
 ## CI
 
