@@ -25,7 +25,7 @@ Only use `npm run build -- --no-images` when no Chrome can be installed. It warn
 
 ## CI
 
-- `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds everything with Chrome, commits any change back to the branch, then runs `npm run check` and `npm test`.
+- `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.
 - `.github/workflows/check.yml` runs `npm run check` and `npm test` on pull requests. A pull request with stale charts fails it.
 
 ## Other commands
