@@ -1,7 +1,7 @@
 # Grok Build. Field reference: data/README.md. After editing, run npm run build.
 name: Grok Build
 group: cli
-tier: C
+tier: B
 logo: icon-grok.svg
 website: https://x.ai/build
 docs: https://docs.x.ai/build/features/mcp-servers
@@ -60,11 +60,15 @@ cells:
     evidence: Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring
     checked: 2026-11-08
   elicitation:
-    value: p
-    method: source
-    source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "Form mode only shown: the 1.0.77 binary has a session module (xai-grok-shell session/mcp_elicitation.rs) that shows elicitation/create as an mcp_elicitation prompt, and changelog 1.0.17 says MCP tools can request additional input mid-call and resume when you answer. The same module parses notifications/elicitation/complete by elicitationId, but no prompt that opens an elicitation URL was found, the grok mcp doctor handshake did not declare elicitation, and a signed-in session was not probed"
-    checked: 2026-11-08
+    value: y
+    method: changelog
+    source: https://github.com/xai-org/grok-build/blob/2bdd1d6a6369de0e8c68132ea4539e9abd9e14a8/crates/codegen/xai-grok-shell/changelogs/1.0.8.md
+    evidence: "Changelog 1.0.8: \"MCP servers can now ask for form input or URL consent through the same popup used for questions\". The user guide embedded in the 1.0.77 binary describes the same elicitation card for form fields or URL consent, and the public source builds the client with both form and url elicitation capabilities in interactive sessions (xai-grok-mcp servers.rs make_client_info). The grok mcp doctor handshake declares none because it has no interactive channel"
+    checked: 2026-11-16
+    since:
+      date: 2026-08-20
+      version: "1.0.8"
+      source: https://github.com/xai-org/grok-build/blob/2bdd1d6a6369de0e8c68132ea4539e9abd9e14a8/crates/codegen/xai-grok-shell/changelogs/1.0.8.md
   list_changed:
     value: n
     method: source

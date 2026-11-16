@@ -51,8 +51,12 @@ cells:
     value: y
     method: source
     source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server/src/oauth.rs#L515
-    evidence: At tag v1.26.2, oauth.rs:37 `CIMD_URL = "https://zed.dev/oauth/client-metadata.json"`; :515-517 uses it when `client_id_metadata_document_supported`, DCR fallback
-    checked: 2026-10-30
+    evidence: At tag v1.26.2, oauth.rs:37 `CIMD_URL = "https://zed.dev/oauth/client-metadata.json"`; :515-517 uses it when `client_id_metadata_document_supported`, DCR fallback. The same CIMD code is in oauth.rs at v0.230.0, whose release note adds OAuth for remote MCP servers (PR 51768, which names CIMD)
+    checked: 2026-11-16
+    since:
+      date: 2026-04-01
+      version: "v0.230.0"
+      source: https://github.com/zed-industries/zed/releases/tag/v0.230.0
   id_jag:
     value: n
     method: source
