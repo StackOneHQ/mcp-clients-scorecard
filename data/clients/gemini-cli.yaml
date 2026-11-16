@@ -51,8 +51,8 @@ cells:
   cimd:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli/blob/970413207732f5d4d8c50540c7fc359c44fdaaf2/packages/core/src/mcp/oauth-provider.ts#L105
-    evidence: "oauth-provider.ts:105 registers clients with its own RFC 7591 dynamic registration and never uses a client metadata URL; the bundle has client_id_metadata_document_supported only in SDK schemas"
+    source: https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src/mcp/oauth-provider.ts#L105
+    evidence: "At v0.68.0, oauth-provider.ts:105 registers clients with its own RFC 7591 dynamic registration and never uses a client metadata URL; the bundle has client_id_metadata_document_supported only in SDK schemas"
     checked: 2026-11-16
   id_jag:
     value: n
