@@ -6,7 +6,7 @@ logo: icon-codex.svg
 website: https://openai.com/codex/
 docs: https://developers.openai.com/codex
 repo: https://github.com/openai/codex
-version_checked: 0.167.0
+version_checked: 0.169.0
 npm: "@openai/codex"
 tracker:
   repo: openai/codex
@@ -15,15 +15,15 @@ cells:
   protocol:
     value: 2025-06-18
     method: probe
-    source: https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/features/src/lib.rs#L1676-L1681
-    evidence: "Live probe of 0.167.0: initialize carries 2025-06-18; the mcp_2026_07_28 feature is under development and off by default"
-    checked: 2026-11-09
+    source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1739-L1744
+    evidence: "Live probe of 0.169.0: initialize carries 2025-06-18; the mcp_2026_07_28 feature is under development and off by default"
+    checked: 2026-11-16
   code_mode:
     value: p
     method: docs
     source: https://developers.openai.com/codex/config-reference
-    evidence: "features.code_mode is under development and off by default, matching `codex features list` on 0.166.0; still Stage::UnderDevelopment with default_enabled false in features/src/lib.rs at rust-v0.167.0"
-    checked: 2026-11-06
+    evidence: "features.code_mode is under development and off by default, and still Stage::UnderDevelopment with default_enabled false in features/src/lib.rs at rust-v0.169.0 (key code_mode, lib.rs#L1305-L1310)"
+    checked: 2026-11-16
     since:
       date: 2026-03-11
       version: "0.114.0"
@@ -44,20 +44,20 @@ cells:
     value: na
     method: probe
     source: https://github.com/openai/codex/issues/52524
-    evidence: "Live probe of 0.167.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"
-    checked: 2026-11-09
+    evidence: "Live probe of 0.169.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"
+    checked: 2026-11-16
   tasks:
     value: n
     method: probe
     source: https://github.com/openai/codex/issues/48617
-    evidence: "Live probe of 0.167.0 declares no tasks capability, and the feature request is still open"
-    checked: 2026-11-09
+    evidence: "Live probe of 0.169.0 declares no tasks capability, and the feature request is still open"
+    checked: 2026-11-16
   events:
     value: n
     method: source
-    source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/codex-mcp/src/resource_client.rs#L353
+    source: https://github.com/openai/codex/blob/d32063f96c2dff1dc96af839b3952abb6acfeda4/codex-rs/codex-mcp/src/resource_client.rs#L373
     evidence: "events/list and events/stream are sent only to the built-in codex_apps hosted server, not to user-configured MCP servers; issue 49665 about event subscriptions is still open"
-    checked: 2026-10-30
+    checked: 2026-11-16
   cimd:
     value: y
     method: docs
@@ -71,9 +71,9 @@ cells:
   id_jag:
     value: p
     method: source
-    source: https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/features/src/lib.rs#L1712-L1717
-    evidence: "Enterprise-managed authorization (PR 55334) runs only with use_xaa, which is under development and off by default in 0.167.0, and needs the 2026-07-28 protocol flag"
-    checked: 2026-11-09
+    source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1781-L1786
+    evidence: "Enterprise-managed authorization (PR 55334) runs only with use_xaa, which is under development and off by default in 0.169.0, and needs an enterprise-managed auth config on the server (connection_manager.rs then forces the 2026-07-28 protocol for that server)"
+    checked: 2026-11-16
     since:
       date: 2026-10-23
       version: "0.164.0"
@@ -82,8 +82,8 @@ cells:
     value: y
     method: probe
     source: https://github.com/openai/codex/pull/22188
-    evidence: "Live probe of 0.167.0 declares elicitation form and url"
-    checked: 2026-11-09
+    evidence: "Live probe of 0.169.0 declares elicitation form and url"
+    checked: 2026-11-16
     since:
       date: 2025-12-02
       version: "0.64.0"
@@ -91,6 +91,6 @@ cells:
   list_changed:
     value: p
     method: source
-    source: https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/features/src/lib.rs#L1682-L1687
+    source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1745-L1750
     evidence: 'Re-listing on the notification sits behind the feature flag mcp_tool_list_changed (Stage::UnderDevelopment, default_enabled false). Without the flag the notification is only logged'
-    checked: 2026-11-09
+    checked: 2026-11-16
