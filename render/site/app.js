@@ -4,8 +4,7 @@
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const root = document.documentElement;
-  root.classList.add('js');
+  document.documentElement.classList.add('js');
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   $$('[data-mod]').forEach(k => { k.textContent = mac ? '⌘' : 'Ctrl'; });
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -15,7 +14,7 @@
   const TIER = { S: 5, A: 4, B: 3, C: 2, D: 1 };
   let data;
   const getData = () => (data ||= fetch('/data.json').then(r => r.json()));
-  const path = u => { try { return new URL(u, location.href).pathname; } catch { return u; } };
+  const path = u => new URL(u, location.href).pathname;
 
   // ---------- toast and copy
   const toast = Object.assign(document.createElement('div'), { className: 'toast', role: 'status' });
@@ -32,7 +31,7 @@
 
   // ---------- pointer spotlight on the board lanes
   document.addEventListener('pointermove', e => {
-    const l = e.target.closest && e.target.closest('.lane');
+    const l = e.target.closest('.lane');
     if (!l) return;
     const r = l.getBoundingClientRect();
     l.style.setProperty('--mx', `${e.clientX - r.left}px`);
@@ -73,13 +72,13 @@
     const head = el.dataset.head || '';
     pop.innerHTML = `<div class="ph">${v && MARK[v] ? `<img src="/assets/icons/${v}.svg" alt="">${MARK[v]}` : esc(el.textContent.trim())}${head ? ` <span class="muted">· ${esc(head)}</span>` : ''}</div>`
       + `<div>${esc(el.dataset.ev).replace(/`([^`]+)`/g, '<code>$1</code>')}</div>`
-      + `<div class="pm">${esc(el.dataset.m || '')}${el.dataset.ck ? ` · checked ${esc(el.dataset.ck)}` : ''}</div>`
+      + `<div class="pm">${esc(el.dataset.m)}${el.dataset.ck ? ` · checked ${esc(el.dataset.ck)}` : ''}</div>`
       + (touch && el.href ? `<div class="pm"><a href="${esc(el.href)}" rel="nofollow">Open source ↗</a></div>` : '');
     pop.classList.toggle('touch', touch);
     const r = el.getBoundingClientRect();
     pop.classList.add('on');
     const w = pop.offsetWidth, h = pop.offsetHeight;
-    let x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8);
+    const x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8);
     let y = r.bottom + 8;
     if (y + h > innerHeight - 8) y = r.top - h - 8;
     pop.style.left = `${x}px`;
@@ -99,7 +98,7 @@
 
   // ---------- filters on the home page, mirrored in the URL (?q=&g=&f=)
   const board = $('#board');
-  let applyFilters = () => {};
+  let setFeature = null;
   if (board) {
     const q = $('#q'), count = $('#count'), reset = $('#reset');
     const featBtns = $$('[data-feat]'), groupBtns = $$('[data-g]');
@@ -115,7 +114,7 @@
       const words = norm(state.q).split(/\s+/).filter(Boolean);
       return words.every(w => el.dataset.hay.includes(w));
     };
-    applyFilters = (push = true) => {
+    const applyFilters = (push = true) => {
       let n = 0;
       for (const c of cards) { const ok = matches(c); c.classList.toggle('out', !ok); if (ok) n++; }
       for (const r of rows) r.hidden = !matches(r);
@@ -141,8 +140,8 @@
     featBtns.forEach(b => b.addEventListener('click', () => { const f = b.dataset.feat; state.f.has(f) ? state.f.delete(f) : state.f.add(f); applyFilters(); }));
     groupBtns.forEach(b => b.addEventListener('click', () => { state.g = b.dataset.g; applyFilters(); }));
     reset.addEventListener('click', () => { state.q = ''; state.g = 'all'; state.f.clear(); applyFilters(); q.focus(); });
-    $$('[data-apply]').forEach(b => b.addEventListener('click', () => { state.f = new Set([b.dataset.apply]); applyFilters(); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }));
-    window.__setFeature = f => { state.f = new Set([f]); applyFilters(); };
+    setFeature = f => { state.f = new Set([f]); applyFilters(); };
+    $$('[data-apply]').forEach(b => b.addEventListener('click', () => { setFeature(b.dataset.apply); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }));
     applyFilters(false);
   }
 
@@ -181,7 +180,6 @@
     for (const tb of $$('tbody', table)) {
       const rs = $$('tr[data-client]', tb);
       const val = r => {
-        if (!dir) return -+r.dataset.i;
         if (key === 'name') return r.dataset.name;
         if (key === 'tier') return TIER[r.dataset.tier] * 100 + +r.dataset.score;
         if (key === 'fix') return +r.dataset.fix;
@@ -189,8 +187,12 @@
         if (key === 'protocol') return cell ? cell.textContent.replace(/\D/g, '') || '0' : '0';
         return cell ? ORDER[cell.dataset.v] ?? 0 : 0;
       };
-      rs.sort((a, b) => { const x = val(a), y = val(b); const c = typeof x === 'string' ? x.localeCompare(y) : x - y; return (dir === 'asc' ? c : -c) || (+a.dataset.i - +b.dataset.i); });
-      if (!dir) rs.sort((a, b) => +a.dataset.i - +b.dataset.i);
+      const byOrder = (a, b) => +a.dataset.i - +b.dataset.i;
+      rs.sort(!dir ? byOrder : (a, b) => {
+        const x = val(a), y = val(b);
+        const c = typeof x === 'string' ? x.localeCompare(y) : x - y;
+        return (dir === 'asc' ? c : -c) || byOrder(a, b);
+      });
       rs.forEach(r => tb.append(r));
     }
   }));
@@ -229,17 +231,16 @@
     const d = await getData();
     const cs = sel.map(s => d.clients.find(c => c.slug === s)).filter(Boolean);
     const body = $('.cmp-body', cmpDlg);
-    const feats = d.features;
-    const head = `<tr><th></th>${cs.map(c => `<th><a class="who" href="/clients/${c.slug}/"><span class="lg"><img src="${esc(path(c.logo))}" alt=""></span>${esc(c.name)}<span class="tb t-${c.tier}">${c.tier}</span></a><button type="button" class="btn sm ghost" data-cmp="${c.slug}">Remove</button></th>`).join('')}</tr>`;
+    const head = `<tr><th></th>${cs.map(c => `<th><a class="who" href="/clients/${esc(c.slug)}/"><span class="lg"><img src="${esc(path(c.logo))}" alt=""></span>${esc(c.name)}<span class="tb t-${c.tier}">${c.tier}</span></a><button type="button" class="btn sm ghost" data-cmp="${esc(c.slug)}">Remove</button></th>`).join('')}</tr>`;
     const row = f => {
       const vals = cs.map(c => c.cells[f.id]);
       const same = vals.every(v => v.value === vals[0].value);
       return `<tr class="${same ? 'same' : 'diff'}"><th>${esc(f.label)}${f.kind === 'harness' ? ' <span class="tag">harness</span>' : ''}</th>${vals.map(v => `<td data-k="${f.id}"><span data-ev="${esc(v.evidence)}" data-v="${f.id === 'protocol' ? '' : v.value}" data-m="${esc(v.method)}" data-ck="${esc(v.checked)}" tabindex="0">${f.id === 'protocol' ? `<span class="pv">${esc(v.value)}</span>` : `<img src="/assets/icons/${v.value}.svg" alt="${MARK[v.value]}" width="18" height="18">${v.label ? `<span class="lbl">${esc(v.label)}</span>` : ''}`}</span></td>`).join('')}</tr>`;
     };
-    const fixRow = `<tr class="same"><th>MCP bugs fixed</th>${cs.map(c => `<td class="fix">${esc(c.mcp_bugs_fixed_text || '')}</td>`).join('')}</tr>`;
-    body.innerHTML = cs.length ? `<table class="cmp-table"><thead>${head}</thead><tbody>${d.features.filter(f => f.id === 'protocol').map(row).join('')}${feats.filter(f => f.id !== 'protocol').map(row).join('')}${fixRow}</tbody></table>` : '<p class="pal-empty">Pick clients with the + on the tier list.</p>';
+    const fixRow = `<tr class="same"><th>MCP bugs fixed</th>${cs.map(c => `<td class="fix">${esc(c.mcp_bugs_fixed_text)}</td>`).join('')}</tr>`;
+    body.innerHTML = cs.length ? `<table class="cmp-table"><thead>${head}</thead><tbody>${d.features.map(row).join('')}${fixRow}</tbody></table>` : '<p class="pal-empty">Pick clients with the + on the tier list.</p>';
     const opts = d.clients.filter(c => !sel.includes(c.slug));
-    $('#cmp-pick').innerHTML = `<option value="">Add a client…</option>${opts.map(c => `<option value="${c.slug}">${esc(c.name)} (${c.tier})</option>`).join('')}`;
+    $('#cmp-pick').innerHTML = `<option value="">Add a client…</option>${opts.map(c => `<option value="${esc(c.slug)}">${esc(c.name)} (${c.tier})</option>`).join('')}`;
     $('#cmp-pick').disabled = sel.length >= MAX;
     const share = `${location.origin}/#compare=${sel.join(',')}`;
     $('#cmp-share').dataset.copy = share;
@@ -251,8 +252,8 @@
     if (!cmpDlg.open) cmpDlg.showModal();
   }
   if (cmpDlg) {
-    $('#tray-go')?.addEventListener('click', openCompare);
-    $('#tray-clear')?.addEventListener('click', () => { sel.length = 0; syncCompare(); });
+    $('#tray-go').addEventListener('click', openCompare);
+    $('#tray-clear').addEventListener('click', () => { sel.length = 0; syncCompare(); });
     $('#cmp-pick').addEventListener('change', e => { if (e.target.value) toggleCmp(e.target.value); });
     $('#cmp-diff').addEventListener('change', e => $('.cmp-body', cmpDlg).classList.toggle('only-diff', e.target.checked));
     cmpDlg.addEventListener('close', () => { if (/compare=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); });
@@ -288,7 +289,7 @@
     items = [
       ...d.clients.map(c => {
         const ys = feats.filter(f => c.cells[f.id].value === 'y');
-        return { kind: 'Clients', title: c.name, sub: `${c.tier} tier · ${c.group === 'cli' ? 'CLI' : 'App or IDE'} · ${ys.length}/${feats.length} features · spec ${c.cells.protocol.value}`, key: `${c.name} ${c.slug} ${c.tier}-tier ${c.group} ${ys.map(f => labels[f.id]).join(' ')}`, href: `/clients/${c.slug}/`, logo: path(c.logo), tier: c.tier, cmp: c.slug };
+        return { kind: 'Clients', title: c.name, sub: `${c.tier} tier · ${c.group === 'cli' ? 'CLI' : 'App or IDE'} · ${ys.length}/${feats.length} features · spec ${c.cells.protocol.value}`, key: `${c.name} ${c.slug} ${c.tier}-tier ${c.group} ${ys.map(f => labels[f.id]).join(' ')}`, href: `/clients/${c.slug}/`, logo: path(c.logo), tier: c.tier };
       }),
       ...feats.map(f => {
         const who = d.clients.filter(c => c.cells[f.id].value === 'y');
@@ -334,7 +335,7 @@
   function run(it, newTab) {
     if (!it) return;
     if (it.feature) {
-      if (window.__setFeature) { pal.close(); window.__setFeature(it.feature); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); return; }
+      if (setFeature) { pal.close(); setFeature(it.feature); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); return; }
       location.href = `/?f=${it.feature}#board`;
       return;
     }
