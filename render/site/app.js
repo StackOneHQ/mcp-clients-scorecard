@@ -58,7 +58,9 @@
   });
 
   // ---------- evidence popover (matrix and compare cells)
+  // Hidden from assistive tech until it shows: an empty tooltip has no accessible name
   const pop = Object.assign(document.createElement('div'), { className: 'pop', role: 'tooltip' });
+  pop.setAttribute('aria-hidden', 'true');
   document.body.append(pop);
   let popFor = null;
   // Mouse shows the popover on hover; touch and pen show it on the first tap, with a link to the source
@@ -76,6 +78,7 @@
     pop.classList.toggle('touch', touch);
     const r = el.getBoundingClientRect();
     pop.classList.add('on');
+    pop.setAttribute('aria-hidden', 'false');
     const w = pop.offsetWidth, h = pop.offsetHeight;
     const x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8);
     let y = r.bottom + 8;
@@ -83,7 +86,7 @@
     pop.style.left = `${x}px`;
     pop.style.top = `${Math.max(8, y)}px`;
   }
-  const hidePop = () => { pop.classList.remove('on'); popFor = null; };
+  const hidePop = () => { pop.classList.remove('on'); pop.setAttribute('aria-hidden', 'true'); popFor = null; };
   document.addEventListener('pointerover', e => { if (e.pointerType !== 'mouse') return; touch = false; const el = e.target.closest('[data-ev]'); if (el) showPop(el); });
   document.addEventListener('pointerout', e => { if (e.pointerType !== 'mouse') return; const el = e.target.closest('[data-ev]'); if (el && !el.contains(e.relatedTarget)) hidePop(); });
   // A tap focuses the cell before its click; leave touch to the click handler so the first tap shows the evidence

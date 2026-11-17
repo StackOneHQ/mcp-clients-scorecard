@@ -1,4 +1,4 @@
-// Headless Chrome for the PNGs: the README charts (build.mjs) and the website share cards (site.mjs)
+// Headless Chrome for the PNGs that build.mjs draws: the README charts and the website share cards
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -17,7 +17,7 @@ export function findChrome() {
       if (fs.existsSync(p)) return p;
     }
   }
-  throw new Error('Chrome not found. Set CHROME_PATH, or skip the images: npm run build -- --no-images, npm run site -- --no-og.');
+  throw new Error('Chrome not found. Set CHROME_PATH, or skip the images: npm run build -- --no-images.');
 }
 
 // Renders each [html, width, height, pngPath] at device scale 1

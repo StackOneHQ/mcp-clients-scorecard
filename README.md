@@ -1,6 +1,8 @@
+<img src="assets/mark.svg" width="56" height="56" alt="">
+
 # MCP clients scorecard
 
-Which MCP clients support which parts of the [Model Context Protocol](https://modelcontextprotocol.io), with a linked, dated source for every cell. Maintained by [StackOne](https://www.stackone.com).
+Which MCP clients support which parts of the [Model Context Protocol](https://modelcontextprotocol.io), with a linked, dated source for every cell. Maintained by [StackOne](https://www.stackone.com). Browse it at [mcpclients.dev](https://mcpclients.dev).
 
 ![MCP clients tier list](assets/tiers.png)
 
@@ -207,15 +209,17 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 
 ## Website
 
-The same data is published at [mcp-clients.stackone.com](https://mcp-clients.stackone.com): the tier board, every cell with its evidence, a page per client with a share card and its badge, and the data as [JSON](https://mcp-clients.stackone.com/data.json). `npm run site` builds it into `dist/` from `data/` and the generated charts; nothing in `dist/` is committed.
+The same data is published at [mcpclients.dev](https://mcpclients.dev): the tier board, every cell with its evidence, a page per client with a share card and its badge, answers to common questions, and machine-readable copies for search engines and AI assistants: [data.json](https://mcpclients.dev/data.json), [llms.txt](https://mcpclients.dev/llms.txt), [llms-full.txt](https://mcpclients.dev/llms-full.txt) and a Markdown copy of every page (`/index.md`, `/clients/<slug>/index.md`, or any page with `Accept: text/markdown`). Every page carries JSON-LD (Dataset, ItemList, FAQPage, BreadcrumbList).
 
-On every push to `main`, the deploy job in the [build workflow](.github/workflows/build.yml) runs after the regenerate step, builds the site from the commit that step validated and deploys it to Cloudflare as a static Worker ([wrangler.jsonc](wrangler.jsonc)). A merged data pull request therefore reaches the site within minutes. To redeploy by hand, run the build workflow on `main` from the Actions tab.
+`npm run site` builds it into `dist/` from `data/` and the committed PNGs, without Chrome; nothing in `dist/` is committed. The share cards in `assets/og/` are drawn by `npm run build` with the charts. [worker/index.js](worker/index.js) serves `dist/` ([wrangler.jsonc](wrangler.jsonc)): it sets the security headers and answers `Accept: text/markdown` with the page's Markdown copy.
 
-Setup, once:
+Deploys go through Cloudflare's GitHub app (Workers Builds): every push to `main` builds and deploys the site, so a merged data pull request reaches it within minutes. When the build workflow commits regenerated files back to `main`, that push deploys again.
 
-1. Create a Cloudflare API token with the Workers Scripts: Edit permission on the StackOne account.
-2. In Settings > Environments, open the `website` environment (the first deploy run creates it), limit its deployment branches to `main`, and add the token as `CLOUDFLARE_API_TOKEN` and the account ID as `CLOUDFLARE_ACCOUNT_ID`. Branch code then cannot read them. Until both exist, the job builds the site and skips the deploy with a warning.
-3. Attach the domain: add `mcp-clients.stackone.com` as a Custom Domain on the `mcp-clients-scorecard` Worker, or add `"routes": [{ "pattern": "mcp-clients.stackone.com", "custom_domain": true }]` to `wrangler.jsonc`. Until then the site answers only on its workers.dev address, while its links and share cards already point at the domain.
+Setup, once, in the Cloudflare dashboard:
+
+1. Workers & Pages > Create > Import a repository: pick `StackOneHQ/mcp-clients-scorecard` and install the Cloudflare GitHub app on it.
+2. Build settings: production branch `main`, build command `npm ci && npm run site`, deploy command `npx wrangler deploy`, root directory `/`.
+3. Register `mcpclients.dev` (Cloudflare Registrar sells it at cost) and add it as a Custom Domain on the `mcp-clients-scorecard` Worker. `.dev` only works over HTTPS, which Cloudflare provides. Until then the site answers only on its workers.dev address, while its links, canonical URLs and share cards already point at the domain.
 
 ## Repository layout
 
@@ -239,11 +243,11 @@ Field reference for every data file: [data/README.md](data/README.md).
 
 | Command | What it does |
 | --- | --- |
-| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot, the badges and the PNGs (needs Chrome, or `CHROME_PATH`) |
+| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot, the badges and the PNGs: the charts and the website share cards (needs Chrome, or `CHROME_PATH`) |
 | `npm run build -- --no-images` | The same, without the PNGs |
 | `npm run build -- --all-images` | Re-renders every PNG, not only the charts whose data changed |
 | `npm run check` | Validates the data and fails if a generated file or image is stale |
-| `npm run site` | Builds the website into `dist/`, with a share card per page (needs Chrome; `-- --no-og` skips the cards) |
+| `npm run site` | Builds the website into `dist/` (no Chrome needed). Serve it locally with `npx wrangler dev` |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
 | `npm run bench:tool-search` | Reruns the tool-search benchmark (embedding rankers need `OPENAI_API_KEY`) |

@@ -7,7 +7,7 @@ import { load, COLUMNS } from './data.mjs';
 import { buildSite } from './site.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'site-test-'));
-buildSite(out, { og: false });
+buildSite(out);
 after(() => fs.rmSync(out, { recursive: true, force: true }));
 const read = f => fs.readFileSync(path.join(out, f), 'utf8');
 const { data } = load();
@@ -29,10 +29,38 @@ test('the home page links every client and the sitemap lists every page', () => 
   }
 });
 
-// _headers sets a Content-Security-Policy without 'unsafe-inline', so the browser would drop these
+const pages = ['index.html', '404.html', ...data.clients.map(c => `clients/${c.slug}/index.html`)];
+
+// worker/index.js sets a Content-Security-Policy without 'unsafe-inline', so the browser would drop these.
+// JSON-LD is data, never run, so CSP leaves it alone.
 test('pages carry no inline styles or scripts', () => {
-  const pages = ['index.html', '404.html', ...data.clients.map(c => `clients/${c.slug}/index.html`)];
-  for (const p of pages) assert.doesNotMatch(read(p), /\sstyle=|<script>|\son[a-z]+=/, p);
+  for (const p of pages) assert.doesNotMatch(read(p), /\sstyle=|<script(?![^>]*\b(src=|type="application\/ld\+json"))|\son[a-z]+=/, p);
+});
+
+test('every page has valid JSON-LD, and every indexed page a Markdown copy', () => {
+  for (const p of pages.filter(p => p !== '404.html')) {
+    const html = read(p);
+    const ld = html.match(/<script type="application\/ld\+json">([^<]*)<\/script>/);
+    assert.ok(ld, p);
+    const types = JSON.parse(ld[1])['@graph'].map(n => n['@type']);
+    assert.ok(types.includes('FAQPage') && types.includes('Organization'), `${p}: ${types}`);
+    const md = html.match(/<link rel="alternate" type="text\/markdown" href="([^"]+)">/);
+    assert.ok(md && fs.existsSync(path.join(out, md[1])), p);
+  }
+  assert.ok(read('llms-full.txt').includes(data.clients[0].name));
+  assert.match(read('robots.txt'), /Content-Signal: search=yes/);
+});
+
+test('the worker serves Markdown to agents and sets the security headers', async () => {
+  const { default: worker } = await import('../worker/index.js');
+  const ASSETS = { fetch: async req => new Response(new URL(req.url).pathname.endsWith('.md') ? '# md' : '<!doctype html>', { headers: { 'Content-Type': 'text/html' } }) };
+  const md = await worker.fetch(new Request('https://x.dev/clients/codex/', { headers: { Accept: 'text/markdown' } }), { ASSETS });
+  assert.equal(md.headers.get('Content-Type'), 'text/markdown; charset=utf-8');
+  assert.equal(await md.text(), '# md');
+  const html = await worker.fetch(new Request('https://x.dev/'), { ASSETS });
+  assert.match(html.headers.get('Content-Security-Policy'), /script-src 'self'/);
+  assert.equal(html.headers.get('Link'), '</index.md>; rel="alternate"; type="text/markdown"');
+  assert.match(html.headers.get('Vary'), /Accept/);
 });
 
 test('data.json carries every client with every cell', () => {

@@ -3,12 +3,12 @@
 # A merged pull request that only edits data/ therefore gets its tables and charts redrawn on main.
 # Commits made with GITHUB_TOKEN start no new push runs, so this cannot loop. It then starts
 # the check workflow on the new commit, because a GITHUB_TOKEN push does not start it either.
-# On main, the deploy job then builds the website from that commit and deploys it to Cloudflare.
+# The website is deployed by Cloudflare's GitHub app on every push to main, not here (README.md#website).
 name: build
 on:
   push:
     branches: ['**']
-  # Rebuild and redeploy by hand, for example after the Cloudflare secrets are first added
+  # Rebuild by hand
   workflow_dispatch:
 permissions:
   contents: write
@@ -20,9 +20,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      # The commit this run validated and that is on the branch; empty when the push lost a race
-      sha: ${{ steps.commit.outputs.sha }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -44,7 +41,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Generated files already up to date"
             echo "pushed=false" >> "$GITHUB_OUTPUT"
-            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           BASE=$(git rev-parse HEAD)
@@ -64,7 +60,6 @@ jobs:
             exit 0
           fi
           echo "pushed=true" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Check the new commit
         if: steps.commit.outputs.pushed == 'true'
         env:
@@ -75,44 +70,3 @@ jobs:
       - run: npm run check
       - run: npm test
 
-  deploy:
-    needs: build
-    # A build that lost a push race deploys nothing: the run its rival queued deploys instead
-    if: github.ref == 'refs/heads/main' && needs.build.outputs.sha != ''
-    runs-on: ubuntu-latest
-    # Store the Cloudflare secrets on this environment and limit it to main (README.md#website)
-    environment: website
-    permissions:
-      contents: read
-    steps:
-      - name: Check for Cloudflare secrets
-        id: secrets
-        # Only this step and the deploy step see the secrets, never npm ci or the build
-        env:
-          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set, so the website is built but not deployed. See README.md#website."
-          fi
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-        with:
-          ref: ${{ needs.build.outputs.sha }}
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: Build the website
-        run: CHROME_PATH="$(command -v google-chrome)" npm run site
-      - name: Deploy to Cloudflare
-        if: steps.secrets.outputs.ready == 'true'
-        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: 4.157.0
-          command: deploy
