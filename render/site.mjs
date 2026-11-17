@@ -364,7 +364,7 @@ function homeMarkdown(data, faq) {
   return [`# ${TITLE}`, '', `> ${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. Updated ${formatDate(data.as_of)}, rechecked every Monday. Maintained by StackOne. Data MIT licensed: ${SITE}/data.json`, '',
     '## Tiers', '', ...TIERS.map(t => `- **${t}**: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), '',
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
-    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) | ${c.tier} | ${COLUMNS.map(([k]) => mdCell(data, k, c.cells[k])).join(' | ')} |`), '',
+    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
     '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
     '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${plain(f.definition)} (${f.url})`), '',
     `Source and methodology: ${REPO}`, ''].join('\n');

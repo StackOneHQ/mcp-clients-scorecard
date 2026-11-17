@@ -11,22 +11,24 @@ const AGENT_UA = /ClaudeBot|Claude-User|Claude-SearchBot|anthropic-ai|GPTBot|Cha
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const local = `/${url.pathname.replace(/^\/+/, '')}`; // never //host, which would point at another site
     const isPage = url.pathname.endsWith('/');
     const markdown = isPage && (/\btext\/markdown\b/.test(request.headers.get('Accept') || '') || AGENT_UA.test(request.headers.get('User-Agent') || ''));
     // /clients/codex.md is the copy of /clients/codex/; index.md and sitemap.md are real files
     const shortMd = url.pathname.match(/^\/(.+)\.md$/);
-    const target = markdown ? `${url.pathname}index.md` : shortMd && !/(^|\/)index$|^sitemap$/.test(shortMd[1]) ? `/${shortMd[1]}/index.md` : null;
+    const target = markdown ? `${local}index.md` : shortMd && !/(^|\/)index$|^sitemap$/.test(shortMd[1]) ? `/${shortMd[1]}/index.md` : null;
     // Rebuilt from the origin, so a path like //other.host/ cannot turn into another host
-    const asset = await env.ASSETS.fetch(target ? new Request(new URL(`/${target.replace(/^\/+/, '')}`, url.origin), request) : request);
+    const asset = await env.ASSETS.fetch(target ? new Request(new URL(target, url.origin), request) : request);
     const res = new Response(asset.body, asset);
     const h = res.headers;
     h.set('X-Content-Type-Options', 'nosniff');
     h.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     h.set('Content-Security-Policy', CSP);
+    h.set('Strict-Transport-Security', 'max-age=31536000');
     if (asset.ok && (target || url.pathname.endsWith('.md'))) h.set('Content-Type', 'text/markdown; charset=utf-8');
     if (isPage) {
       h.append('Vary', 'Accept, User-Agent');
-      if (asset.ok && !markdown) h.set('Link', `<${url.pathname}index.md>; rel="alternate"; type="text/markdown"`);
+      if (asset.ok && !markdown) h.set('Link', `<${local}index.md>; rel="alternate"; type="text/markdown"`);
     }
     // style.css and app.js carry a content hash in ?v=, fonts never change
     const hashed = (/^\/(style\.css|app\.js)$/.test(url.pathname) && url.searchParams.has('v')) || url.pathname.startsWith('/assets/fonts/');
