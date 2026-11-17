@@ -110,7 +110,7 @@ ${body}
 function filterAttrs(data, c) {
   const y = FEATURES.filter(([k]) => c.cells[k].value === 'y').map(([k]) => k);
   const p = FEATURES.filter(([k]) => c.cells[k].value === 'p').map(([k]) => k);
-  const hay = [c.name, c.slug, groupLabel(c.group), c.group, `${c.tier}-tier`, ...y.map(k => LABEL[k])].join(' ').toLowerCase();
+  const hay = [c.name, c.slug, groupLabel(c.group), c.group, `${c.tier}-tier`, ...y.concat(p).map(k => LABEL[k])].join(' ').toLowerCase();
   return `data-client="${attr(c.slug)}" data-group="${c.group}" data-tier="${c.tier}" data-y="${y.join(' ')}" data-p="${p.join(' ')}" data-hay="${attr(hay)}"`;
 }
 

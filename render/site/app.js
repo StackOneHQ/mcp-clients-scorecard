@@ -120,6 +120,7 @@
       let n = 0;
       for (const c of cards) { const ok = matches(c); c.classList.toggle('out', !ok); if (ok) n++; }
       for (const r of rows) r.hidden = !matches(r);
+      for (const tb of $$('.matrix tbody')) $('.grp', tb).hidden = !$('tr[data-client]:not([hidden])', tb);
       for (const l of lanes) l.classList.toggle('none', !l.querySelector('.card:not(.out)') && l.querySelector('.card'));
       const active = state.q || state.g !== 'all' || state.f.size;
       board.classList.toggle('filtering', !!active);
@@ -239,7 +240,8 @@
       const same = vals.every(v => v.value === vals[0].value);
       return `<tr class="${same ? 'same' : 'diff'}"><th>${esc(f.label)}${f.kind === 'harness' ? ' <span class="tag">harness</span>' : ''}</th>${vals.map(v => `<td data-k="${f.id}"><span data-ev="${esc(v.evidence)}" data-v="${f.id === 'protocol' ? '' : v.value}" data-m="${esc(v.method)}" data-ck="${esc(v.checked)}" tabindex="0">${f.id === 'protocol' ? `<span class="pv">${esc(v.value)}</span>` : `<img src="/assets/icons/${v.value}.svg" alt="${MARK[v.value]}" width="18" height="18">${v.label ? `<span class="lbl">${esc(v.label)}</span>` : ''}`}</span></td>`).join('')}</tr>`;
     };
-    const fixRow = `<tr class="same"><th>MCP bugs fixed</th>${cs.map(c => `<td class="fix">${esc(c.mcp_bugs_fixed_text)}</td>`).join('')}</tr>`;
+    const fixSame = cs.every(c => c.mcp_bugs_fixed_text === cs[0].mcp_bugs_fixed_text);
+    const fixRow = `<tr class="${fixSame ? 'same' : 'diff'}"><th>MCP bugs fixed</th>${cs.map(c => `<td class="fix">${esc(c.mcp_bugs_fixed_text)}</td>`).join('')}</tr>`;
     body.innerHTML = cs.length ? `<table class="cmp-table"><thead>${head}</thead><tbody>${d.features.map(row).join('')}${fixRow}</tbody></table>` : '<p class="pal-empty">Pick clients with the + on the tier list.</p>';
     const opts = d.clients.filter(c => !sel.includes(c.slug));
     $('#cmp-pick').innerHTML = `<option value="">Add a client…</option>${opts.map(c => `<option value="${esc(c.slug)}">${esc(c.name)} (${c.tier})</option>`).join('')}`;
@@ -296,7 +298,7 @@
       ...feats.map(f => {
         const who = d.clients.filter(c => c.cells[f.id].value === 'y');
         const part = d.clients.filter(c => c.cells[f.id].value === 'p').length;
-        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'H' : 'F', feature: f.id };
+        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'H' : 'F', feature: f.id, href: `/?f=${f.id}#board` };
       }),
       { kind: 'Actions', title: 'Compare clients side by side', sub: 'Pick 2 to 4 clients', key: 'compare versus vs diff', glyph: '⇄', action: 'compare' },
       { kind: 'Actions', title: 'Download the data', sub: 'data.json, MIT licensed', key: 'json data download api', glyph: '{}', href: '/data.json' },
@@ -336,11 +338,7 @@
   }
   function run(it, newTab) {
     if (!it) return;
-    if (it.feature) {
-      if (setFeature) { pal.close(); setFeature(it.feature); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); return; }
-      location.href = `/?f=${it.feature}#board`;
-      return;
-    }
+    if (it.feature && setFeature && !newTab) { pal.close(); setFeature(it.feature); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); return; }
     if (it.action === 'compare') {
       pal.close();
       if (cmpDlg) { sel.length < 2 ? (say('Tap + on two clients to compare them'), board?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })) : openCompare(); } else location.href = '/#board';
