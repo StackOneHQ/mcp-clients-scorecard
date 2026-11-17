@@ -145,7 +145,7 @@ h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;margin:
 .legend span{display:inline-flex;align-items:center;gap:8px}
 
 /* ---------- changes */
-.changes{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px}
+.changes{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:8px}
 .changes li{display:flex;gap:12px;align-items:baseline;padding:16px;border-radius:12px;background:var(--panel);font-size:15px;color:var(--body)}
 .changes .bdot{transform:translateY(-1px)}
 .faq{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:8px;margin-top:24px;align-items:start}
@@ -186,7 +186,7 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
 .lbl{font-size:11px;color:var(--muted)}
 .tag{font-family:var(--mono);font-size:10px;border-radius:4px;padding:0 4px;color:var(--body);background:var(--card)}
 .defs{margin:20px 0}.defs summary{cursor:pointer;font-weight:500;color:var(--body)}.defs summary:hover{color:var(--text)}
-.defs dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;margin:16px 0 0}
+.defs dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:8px;margin:16px 0 0}
 .defs dl div{border-radius:12px;padding:16px;background:var(--panel)}
 .defs dt{font-weight:500;color:var(--text)}.defs dd{margin:4px 0 0;color:var(--body);font-size:14px}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
@@ -267,13 +267,13 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
 .summary{max-width:880px;margin:24px 0 8px;font-size:18px;line-height:1.6;color:var(--body)}
 .checks-hd{font-size:24px;margin:40px 0 16px}
 .so-note{margin:24px 0 0;padding:16px 20px;border-radius:12px;background:var(--panel);color:var(--body)}.so-note a{color:var(--text)}
-.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;margin:24px 0}
-.check{border-radius:16px;padding:20px;background:var(--panel);display:flex;flex-direction:column;gap:12px;transition:background-color .15s var(--ease)}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:8px;margin:24px 0}
+.check{min-width:0;border-radius:16px;padding:20px;background:var(--panel);display:flex;flex-direction:column;gap:12px;transition:background-color .15s var(--ease)}
 .check:hover{background:#2f2f2f}
 .ck-hd{display:flex;align-items:center;gap:8px}.ck-hd h3{margin:0;font-family:var(--sans);font-size:15px;font-weight:500;flex:1}
 .ck-v{font-family:var(--mono);font-size:12px;display:inline-flex;align-items:center;gap:6px;color:var(--body)}
 .ck-v img{width:18px;height:18px}
-.check p{margin:0;color:var(--body);font-size:14px}
+.check p{margin:0;color:var(--body);font-size:14px;overflow-wrap:anywhere}
 .src{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:auto;display:flex;flex-wrap:wrap;gap:4px 12px}
 .src a{color:var(--body)}
 .embed{margin-top:48px;padding:32px;border-radius:20px;background:var(--panel)}
@@ -299,7 +299,7 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
 
 /* ---------- responsive */
 @media (max-width:980px){.top nav{display:none}}
-@media (max-width:980px){.hero{grid-template-columns:1fr;gap:48px;padding-top:56px}.charts{grid-template-columns:1fr}}
+@media (max-width:980px){.hero{grid-template-columns:minmax(0,1fr);gap:48px;padding-top:56px}.charts{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){
   .wrap{padding-left:16px;padding-right:16px}
   .bar{gap:8px}.home span{display:none}.by{border-left:0;padding-left:0}
@@ -315,7 +315,7 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
   .cmp-btn{right:2px}
   .chero{grid-template-columns:auto 1fr;padding:20px;gap:16px}.big.lg{width:72px;height:72px;border-radius:18px}.big.lg img{width:52px;height:52px}
   .scorebox{grid-column:1/-1}.tierbig{width:80px;height:80px;font-size:52px;border-radius:20px}.ring,.ring svg{width:80px;height:80px}.ring b{font-size:18px}
-  .checks{grid-template-columns:1fr}.code{flex-direction:column}
+  .checks{grid-template-columns:minmax(0,1fr)}.code{flex-direction:column}
   .pager{grid-template-columns:1fr}.pager a.next{grid-column:1}
   .foot-in{grid-template-columns:1fr}
   .palette{margin-top:0;max-height:100vh;width:100vw;border-radius:0}

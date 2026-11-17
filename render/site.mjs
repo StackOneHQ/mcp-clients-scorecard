@@ -243,7 +243,7 @@ function clientPage(data, c, prev, next) {
     const s = cell.since;
     const g = k === 'protocol' && protocolGrade(cell.value, data.spec_versions);
     const value = k === 'protocol'
-      ? `<span class="pv ${g}">${esc(cell.value)}</span> ${GRADE[g]}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''}`
+      ? `<span class="pv ${g}">${esc(cell.value)}</span>${g === 'x' ? '' : ` ${GRADE[g]}`}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''}`
       : `<img src="/assets/icons/${cell.value}.svg" alt="" width="18" height="18">${MARK[cell.value]}${cell.value === 'y' && cell.label ? ` · ${esc(cell.label)}` : ''}`;
     return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(f.definition)}">${esc(l)}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
 <p>${prose(cell.evidence)}</p><div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]} ↗</a><span>checked ${formatDate(cell.checked)}</span>${s ? `<span>shipped <a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}</a></span>` : ''}</div></article>`;
