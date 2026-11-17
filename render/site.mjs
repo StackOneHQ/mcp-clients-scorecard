@@ -2,6 +2,7 @@
 // npm run site                  build dist/, with the share cards drawn by Chrome
 // npm run site -- --no-og       skip the share cards (no Chrome needed); pages point at assets/tiers.png instead
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate, featureScore } from './data.mjs';
@@ -75,48 +76,95 @@ export function buildSite(out, { og = true } = {}) {
 
 // ---------- pages
 
+const MONO = '<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">';
+const icon = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const SEARCH = icon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+const groupLabel = g => (g === 'cli' ? 'CLI' : 'App or IDE');
+const logoImg = (c, size) => `<span class="lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="${size}" height="${size}"></span>`;
+
 function page({ title, description, path: p, image, body, noindex = false }) {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(title)}</title><meta name="description" content="${attr(description)}">
+<title>${esc(title)}</title><meta name="description" content="${attr(description)}"><meta name="theme-color" content="#05060a"><meta name="color-scheme" content="dark">
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${attr(SITE + p)}">`}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${TITLE}"><meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${attr(SITE + p)}"><meta property="og:image" content="${attr(image)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@StackOneHQ"><meta name="twitter:title" content="${attr(title)}">
 <meta name="twitter:description" content="${attr(description)}"><meta name="twitter:image" content="${attr(image)}">
-${FONT}<link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
-<body><header class="top"><div class="wrap bar"><a class="brand" href="/"><span class="dot">S</span>${TITLE}</a>
-<nav><a href="/#tiers">Tiers</a><a href="/#matrix">Matrix</a><a href="/#changes">Changes</a><a href="${REPO}/blob/main/methodology/METHODOLOGY.md">Method</a><a class="gh" href="${REPO}">GitHub</a></nav></div></header>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+${FONT}${MONO}<link rel="stylesheet" href="/style.css?v=${VERSION}"><script src="/app.js?v=${VERSION}" defer></script></head>
+<body><header class="top"><div class="wrap bar"><a class="brand" href="/"><span class="dot">S</span><span>${TITLE}</span></a>
+<nav aria-label="Main"><a href="/#board">Tiers</a><a href="/#matrix">Matrix</a><a href="/#changes">Changes</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">Method</a><a class="gh" href="${REPO}">GitHub</a></nav>
+<button type="button" class="search-btn" data-palette aria-label="Search clients and features">${SEARCH}<span>Search clients, features…</span><kbd data-mod>Ctrl</kbd><kbd>K</kbd></button></div></header>
 ${body}
-<footer class="wrap foot"><p>Maintained by <a href="https://www.stackone.com">StackOne</a>. Data is MIT licensed: <a href="/data.json">data.json</a> · <a href="/llms.txt">llms.txt</a> · <a href="${REPO}">source</a>.</p>
-<p>Spotted a wrong cell? <a href="${REPO}/blob/main/CONTRIBUTING.md">Send a pull request</a> with a source and it moves.</p></footer>
+<footer class="wrap foot"><div><p>Maintained by <a href="https://www.stackone.com">StackOne</a>. Data is MIT licensed: <a href="/data.json">data.json</a> · <a href="/llms.txt">llms.txt</a> · <a href="${REPO}">source</a>.</p>
+<p>Spotted a wrong cell? <a href="${REPO}/blob/main/CONTRIBUTING.md">Send a pull request</a> with a source and it moves.</p></div>
+<p class="mono"><kbd data-mod>Ctrl</kbd> <kbd>K</kbd> search · <kbd>/</kbd> filter</p></footer>
+<dialog class="dlg palette" id="palette" aria-label="Search" data-repo="${attr(REPO)}"><div class="pal-in">${SEARCH}<input id="pal-q" type="search" placeholder="Search clients, tiers, features…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="pal-list" aria-expanded="true"><kbd>esc</kbd></div>
+<ul class="pal-list" id="pal-list" role="listbox"></ul><div class="pal-ft"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd data-mod>Ctrl</kbd><kbd>↵</kbd> new tab</span></div></dialog>
 </body></html>
 `;
 }
 
-function home(data, changes, previous) {
-  const perTier = TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]);
-  const shareText = `${data.clients.length} MCP clients ranked S to D, with a source behind every cell`;
-  return `<main>
-<section class="wrap hero"><p class="kicker">Updated ${formatDate(data.as_of)} · rechecked every Monday</p>
-<h1>Which MCP clients actually support MCP?</h1>
-<p class="lede">${data.clients.length} clients, ${COLUMNS.length} checks, and a linked, dated source for every cell. Click any client for the evidence.</p>
-<div class="ctas"><a class="btn primary" href="#matrix">See every cell</a><a class="btn" href="${REPO}/blob/main/CONTRIBUTING.md">Ranked wrong? Send a PR</a>${share(shareText, SITE + '/')}</div></section>
-<section id="tiers" class="wrap"><div class="board">
-<div></div>${GROUPS.map(([, l]) => `<div class="colhd">${l}</div>`).join('')}
-${TIERS.map(t => `<div class="tier tc-${t}">${t}</div>${GROUPS.map(([g]) => `<div class="row">${data.clients.filter(c => c.group === g && c.tier === t).map(chip).join('')}</div>`).join('')}`).join('\n')}
-</div><p class="note">${perTier.map(([t, n]) => `${n} in ${t}`).join(' · ')}. Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>.</p></section>
-${changes.length ? `<section id="changes" class="wrap"><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li>${ch}</li>`).join('')}</ul></section>` : `<section id="changes" class="wrap"><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
-<section id="matrix" class="wrap"><h2>Every cell, with its source</h2><p class="note">Hover a cell for the evidence, click it for the source. Columns marked harness are how a client handles tools, not part of the MCP spec.</p>
-<div class="scroll">${matrix(data)}</div>
-<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${prose(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a></dd>`).join('')}
-<dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></dl></details></section>
-<section class="wrap"><h2>Adoption over time</h2><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
-<img class="chart" src="/assets/history-clients.png" alt="Features supported per client over time" loading="lazy" width="1200" height="700"></section>
-</main>`;
+// One client's attributes for the live filters: search text, group, supported and partial features
+function filterAttrs(data, c) {
+  const y = FEATURES.filter(([k]) => c.cells[k].value === 'y').map(([k]) => k);
+  const p = FEATURES.filter(([k]) => c.cells[k].value === 'p').map(([k]) => k);
+  const label = Object.fromEntries(COLUMNS);
+  const hay = [c.name, c.slug, groupLabel(c.group), c.group, `${c.tier}-tier`, ...y.map(k => label[k])].join(' ').toLowerCase();
+  return `data-client="${attr(c.slug)}" data-group="${c.group}" data-tier="${c.tier}" data-y="${y.join(' ')}" data-p="${p.join(' ')}" data-hay="${attr(hay)}"`;
 }
 
-const chip = c => `<a class="chip" href="${clientUrl(c)}"><span class="lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="40" height="40"></span><span>${esc(c.name)}</span></a>`;
+const strip = c => `<span class="strip" aria-hidden="true">${FEATURES.map(([k]) => `<i class="${c.cells[k].value}"></i>`).join('')}</span>`;
+
+function home(data, changes, previous) {
+  const perTier = Object.fromEntries(TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]));
+  const shareText = `${data.clients.length} MCP clients ranked S to D, with a source behind every cell`;
+  const supporters = k => data.clients.filter(c => c.cells[k].value === 'y');
+  const examples = [['apps', 'which clients render MCP Apps?'], ['tasks', 'who supports MCP Tasks?'], ['cimd', 'who signs in with CIMD?'], ['code_mode', 'who has code mode?']]
+    .filter(([k]) => COLUMNS.some(([c]) => c === k));
+  const label = Object.fromEntries(COLUMNS);
+  const consoleQ = ([k, q], i) => {
+    const yes = supporters(k), part = data.clients.filter(c => c.cells[k].value === 'p');
+    return `<div class="q" data-q="${attr(q)}"><div class="q-res${i === 0 ? ' on' : ''}"><div class="q-meta"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</div>
+<div class="q-logos">${yes.map(c => `<a href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}${part.map(c => `<a class="p" href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}</div>
+<button type="button" class="q-go" data-apply="${k}">Filter the board by ${esc(label[k])} →</button></div></div>`;
+  };
+  return `<main>
+<section class="wrap hero"><div><span class="live"><span class="pulse"></span>Updated ${formatDate(data.as_of)} · rechecked every Monday</span>
+<h1>Which MCP clients <em>actually</em> support MCP?</h1>
+<p class="lede">Every major MCP client, ranked S to D on the same ${COLUMNS.length} checks. Each cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
+<div class="stats"><div class="stat"><b data-count="${data.clients.length}">${data.clients.length}</b><span>clients ranked</span></div><div class="stat"><b data-count="${COLUMNS.length}">${COLUMNS.length}</b><span>checks each</span></div><div class="stat"><b data-count="${data.clients.length * COLUMNS.length}">${data.clients.length * COLUMNS.length}</b><span>sourced cells</span></div><div class="stat"><b data-count="${perTier.S}">${perTier.S}</b><span>in S tier</span></div></div>
+<div class="ctas"><a class="btn primary" href="#board">Explore the tiers</a><button type="button" class="btn" data-palette>${SEARCH}Search</button>${share(shareText, SITE + '/')}</div></div>
+<div class="console" aria-label="Example questions"><div class="console-top"><i></i><i></i><i></i><span>mcp-clients ~ ask</span></div>
+<div class="console-body"><div class="q-line"><span class="pr">❯</span><span class="q-text">${esc(examples[0][1])}</span><span class="caret"></span></div>${examples.map(consoleQ).join('')}</div></div></section>
+
+<section id="board" class="wrap sec"><div class="sec-hd"><div><p class="eyebrow">01 · Tier list</p><h2>The board</h2></div><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each bar under a logo is one check: <span class="mono">green</span> yes, <span class="mono">amber</span> partly.</p></div>
+<div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
+<div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${l === 'CLIs' ? 'CLIs' : 'Apps & IDEs'}</button>`).join('')}</div>
+<span class="result mono" id="count" aria-live="polite"><b>${data.clients.length}</b> of ${data.clients.length} clients</span><button type="button" class="reset" id="reset">Clear</button>
+<div class="feats" role="group" aria-label="Must support"><span class="lab">Must support</span>${FEATURES.map(([k, l]) => `<button type="button" class="fchip${HARNESS.has(k) ? ' h' : ''}" data-feat="${k}" aria-pressed="false">${esc(l)}<span class="n">${supporters(k).length + data.clients.filter(c => c.cells[k].value === 'p').length}</span></button>`).join('')}</div></div>
+<div class="board"><div class="bhead"><span></span>${GROUPS.map(([, l]) => `<span>${l}</span>`).join('')}</div>
+${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small>${perTier[t]} client${perTier[t] === 1 ? '' : 's'}</small></div>${GROUPS.map(([g, l]) => `<div class="lane"><span class="glabel">${l}</span>${data.clients.filter(c => c.group === g && c.tier === t).map(c => card(data, c)).join('')}</div>`).join('')}</div>`).join('\n')}
+</div>
+<div class="legend"><span><span class="strip"><i class="y"></i></span>yes</span><span><span class="strip"><i class="p"></i></span>partly</span><span><span class="strip"><i></i></span>no</span><span>Bars in column order: ${FEATURES.map(([, l]) => esc(l)).join(', ')}</span></div></section>
+
+${changes.length ? `<section id="changes" class="wrap sec"><p class="eyebrow">02 · Changelog</p><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li><span>${ch}</span></li>`).join('')}</ul></section>` : `<section id="changes" class="wrap sec"><p class="eyebrow">02 · Changelog</p><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
+
+<section id="matrix" class="wrap sec"><div class="sec-hd"><div><p class="eyebrow">03 · Evidence</p><h2>Every cell, with its source</h2></div><p class="note">Hover or focus a cell for the evidence, click it for the source. Click a column to sort. Harness columns are how a client handles tools, not part of the MCP spec.</p></div>
+<div class="mx">${matrix(data)}</div>
+<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${prose(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a></dd></div>`).join('')}
+<div><dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></div></dl></details></section>
+
+<section class="wrap sec"><p class="eyebrow">04 · History</p><h2>Adoption over time</h2><div class="charts"><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
+<img class="chart" src="/assets/history-clients.png" alt="Features supported per client over time" loading="lazy" width="1200" height="700"></div></section>
+</main>
+<div class="tray" id="tray" aria-live="polite"><span class="lgs"></span><span class="txt"></span><button type="button" class="btn sm primary" id="tray-go" disabled>Compare</button><button type="button" class="xbtn" id="tray-clear" aria-label="Clear the selection">×</button></div>
+<dialog class="dlg" id="compare" aria-label="Compare clients"><div class="dlg-hd"><h3>Compare</h3><label class="toggle"><input type="checkbox" id="cmp-diff">Only differences</label><button type="button" class="btn sm" id="cmp-share" data-copy="">Copy link</button><button type="button" class="xbtn" data-close aria-label="Close">×</button></div>
+<div class="cmp-body"></div><div class="cmp-add"><select id="cmp-pick" aria-label="Add a client to the comparison"></select><span>Rows with a dot differ. Hover a cell for its evidence.</span></div></dialog>`;
+}
+
+const card = (data, c) => `<div class="card t-${c.tier}" ${filterAttrs(data, c)}><a class="card-link" href="${clientUrl(c)}">${logoImg(c, 40)}<span class="nm">${esc(c.name)}</span>${strip(c)}<span class="sr">${supportLine(c)} features</span></a><button type="button" class="cmp-btn" data-cmp="${attr(c.slug)}" aria-pressed="false" aria-label="Compare ${attr(c.name)}">+</button></div>`;
 
 function cellHtml(data, key, cell) {
   if (key === 'protocol') {
@@ -128,13 +176,18 @@ function cellHtml(data, key, cell) {
 }
 
 function matrix(data) {
-  const head = `<tr><th>Client</th><th>Tier</th><th>MCP bugs fixed</th>${COLUMNS.map(([k, l]) => `<th${HARNESS.has(k) ? ' class="h"' : ''}>${esc(l)}</th>`).join('')}</tr>`;
-  const rows = GROUPS.map(([g, label]) => `<tr class="grp"><td colspan="${COLUMNS.length + 3}">${label}</td></tr>`
-    + data.clients.filter(c => c.group === g).map(c => `<tr><th><a href="${clientUrl(c)}"><img src="/assets/logos/${attr(c.logo)}" alt="" width="20" height="20">${esc(c.name)}</a></th>`
-      + `<td><span class="tb tc-${c.tier}">${c.tier}</span></td><td class="fix">${esc(fixText(c.fix))}</td>`
-      + COLUMNS.map(([k]) => `<td${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(c.cells[k].source)}" title="${attr(c.cells[k].evidence)}" rel="nofollow">${cellHtml(data, k, c.cells[k])}</a></td>`).join('')
-      + '</tr>').join('')).join('');
-  return `<table class="matrix"><thead>${head}</thead><tbody>${rows}</tbody></table>`;
+  const sortBtn = (key, l) => `<button type="button" class="sort" data-sort="${key}">${esc(l)}</button>`;
+  const head = `<tr><th>${sortBtn('name', 'Client')}</th><th>${sortBtn('tier', 'Tier')}</th><th>${sortBtn('fix', 'MCP bugs fixed')}</th>${COLUMNS.map(([k, l]) => `<th data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}>${sortBtn(k, l)}</th>`).join('')}</tr>`;
+  let i = 0;
+  const bodies = GROUPS.map(([g, label]) => `<tbody><tr class="grp"><td colspan="${COLUMNS.length + 3}">${label}</td></tr>`
+    + data.clients.filter(c => c.group === g).map(c => `<tr ${filterAttrs(data, c)} data-i="${i++}" data-name="${attr(c.name.toLowerCase())}" data-score="${featureScore(c)}" data-fix="${c.fix.kind === 'rate' ? c.fix.ratio : -1}"><th><a href="${clientUrl(c)}"><img src="/assets/logos/${attr(c.logo)}" alt="" width="22" height="22">${esc(c.name)}</a></th>`
+      + `<td><span class="tb t-${c.tier}">${c.tier}</span></td><td class="fix">${esc(fixText(c.fix))}</td>`
+      + COLUMNS.map(([k]) => {
+        const cell = c.cells[k];
+        return `<td data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(cell.source)}" title="${attr(cell.evidence)}" data-v="${k === 'protocol' ? '' : cell.value}" data-m="${METHOD[cell.method]}" data-ck="${formatDate(cell.checked)}" data-head="${attr(`${c.name}, ${Object.fromEntries(COLUMNS)[k]}`)}" rel="nofollow">${cellHtml(data, k, cell)}</a></td>`;
+      }).join('')
+      + '</tr>').join('') + '</tbody>').join('');
+  return `<table class="matrix"><thead>${head}</thead>${bodies}</table>`;
 }
 
 function clientPage(data, c, prev, next) {
@@ -143,35 +196,43 @@ function clientPage(data, c, prev, next) {
   const md = `[![MCP clients scorecard: tier ${c.tier}](${badge})](${pageUrl})`;
   const html = `<a href="${pageUrl}"><img src="${badge}" alt="MCP clients scorecard: tier ${c.tier}"></a>`;
   const links = [['Website', c.website], ['Docs', c.docs], ['Repo', c.repo], c.tracker && ['Issues', `https://github.com/${c.tracker.repo}/issues`]].filter(l => l && l[1]);
-  const rows = COLUMNS.map(([k, l]) => {
+  const score = featureScore(c);
+  const R = 48, C = +(2 * Math.PI * R).toFixed(1);
+  const off = +(C * (1 - score / FEATURES.length)).toFixed(1);
+  const checks = COLUMNS.map(([k, l]) => {
     const cell = c.cells[k];
     const f = data.features.find(x => x.id === k);
     const s = cell.since;
-    const value = k === 'protocol' ? `${esc(cell.value)} <span class="muted">(${GRADE[protocolGrade(cell.value, data.spec_versions)]}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''})</span>` : `<img src="/assets/icons/${cell.value}.svg" alt="" width="18" height="18"> ${MARK[cell.value]}${cell.value === 'y' && cell.label ? ` <span class="muted">(${esc(cell.label)})</span>` : ''}`;
-    return `<tr><th><span title="${attr(f.definition)}">${esc(l)}</span>${HARNESS.has(k) ? ' <span class="tag">harness</span>' : ''}</th><td class="v">${value}</td>
-<td>${prose(cell.evidence)}<div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]}</a> · checked ${formatDate(cell.checked)}${s ? ` · shipped <a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}</a>` : ''}</div></td></tr>`;
+    const g = k === 'protocol' && protocolGrade(cell.value, data.spec_versions);
+    const value = k === 'protocol'
+      ? `<span class="pv ${g}">${esc(cell.value)}</span> ${GRADE[g]}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''}`
+      : `<img src="/assets/icons/${cell.value}.svg" alt="" width="18" height="18">${MARK[cell.value]}${cell.value === 'y' && cell.label ? ` · ${esc(cell.label)}` : ''}`;
+    return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(f.definition)}">${esc(l)}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
+<p>${prose(cell.evidence)}</p><div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]} ↗</a><span>checked ${formatDate(cell.checked)}</span>${s ? `<span>shipped <a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}</a></span>` : ''}</div></article>`;
   }).join('\n');
-  return `<main class="wrap">
-<nav class="crumbs"><a href="/">Tier list</a> / ${esc(c.name)}</nav>
-<section class="client"><div class="big lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="72" height="72"></div>
-<div><h1>${esc(c.name)}</h1><p class="muted">${c.group === 'cli' ? 'CLI' : 'App or IDE'} · ${c.version_checked ? `version ${esc(c.version_checked)}` : 'hosted'} · MCP bugs fixed: ${esc(fixText(c.fix))}</p>
-<p class="links">${links.map(([l, u]) => `<a href="${attr(u)}">${l}</a>`).join(' · ')}</p></div>
-<div class="tierbig tc-${c.tier}" title="Tier ${c.tier}">${c.tier}</div></section>
+  const pagerLink = (o, cls, dir) => `<a class="${cls}" href="${clientUrl(o)}">${cls === 'next' ? '' : logoImg(o, 28)}<span><small>${dir}</small>${esc(o.name)} · ${o.tier}</span>${cls === 'next' ? logoImg(o, 28) : ''}</a>`;
+  return `<main class="wrap t-${c.tier}">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">~/tier-list</a> / ${esc(c.slug)}</nav>
+<section class="chero">${`<div class="big lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="76" height="76"></div>`}
+<div><h1>${esc(c.name)}</h1><div class="metas"><span class="meta">${groupLabel(c.group)}</span><span class="meta">${c.version_checked ? `v${esc(c.version_checked)}` : 'hosted'}</span><span class="meta">MCP bugs fixed: ${esc(fixText(c.fix))}</span></div>
+<p class="links">${links.map(([l, u]) => `<a href="${attr(u)}">${l} ↗</a>`).join('')}</p></div>
+<div class="scorebox"><div class="ring" title="Feature score: yes counts 1, partly counts half"><svg viewBox="0 0 112 112" aria-hidden="true"><circle class="trk" cx="56" cy="56" r="${R}" fill="none" stroke-width="9"/><circle class="val" cx="56" cy="56" r="${R}" fill="none" stroke-width="9" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div><b>${score}</b><span>of ${FEATURES.length}</span></div></div>
+<div class="tierbig" title="Tier ${c.tier}">${c.tier}</div></div></section>
 ${c.tier_note ? `<p class="callout">${prose(c.tier_note)}</p>` : ''}${c.note ? `<p class="callout">${prose(c.note)}</p>` : ''}
-<div class="ctas">${share(`${c.name} is ${c.tier} tier on the MCP clients scorecard`, pageUrl)}<a class="btn" href="${REPO}/edit/main/data/clients/${c.slug}.yaml">Wrong? Edit ${esc(c.slug)}.yaml</a></div>
-<div class="scroll"><table class="cells"><thead><tr><th>Check</th><th>Value</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table></div>
+<div class="ctas">${share(`${c.name} is ${c.tier} tier on the MCP clients scorecard`, pageUrl)}<a class="btn" href="/#compare=${attr(c.slug)}">Compare with…</a><a class="btn ghost" href="${REPO}/edit/main/data/clients/${c.slug}.yaml">Wrong? Edit ${esc(c.slug)}.yaml</a></div>
+<div class="checks">${checks}</div>
 <section class="embed"><h2>Show your tier</h2><p><img src="/badges/${c.slug}.svg" alt="MCP clients scorecard: tier ${c.tier}"></p>
 <p class="muted">Add the badge to a README. It updates when the tier does.</p>
-<div class="code"><pre>${esc(md)}</pre><button type="button" data-copy="${attr(md)}">Copy Markdown</button></div>
-<div class="code"><pre>${esc(html)}</pre><button type="button" data-copy="${attr(html)}">Copy HTML</button></div></section>
-<nav class="pager">${prev ? `<a href="${clientUrl(prev)}">← ${esc(prev.name)}</a>` : '<span></span>'}${next ? `<a href="${clientUrl(next)}">${esc(next.name)} →</a>` : ''}</nav>
+<div class="code"><pre>${esc(md)}</pre><button type="button" class="btn" data-copy="${attr(md)}">Copy Markdown</button></div>
+<div class="code"><pre>${esc(html)}</pre><button type="button" class="btn" data-copy="${attr(html)}">Copy HTML</button></div></section>
+<nav class="pager" aria-label="Other clients">${prev ? pagerLink(prev, 'prev', '← previous') : ''}${next ? pagerLink(next, 'next', 'next →') : ''}</nav>
 </main>`;
 }
 
 function share(text, url) {
   const x = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
   const li = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-  return `<span class="share"><a class="btn" href="${attr(x)}" target="_blank" rel="noopener">Share on X</a><a class="btn" href="${attr(li)}" target="_blank" rel="noopener">LinkedIn</a><button type="button" class="btn" data-copy="${attr(url)}">Copy link</button></span>`;
+  return `<a class="btn" href="${attr(x)}" target="_blank" rel="noopener">Share on X</a><a class="btn" href="${attr(li)}" target="_blank" rel="noopener">LinkedIn</a><button type="button" class="btn" data-copy="${attr(url)}">Copy link</button>`;
 }
 
 const counts = c => ({ y: FEATURES.filter(([k]) => c.cells[k].value === 'y').length, p: FEATURES.filter(([k]) => c.cells[k].value === 'p').length });
@@ -220,8 +281,8 @@ function publicData(data) {
     source: REPO,
     features: data.features.map(({ id, label, definition, ref, url, kind }) => ({ id, label, definition, ref, url, kind: kind || 'spec' })),
     clients: data.clients.map(c => ({
-      slug: c.slug, name: c.name, group: c.group, tier: c.tier, url: SITE + clientUrl(c), version_checked: c.version_checked ?? null,
-      mcp_bugs_fixed: c.fix,
+      slug: c.slug, name: c.name, group: c.group, tier: c.tier, url: SITE + clientUrl(c), logo: `${SITE}/assets/logos/${c.logo}`, version_checked: c.version_checked ?? null,
+      mcp_bugs_fixed: c.fix, mcp_bugs_fixed_text: fixText(c.fix),
       cells: Object.fromEntries(COLUMNS.map(([k]) => {
         const { value, method, source, evidence, checked, label, quality, fallback, since } = c.cells[k];
         return [k, { value: String(value), method, source, evidence, checked: String(checked), ...(label && { label }), ...(quality && { quality }), ...(fallback && { fallback }), ...(since && { since: { ...since, date: String(since.date) } }) }];
@@ -243,7 +304,7 @@ function sitemap(data) {
 
 // ---------- share cards (1200x630), drawn by Chrome
 
-const cardCss = `*{box-sizing:border-box;margin:0}body{width:1200px;height:630px;background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;padding:56px 64px;position:relative;overflow:hidden}
+const cardCss = `*{box-sizing:border-box;margin:0}body{width:1200px;height:630px;color:#fff;font-family:Inter,system-ui,sans-serif;padding:56px 64px;position:relative;overflow:hidden;background:radial-gradient(600px 340px at 85% -10%,rgba(0,175,102,.35),transparent),radial-gradient(500px 300px at 10% 110%,rgba(255,127,127,.18),transparent),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/40px 40px,#05060a}
 .so{position:absolute;right:64px;bottom:48px;height:24px;opacity:.85}.foot{position:absolute;left:64px;bottom:48px;font-size:26px;color:#8A8A85}
 .lg{background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;overflow:hidden}.lg img{width:70%;height:70%;object-fit:contain}`;
 
@@ -285,64 +346,12 @@ const HEADERS = `/*
   Cache-Control: public, max-age=3600
 `;
 
-const JS = `document.addEventListener('click', e => {
-  const b = e.target.closest('[data-copy]');
-  if (!b) return;
-  navigator.clipboard.writeText(b.dataset.copy).then(() => {
-    const t = b.textContent;
-    b.textContent = 'Copied';
-    setTimeout(() => { b.textContent = t; }, 1500);
-  });
-});
-`;
+const JS = fs.readFileSync(ROOT + 'render/site/app.js', 'utf8');
 
-const CSS = `${TIERS.map(t => `.tc-${t}{background:${TIER_COLOR[t]}}`).join('')}
-*{box-sizing:border-box}html{background:#000;color:#EDEDED;font-family:Inter,system-ui,sans-serif;-webkit-text-size-adjust:100%}
-body{margin:0;line-height:1.5}a{color:#fff}a:hover{color:${TIER_COLOR.A}}img{max-width:100%}
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}.narrow{max-width:640px;padding-top:80px}
-.top{border-bottom:1px solid #222;position:sticky;top:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:5}
-.bar{display:flex;align-items:center;justify-content:space-between;height:56px;gap:16px}.brand{font-weight:700;text-decoration:none;display:flex;align-items:center;gap:10px;white-space:nowrap}
-.dot{background:${TIER_COLOR.S};color:#1a1a17;border-radius:7px;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
-.top nav a{color:#B5B5B0;text-decoration:none;margin-left:18px;font-size:15px}.top nav a:hover{color:#fff}.top nav .gh{color:#fff}
-.hero{padding:64px 16px 32px}.kicker{color:${TIER_COLOR.D};font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin:0}
-h1{font-size:clamp(34px,6vw,64px);line-height:1.05;letter-spacing:-.03em;margin:12px 0 16px;font-weight:800}h2{font-size:28px;letter-spacing:-.02em;margin:56px 0 12px}
-.lede{font-size:20px;color:#B5B5B0;max-width:720px;margin:0 0 24px}.note,.muted{color:#8A8A85;font-size:15px}
-.ctas{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}.share{display:inline-flex;flex-wrap:wrap;gap:10px}
-.btn{display:inline-block;border:1px solid #333;background:#111;color:#fff;border-radius:999px;padding:9px 16px;font:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer}
-.btn:hover{border-color:#666;color:#fff}.btn.primary{background:#fff;color:#000;border-color:#fff}
-.board{display:grid;grid-template-columns:72px 1fr 1fr;gap:4px}.colhd{text-align:center;font-weight:700;color:#B5B5B0;padding:6px}
-.tier{color:#1a1a17;font-size:40px;font-weight:800;display:flex;align-items:center;justify-content:center;min-height:104px}
-.row{background:#1A1A17;display:flex;flex-wrap:wrap;align-content:center;gap:6px;padding:8px}
-.chip{display:flex;flex-direction:column;align-items:center;gap:6px;width:92px;text-decoration:none;font-size:13px;font-weight:600;text-align:center;line-height:1.15;padding:4px;border-radius:12px}
-.chip:hover{background:#2A2A26;color:#fff}.lg{background:#fff;border-radius:12px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
-.lg img{width:40px;height:40px;object-fit:contain}.big.lg{width:96px;height:96px;border-radius:22px}.big.lg img{width:72px;height:72px}
-.changes{padding-left:20px}.changes li{margin:6px 0}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #222;border-radius:12px}
-table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid #1E1E1C;text-align:left;vertical-align:middle}
-thead th{position:sticky;top:0;background:#0D0D0C;color:#B5B5B0;font-weight:600;white-space:nowrap}.matrix td{text-align:center}
-.matrix tbody th{position:sticky;left:0;background:#000;white-space:nowrap;z-index:1}.matrix tbody th a{display:flex;align-items:center;gap:8px;text-decoration:none}
-.matrix tbody th img{background:#fff;border-radius:5px;padding:2px}.matrix td a{display:inline-flex;align-items:center;gap:4px;text-decoration:none}
-.matrix .h{background:#0A0A12}.grp td{text-align:left!important;font-weight:700;color:#8A8A85;background:#0D0D0C}.fix{white-space:nowrap;color:#B5B5B0}
-.tb{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;color:#1a1a17;font-weight:800;border-radius:6px}
-.pv{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}.pv.g{color:${TIER_COLOR.D}}.pv.a{color:${TIER_COLOR.A}}.pv.rd{color:${TIER_COLOR.S}}.pv.x{color:#8A8A85}
-.lbl{font-size:12px;color:#B5B5B0}.tag{font-size:11px;border:1px solid #333;border-radius:4px;padding:0 4px;color:#8A8A85;font-weight:500}
-.defs{margin:16px 0}.defs summary{cursor:pointer;font-weight:600}.defs dt{font-weight:700;margin-top:12px}.defs dd{margin:2px 0 0;color:#B5B5B0}
-.chart{display:block;width:100%;height:auto;border-radius:12px;margin:12px 0}
-.crumbs{margin:28px 0 0;color:#8A8A85;font-size:14px}.crumbs a{color:#B5B5B0}
-.client{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;margin:24px 0}.client h1{margin:0 0 4px}.client p{margin:2px 0}
-.tierbig{width:120px;height:120px;border-radius:20px;color:#1a1a17;font-size:84px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.callout{border-left:3px solid ${TIER_COLOR.B};padding:8px 14px;background:#111;color:#B5B5B0}
-.cells th{white-space:nowrap}.cells td.v{white-space:nowrap}.cells td.v img{vertical-align:middle}.src{font-size:13px;color:#8A8A85;margin-top:4px}
-code{background:#1A1A17;border-radius:4px;padding:1px 4px;font-size:.92em;word-break:break-word}
-.embed .code{display:flex;gap:10px;align-items:stretch;margin:8px 0}.embed pre{flex:1;margin:0;background:#111;border:1px solid #222;border-radius:8px;padding:10px;overflow-x:auto;font-size:13px}
-.embed button{background:#111;color:#fff;border:1px solid #333;border-radius:8px;padding:0 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
-.pager{display:flex;justify-content:space-between;margin:40px 0}.foot{border-top:1px solid #222;margin-top:64px;padding-top:24px;padding-bottom:40px;color:#8A8A85;font-size:14px}
-@media (max-width:720px){.top nav a:not(.gh){display:none}
-.cells thead{display:none}.cells tr{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid #1E1E1C}.cells th,.cells td{border:0}.cells td:last-child{grid-column:1/-1;padding-top:0}.board{grid-template-columns:44px 1fr}.colhd{display:none}.board>div:first-child{display:none}
-.tier{font-size:28px;grid-row:span 2;min-height:0}.chip{width:76px;font-size:12px}.lg{width:44px;height:44px}.lg img{width:32px;height:32px}
-.client{grid-template-columns:auto 1fr}.tierbig{width:72px;height:72px;font-size:48px;grid-column:2;grid-row:1;justify-self:end}.big.lg{width:64px;height:64px}.big.lg img{width:48px;height:48px}
-.embed .code{flex-direction:column}}
-`;
+// Tier colours come from images.mjs so the site, the charts and the badges always agree
+const CSS = `:root{${TIERS.map(t => `--t-${t}:${TIER_COLOR[t]}`).join(';')}}\n` + fs.readFileSync(ROOT + 'render/site/style.css', 'utf8');
+// Cache buster for the two files, so a deploy never pairs new HTML with a cached old script or stylesheet
+const VERSION = crypto.createHash('sha256').update(CSS + JS).digest('hex').slice(0, 10);
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const og = !process.argv.includes('--no-og');
