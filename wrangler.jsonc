@@ -1,0 +1,12 @@
+// The website: a static-assets-only Worker serving dist/, which `npm run site` builds from data/.
+// The build workflow deploys it on every push to main. See README.md#website.
+{
+  "name": "mcp-clients-scorecard",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true
+}

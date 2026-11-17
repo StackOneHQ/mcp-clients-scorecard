@@ -205,6 +205,12 @@ s2d2, StackOne's internal agent, checks every Monday. It bumps each CLI to its n
 
 The tables and charts are generated from `data/`, never edited by hand. On every push to any branch, `main` included, the [build workflow](.github/workflows/build.yml) runs `npm run build` with Chrome, commits any regenerated README sections, EVIDENCE.md, history snapshot, badges and PNGs back to that branch, then runs the [check workflow](.github/workflows/check.yml) on the new commit. A pull request from a branch of this repository that only edits a YAML file therefore gets its tables and charts redrawn before review, and every merge to `main` that changes `data/` redraws them again on `main`. A pull request from a fork gets the pre-review rebuild only when Actions is enabled on the fork; either way `main` is rebuilt after the merge ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
+## Website
+
+The same data is published at [mcp-clients.stackone.com](https://mcp-clients.stackone.com): the tier board, every cell with its evidence, a page per client with a share card and its badge, and the data as [JSON](https://mcp-clients.stackone.com/data.json). `npm run site` builds it into `dist/` from `data/` and the generated charts; nothing in `dist/` is committed.
+
+On every push to `main`, the deploy job in the [build workflow](.github/workflows/build.yml) runs after the regenerate step, builds the site from the new tip of `main` and deploys it to Cloudflare as a static Worker ([wrangler.jsonc](wrangler.jsonc)). A merged data pull request therefore reaches the site within minutes. The job needs two repository secrets, `CLOUDFLARE_API_TOKEN` (a token with the Workers Scripts: Edit permission) and `CLOUDFLARE_ACCOUNT_ID`. Without them it builds the site and skips the deploy with a warning. To redeploy by hand, run the build workflow on `main` from the Actions tab.
+
 ## Repository layout
 
 | Path | What it holds |
@@ -218,7 +224,8 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 | [probe/](probe/) | The handshake probe and its MCP server |
 | [bench/tool-search/](bench/tool-search/README.md) | Benchmark of tool-search ranking methods (substring, regex, BM25, embeddings) on 453 real MCP tools |
 | [scripts/](scripts/) | `bugs.mjs`, which recounts MCP issues per tracker |
-| [render/](render/) | Loader, validation and generators for the README, EVIDENCE.md and images |
+| [render/](render/) | Loader, validation and generators for the README, EVIDENCE.md, images and the website |
+| [wrangler.jsonc](wrangler.jsonc) | Cloudflare config for the website |
 
 Field reference for every data file: [data/README.md](data/README.md).
 
@@ -230,10 +237,11 @@ Field reference for every data file: [data/README.md](data/README.md).
 | `npm run build -- --no-images` | The same, without the PNGs |
 | `npm run build -- --all-images` | Re-renders every PNG, not only the charts whose data changed |
 | `npm run check` | Validates the data and fails if a generated file or image is stale |
+| `npm run site` | Builds the website into `dist/`, with a share card per page (needs Chrome; `-- --no-og` skips the cards) |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
 | `npm run bench:tool-search` | Reruns the tool-search benchmark (embedding rankers need `OPENAI_API_KEY`) |
-| `npm test` | Tests the probe report on sample handshake logs and the benchmark OpenAI client |
+| `npm test` | Tests the probe report on sample handshake logs, the benchmark OpenAI client and the website build |
 
 ## Why StackOne tracks this
 

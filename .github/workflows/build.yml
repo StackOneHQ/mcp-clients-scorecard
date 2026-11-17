@@ -3,10 +3,13 @@
 # A merged pull request that only edits data/ therefore gets its tables and charts redrawn on main.
 # Commits made with GITHUB_TOKEN start no new push runs, so this cannot loop. It then starts
 # the check workflow on the new commit, because a GITHUB_TOKEN push does not start it either.
+# On main, the deploy job then builds the website from that commit and deploys it to Cloudflare.
 name: build
 on:
   push:
     branches: ['**']
+  # Rebuild and redeploy by hand, for example after the Cloudflare secrets are first added
+  workflow_dispatch:
 permissions:
   contents: write
   actions: write
@@ -66,3 +69,36 @@ jobs:
         run: gh workflow run check.yml --ref "$BRANCH" || echo "::warning::Could not start the check workflow on the regenerated commit"
       - run: npm run check
       - run: npm test
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # The tip of main, so the site includes the generated files the build job just committed
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build the website
+        run: CHROME_PATH="$(command -v google-chrome)" npm run site
+      - name: Deploy to Cloudflare
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.157.0
+          command: deploy
+      - name: Report a skipped deploy
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::warning::CLOUDFLARE_API_TOKEN is not set, so the website was built but not deployed. See README.md#website."

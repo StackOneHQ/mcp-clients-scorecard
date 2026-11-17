@@ -26,9 +26,11 @@ Only use `npm run build -- --no-images` when no Chrome can be installed. It warn
 ## CI
 
 - `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.
+- On `main` only, the deploy job in `build.yml` then runs `npm run site` on the new tip and deploys `dist/` to Cloudflare with `wrangler deploy`. It skips the deploy, with a warning, when the `CLOUDFLARE_API_TOKEN` secret is missing.
 - `.github/workflows/check.yml` runs `npm run check` and `npm test` on pull requests. A pull request with stale charts fails it.
 
 ## Other commands
 
-- `npm test` runs the probe and benchmark unit tests.
+- `npm run site` builds the website into `dist/` (never committed). It reads `data/` and the generated charts, so run `npm run build` first. `-- --no-og` skips the share cards when there is no Chrome. Page templates live in `render/site.mjs`; keep styles in its CSS, because the site's Content-Security-Policy blocks inline styles and scripts.
+- `npm test` runs the probe and benchmark unit tests and the website build tests.
 - `npm run build -- --all-images` redraws every chart, not only the ones whose HTML changed. Use it when something outside the HTML changed, such as the web font or the Chrome version.

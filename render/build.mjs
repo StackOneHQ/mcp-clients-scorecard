@@ -4,9 +4,8 @@
 // npm run check                   validate data/ and fail if any generated file is out of date
 import crypto from 'node:crypto';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { screenshots } from './chrome.mjs';
 import { ROOT, load, tierMismatches } from './data.mjs';
 import { evidence, spliceReadme, readmeSections } from './markdown.mjs';
 import { tiersHtml, matrixHtml, historyFeaturesHtml, historyClientsHtml, badgeSvg } from './images.mjs';
@@ -71,17 +70,8 @@ if (args.has('--no-images')) {
 } else {
   // Only re-render an image whose HTML changed, so a rebuild on another machine does not churn PNG bytes
   const todo = images.filter(([name]) => args.has('--all-images') || staleImages.includes(name));
-  const chrome = todo.length ? findChrome() : null;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-scorecard-'));
-  for (const [name, html, w, h] of todo) {
-    const src = path.join(tmp, name + '.html');
-    fs.writeFileSync(src, html);
-    const png = ROOT + `assets/${name}.png`;
-    execFileSync(chrome, ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
-      `--window-size=${w},${h}`, '--virtual-time-budget=8000', `--screenshot=${png}`, 'file://' + src], { stdio: 'ignore' });
-    console.log(`wrote assets/${name}.png`);
-  }
-  fs.rmSync(tmp, { recursive: true, force: true });
+  screenshots(todo.map(([name, html, w, h]) => [html, w, h, ROOT + `assets/${name}.png`]));
+  for (const [name] of todo) console.log(`wrote assets/${name}.png`);
   fs.writeFileSync(ROOT + IMAGE_HASHES, JSON.stringify(hashes, null, 2) + '\n');
 }
 
@@ -91,18 +81,3 @@ function orphanBadges() {
   return fs.existsSync(dir) ? fs.readdirSync(dir).map(f => `assets/badges/${f}`).filter(f => !(f in outputs)) : [];
 }
 
-function findChrome() {
-  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
-  const candidates = ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser'];
-  for (const c of candidates) {
-    try { return execFileSync('which', [c], { encoding: 'utf8' }).trim(); } catch {}
-  }
-  const local = path.join(os.homedir(), '.agent-browser/browsers');
-  if (fs.existsSync(local)) {
-    for (const d of fs.readdirSync(local).sort().reverse()) {
-      const p = path.join(local, d, 'chrome');
-      if (fs.existsSync(p)) return p;
-    }
-  }
-  throw new Error('Chrome not found. Set CHROME_PATH, or pass --no-images.');
-}
