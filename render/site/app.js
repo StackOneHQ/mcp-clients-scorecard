@@ -87,7 +87,8 @@
   const hidePop = () => { pop.classList.remove('on'); popFor = null; };
   document.addEventListener('pointerover', e => { if (e.pointerType !== 'mouse') return; touch = false; const el = e.target.closest('[data-ev]'); if (el) showPop(el); });
   document.addEventListener('pointerout', e => { if (e.pointerType !== 'mouse') return; const el = e.target.closest('[data-ev]'); if (el && !el.contains(e.relatedTarget)) hidePop(); });
-  document.addEventListener('focusin', e => { const el = e.target.closest('[data-ev]'); if (el) showPop(el); });
+  // A tap focuses the cell before its click; leave touch to the click handler so the first tap shows the evidence
+  document.addEventListener('focusin', e => { const el = e.target.closest('[data-ev]'); if (el && !touch) showPop(el); });
   document.addEventListener('focusout', e => { if (e.target.closest('[data-ev]')) hidePop(); });
   document.addEventListener('click', e => {
     if (!touch) return;
@@ -105,7 +106,8 @@
     const cards = $$('.card'), rows = $$('.matrix tbody tr[data-client]'), lanes = $$('.lane');
     const total = cards.length;
     const params = new URLSearchParams(location.search);
-    const state = { q: params.get('q') || '', g: params.get('g') || 'all', f: new Set((params.get('f') || '').split(',').filter(Boolean)) };
+    const known = (attr, v) => featBtns.concat(groupBtns).some(b => b.dataset[attr] === v);
+    const state = { q: params.get('q') || '', g: known('g', params.get('g')) ? params.get('g') : 'all', f: new Set((params.get('f') || '').split(',').filter(f => known('feat', f))) };
     const norm = s => s.toLowerCase().replace(/\b([sabcd])[\s-]*tier\b/g, '$1-tier').trim();
     const matches = el => {
       const has = new Set(`${el.dataset.y} ${el.dataset.p}`.split(' ').filter(Boolean));
@@ -258,7 +260,7 @@
     $('#cmp-diff').addEventListener('change', e => $('.cmp-body', cmpDlg).classList.toggle('only-diff', e.target.checked));
     cmpDlg.addEventListener('close', () => { if (/compare=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); });
     cmpDlg.addEventListener('click', e => { if (e.target === cmpDlg) cmpDlg.close(); });
-    const initial = fromHash();
+    const initial = fromHash().filter(s => $(`.card[data-client="${s}"]`));
     if (initial.length) { initial.slice(0, MAX).forEach(s => sel.includes(s) || sel.push(s)); syncCompare(); openCompare(); }
   }
   syncCompare();

@@ -15,6 +15,7 @@ const SITE = pkg.homepage.replace(/\/$/, '');
 const REPO = pkg.repository.url.replace(/^git\+/, '').replace(/\.git$/, '');
 const TITLE = 'MCP clients scorecard';
 const FEATURES = COLUMNS.filter(([k]) => k !== 'protocol');
+const LABEL = Object.fromEntries(COLUMNS);
 const MARK = { y: 'Yes', p: 'Partial', n: 'No', na: 'n/a' };
 const METHOD = { probe: 'live probe', source: 'source code', docs: 'docs', changelog: 'changelog', issue: 'issue' };
 const GRADE = { g: 'current spec', a: 'one version behind', rd: 'older spec', x: 'not published' };
@@ -106,12 +107,10 @@ ${body}
 `;
 }
 
-// One client's attributes for the live filters: search text, group, supported and partial features
 function filterAttrs(data, c) {
   const y = FEATURES.filter(([k]) => c.cells[k].value === 'y').map(([k]) => k);
   const p = FEATURES.filter(([k]) => c.cells[k].value === 'p').map(([k]) => k);
-  const label = Object.fromEntries(COLUMNS);
-  const hay = [c.name, c.slug, groupLabel(c.group), c.group, `${c.tier}-tier`, ...y.map(k => label[k])].join(' ').toLowerCase();
+  const hay = [c.name, c.slug, groupLabel(c.group), c.group, `${c.tier}-tier`, ...y.map(k => LABEL[k])].join(' ').toLowerCase();
   return `data-client="${attr(c.slug)}" data-group="${c.group}" data-tier="${c.tier}" data-y="${y.join(' ')}" data-p="${p.join(' ')}" data-hay="${attr(hay)}"`;
 }
 
@@ -123,12 +122,11 @@ function home(data, changes, previous) {
   const supporters = k => data.clients.filter(c => c.cells[k].value === 'y');
   const examples = [['apps', 'which clients render MCP Apps?'], ['tasks', 'who supports MCP Tasks?'], ['cimd', 'who signs in with CIMD?'], ['code_mode', 'who has code mode?']]
     .filter(([k]) => COLUMNS.some(([c]) => c === k));
-  const label = Object.fromEntries(COLUMNS);
   const consoleQ = ([k, q], i) => {
     const yes = supporters(k), part = data.clients.filter(c => c.cells[k].value === 'p');
     return `<div class="q" data-q="${attr(q)}"><div class="q-res${i === 0 ? ' on' : ''}"><div class="q-meta"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</div>
 <div class="q-logos">${yes.map(c => `<a href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}${part.map(c => `<a class="p" href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}</div>
-<button type="button" class="q-go" data-apply="${k}">Filter the board by ${esc(label[k])} →</button></div></div>`;
+<button type="button" class="q-go" data-apply="${k}">Filter the board by ${esc(LABEL[k])} →</button></div></div>`;
   };
   return `<main>
 <section class="wrap hero"><div><span class="live"><span class="pulse"></span>Updated ${formatDate(data.as_of)} · rechecked every Monday</span>
@@ -136,12 +134,12 @@ function home(data, changes, previous) {
 <p class="lede">Every major MCP client, ranked S to D on the same ${COLUMNS.length} checks. Each cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
 <div class="stats"><div class="stat"><b data-count="${data.clients.length}">${data.clients.length}</b><span>clients ranked</span></div><div class="stat"><b data-count="${COLUMNS.length}">${COLUMNS.length}</b><span>checks each</span></div><div class="stat"><b data-count="${data.clients.length * COLUMNS.length}">${data.clients.length * COLUMNS.length}</b><span>sourced cells</span></div><div class="stat"><b data-count="${perTier.S}">${perTier.S}</b><span>in S tier</span></div></div>
 <div class="ctas"><a class="btn primary" href="#board">Explore the tiers</a><button type="button" class="btn" data-palette>${SEARCH}Search</button>${share(shareText, SITE + '/')}</div></div>
-<div class="console" aria-label="Example questions"><div class="console-top"><i></i><i></i><i></i><span>mcp-clients ~ ask</span></div>
-<div class="console-body"><div class="q-line"><span class="pr">❯</span><span class="q-text">${esc(examples[0][1])}</span><span class="caret"></span></div>${examples.map(consoleQ).join('')}</div></div></section>
+${examples.length ? `<div class="console" aria-label="Example questions"><div class="console-top"><i></i><i></i><i></i><span>mcp-clients ~ ask</span></div>
+<div class="console-body"><div class="q-line"><span class="pr">❯</span><span class="q-text">${esc(examples[0][1])}</span><span class="caret"></span></div>${examples.map(consoleQ).join('')}</div></div>` : ''}</section>
 
 <section id="board" class="wrap sec"><div class="sec-hd"><div><p class="eyebrow">01 · Tier list</p><h2>The board</h2></div><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each bar under a logo is one check: <span class="mono">green</span> yes, <span class="mono">amber</span> partly.</p></div>
 <div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
-<div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${l === 'CLIs' ? 'CLIs' : 'Apps & IDEs'}</button>`).join('')}</div>
+<div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${esc(l)}</button>`).join('')}</div>
 <span class="result mono" id="count" aria-live="polite"><b>${data.clients.length}</b> of ${data.clients.length} clients</span><button type="button" class="reset" id="reset">Clear</button>
 <div class="feats" role="group" aria-label="Must support"><span class="lab">Must support</span>${FEATURES.map(([k, l]) => `<button type="button" class="fchip${HARNESS.has(k) ? ' h' : ''}" data-feat="${k}" aria-pressed="false">${esc(l)}<span class="n">${supporters(k).length + data.clients.filter(c => c.cells[k].value === 'p').length}</span></button>`).join('')}</div></div>
 <div class="board"><div class="bhead"><span></span>${GROUPS.map(([, l]) => `<span>${l}</span>`).join('')}</div>
@@ -184,7 +182,7 @@ function matrix(data) {
       + `<td><span class="tb t-${c.tier}">${c.tier}</span></td><td class="fix">${esc(fixText(c.fix))}</td>`
       + COLUMNS.map(([k]) => {
         const cell = c.cells[k];
-        return `<td data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(cell.source)}" title="${attr(cell.evidence)}" data-v="${k === 'protocol' ? '' : cell.value}" data-m="${METHOD[cell.method]}" data-ck="${formatDate(cell.checked)}" data-head="${attr(`${c.name}, ${Object.fromEntries(COLUMNS)[k]}`)}" rel="nofollow">${cellHtml(data, k, cell)}</a></td>`;
+        return `<td data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(cell.source)}" title="${attr(cell.evidence)}" data-v="${k === 'protocol' ? '' : cell.value}" data-m="${METHOD[cell.method]}" data-ck="${formatDate(cell.checked)}" data-head="${attr(`${c.name}, ${LABEL[k]}`)}" rel="nofollow">${cellHtml(data, k, cell)}</a></td>`;
       }).join('')
       + '</tr>').join('') + '</tbody>').join('');
   return `<table class="matrix"><thead>${head}</thead>${bodies}</table>`;
@@ -258,14 +256,13 @@ function previousSnapshot(asOf) {
 
 function diff(previous, data) {
   const out = [];
-  const label = Object.fromEntries(COLUMNS);
   for (const c of data.clients) {
     const was = Object.hasOwn(previous.clients, c.slug) && previous.clients[c.slug];
     const name = `<a href="${clientUrl(c)}">${esc(c.name)}</a>`;
     if (!was) { out.push(`${name} joins the board in ${c.tier} tier`); continue; }
     if (was.tier !== c.tier) out.push(`${name} moves from ${esc(was.tier)} to ${c.tier} tier`);
     const flips = COLUMNS.filter(([k]) => was[k] !== undefined && String(was[k]) !== String(c.cells[k].value))
-      .map(([k]) => `${esc(label[k])} ${k === 'protocol' ? `${esc(was[k])} → ${esc(c.cells[k].value)}` : `${MARK[was[k]].toLowerCase()} → ${MARK[c.cells[k].value].toLowerCase()}`}`);
+      .map(([k]) => `${esc(LABEL[k])} ${k === 'protocol' ? `${esc(was[k])} → ${esc(c.cells[k].value)}` : `${MARK[was[k]].toLowerCase()} → ${MARK[c.cells[k].value].toLowerCase()}`}`);
     if (flips.length) out.push(`${name}: ${flips.join(', ')}`);
   }
   for (const [slug, was] of Object.entries(previous.clients)) if (!data.clients.some(c => c.slug === slug)) out.push(`${esc(was.name)} leaves the board`);
