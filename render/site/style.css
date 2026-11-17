@@ -148,13 +148,13 @@ h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;margin:
 .changes{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px}
 .changes li{display:flex;gap:12px;align-items:baseline;padding:16px;border-radius:12px;background:var(--panel);font-size:15px;color:var(--body)}
 .changes .bdot{transform:translateY(-1px)}
-.faq{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px;margin-top:24px;align-items:start}
+.faq{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:8px;margin-top:24px;align-items:start}
 .faq details{border-radius:12px;background:var(--panel);padding:16px 20px}
 .faq summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline}.faq summary::-webkit-details-marker{display:none}
 .faq summary::before{content:'';width:8px;height:8px;border-radius:3.2px;background:var(--line3);flex:none;transform:translateY(-2px)}.faq details[open] summary::before{background:var(--green)}
 .faq h3{font-family:var(--sans);font-size:16px;font-weight:500;color:var(--text);margin:0}.faq summary:hover h3{color:#fff}
 .faq p{margin:12px 0 0 20px;color:var(--body);font-size:15px;line-height:1.6}
-.reading{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px}
+.reading{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:8px}
 .reading li{display:flex;justify-content:space-between;gap:16px;align-items:baseline;padding:16px 20px;border-radius:12px;background:var(--panel)}
 .reading a{color:var(--text);font-weight:500;text-decoration:none}.reading a:hover{text-decoration:underline;text-underline-offset:3px}.reading .muted{font-size:13px;white-space:nowrap}
 

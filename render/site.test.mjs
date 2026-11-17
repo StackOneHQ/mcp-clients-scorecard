@@ -88,6 +88,10 @@ test('the worker leaves error responses alone: no Markdown type, long cache, COR
   }
 });
 
+test('the FAQ names the newest spec revision as current', () => {
+  assert.match(read('index.html'), new RegExp(`speaks? the current MCP spec, ${data.spec_versions[0]}`));
+});
+
 test('client summaries read as plain sentences', () => {
   for (const c of data.clients) {
     const html = read(`clients/${c.slug}/index.html`);

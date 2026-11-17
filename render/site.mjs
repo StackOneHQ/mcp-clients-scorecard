@@ -302,7 +302,7 @@ function homeFaq(data) {
   const n = data.clients.length;
   const tier = t => byRank(data).filter(c => c.tier === t).map(c => c.name);
   const top = ['S', 'A', 'B', 'C', 'D'].filter(t => tier(t).length).slice(0, 2);
-  const latest = String(data.spec_versions.at(-1));
+  const latest = String(data.spec_versions[0]); // newest first (data/meta.yaml)
   const current = byRank(data).filter(c => protocolGrade(c.cells.protocol.value, data.spec_versions) === 'g').map(c => c.name);
   return [
     ['What is the best MCP client?', `As of ${formatDate(data.as_of)}, the highest ranked MCP clients, in ${top[0]} tier, are ${list(tier(top[0]))}${top[1] ? `, followed in ${top[1]} tier by ${list(tier(top[1]))}` : ''}. Tiers come from ${COLUMNS.length} checks: the MCP spec version and features such as MCP Apps, Tasks, CIMD and elicitation, plus how the client handles tools (code mode, tool search). Every cell links to a dated source.`],
