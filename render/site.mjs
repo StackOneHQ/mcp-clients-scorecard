@@ -49,7 +49,7 @@ export function buildSite(out, { og = true } = {}) {
     image: ogImage(c.slug),
     body: clientPage(data, c, data.clients[i - 1], data.clients[i + 1]),
   })));
-  write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
+  write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
   write('llms.txt', llms(data));
   write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
@@ -75,11 +75,11 @@ export function buildSite(out, { og = true } = {}) {
 
 // ---------- pages
 
-function page({ title, description, path: p, image, body }) {
+function page({ title, description, path: p, image, body, noindex = false }) {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${attr(description)}">
-<link rel="canonical" href="${attr(SITE + p)}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
+${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${attr(SITE + p)}">`}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${TITLE}"><meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${attr(SITE + p)}"><meta property="og:image" content="${attr(image)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@StackOneHQ"><meta name="twitter:title" content="${attr(title)}">
@@ -106,7 +106,7 @@ function home(data, changes, previous) {
 <div></div>${GROUPS.map(([, l]) => `<div class="colhd">${l}</div>`).join('')}
 ${TIERS.map(t => `<div class="tier tc-${t}">${t}</div>${GROUPS.map(([g]) => `<div class="row">${data.clients.filter(c => c.group === g && c.tier === t).map(chip).join('')}</div>`).join('')}`).join('\n')}
 </div><p class="note">${perTier.map(([t, n]) => `${n} in ${t}`).join(' · ')}. Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>.</p></section>
-${changes.length ? `<section id="changes" class="wrap"><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li>${ch}</li>`).join('')}</ul></section>` : `<section id="changes" class="wrap"><h2>What changed</h2><p class="note">No changes since ${previous ? formatDate(previous.as_of) : 'the first snapshot'}.</p></section>`}
+${changes.length ? `<section id="changes" class="wrap"><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li>${ch}</li>`).join('')}</ul></section>` : `<section id="changes" class="wrap"><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
 <section id="matrix" class="wrap"><h2>Every cell, with its source</h2><p class="note">Hover a cell for the evidence, click it for the source. Columns marked harness are how a client handles tools, not part of the MCP spec.</p>
 <div class="scroll">${matrix(data)}</div>
 <details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${prose(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a></dd>`).join('')}
@@ -185,17 +185,24 @@ function supportLine(c) {
 function previousSnapshot(asOf) {
   const cutoff = new Date(Date.parse(asOf + 'T00:00:00Z') - 6 * 864e5).toISOString().slice(0, 10);
   const dates = fs.readdirSync(ROOT + 'data/history').map(f => f.replace(/\.json$/, '')).filter(d => d <= cutoff).sort();
-  return dates.length ? JSON.parse(fs.readFileSync(ROOT + `data/history/${dates.at(-1)}.json`, 'utf8')) : null;
+  if (!dates.length) return null;
+  const file = `data/history/${dates.at(-1)}.json`;
+  const snap = JSON.parse(fs.readFileSync(ROOT + file, 'utf8'));
+  // Old snapshots are committed files that load() never validates, and they feed the home page
+  const bad = Object.entries(snap.clients).find(([, c]) => !TIERS.includes(c.tier) || typeof c.name !== 'string'
+    || COLUMNS.some(([k]) => k !== 'protocol' && c[k] !== undefined && !Object.hasOwn(MARK, c[k])));
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(snap.as_of) || bad) throw new Error(`${file}: invalid snapshot${bad ? ` entry ${bad[0]}` : ''}`);
+  return snap;
 }
 
 function diff(previous, data) {
   const out = [];
   const label = Object.fromEntries(COLUMNS);
   for (const c of data.clients) {
-    const was = previous.clients[c.slug];
+    const was = Object.hasOwn(previous.clients, c.slug) && previous.clients[c.slug];
     const name = `<a href="${clientUrl(c)}">${esc(c.name)}</a>`;
     if (!was) { out.push(`${name} joins the board in ${c.tier} tier`); continue; }
-    if (was.tier !== c.tier) out.push(`${name} moves from ${was.tier} to ${c.tier} tier`);
+    if (was.tier !== c.tier) out.push(`${name} moves from ${esc(was.tier)} to ${c.tier} tier`);
     const flips = COLUMNS.filter(([k]) => was[k] !== undefined && String(was[k]) !== String(c.cells[k].value))
       .map(([k]) => `${esc(label[k])} ${k === 'protocol' ? `${esc(was[k])} → ${esc(c.cells[k].value)}` : `${MARK[was[k]].toLowerCase()} → ${MARK[c.cells[k].value].toLowerCase()}`}`);
     if (flips.length) out.push(`${name}: ${flips.join(', ')}`);
@@ -256,7 +263,7 @@ function clientCard(data, c) {
   const g = protocolGrade(c.cells.protocol.value, data.spec_versions);
   return `<!doctype html><html><head><meta charset="utf-8">${FONT}<style>${cardCss}
 .k{font-size:28px;color:#8A8A85;font-weight:600;margin-bottom:40px}.h{display:flex;align-items:center;gap:36px}.h .lg{width:150px;height:150px;border-radius:34px}
-h1{font-size:76px;font-weight:800;letter-spacing:-2px;line-height:1.05;max-width:680px}.tier{position:absolute;right:64px;top:56px;width:250px;height:250px;color:#1a1a17;font-size:190px;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:28px}
+h1{font-size:76px;font-weight:800;letter-spacing:-2px;line-height:1.05;max-width:630px}.tier{position:absolute;right:64px;top:56px;width:250px;height:250px;color:#1a1a17;font-size:190px;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:28px}
 .stats{display:flex;gap:56px;margin-top:56px}.stats div{font-size:46px;font-weight:800}.stats span{display:block;font-size:24px;color:#8A8A85;font-weight:500;margin-top:6px}
 </style></head><body><div class="k">MCP clients scorecard</div><div class="h"><div class="lg"><img src="${logo(c.logo)}"></div><h1>${esc(c.name)}</h1></div>
 <div class="tier" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div>
@@ -296,7 +303,7 @@ body{margin:0;line-height:1.5}a{color:#fff}a:hover{color:${TIER_COLOR.A}}img{max
 .top{border-bottom:1px solid #222;position:sticky;top:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:5}
 .bar{display:flex;align-items:center;justify-content:space-between;height:56px;gap:16px}.brand{font-weight:700;text-decoration:none;display:flex;align-items:center;gap:10px;white-space:nowrap}
 .dot{background:${TIER_COLOR.S};color:#1a1a17;border-radius:7px;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
-nav a{color:#B5B5B0;text-decoration:none;margin-left:18px;font-size:15px}nav a:hover{color:#fff}nav .gh{color:#fff}
+.top nav a{color:#B5B5B0;text-decoration:none;margin-left:18px;font-size:15px}.top nav a:hover{color:#fff}.top nav .gh{color:#fff}
 .hero{padding:64px 16px 32px}.kicker{color:${TIER_COLOR.D};font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin:0}
 h1{font-size:clamp(34px,6vw,64px);line-height:1.05;letter-spacing:-.03em;margin:12px 0 16px;font-weight:800}h2{font-size:28px;letter-spacing:-.02em;margin:56px 0 12px}
 .lede{font-size:20px;color:#B5B5B0;max-width:720px;margin:0 0 24px}.note,.muted{color:#8A8A85;font-size:15px}
@@ -330,7 +337,8 @@ code{background:#1A1A17;border-radius:4px;padding:1px 4px;font-size:.92em;word-b
 .embed .code{display:flex;gap:10px;align-items:stretch;margin:8px 0}.embed pre{flex:1;margin:0;background:#111;border:1px solid #222;border-radius:8px;padding:10px;overflow-x:auto;font-size:13px}
 .embed button{background:#111;color:#fff;border:1px solid #333;border-radius:8px;padding:0 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
 .pager{display:flex;justify-content:space-between;margin:40px 0}.foot{border-top:1px solid #222;margin-top:64px;padding-top:24px;padding-bottom:40px;color:#8A8A85;font-size:14px}
-@media (max-width:720px){nav a:not(.gh){display:none}.board{grid-template-columns:44px 1fr}.colhd{display:none}.board>div:first-child{display:none}
+@media (max-width:720px){.top nav a:not(.gh){display:none}
+.cells thead{display:none}.cells tr{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid #1E1E1C}.cells th,.cells td{border:0}.cells td:last-child{grid-column:1/-1;padding-top:0}.board{grid-template-columns:44px 1fr}.colhd{display:none}.board>div:first-child{display:none}
 .tier{font-size:28px;grid-row:span 2;min-height:0}.chip{width:76px;font-size:12px}.lg{width:44px;height:44px}.lg img{width:32px;height:32px}
 .client{grid-template-columns:auto 1fr}.tierbig{width:72px;height:72px;font-size:48px;grid-column:2;grid-row:1;justify-self:end}.big.lg{width:64px;height:64px}.big.lg img{width:48px;height:48px}
 .embed .code{flex-direction:column}}

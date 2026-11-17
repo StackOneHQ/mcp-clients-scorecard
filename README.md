@@ -209,7 +209,13 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 
 The same data is published at [mcp-clients.stackone.com](https://mcp-clients.stackone.com): the tier board, every cell with its evidence, a page per client with a share card and its badge, and the data as [JSON](https://mcp-clients.stackone.com/data.json). `npm run site` builds it into `dist/` from `data/` and the generated charts; nothing in `dist/` is committed.
 
-On every push to `main`, the deploy job in the [build workflow](.github/workflows/build.yml) runs after the regenerate step, builds the site from the new tip of `main` and deploys it to Cloudflare as a static Worker ([wrangler.jsonc](wrangler.jsonc)). A merged data pull request therefore reaches the site within minutes. The job needs two repository secrets, `CLOUDFLARE_API_TOKEN` (a token with the Workers Scripts: Edit permission) and `CLOUDFLARE_ACCOUNT_ID`. Without them it builds the site and skips the deploy with a warning. To redeploy by hand, run the build workflow on `main` from the Actions tab.
+On every push to `main`, the deploy job in the [build workflow](.github/workflows/build.yml) runs after the regenerate step, builds the site from the commit that step validated and deploys it to Cloudflare as a static Worker ([wrangler.jsonc](wrangler.jsonc)). A merged data pull request therefore reaches the site within minutes. To redeploy by hand, run the build workflow on `main` from the Actions tab.
+
+Setup, once:
+
+1. Create a Cloudflare API token with the Workers Scripts: Edit permission on the StackOne account.
+2. In Settings > Environments, open the `website` environment (the first deploy run creates it), limit its deployment branches to `main`, and add the token as `CLOUDFLARE_API_TOKEN` and the account ID as `CLOUDFLARE_ACCOUNT_ID`. Branch code then cannot read them. Until both exist, the job builds the site and skips the deploy with a warning.
+3. Attach the domain: add `mcp-clients.stackone.com` as a Custom Domain on the `mcp-clients-scorecard` Worker, or add `"routes": [{ "pattern": "mcp-clients.stackone.com", "custom_domain": true }]` to `wrangler.jsonc`. Until then the site answers only on its workers.dev address, while its links and share cards already point at the domain.
 
 ## Repository layout
 

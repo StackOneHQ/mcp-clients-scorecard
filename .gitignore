@@ -3,3 +3,4 @@ probe/node_modules/
 probe.log
 probe/results.json
 dist/
+.wrangler/
