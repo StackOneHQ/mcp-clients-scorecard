@@ -63,6 +63,28 @@ test('the worker serves Markdown to agents and sets the security headers', async
   assert.match(html.headers.get('Vary'), /Accept/);
 });
 
+test('the worker leaves error responses alone: no Markdown type, long cache, CORS or Link', async () => {
+  const { default: worker } = await import('../worker/index.js');
+  const ASSETS = { fetch: async () => new Response('<!doctype html>', { status: 404, headers: { 'Content-Type': 'text/html' } }) };
+  for (const [u, accept] of [['https://x.dev/nope/index.md'], ['https://x.dev/style.css?v=1'], ['https://x.dev/badges/nope.svg'], ['https://x.dev/nope/', 'text/markdown']]) {
+    const res = await worker.fetch(new Request(u, { headers: accept ? { Accept: accept } : {} }), { ASSETS });
+    assert.equal(res.status, 404, u);
+    assert.equal(res.headers.get('Content-Type'), 'text/html', u);
+    assert.equal(res.headers.get('Access-Control-Allow-Origin'), null, u);
+    assert.equal(res.headers.get('Link'), null, u);
+    assert.doesNotMatch(res.headers.get('Cache-Control') || '', /immutable/, u);
+    assert.match(res.headers.get('Content-Security-Policy'), /default-src 'self'/, u);
+  }
+});
+
+test('client summaries read as plain sentences', () => {
+  for (const c of data.clients) {
+    const html = read(`clients/${c.slug}/index.html`);
+    const summary = html.match(/<p class="summary">([^<]*)<\/p>/)[1];
+    assert.doesNotMatch(summary, /not published \(|are ,|\(undefined\)/, c.slug);
+  }
+});
+
 test('data.json carries every client with every cell', () => {
   const json = JSON.parse(read('data.json'));
   assert.equal(json.clients.length, data.clients.length);

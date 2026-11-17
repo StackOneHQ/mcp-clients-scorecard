@@ -35,12 +35,15 @@ export function buildSite(out) {
     fs.writeFileSync(path.join(out, f), s);
   };
   // Share cards are drawn by `npm run build` and committed, so this build needs no Chrome
-  const ogImage = name => (fs.existsSync(ROOT + `assets/og/${name}.png`) ? `${SITE}/og/${name}.png` : `${SITE}/assets/tiers.png`);
+  const ogImage = name => {
+    if (!fs.existsSync(ROOT + `assets/og/${name}.png`)) throw new Error(`assets/og/${name}.png is missing: run npm run build`);
+    return `${SITE}/og/${name}.png`;
+  };
   const faq = homeFaq(data);
 
   write('index.html', page({
     title: `MCP clients ranked: which support MCP Apps, Tasks, CIMD and more (${formatDate(data.as_of)})`,
-    description: `${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. S tier: ${data.clients.filter(c => c.tier === 'S').map(c => c.name).join(', ')}.`,
+    description: `${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. ${(s => (s.length ? `S tier: ${s.join(', ')}.` : 'No client is S tier yet.'))(byRank(data).filter(c => c.tier === 'S').map(c => c.name))}`,
     path: '/',
     image: ogImage('index'),
     modified: data.as_of,
@@ -288,19 +291,20 @@ function summary(data, c) {
   const [y, p, n] = [of('y'), of('p'), of('n')];
   const g = protocolGrade(c.cells.protocol.value, data.spec_versions);
   return [`${c.name} is ${c.tier} tier on the MCP clients scorecard as of ${formatDate(data.as_of)}.`, y.length && `It supports ${list(y)}.`,
-    p.length && `It partly supports ${list(p)}.`, n.length && `It does not support ${list(n, 'or')}.`, `It speaks MCP spec ${c.cells.protocol.value} (${GRADE[g]}).`].filter(Boolean).join(' ');
+    p.length && `It partly supports ${list(p)}.`, n.length && `It does not support ${list(n, 'or')}.`, g === 'x' ? 'It has not published which MCP spec version it supports.' : `It speaks MCP spec ${c.cells.protocol.value} (${GRADE[g]}).`].filter(Boolean).join(' ');
 }
 
 function homeFaq(data) {
   const n = data.clients.length;
-  const tier = t => data.clients.filter(c => c.tier === t).map(c => c.name);
+  const tier = t => byRank(data).filter(c => c.tier === t).map(c => c.name);
+  const top = ['S', 'A', 'B', 'C', 'D'].filter(t => tier(t).length).slice(0, 2);
   const latest = String(data.spec_versions.at(-1));
   const current = byRank(data).filter(c => protocolGrade(c.cells.protocol.value, data.spec_versions) === 'g').map(c => c.name);
   return [
-    ['What is the best MCP client?', `As of ${formatDate(data.as_of)}, the S tier MCP clients are ${list(tier('S'))}, followed in A tier by ${list(tier('A'))}. Tiers come from ${COLUMNS.length} checks: the MCP spec version and features such as MCP Apps, Tasks, CIMD and elicitation, plus how the client handles tools (code mode, tool search). Every cell links to a dated source.`],
+    ['What is the best MCP client?', `As of ${formatDate(data.as_of)}, the highest ranked MCP clients, in ${top[0]} tier, are ${list(tier(top[0]))}${top[1] ? `, followed in ${top[1]} tier by ${list(tier(top[1]))}` : ''}. Tiers come from ${COLUMNS.length} checks: the MCP spec version and features such as MCP Apps, Tasks, CIMD and elicitation, plus how the client handles tools (code mode, tool search). Every cell links to a dated source.`],
     ...FEATURES.map(([k, l]) => {
       const y = withValue(data, k, 'y').map(c => c.name), p = withValue(data, k, 'p').map(c => c.name);
-      const lead = y.length ? `${y.length} of ${n} MCP clients support ${l}: ${list(y)}.` : `None of the ${n} MCP clients fully supports ${l} yet.`;
+      const lead = y.length ? `${y.length} of ${n} MCP clients support${y.length === 1 ? 's' : ''} ${l}: ${list(y)}.` : `None of the ${n} MCP clients fully supports ${l} yet.`;
       return [`Which MCP clients support ${l}?`, `${lead}${p.length ? ` ${list(p)} support${p.length === 1 ? 's' : ''} it partly.` : ''}`];
     }),
     ['Which MCP clients support the latest MCP spec?', current.length ? `${current.length} of ${n} clients speak the current MCP spec, ${latest}: ${list(current)}.` : `None of the ${n} clients speaks the current MCP spec, ${latest}, yet.`],
@@ -313,7 +317,10 @@ function clientFaq(data, c) {
     const cell = c.cells[k];
     const s = cell.since;
     const when = `Checked ${formatDate(cell.checked)}${s ? `, shipped ${formatDate(s.date)}${s.version ? ` in ${s.version}` : ''}` : ''}.`;
-    if (k === 'protocol') return [`Which MCP spec version does ${c.name} support?`, `${cell.value} (${GRADE[protocolGrade(cell.value, data.spec_versions)]}). ${sentence(cell.evidence)} ${when}`];
+    if (k === 'protocol') {
+      const g = protocolGrade(cell.value, data.spec_versions);
+      return [`Which MCP spec version does ${c.name} support?`, `${g === 'x' ? `${c.name} has not published it` : `${cell.value} (${GRADE[g]})`}. ${sentence(cell.evidence)} ${when}`];
+    }
     return [`Does ${c.name} support ${l}?`, `${MARK[cell.value]}. ${sentence(cell.evidence)} ${when}`];
   });
 }
@@ -329,7 +336,7 @@ function homeJsonld(data, faq) {
       license: 'https://opensource.org/licenses/MIT', isAccessibleForFree: true, creator: { '@id': ORG['@id'] }, publisher: { '@id': ORG['@id'] }, dateModified: String(data.as_of), isBasedOn: REPO,
       keywords: ['MCP', 'Model Context Protocol', 'MCP clients', ...FEATURES.map(([, l]) => l)], variableMeasured: COLUMNS.map(([, l]) => l),
       distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}/data.json` }] },
-    { '@type': 'ItemList', name: 'MCP clients ranked by tier', itemListOrder: 'https://schema.org/ItemListOrderDescending', numberOfItems: ranked.length,
+    { '@type': 'ItemList', name: 'MCP clients ranked by tier', itemListOrder: 'https://schema.org/ItemListOrderAscending', numberOfItems: ranked.length,
       itemListElement: ranked.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: `${c.name} (${c.tier} tier)`, url: SITE + clientUrl(c) })) },
     faqLd(faq)] };
 }
@@ -464,7 +471,7 @@ h1{font-size:76px;line-height:1.05;letter-spacing:-1px;max-width:600px}.tier{pos
 .stats{display:flex;gap:56px;margin-top:48px}.stats b{display:block;font-size:44px;font-weight:500}.stats span{display:block;font-size:22px;color:#A19F9E;margin-top:6px}.dots{margin-top:36px}
 </style></head><body>${brand}<div class="h"><div class="lg"><img src="${logo(c.logo)}"></div><h1>${esc(c.name)}</h1></div>
 <div class="tier" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div>
-<div class="stats"><div><b class="mono">${y}/${FEATURES.length}</b><span>features supported</span></div>${p ? `<div><b class="mono">${p}</b><span>partly</span></div>` : ''}<div><b class="mono">${esc(c.cells.protocol.value)}</b><span>spec version, ${GRADE[g]}</span></div></div>
+<div class="stats"><div><b class="mono">${y}/${FEATURES.length}</b><span>features supported</span></div>${p ? `<div><b class="mono">${p}</b><span>partly</span></div>` : ''}<div><b class="mono">${g === 'x' ? 'n/a' : esc(c.cells.protocol.value)}</b><span>${g === 'x' ? 'spec version not published' : `spec version, ${GRADE[g]}`}</span></div></div>
 <div class="dots">${FEATURES.map(([k]) => `<i class="${c.cells[k].value}"></i>`).join('')}</div>
 ${cardFoot(data)}</body></html>`;
 }

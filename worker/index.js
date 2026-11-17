@@ -10,20 +10,23 @@ export default {
     const url = new URL(request.url);
     const isPage = url.pathname.endsWith('/');
     const markdown = isPage && /\btext\/markdown\b/.test(request.headers.get('Accept') || '');
-    const asset = await env.ASSETS.fetch(markdown ? new Request(new URL(`${url.pathname}index.md`, url), request) : request);
+    // Rebuilt from the origin, so a path like //other.host/ cannot turn into another host
+    const mdUrl = new URL(`/${url.pathname.replace(/^\/+/, '')}index.md`, url.origin);
+    const asset = await env.ASSETS.fetch(markdown ? new Request(mdUrl, request) : request);
     const res = new Response(asset.body, asset);
     const h = res.headers;
     h.set('X-Content-Type-Options', 'nosniff');
     h.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     h.set('Content-Security-Policy', CSP);
-    if (url.pathname.endsWith('.md') || (markdown && asset.ok)) h.set('Content-Type', 'text/markdown; charset=utf-8');
+    if (asset.ok && (markdown || url.pathname.endsWith('.md'))) h.set('Content-Type', 'text/markdown; charset=utf-8');
     if (isPage) {
       h.append('Vary', 'Accept');
       if (asset.ok && !markdown) h.set('Link', `<${url.pathname}index.md>; rel="alternate"; type="text/markdown"`);
     }
     // style.css and app.js carry a content hash in ?v=, fonts never change
-    if (url.searchParams.has('v') || url.pathname.startsWith('/assets/fonts/')) h.set('Cache-Control', 'public, max-age=31536000, immutable');
-    if (OPEN.test(url.pathname)) {
+    const hashed = (/^\/(style\.css|app\.js)$/.test(url.pathname) && url.searchParams.has('v')) || url.pathname.startsWith('/assets/fonts/');
+    if (asset.ok && hashed) h.set('Cache-Control', 'public, max-age=31536000, immutable');
+    if (asset.ok && OPEN.test(url.pathname)) {
       h.set('Access-Control-Allow-Origin', '*');
       h.set('Cache-Control', 'public, max-age=3600');
     }
