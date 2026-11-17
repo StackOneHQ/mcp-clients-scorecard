@@ -97,10 +97,10 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <meta name="twitter:description" content="${attr(description)}"><meta name="twitter:image" content="${attr(image)}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 ${FONTS}<link rel="stylesheet" href="/style.css?v=${VERSION}"><script src="/app.js?v=${VERSION}" defer></script></head>
-<body><header class="top"><div class="wrap bar"><div class="brand"><a class="home" href="/"><span class="dot">S</span><span>${TITLE}</span></a><a class="by" href="https://www.stackone.com/?utm_source=mcp-clients-scorecard">by ${STACKONE}</a></div>
+<body><header class="top"><div class="wrap bar"><div class="brand"><a class="home" href="/" aria-label="${TITLE}, home"><span class="dot">S</span><span>${TITLE}</span></a><a class="by" href="https://www.stackone.com/?utm_source=mcp-clients-scorecard">by ${STACKONE}</a></div>
 <nav aria-label="Main"><a href="/#board">Tiers</a><a href="/#matrix">Matrix</a><a href="/#changes">Changes</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">Method</a></nav>
 <button type="button" class="search-btn" data-palette aria-label="Search clients and features">${SEARCH}<span>Search</span><kbd data-mod>Ctrl</kbd><kbd>K</kbd></button>
-<a class="btn sm gh" href="${REPO}">${GITHUB}<span>GitHub</span></a></div></header>
+<a class="btn sm gh" href="${REPO}" aria-label="GitHub repo">${GITHUB}<span>GitHub</span></a></div></header>
 ${body}
 <footer class="foot"><div class="wrap foot-in">
 <div class="foot-brand"><a href="https://www.stackone.com/?utm_source=mcp-clients-scorecard">${STACKONE.replace('width="90" height="12"', 'width="120" height="16"')}</a>
@@ -130,7 +130,7 @@ function home(data, changes, previous) {
   const askPanel = (k, i) => {
     const yes = supporters(k), part = data.clients.filter(c => c.cells[k].value === 'p');
     const who = (list, cls) => list.map(c => `<a class="${cls}" href="${clientUrl(c)}">${logoImg(c, 20)}<span>${esc(c.name)}</span><span class="tb t-${c.tier}">${c.tier}</span></a>`).join('');
-    return `<div class="ask-panel${i === 0 ? ' on' : ''}" id="ask-${k}" role="tabpanel"><p class="ask-q">Who supports ${esc(LABEL[k])}?</p>
+    return `<div class="ask-panel${i === 0 ? ' on' : ''}" id="ask-${k}" role="tabpanel" aria-labelledby="tab-${k}"><p class="ask-q">Who supports ${esc(LABEL[k])}?</p>
 <p class="ask-n"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</p>
 <div class="ask-who">${who(yes, 'y') || '<span class="muted">Nobody yet</span>'}${who(part, 'p')}</div>
 <button type="button" class="link" data-apply="${k}">Filter the tier list by ${esc(LABEL[k])}</button></div>`;
@@ -141,7 +141,7 @@ function home(data, changes, previous) {
 <p class="lede">${data.clients.length} MCP clients ranked S to D on the same ${COLUMNS.length} checks. Every cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
 <div class="ctas"><a class="btn primary" href="#board">Explore the tier list</a><a class="btn" href="${REPO}">${GITHUB}View on GitHub</a></div>
 <p class="share-line">Share ${share(shareText, SITE + '/')}</p></div>
-${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tabs" role="tablist">${asks.map((k, i) => `<button type="button" role="tab" aria-selected="${i === 0}" aria-controls="ask-${k}" data-ask="${k}">${esc(LABEL[k])}</button>`).join('')}</div>${asks.map(askPanel).join('')}</div>` : ''}</section>
+${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tabs" role="tablist">${asks.map((k, i) => `<button type="button" role="tab" id="tab-${k}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" aria-controls="ask-${k}" data-ask="${k}">${esc(LABEL[k])}</button>`).join('')}</div>${asks.map(askPanel).join('')}</div>` : ''}</section>
 
 <section id="board" class="wrap sec"><div class="sec-hd"><h2>Tier list</h2><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each dot under a logo is one check, in column order.</p></div>
 <div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>

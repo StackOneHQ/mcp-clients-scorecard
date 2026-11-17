@@ -40,10 +40,22 @@
 
   // ---------- hero: "who supports X?" tabs
   const askTabs = $$('[data-ask]');
-  askTabs.forEach(t => t.addEventListener('click', () => {
-    askTabs.forEach(b => b.setAttribute('aria-selected', b === t));
+  const pickAsk = t => {
+    askTabs.forEach(b => { b.setAttribute('aria-selected', b === t); b.tabIndex = b === t ? 0 : -1; });
     $$('.ask-panel').forEach(p => p.classList.toggle('on', p.id === `ask-${t.dataset.ask}`));
-  }));
+  };
+  askTabs.forEach((t, i) => {
+    t.addEventListener('click', () => pickAsk(t));
+    t.addEventListener('keydown', e => {
+      const n = askTabs.length;
+      const j = { ArrowRight: i + 1, ArrowLeft: i - 1 + n, Home: 0, End: n - 1 }[e.key];
+      if (j === undefined) return;
+      e.preventDefault();
+      const next = askTabs[j % n];
+      pickAsk(next);
+      next.focus();
+    });
+  });
 
   // ---------- evidence popover (matrix and compare cells)
   const pop = Object.assign(document.createElement('div'), { className: 'pop', role: 'tooltip' });
@@ -284,7 +296,7 @@
       html += `<li class="pal-sec" role="presentation">${kind}</li>`;
       for (const { it } of group) {
         const i = shown.push(it) - 1;
-        const icon = it.logo ? `<span class="lg"><img src="${esc(it.logo)}" alt=""></span>` : `<span class="gl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${GLYPH[it.glyph]}</svg></span>`;
+        const icon = it.logo ? `<span class="lg"><img src="${esc(it.logo)}" alt=""></span>` : `<span class="gl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${GLYPH[it.glyph] || ''}</svg></span>`;
         html += `<li class="pal-item" role="option" id="pi-${i}" data-i="${i}" aria-selected="false">${icon}<span class="tt"><b>${hl(it.title, q)}</b><small>${esc(it.sub)}</small></span>${it.tier ? `<span class="tb t-${it.tier}">${it.tier}</span>` : ''}<span class="go">↵</span></li>`;
       }
     }
