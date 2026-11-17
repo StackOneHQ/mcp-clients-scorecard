@@ -1,6 +1,8 @@
+<img src="assets/mark.svg" width="56" height="56" alt="">
+
 # MCP clients scorecard
 
-Which MCP clients support which parts of the [Model Context Protocol](https://modelcontextprotocol.io), with a linked, dated source for every cell. Maintained by [StackOne](https://www.stackone.com).
+Which MCP clients support which parts of the [Model Context Protocol](https://modelcontextprotocol.io), with a linked, dated source for every cell. Maintained by [StackOne](https://www.stackone.com). Browse it at [mcpclients.dev](https://mcpclients.dev).
 
 ![MCP clients tier list](assets/tiers.png)
 
@@ -205,6 +207,20 @@ s2d2, StackOne's internal agent, checks every Monday. It bumps each CLI to its n
 
 The tables and charts are generated from `data/`, never edited by hand. On every push to any branch, `main` included, the [build workflow](.github/workflows/build.yml) runs `npm run build` with Chrome, commits any regenerated README sections, EVIDENCE.md, history snapshot, badges and PNGs back to that branch, then runs the [check workflow](.github/workflows/check.yml) on the new commit. A pull request from a branch of this repository that only edits a YAML file therefore gets its tables and charts redrawn before review, and every merge to `main` that changes `data/` redraws them again on `main`. A pull request from a fork gets the pre-review rebuild only when Actions is enabled on the fork; either way `main` is rebuilt after the merge ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
+## Website
+
+The same data is published at [mcpclients.dev](https://mcpclients.dev): the tier board, every cell with its evidence, a page per client with a share card and its badge, answers to common questions, and machine-readable copies for search engines and AI assistants: [data.json](https://mcpclients.dev/data.json), [llms.txt](https://mcpclients.dev/llms.txt), [llms-full.txt](https://mcpclients.dev/llms-full.txt), [sitemap.md](https://mcpclients.dev/sitemap.md) and a Markdown copy of every page with frontmatter (`/clients/<slug>/index.md`, also at `/clients/<slug>.md`, and served for any page asked for with `Accept: text/markdown` or by a known AI fetcher). Every page carries JSON-LD: the home page an Organization, WebSite, Dataset, ranked ItemList and FAQPage; each client page a WebPage about the client, a BreadcrumbList and a FAQPage.
+
+`npm run site` builds it into `dist/` from `data/` and the committed PNGs, without Chrome; nothing in `dist/` is committed. The share cards in `assets/og/` are drawn by `npm run build` with the charts. [worker/index.js](worker/index.js) serves `dist/` ([wrangler.jsonc](wrangler.jsonc)): it sets the security headers and serves the page's Markdown copy to AI agents (by `Accept` header, User-Agent or a `.md` URL). Search engine crawlers get HTML at page URLs; a `.md` URL returns Markdown to every client.
+
+Deploys go through Cloudflare's GitHub app (Workers Builds): every push to `main` builds and deploys the site, so a merged data pull request reaches it within minutes. When the build workflow commits regenerated files back to `main`, that push deploys again.
+
+Setup, once, in the Cloudflare dashboard:
+
+1. Workers & Pages > Create > Import a repository: pick `StackOneHQ/mcp-clients-scorecard` and install the Cloudflare GitHub app on it.
+2. Build settings: production branch `main`, build command `npm ci && npm run site`, deploy command `npx wrangler deploy`, root directory `/`.
+3. Register `mcpclients.dev` (Cloudflare Registrar sells it at cost) and add it as a Custom Domain on the `mcp-clients-scorecard` Worker. `.dev` only works over HTTPS, which Cloudflare provides. Until then the site answers only on its workers.dev address, while its links, canonical URLs and share cards already point at the domain.
+
 ## Repository layout
 
 | Path | What it holds |
@@ -218,7 +234,8 @@ The tables and charts are generated from `data/`, never edited by hand. On every
 | [probe/](probe/) | The handshake probe and its MCP server |
 | [bench/tool-search/](bench/tool-search/README.md) | Benchmark of tool-search ranking methods (substring, regex, BM25, embeddings) on 453 real MCP tools |
 | [scripts/](scripts/) | `bugs.mjs`, which recounts MCP issues per tracker |
-| [render/](render/) | Loader, validation and generators for the README, EVIDENCE.md and images |
+| [render/](render/) | Loader, validation and generators for the README, EVIDENCE.md, images and the website |
+| [wrangler.jsonc](wrangler.jsonc) | Cloudflare config for the website |
 
 Field reference for every data file: [data/README.md](data/README.md).
 
@@ -226,14 +243,15 @@ Field reference for every data file: [data/README.md](data/README.md).
 
 | Command | What it does |
 | --- | --- |
-| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot, the badges and the PNGs (needs Chrome, or `CHROME_PATH`) |
+| `npm run build` | Regenerates the README sections, EVIDENCE.md, the history snapshot, the badges and the PNGs: the charts and the website share cards (needs Chrome, or `CHROME_PATH`) |
 | `npm run build -- --no-images` | The same, without the PNGs |
 | `npm run build -- --all-images` | Re-renders every PNG, not only the charts whose data changed |
 | `npm run check` | Validates the data and fails if a generated file or image is stale |
+| `npm run site` | Builds the website into `dist/` (no Chrome needed). Serve it locally with `npx wrangler dev` |
 | `npm run bugs` | Recounts MCP issues per tracker with the GitHub search API (needs `gh`, signed in) |
 | `npm run probe` | Runs the live handshake probe against each CLI and writes `probe/results.json` |
 | `npm run bench:tool-search` | Reruns the tool-search benchmark (embedding rankers need `OPENAI_API_KEY`) |
-| `npm test` | Tests the probe report on sample handshake logs and the benchmark OpenAI client |
+| `npm test` | Tests the probe report on sample handshake logs, the benchmark OpenAI client and the website build |
 
 ## Why StackOne tracks this
 

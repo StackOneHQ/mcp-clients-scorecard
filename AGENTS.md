@@ -10,9 +10,9 @@ Instructions for coding agents (Claude Code, Codex, Copilot and others) working 
 - `EVIDENCE.md`
 - `data/history/<as_of>.json`
 - `assets/badges/*.svg`
-- the four charts `assets/tiers.png`, `assets/matrix.png`, `assets/history-features.png` and `assets/history-clients.png`, with their hashes in `assets/images.json`
+- the four charts `assets/tiers.png`, `assets/matrix.png`, `assets/history-features.png` and `assets/history-clients.png`, and the website share cards `assets/og/*.png`, with their hashes in `assets/images.json`
 
-To change a chart, change `data/` or the templates in `render/images.mjs`, then rebuild.
+To change a chart, change `data/` or the templates in `render/images.mjs` (share cards: `render/site.mjs`), then rebuild.
 
 ## After any change to data/ or render/
 
@@ -26,9 +26,11 @@ Only use `npm run build -- --no-images` when no Chrome can be installed. It warn
 ## CI
 
 - `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.
+- Deploys are not in GitHub Actions: Cloudflare's GitHub app (Workers Builds) runs `npm ci && npm run site` and `npx wrangler deploy` on every push to `main` (README.md#website). That build has no Chrome, which is why the share cards are committed.
 - `.github/workflows/check.yml` runs `npm run check` and `npm test` on pull requests. A pull request with stale charts fails it.
 
 ## Other commands
 
-- `npm test` runs the probe and benchmark unit tests.
+- `npm run site` builds the website into `dist/` (never committed). It reads `data/` and the generated charts, so run `npm run build` first. It needs no Chrome. `worker/index.js` serves `dist/` and sets the security headers, including the Content-Security-Policy (Cloudflare skips `_headers` once a Worker runs first). Page templates live in `render/site.mjs`, the styles in `render/site/style.css` and the browser script (search palette, filters, compare, matrix sorting) in `render/site/app.js`. Keep every style and script in those two files: the site's Content-Security-Policy blocks inline styles and scripts (JSON-LD is data and is fine). Fonts are self-hosted in `assets/fonts/`. Filters, compare and the palette must stay additions on top of server-rendered HTML, so every page still works without JavaScript.
+- `npm test` runs the probe and benchmark unit tests and the website build tests.
 - `npm run build -- --all-images` redraws every chart, not only the ones whose HTML changed. Use it when something outside the HTML changed, such as the web font or the Chrome version.

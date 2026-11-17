@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Which MCP clients support which parts of the Model Context Protocol, with a source for every cell",
+  "homepage": "https://mcpclients.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StackOneHQ/mcp-clients-scorecard.git"
+  },
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -13,8 +18,9 @@
     "check": "node render/build.mjs --check",
     "bugs": "node scripts/bugs.mjs",
     "probe": "bash probe/run.sh",
-    "test": "node --test probe/report.test.mjs bench/tool-search/lib/openai.test.mjs",
-    "bench:tool-search": "node bench/tool-search/run.mjs"
+    "test": "node --test render/site.test.mjs probe/report.test.mjs bench/tool-search/lib/openai.test.mjs",
+    "bench:tool-search": "node bench/tool-search/run.mjs",
+    "site": "node render/site.mjs"
   },
   "dependencies": {
     "yaml": "^2.9.1"

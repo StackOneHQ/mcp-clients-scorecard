@@ -1,16 +1,17 @@
 // npm run build                   regenerate the README sections, EVIDENCE.md, the history snapshot and the PNGs
+//                                  (the four charts and the website share cards in assets/og/)
 // npm run build -- --no-images    skip the PNGs (no Chrome needed)
 // npm run build -- --all-images   re-render every PNG, not only the ones whose chart changed
 // npm run check                   validate data/ and fail if any generated file is out of date
 import crypto from 'node:crypto';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { screenshots } from './chrome.mjs';
 import { ROOT, load, tierMismatches } from './data.mjs';
 import { evidence, spliceReadme, readmeSections } from './markdown.mjs';
 import { tiersHtml, matrixHtml, historyFeaturesHtml, historyClientsHtml, badgeSvg } from './images.mjs';
 import { snapshot, months, featureSeries, clientSeries } from './history.mjs';
+import { shareCards } from './site.mjs';
 
 const args = new Set(process.argv.slice(2));
 const check = args.has('--check');
@@ -36,6 +37,8 @@ const images = [
   ['matrix', matrixHtml(model), 1080, 1350],
   ['history-features', historyFeaturesHtml(model, ms, features), 1200, 700],
   ['history-clients', historyClientsHtml(model, ms, clientSeries(model), features.map(f => f.label)), 1200, 700],
+  // Committed so the website build (Cloudflare) needs no Chrome
+  ...shareCards(model.data).map(([name, html]) => [`og/${name}`, html, 1200, 630]),
 ];
 // PNG bytes differ between Chrome versions, so check compares a hash of the HTML each image was rendered from
 const IMAGE_HASHES = 'assets/images.json';
@@ -46,7 +49,7 @@ const staleMessage = `Out of date: ${staleImages.map(n => `assets/${n}.png`).joi
 
 if (check) {
   const stale = Object.entries(outputs).filter(([f, s]) => !fs.existsSync(ROOT + f) || fs.readFileSync(ROOT + f, 'utf8') !== s).map(([f]) => f);
-  stale.push(...orphanBadges());
+  stale.push(...orphanBadges(), ...orphanCards());
   if (stale.length) {
     console.error(`Out of date: ${stale.join(', ')}. Run \`npm run build\` and commit the result.`);
     process.exit(1);
@@ -55,11 +58,11 @@ if (check) {
     console.error(staleMessage);
     process.exit(1);
   }
-  console.log(`data valid, ${model.data.clients.length} clients; README.md, EVIDENCE.md, ${historyFile}, badges and images up to date`);
+  console.log(`data valid, ${model.data.clients.length} clients; README.md, EVIDENCE.md, ${historyFile}, badges, share cards and images up to date`);
   process.exit(0);
 }
 
-for (const f of orphanBadges()) fs.rmSync(ROOT + f);
+for (const f of [...orphanBadges(), ...orphanCards()]) fs.rmSync(ROOT + f);
 for (const [f, s] of Object.entries(outputs)) {
   fs.mkdirSync(path.dirname(ROOT + f), { recursive: true });
   fs.writeFileSync(ROOT + f, s);
@@ -71,17 +74,9 @@ if (args.has('--no-images')) {
 } else {
   // Only re-render an image whose HTML changed, so a rebuild on another machine does not churn PNG bytes
   const todo = images.filter(([name]) => args.has('--all-images') || staleImages.includes(name));
-  const chrome = todo.length ? findChrome() : null;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-scorecard-'));
-  for (const [name, html, w, h] of todo) {
-    const src = path.join(tmp, name + '.html');
-    fs.writeFileSync(src, html);
-    const png = ROOT + `assets/${name}.png`;
-    execFileSync(chrome, ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
-      `--window-size=${w},${h}`, '--virtual-time-budget=8000', `--screenshot=${png}`, 'file://' + src], { stdio: 'ignore' });
-    console.log(`wrote assets/${name}.png`);
-  }
-  fs.rmSync(tmp, { recursive: true, force: true });
+  fs.mkdirSync(ROOT + 'assets/og', { recursive: true });
+  screenshots(todo.map(([name, html, w, h]) => [html, w, h, ROOT + `assets/${name}.png`]));
+  for (const [name] of todo) console.log(`wrote assets/${name}.png`);
   fs.writeFileSync(ROOT + IMAGE_HASHES, JSON.stringify(hashes, null, 2) + '\n');
 }
 
@@ -91,18 +86,9 @@ function orphanBadges() {
   return fs.existsSync(dir) ? fs.readdirSync(dir).map(f => `assets/badges/${f}`).filter(f => !(f in outputs)) : [];
 }
 
-function findChrome() {
-  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
-  const candidates = ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser'];
-  for (const c of candidates) {
-    try { return execFileSync('which', [c], { encoding: 'utf8' }).trim(); } catch {}
-  }
-  const local = path.join(os.homedir(), '.agent-browser/browsers');
-  if (fs.existsSync(local)) {
-    for (const d of fs.readdirSync(local).sort().reverse()) {
-      const p = path.join(local, d, 'chrome');
-      if (fs.existsSync(p)) return p;
-    }
-  }
-  throw new Error('Chrome not found. Set CHROME_PATH, or pass --no-images.');
+// Share cards of clients that were renamed or removed
+function orphanCards() {
+  const dir = ROOT + 'assets/og';
+  const names = new Set(images.map(([n]) => `assets/${n}.png`));
+  return fs.existsSync(dir) ? fs.readdirSync(dir).map(f => `assets/og/${f}`).filter(f => !names.has(f)) : [];
 }

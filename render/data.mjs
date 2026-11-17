@@ -79,6 +79,7 @@ function validate(data, bugs) {
   for (const f of data.features) {
     const at = `data/features.yaml ${f.id || '(no id)'}`;
     if (ids.has(f.id)) errs.push(`${at}: duplicate id`);
+    if (f.id && (typeof f.id !== 'string' || !/^[a-z0-9_]+$/.test(f.id))) errs.push(`${at}: id must be lowercase letters, digits and underscores, since the site puts it in attributes and URLs`);
     ids.add(f.id);
     for (const k of Object.keys(f)) if (!FEATURE_KEYS.has(k)) errs.push(`${at}: unknown key ${k}`);
     for (const k of ['id', 'label', 'definition', 'ref']) if (!f[k]) errs.push(`${at}: ${k} is empty`);
