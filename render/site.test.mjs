@@ -49,14 +49,25 @@ test('every page has valid JSON-LD, and every indexed page a Markdown copy', () 
   }
   assert.ok(read('llms-full.txt').includes(data.clients[0].name));
   assert.match(read('robots.txt'), /Content-Signal: search=yes/);
+  for (const c of data.clients) assert.ok(read('sitemap.md').includes(`/clients/${c.slug}/index.md`), c.slug);
 });
 
 test('the worker serves Markdown to agents and sets the security headers', async () => {
   const { default: worker } = await import('../worker/index.js');
-  const ASSETS = { fetch: async req => new Response(new URL(req.url).pathname.endsWith('.md') ? '# md' : '<!doctype html>', { headers: { 'Content-Type': 'text/html' } }) };
-  const md = await worker.fetch(new Request('https://x.dev/clients/codex/', { headers: { Accept: 'text/markdown' } }), { ASSETS });
-  assert.equal(md.headers.get('Content-Type'), 'text/markdown; charset=utf-8');
-  assert.equal(await md.text(), '# md');
+  const ASSETS = { fetch: async req => new Response(new URL(req.url).pathname.endsWith('.md') ? `# ${new URL(req.url).pathname}` : '<!doctype html>', { headers: { 'Content-Type': 'text/html' } }) };
+  for (const [u, headers, file] of [
+    ['https://x.dev/clients/codex/', { Accept: 'text/markdown' }, '/clients/codex/index.md'],
+    ['https://x.dev/clients/codex/', { 'User-Agent': 'Mozilla/5.0 (compatible; Claude-User/1.0)' }, '/clients/codex/index.md'],
+    ['https://x.dev/clients/codex.md', {}, '/clients/codex/index.md'],
+    ['https://x.dev/sitemap.md', {}, '/sitemap.md'],
+    ['https://x.dev//evil.dev/', { Accept: 'text/markdown' }, '/evil.dev/index.md'],
+  ]) {
+    const md = await worker.fetch(new Request(u, { headers }), { ASSETS });
+    assert.equal(md.headers.get('Content-Type'), 'text/markdown; charset=utf-8', u);
+    assert.equal(await md.text(), `# ${file}`, u);
+  }
+  const google = await worker.fetch(new Request('https://x.dev/', { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' } }), { ASSETS });
+  assert.equal(await google.text(), '<!doctype html>');
   const html = await worker.fetch(new Request('https://x.dev/'), { ASSETS });
   assert.match(html.headers.get('Content-Security-Policy'), /script-src 'self'/);
   assert.equal(html.headers.get('Link'), '</index.md>; rel="alternate"; type="text/markdown"');

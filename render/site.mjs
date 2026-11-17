@@ -40,8 +40,13 @@ export function buildSite(out) {
     return `${SITE}/og/${name}.png`;
   };
   const faq = homeFaq(data);
+  // Each page and its Markdown copy, which opens with the same title, description and canonical URL
+  const both = (dir, meta, md) => {
+    write(`${dir}index.html`, page(meta));
+    write(`${dir}index.md`, frontmatter(meta, data.as_of) + md);
+  };
 
-  write('index.html', page({
+  both('', {
     title: `MCP clients ranked: which support MCP Apps, Tasks, CIMD and more (${formatDate(data.as_of)})`,
     description: `${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. ${(s => (s.length ? `S tier: ${s.join(', ')}.` : 'No client is S tier yet.'))(byRank(data).filter(c => c.tier === 'S').map(c => c.name))}`,
     path: '/',
@@ -50,11 +55,10 @@ export function buildSite(out) {
     jsonld: homeJsonld(data, faq),
     markdown: '/index.md',
     body: home(data, changes, previous, faq),
-  }));
-  write('index.md', homeMarkdown(data, faq));
+  }, homeMarkdown(data, faq));
   data.clients.forEach((c, i) => {
     const qa = clientFaq(data, c);
-    write(`clients/${c.slug}/index.html`, page({
+    both(`clients/${c.slug}/`, {
       title: `${c.name} MCP support: ${c.tier} tier, ${supportLine(c)} features`,
       description: `${summary(data, c)} Every cell links to a dated source.`,
       path: clientUrl(c),
@@ -63,8 +67,7 @@ export function buildSite(out) {
       jsonld: clientJsonld(data, c, qa),
       markdown: `${clientUrl(c)}index.md`,
       body: clientPage(data, c, data.clients[i - 1], data.clients[i + 1]),
-    }));
-    write(`clients/${c.slug}/index.md`, clientMarkdown(data, c, qa));
+    }, clientMarkdown(data, c, qa));
   });
   write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
@@ -72,6 +75,7 @@ export function buildSite(out) {
   write('llms-full.txt', llmsFull(data));
   write('robots.txt', ROBOTS);
   write('sitemap.xml', sitemap(data));
+  write('sitemap.md', sitemapMd(data));
   write('style.css', CSS);
   write('app.js', JS);
   fs.cpSync(ROOT + 'assets/mark.svg', path.join(out, 'favicon.svg'));
@@ -352,6 +356,9 @@ function clientJsonld(data, c, qa) {
 
 const mdCell = (data, k, cell) => (k === 'protocol' ? String(cell.value) : MARK[cell.value]);
 
+const yamlString = v => JSON.stringify(String(v));
+const frontmatter = (meta, asOf) => ['---', `title: ${yamlString(meta.title)}`, `description: ${yamlString(meta.description)}`, `canonical_url: ${SITE + meta.path}`, `last_updated: ${asOf}`, '---', '', ''].join('\n');
+
 function homeMarkdown(data, faq) {
   const ranked = byRank(data);
   return [`# ${TITLE}`, '', `> ${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. Updated ${formatDate(data.as_of)}, rechecked every Monday. Maintained by StackOne. Data MIT licensed: ${SITE}/data.json`, '',
@@ -429,8 +436,16 @@ function publicData(data) {
 
 function llms(data) {
   return [`# ${TITLE}`, '', `> Which MCP clients support which parts of the Model Context Protocol, with a linked source for every cell. As of ${data.as_of}. Maintained by StackOne.`, '',
-    `Full data as JSON: ${SITE}/data.json`, `Source and methodology: ${REPO}`, '', '## Tiers', '',
+    `Full data as JSON: ${SITE}/data.json`, `Every page with its Markdown copy: ${SITE}/sitemap.md`, `Source and methodology: ${REPO}`, '', '## Tiers', '',
     ...TIERS.map(t => `- ${t}: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), ''].join('\n');
+}
+
+// The sitemap for agents: every page, its Markdown copy and when it last changed
+function sitemapMd(data) {
+  const row = (name, u) => `- [${name}](${SITE + u}) ([Markdown](${SITE + u}index.md))`;
+  return [`# ${TITLE}: sitemap`, '', `Last updated ${data.as_of}.`, '', row('Tier list', '/'), '', '## Clients', '',
+    ...byRank(data).map(c => row(`${c.name}, ${c.tier} tier`, clientUrl(c))), '', '## Data', '',
+    `- [data.json](${SITE}/data.json)`, `- [llms-full.txt](${SITE}/llms-full.txt)`, ''].join('\n');
 }
 
 function sitemap(data) {
