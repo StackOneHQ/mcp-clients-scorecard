@@ -12,6 +12,15 @@
   const MARK = { y: 'Yes', p: 'Partial', n: 'No', na: 'n/a' };
   const ORDER = { y: 3, p: 2, n: 1, na: 0 };
   const TIER = { S: 5, A: 4, B: 3, C: 2, D: 1 };
+  const GLYPH = {
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    wrench: '<path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 6.3-6.3a4 4 0 0 1-5-5L13 5z"/>',
+    columns: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/>',
+    download: '<path d="M12 4v12m-5-5 5 5 5-5M5 20h14"/>',
+    book: '<path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',
+    pr: '<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M6 8v8M18 16V9a3 3 0 0 0-3-3h-4m2-2-2 2 2 2"/>',
+    star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+  };
   let data;
   const getData = () => (data ||= fetch('/data.json').then(r => r.json()));
   const path = u => new URL(u, location.href).pathname;
@@ -29,34 +38,12 @@
     if (x) x.closest('dialog')?.close();
   });
 
-  // ---------- pointer spotlight on the board lanes
-  document.addEventListener('pointermove', e => {
-    const l = e.target.closest('.lane');
-    if (!l) return;
-    const r = l.getBoundingClientRect();
-    l.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    l.style.setProperty('--my', `${e.clientY - r.top}px`);
-  }, { passive: true });
-
-  // ---------- count-up stats and the score ring
-  const counters = $$('[data-count]');
-  if (counters.length && !reduce && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(en => {
-      if (!en.isIntersecting) return;
-      io.unobserve(en.target);
-      const el = en.target, end = +el.dataset.count, t0 = performance.now();
-      const step = t => { const k = Math.min(1, (t - t0) / 900); el.textContent = Math.round(end * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(step); };
-      el.textContent = '0';
-      requestAnimationFrame(step);
-    }));
-    counters.forEach(c => io.observe(c));
-  }
-  const ring = $('.ring .val');
-  if (ring && !reduce) {
-    const target = ring.getAttribute('stroke-dashoffset');
-    ring.setAttribute('stroke-dashoffset', ring.getAttribute('stroke-dasharray'));
-    requestAnimationFrame(() => requestAnimationFrame(() => ring.setAttribute('stroke-dashoffset', target)));
-  }
+  // ---------- hero: "who supports X?" tabs
+  const askTabs = $$('[data-ask]');
+  askTabs.forEach(t => t.addEventListener('click', () => {
+    askTabs.forEach(b => b.setAttribute('aria-selected', b === t));
+    $$('.ask-panel').forEach(p => p.classList.toggle('on', p.id === `ask-${t.dataset.ask}`));
+  }));
 
   // ---------- evidence popover (matrix and compare cells)
   const pop = Object.assign(document.createElement('div'), { className: 'pop', role: 'tooltip' });
@@ -146,30 +133,6 @@
     setFeature = f => { state.f = new Set([f]); applyFilters(); };
     $$('[data-apply]').forEach(b => b.addEventListener('click', () => { setFeature(b.dataset.apply); board.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }));
     applyFilters(false);
-  }
-
-  // ---------- hero console: cycles through example questions
-  const con = $('.console');
-  if (con && !reduce) {
-    const qs = $$('.q', con);
-    let i = 0;
-    const type = () => {
-      const item = qs[i];
-      const line = $('.q-text', con);
-      qs.forEach(x => $('.q-res', x).classList.remove('on'));
-      const text = item.dataset.q;
-      let j = 0;
-      line.textContent = '';
-      const t = setInterval(() => {
-        line.textContent = text.slice(0, ++j);
-        if (j >= text.length) {
-          clearInterval(t);
-          $('.q-res', item).classList.add('on');
-          setTimeout(() => { i = (i + 1) % qs.length; type(); }, 4200);
-        }
-      }, 38);
-    };
-    type();
   }
 
   // ---------- matrix sorting
@@ -298,13 +261,13 @@
       ...feats.map(f => {
         const who = d.clients.filter(c => c.cells[f.id].value === 'y');
         const part = d.clients.filter(c => c.cells[f.id].value === 'p').length;
-        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'H' : 'F', feature: f.id, href: `/?f=${f.id}#board` };
+        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'wrench' : 'check', feature: f.id, href: `/?f=${f.id}#board` };
       }),
-      { kind: 'Actions', title: 'Compare clients side by side', sub: 'Pick 2 to 4 clients', key: 'compare versus vs diff', glyph: '⇄', action: 'compare' },
-      { kind: 'Actions', title: 'Download the data', sub: 'data.json, MIT licensed', key: 'json data download api', glyph: '{}', href: '/data.json' },
-      { kind: 'Actions', title: 'How the tiers are scored', sub: 'Rubric and methodology', key: 'methodology rubric scoring how', glyph: '?', href: `${repo}/blob/main/methodology/RUBRIC.md` },
-      { kind: 'Actions', title: 'Fix a wrong cell', sub: 'Open a pull request with a source', key: 'contribute pull request wrong fix edit github', glyph: 'PR', href: `${repo}/blob/main/CONTRIBUTING.md` },
-      { kind: 'Actions', title: 'Star it on GitHub', sub: repo.replace('https://github.com/', ''), key: 'github star repo source', glyph: '★', href: repo },
+      { kind: 'Actions', title: 'Compare clients side by side', sub: 'Pick 2 to 4 clients', key: 'compare versus vs diff', glyph: 'columns', action: 'compare' },
+      { kind: 'Actions', title: 'Download the data', sub: 'data.json, MIT licensed', key: 'json data download api', glyph: 'download', href: '/data.json' },
+      { kind: 'Actions', title: 'How the tiers are scored', sub: 'Rubric and methodology', key: 'methodology rubric scoring how', glyph: 'book', href: `${repo}/blob/main/methodology/RUBRIC.md` },
+      { kind: 'Actions', title: 'Fix a wrong cell', sub: 'Open a pull request with a source', key: 'contribute pull request wrong fix edit github', glyph: 'pr', href: `${repo}/blob/main/CONTRIBUTING.md` },
+      { kind: 'Actions', title: 'Open the GitHub repo', sub: repo.replace('https://github.com/', ''), key: 'github star repo source', glyph: 'star', href: repo },
     ];
   }
   function renderPal() {
@@ -321,7 +284,7 @@
       html += `<li class="pal-sec" role="presentation">${kind}</li>`;
       for (const { it } of group) {
         const i = shown.push(it) - 1;
-        const icon = it.logo ? `<span class="lg"><img src="${esc(it.logo)}" alt=""></span>` : `<span class="gl">${esc(it.glyph)}</span>`;
+        const icon = it.logo ? `<span class="lg"><img src="${esc(it.logo)}" alt=""></span>` : `<span class="gl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${GLYPH[it.glyph]}</svg></span>`;
         html += `<li class="pal-item" role="option" id="pi-${i}" data-i="${i}" aria-selected="false">${icon}<span class="tt"><b>${hl(it.title, q)}</b><small>${esc(it.sub)}</small></span>${it.tier ? `<span class="tb t-${it.tier}">${it.tier}</span>` : ''}<span class="go">↵</span></li>`;
       }
     }

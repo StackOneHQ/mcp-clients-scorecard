@@ -77,30 +77,36 @@ export function buildSite(out, { og = true } = {}) {
 
 // ---------- pages
 
-const MONO = '<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">';
+// StackOne brand faces: Stack Sans Text for headings, Geist for text, Geist Mono for figures
+const FONTS = '<link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Text:wght@400;500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">';
 const icon = d => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 const SEARCH = icon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+const GITHUB = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
+const STACKONE = '<img class="wordmark" src="/assets/logos/stackone-white.svg" alt="StackOne" width="90" height="12">';
 const groupLabel = g => (g === 'cli' ? 'CLI' : 'App or IDE');
 const logoImg = (c, size) => `<span class="lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="${size}" height="${size}"></span>`;
 
 function page({ title, description, path: p, image, body, noindex = false }) {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(title)}</title><meta name="description" content="${attr(description)}"><meta name="theme-color" content="#05060a"><meta name="color-scheme" content="dark">
+<title>${esc(title)}</title><meta name="description" content="${attr(description)}"><meta name="theme-color" content="#242424"><meta name="color-scheme" content="dark">
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${attr(SITE + p)}">`}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${TITLE}"><meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${attr(SITE + p)}"><meta property="og:image" content="${attr(image)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@StackOneHQ"><meta name="twitter:title" content="${attr(title)}">
 <meta name="twitter:description" content="${attr(description)}"><meta name="twitter:image" content="${attr(image)}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-${FONT}${MONO}<link rel="stylesheet" href="/style.css?v=${VERSION}"><script src="/app.js?v=${VERSION}" defer></script></head>
-<body><header class="top"><div class="wrap bar"><a class="brand" href="/"><span class="dot">S</span><span>${TITLE}</span></a>
-<nav aria-label="Main"><a href="/#board">Tiers</a><a href="/#matrix">Matrix</a><a href="/#changes">Changes</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">Method</a><a class="gh" href="${REPO}">GitHub</a></nav>
-<button type="button" class="search-btn" data-palette aria-label="Search clients and features">${SEARCH}<span>Search clients, features…</span><kbd data-mod>Ctrl</kbd><kbd>K</kbd></button></div></header>
+${FONTS}<link rel="stylesheet" href="/style.css?v=${VERSION}"><script src="/app.js?v=${VERSION}" defer></script></head>
+<body><header class="top"><div class="wrap bar"><div class="brand"><a class="home" href="/"><span class="dot">S</span><span>${TITLE}</span></a><a class="by" href="https://www.stackone.com/?utm_source=mcp-clients-scorecard">by ${STACKONE}</a></div>
+<nav aria-label="Main"><a href="/#board">Tiers</a><a href="/#matrix">Matrix</a><a href="/#changes">Changes</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">Method</a></nav>
+<button type="button" class="search-btn" data-palette aria-label="Search clients and features">${SEARCH}<span>Search</span><kbd data-mod>Ctrl</kbd><kbd>K</kbd></button>
+<a class="btn sm gh" href="${REPO}">${GITHUB}<span>GitHub</span></a></div></header>
 ${body}
-<footer class="wrap foot"><div><p>Maintained by <a href="https://www.stackone.com">StackOne</a>. Data is MIT licensed: <a href="/data.json">data.json</a> · <a href="/llms.txt">llms.txt</a> · <a href="${REPO}">source</a>.</p>
-<p>Spotted a wrong cell? <a href="${REPO}/blob/main/CONTRIBUTING.md">Send a pull request</a> with a source and it moves.</p></div>
-<p class="mono"><kbd data-mod>Ctrl</kbd> <kbd>K</kbd> search · <kbd>/</kbd> filter</p></footer>
+<footer class="foot"><div class="wrap foot-in">
+<div class="foot-brand"><a href="https://www.stackone.com/?utm_source=mcp-clients-scorecard">${STACKONE.replace('width="90" height="12"', 'width="120" height="16"')}</a>
+<p>We test the StackOne MCP server against every client on this board, so we keep this list for ourselves and publish it. StackOne is integration infrastructure for AI agents.</p></div>
+<nav class="foot-links" aria-label="Project"><a href="${REPO}">${GITHUB}GitHub repo</a><a href="${REPO}/blob/main/CONTRIBUTING.md">Fix a wrong cell</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">How tiers are scored</a><a href="/data.json">data.json</a><a href="/llms.txt">llms.txt</a></nav>
+<p class="foot-meta">Data MIT licensed · <kbd data-mod>Ctrl</kbd> <kbd>K</kbd> search · <kbd>/</kbd> filter</p></div></footer>
 <dialog class="dlg palette" id="palette" aria-label="Search" data-repo="${attr(REPO)}"><div class="pal-in">${SEARCH}<input id="pal-q" type="search" placeholder="Search clients, tiers, features…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="pal-list" aria-expanded="true"><kbd>esc</kbd></div>
 <ul class="pal-list" id="pal-list" role="listbox"></ul><div class="pal-ft"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd data-mod>Ctrl</kbd><kbd>↵</kbd> new tab</span></div></dialog>
 </body></html>
@@ -114,30 +120,30 @@ function filterAttrs(data, c) {
   return `data-client="${attr(c.slug)}" data-group="${c.group}" data-tier="${c.tier}" data-y="${y.join(' ')}" data-p="${p.join(' ')}" data-hay="${attr(hay)}"`;
 }
 
-const strip = c => `<span class="strip" aria-hidden="true">${FEATURES.map(([k]) => `<i class="${c.cells[k].value}"></i>`).join('')}</span>`;
+const strip = c => `<span class="strip" aria-hidden="true">${FEATURES.map(([k]) => `<i class="bdot ${c.cells[k].value}"></i>`).join('')}</span>`;
 
 function home(data, changes, previous) {
   const perTier = Object.fromEntries(TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]));
   const shareText = `${data.clients.length} MCP clients ranked S to D, with a source behind every cell`;
   const supporters = k => data.clients.filter(c => c.cells[k].value === 'y');
-  const examples = [['apps', 'which clients render MCP Apps?'], ['tasks', 'who supports MCP Tasks?'], ['cimd', 'who signs in with CIMD?'], ['code_mode', 'who has code mode?']]
-    .filter(([k]) => COLUMNS.some(([c]) => c === k));
-  const consoleQ = ([k, q], i) => {
+  const asks = ['apps', 'tasks', 'cimd', 'code_mode'].filter(k => Object.hasOwn(LABEL, k));
+  const askPanel = (k, i) => {
     const yes = supporters(k), part = data.clients.filter(c => c.cells[k].value === 'p');
-    return `<div class="q" data-q="${attr(q)}"><div class="q-res${i === 0 ? ' on' : ''}"><div class="q-meta"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</div>
-<div class="q-logos">${yes.map(c => `<a href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}${part.map(c => `<a class="p" href="${clientUrl(c)}">${logoImg(c, 18)}${esc(c.name)}</a>`).join('')}</div>
-<button type="button" class="q-go" data-apply="${k}">Filter the board by ${esc(LABEL[k])} →</button></div></div>`;
+    const who = (list, cls) => list.map(c => `<a class="${cls}" href="${clientUrl(c)}">${logoImg(c, 20)}<span>${esc(c.name)}</span><span class="tb t-${c.tier}">${c.tier}</span></a>`).join('');
+    return `<div class="ask-panel${i === 0 ? ' on' : ''}" id="ask-${k}" role="tabpanel"><p class="ask-q">Who supports ${esc(LABEL[k])}?</p>
+<p class="ask-n"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</p>
+<div class="ask-who">${who(yes, 'y') || '<span class="muted">Nobody yet</span>'}${who(part, 'p')}</div>
+<button type="button" class="link" data-apply="${k}">Filter the tier list by ${esc(LABEL[k])}</button></div>`;
   };
   return `<main>
-<section class="wrap hero"><div><span class="live"><span class="pulse"></span>Updated ${formatDate(data.as_of)} · rechecked every Monday</span>
-<h1>Which MCP clients <em>actually</em> support MCP?</h1>
-<p class="lede">Every major MCP client, ranked S to D on the same ${COLUMNS.length} checks. Each cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
-<div class="stats"><div class="stat"><b data-count="${data.clients.length}">${data.clients.length}</b><span>clients ranked</span></div><div class="stat"><b data-count="${COLUMNS.length}">${COLUMNS.length}</b><span>checks each</span></div><div class="stat"><b data-count="${data.clients.length * COLUMNS.length}">${data.clients.length * COLUMNS.length}</b><span>sourced cells</span></div><div class="stat"><b data-count="${perTier.S}">${perTier.S}</b><span>in S tier</span></div></div>
-<div class="ctas"><a class="btn primary" href="#board">Explore the tiers</a><button type="button" class="btn" data-palette>${SEARCH}Search</button>${share(shareText, SITE + '/')}</div></div>
-${examples.length ? `<div class="console" aria-label="Example questions"><div class="console-top"><i></i><i></i><i></i><span>mcp-clients ~ ask</span></div>
-<div class="console-body"><div class="q-line"><span class="pr">❯</span><span class="q-text">${esc(examples[0][1])}</span><span class="caret"></span></div>${examples.map(consoleQ).join('')}</div></div>` : ''}</section>
+<section class="wrap hero"><div class="hero-copy"><p class="meta-line"><i class="bdot"></i>Updated ${formatDate(data.as_of)}, rechecked every Monday</p>
+<h1>Which MCP clients actually support MCP?</h1>
+<p class="lede">${data.clients.length} MCP clients ranked S to D on the same ${COLUMNS.length} checks. Every cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
+<div class="ctas"><a class="btn primary" href="#board">Explore the tier list</a><a class="btn" href="${REPO}">${GITHUB}View on GitHub</a></div>
+<p class="share-line">Share ${share(shareText, SITE + '/')}</p></div>
+${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tabs" role="tablist">${asks.map((k, i) => `<button type="button" role="tab" aria-selected="${i === 0}" aria-controls="ask-${k}" data-ask="${k}">${esc(LABEL[k])}</button>`).join('')}</div>${asks.map(askPanel).join('')}</div>` : ''}</section>
 
-<section id="board" class="wrap sec"><div class="sec-hd"><div><p class="eyebrow">01 · Tier list</p><h2>The board</h2></div><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each bar under a logo is one check: <span class="mono">green</span> yes, <span class="mono">amber</span> partly.</p></div>
+<section id="board" class="wrap sec"><div class="sec-hd"><h2>Tier list</h2><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each dot under a logo is one check, in column order.</p></div>
 <div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
 <div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${esc(l)}</button>`).join('')}</div>
 <span class="result mono" id="count" aria-live="polite"><b>${data.clients.length}</b> of ${data.clients.length} clients</span><button type="button" class="reset" id="reset">Clear</button>
@@ -145,16 +151,16 @@ ${examples.length ? `<div class="console" aria-label="Example questions"><div cl
 <div class="board"><div class="bhead"><span></span>${GROUPS.map(([, l]) => `<span>${l}</span>`).join('')}</div>
 ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small>${perTier[t]} client${perTier[t] === 1 ? '' : 's'}</small></div>${GROUPS.map(([g, l]) => `<div class="lane"><span class="glabel">${l}</span>${data.clients.filter(c => c.group === g && c.tier === t).map(c => card(data, c)).join('')}</div>`).join('')}</div>`).join('\n')}
 </div>
-<div class="legend"><span><span class="strip"><i class="y"></i></span>yes</span><span><span class="strip"><i class="p"></i></span>partly</span><span><span class="strip"><i></i></span>no</span><span>Bars in column order: ${FEATURES.map(([, l]) => esc(l)).join(', ')}</span></div></section>
+<div class="legend"><span><i class="bdot y"></i>Yes</span><span><i class="bdot p"></i>Partly</span><span><i class="bdot"></i>No</span><span class="muted">Dots in column order: ${FEATURES.map(([, l]) => esc(l)).join(', ')}</span></div></section>
 
-${changes.length ? `<section id="changes" class="wrap sec"><p class="eyebrow">02 · Changelog</p><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li><span>${ch}</span></li>`).join('')}</ul></section>` : `<section id="changes" class="wrap sec"><p class="eyebrow">02 · Changelog</p><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
+${changes.length ? `<section id="changes" class="wrap sec"><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li><i class="bdot y"></i><span>${ch}</span></li>`).join('')}</ul></section>` : `<section id="changes" class="wrap sec"><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
 
-<section id="matrix" class="wrap sec"><div class="sec-hd"><div><p class="eyebrow">03 · Evidence</p><h2>Every cell, with its source</h2></div><p class="note">Hover or focus a cell for the evidence, click it for the source. Click a column to sort. Harness columns are how a client handles tools, not part of the MCP spec.</p></div>
+<section id="matrix" class="wrap sec"><div class="sec-hd"><h2>Every cell, with its source</h2><p class="note">Hover or focus a cell for the evidence, click it for the source. Click a column to sort. Harness columns are how a client handles tools, not part of the MCP spec.</p></div>
 <div class="mx">${matrix(data)}</div>
 <details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${prose(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a></dd></div>`).join('')}
 <div><dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></div></dl></details></section>
 
-<section class="wrap sec"><p class="eyebrow">04 · History</p><h2>Adoption over time</h2><div class="charts"><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
+<section class="wrap sec"><h2>Adoption over time</h2><div class="charts"><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
 <img class="chart" src="/assets/history-clients.png" alt="Features supported per client over time" loading="lazy" width="1200" height="700"></div></section>
 </main>
 <div class="tray" id="tray" aria-live="polite"><span class="lgs"></span><span class="txt"></span><button type="button" class="btn sm primary" id="tray-go" disabled>Compare</button><button type="button" class="xbtn" id="tray-clear" aria-label="Clear the selection">×</button></div>
@@ -210,14 +216,14 @@ function clientPage(data, c, prev, next) {
   }).join('\n');
   const pagerLink = (o, cls, dir) => `<a class="${cls}" href="${clientUrl(o)}">${cls === 'next' ? '' : logoImg(o, 28)}<span><small>${dir}</small>${esc(o.name)} · ${o.tier}</span>${cls === 'next' ? logoImg(o, 28) : ''}</a>`;
   return `<main class="wrap t-${c.tier}">
-<nav class="crumbs" aria-label="Breadcrumb"><a href="/">~/tier-list</a> / ${esc(c.slug)}</nav>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Tier list</a><span>/</span>${esc(c.name)}</nav>
 <section class="chero">${`<div class="big lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="76" height="76"></div>`}
 <div><h1>${esc(c.name)}</h1><div class="metas"><span class="meta">${groupLabel(c.group)}</span><span class="meta">${c.version_checked ? `v${esc(c.version_checked)}` : 'hosted'}</span><span class="meta">MCP bugs fixed: ${esc(fixText(c.fix))}</span></div>
 <p class="links">${links.map(([l, u]) => `<a href="${attr(u)}">${l} ↗</a>`).join('')}</p></div>
 <div class="scorebox"><div class="ring" title="Feature score: yes counts 1, partly counts half"><svg viewBox="0 0 112 112" aria-hidden="true"><circle class="trk" cx="56" cy="56" r="${R}" fill="none" stroke-width="9"/><circle class="val" cx="56" cy="56" r="${R}" fill="none" stroke-width="9" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div><b>${score}</b><span>of ${FEATURES.length}</span></div></div>
 <div class="tierbig" title="Tier ${c.tier}">${c.tier}</div></div></section>
 ${c.tier_note ? `<p class="callout">${prose(c.tier_note)}</p>` : ''}${c.note ? `<p class="callout">${prose(c.note)}</p>` : ''}
-<div class="ctas">${share(`${c.name} is ${c.tier} tier on the MCP clients scorecard`, pageUrl)}<a class="btn" href="/#compare=${attr(c.slug)}">Compare with…</a><a class="btn ghost" href="${REPO}/edit/main/data/clients/${c.slug}.yaml">Wrong? Edit ${esc(c.slug)}.yaml</a></div>
+<div class="ctas"><a class="btn" href="/#compare=${attr(c.slug)}">Compare with another client</a><a class="btn" href="${REPO}/edit/main/data/clients/${c.slug}.yaml">${GITHUB}Wrong? Edit ${esc(c.slug)}.yaml</a><p class="share-line">Share ${share(`${c.name} is ${c.tier} tier on the MCP clients scorecard`, pageUrl)}</p></div>
 <div class="checks">${checks}</div>
 <section class="embed"><h2>Show your tier</h2><p><img src="/badges/${c.slug}.svg" alt="MCP clients scorecard: tier ${c.tier}"></p>
 <p class="muted">Add the badge to a README. It updates when the tier does.</p>
@@ -230,7 +236,7 @@ ${c.tier_note ? `<p class="callout">${prose(c.tier_note)}</p>` : ''}${c.note ? `
 function share(text, url) {
   const x = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
   const li = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-  return `<a class="btn" href="${attr(x)}" target="_blank" rel="noopener">Share on X</a><a class="btn" href="${attr(li)}" target="_blank" rel="noopener">LinkedIn</a><button type="button" class="btn" data-copy="${attr(url)}">Copy link</button>`;
+  return `<a class="slink" href="${attr(x)}" target="_blank" rel="noopener">X</a><a class="slink" href="${attr(li)}" target="_blank" rel="noopener">LinkedIn</a><button type="button" class="slink" data-copy="${attr(url)}">Copy link</button>`;
 }
 
 const counts = c => ({ y: FEATURES.filter(([k]) => c.cells[k].value === 'y').length, p: FEATURES.filter(([k]) => c.cells[k].value === 'p').length });
