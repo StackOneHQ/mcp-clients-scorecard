@@ -44,3 +44,15 @@ test('data.json carries every client with every cell', () => {
 test('the badge files the pages embed exist', () => {
   for (const c of data.clients) assert.ok(fs.existsSync(path.join(out, 'badges', `${c.slug}.svg`)), c.slug);
 });
+
+// The live filters read these attributes: a wrong one silently hides or shows the wrong client
+test('every board card carries the features it supports for the filters', () => {
+  const home = read('index.html');
+  for (const c of data.clients) {
+    const m = home.match(new RegExp(`<div class="card t-${c.tier}" data-client="${c.slug}"[^>]*data-y="([^"]*)" data-p="([^"]*)"`));
+    assert.ok(m, c.slug);
+    const want = v => COLUMNS.filter(([k]) => k !== 'protocol' && c.cells[k].value === v).map(([k]) => k).join(' ');
+    assert.equal(m[1], want('y'), `${c.slug} yes`);
+    assert.equal(m[2], want('p'), `${c.slug} partly`);
+  }
+});
