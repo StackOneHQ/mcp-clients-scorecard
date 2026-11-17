@@ -17,7 +17,7 @@ export function findChrome() {
       if (fs.existsSync(p)) return p;
     }
   }
-  throw new Error('Chrome not found. Set CHROME_PATH, or pass --no-images.');
+  throw new Error('Chrome not found. Set CHROME_PATH, or skip the images: npm run build -- --no-images, npm run site -- --no-og.');
 }
 
 // Renders each [html, width, height, pngPath] at device scale 1

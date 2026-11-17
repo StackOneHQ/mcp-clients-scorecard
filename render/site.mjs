@@ -223,8 +223,8 @@ function publicData(data) {
       slug: c.slug, name: c.name, group: c.group, tier: c.tier, url: SITE + clientUrl(c), version_checked: c.version_checked ?? null,
       mcp_bugs_fixed: c.fix,
       cells: Object.fromEntries(COLUMNS.map(([k]) => {
-        const { value, method, source, evidence, checked, label, since } = c.cells[k];
-        return [k, { value: String(value), method, source, evidence, checked: String(checked), ...(label && { label }), ...(since && { since: { ...since, date: String(since.date) } }) }];
+        const { value, method, source, evidence, checked, label, quality, fallback, since } = c.cells[k];
+        return [k, { value: String(value), method, source, evidence, checked: String(checked), ...(label && { label, quality }), ...(fallback && { fallback }), ...(since && { since: { ...since, date: String(since.date) } }) }];
       })),
     })),
   };
