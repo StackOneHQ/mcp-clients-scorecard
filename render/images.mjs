@@ -2,21 +2,21 @@
 import fs from 'node:fs';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
 
-const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
-const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
+export const TIER_COLOR = { S: '#FF7F7F', A: '#FFBF7F', B: '#FFDF7F', C: '#FFFF7F', D: '#BFFF7F' };
+export const FONT = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">';
 const pageCss = (w, h, rest) => `*{box-sizing:border-box;margin:0}
 body{width:${w}px;height:${h}px;background:#000;font-family:Inter,system-ui,sans-serif;position:relative;${rest}}
 .so{position:absolute;right:40px;top:24px;opacity:.8}.so img{display:block;height:18px}`;
 
 // Each logo is read once: the feature chart embeds a client's logo at every step that client caused
 const logos = new Map();
-const logo = f => {
+export const logo = f => {
   if (!logos.has(f)) logos.set(f, `data:${f.endsWith('.png') ? 'image/png' : 'image/svg+xml'};base64,${fs.readFileSync(ROOT + 'assets/logos/' + f).toString('base64')}`);
   return logos.get(f);
 };
 const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
 const WORDMARK = `<div class="so"><img src="${logo('stackone-white.svg')}" alt="StackOne"></div>`;
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export function tiersHtml({ data }) {
   const item = c => `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${logoClass(c.logo)}></div><span>${esc(c.name)}</span></div>`;
