@@ -1,7 +1,7 @@
 # Kiro. Field reference: data/README.md. After editing, run npm run build.
 name: Kiro
 group: app
-tier: S
+tier: A
 logo: gh-kirodotdev.png
 website: https://kiro.dev
 docs: https://kiro.dev/docs/mcp/
@@ -14,7 +14,7 @@ cells:
   protocol:
     value: 2026-07-28
     method: source
-    source: https://desktop-release.q.us-east-1.amazonaws.com/latest/kirocli-x86_64-linux.zip
+    source: https://desktop-release.q.us-east-1.amazonaws.com/3.5.0/kirocli-x86_64-linux.zip
     evidence: "The Kiro CLI 3.5.0 binary (BUILD_DATE 2026-11-17, kirocli/bin/kiro-cli) carries a server/discover lifecycle with 2026-07-28 and legacy fallback strings (\"server/discover rejected with HTTP\", NoCompatibleProtocolVersion, LegacyFallbackFailed) in its bundled MCP SDK; docs name no revision, the live handshake could not be run without a Kiro login, and the IDE build was not inspected"
     checked: 2026-11-22
   code_mode:
@@ -80,8 +80,8 @@ cells:
       version: "2.34.0"
       source: https://kiro.dev/changelog/cli/2-34/
   list_changed:
-    value: y
+    value: p
     method: issue
     source: https://github.com/kirodotdev/Kiro/issues/6553
-    evidence: "Maintainer comment on 2026-07-23: resolved in CLI 2.14.0, where Kiro re-queries tools/list when it receives notifications/tools/list_changed (the V3 regression is fixed too); the fix version for the IDE was asked and not answered"
+    evidence: "Limited: the issue reports the Kiro IDE ignoring notifications/tools/list_changed; the maintainer closed it on 2026-07-23 as resolved in CLI 2.14.0, where Kiro re-queries tools/list (the V3 regression is fixed too), and the reporter's question about which IDE version has the fix is unanswered"
     checked: 2026-11-22

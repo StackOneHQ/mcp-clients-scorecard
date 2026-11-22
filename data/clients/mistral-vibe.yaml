@@ -29,8 +29,8 @@ cells:
   apps:
     value: p
     method: docs
-    source: https://docs.mistral.ai/studio/workflows/building-workflows/connectors
-    evidence: 'Limited: Studio workflows surface a connector tool ui:// MCP App only with allow_mcp_ui=True (default False) and only for direct call_tool calls, and release notes (2026-10-14, 2026-11-05) show Mistral own Studio MCP apps rendering in Vibe; the custom connector docs do not list MCP Apps'
+    source: https://docs.mistral.ai/resources/release-notes
+    evidence: 'Limited: the release notes say the Workflow Visualizer renders as an MCP App inside Vibe (2026-10-14) and Studio apps surface in Vibe Code Web through an MCP apps server (2026-11-05); for custom connectors, Studio workflows surface a connector tool ui:// MCP App only with allow_mcp_ui=True (default False) and only for direct call_tool calls, and the custom connector docs do not list MCP Apps'
     checked: 2026-11-22
   tasks:
     value: n

@@ -61,7 +61,7 @@ export function changelog({ data }) {
       events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${cell.value === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}` });
     }
   }
-  for (const f of data.features) if (f.spec_date && f.spec_event) events.push({ date: String(f.spec_date), kind: 'spec', client: null, text: f.spec_event, source: f.url, key: `feature:${f.id}` });
+  for (const f of data.features) if (f.spec_date && f.spec_event) events.push({ date: String(f.spec_date), kind: 'spec', client: null, text: f.spec_event, source: f.spec_source ?? f.url, key: `feature:${f.id}` });
   for (const v of data.spec_versions) events.push({ date: String(v), kind: 'spec', client: null, text: `MCP spec ${v} released`, source: `https://modelcontextprotocol.io/specification/${v}`, key: `spec:${v}` });
   const asOf = String(data.as_of);
   return events.filter(e => e.date <= asOf)
