@@ -1,5 +1,4 @@
-// HTML for the PNGs in assets/: the tier board and the per-feature matrix (1080 wide, 1350 tall, taller once the
-// clients no longer fit: see tiersHeight and matrixHeight), and the two adoption charts (1200x700)
+// HTML for the PNGs in assets/: the tier board and per-feature matrix (1080 wide, at least 1350 tall), and the two adoption charts (1200x700)
 import fs from 'node:fs';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
 
@@ -19,8 +18,7 @@ const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.
 const WORDMARK = `<div class="so"><img src="${logo('stackone-white.svg')}" alt="StackOne"></div>`;
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-// A tier cell holds up to 4 logos on one line; a fuller cell wraps 3 to a line. Each tier row is as tall as its
-// fullest cell, and the image grows past 1350 when the lines no longer fit
+// Up to 4 logos per line, 3 when a cell holds more; each tier row is as tall as its fullest cell
 const PER_LINE = n => (n > 4 ? 3 : 4);
 const tierLines = ({ data }) => TIERS.map(t => Math.max(1, ...GROUPS.map(([g]) => {
   const n = data.clients.filter(c => c.group === g && c.tier === t).length;
@@ -29,7 +27,7 @@ const tierLines = ({ data }) => TIERS.map(t => Math.max(1, ...GROUPS.map(([g]) =
 export const tiersHeight = model => Math.max(1350, 380 + tierLines(model).reduce((a, b) => a + b, 0) * 172);
 
 export function tiersHtml({ data }) {
-  // Long names drop a size so they wrap in two lines, not three. A full cell wraps onto a second line of logos
+  // Long names drop a size so they wrap in two lines, not three
   const item = c => `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${logoClass(c.logo)}></div><span${c.name.length > 14 ? ' class="long"' : ''}>${esc(c.name)}</span></div>`;
   const cell = (g, t) => {
     const list = data.clients.filter(c => c.group === g && c.tier === t);

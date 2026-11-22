@@ -67,7 +67,7 @@
       const f = b.dataset.cl;
       clTabs.forEach(t => t.setAttribute('aria-pressed', t === b));
       changes.dataset.f = f;
-      if (empty) empty.hidden = recent.some(li => f === 'all' || li.dataset.kind === f);
+      empty.hidden = recent.some(li => f === 'all' || li.dataset.kind === f);
     }));
   }
 

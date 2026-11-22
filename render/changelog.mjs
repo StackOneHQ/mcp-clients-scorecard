@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import { ROOT, COLUMNS, TIERS } from './data.mjs';
 
 export const KINDS = [['client', 'New clients'], ['support', 'Feature support'], ['tier', 'Tier moves'], ['spec', 'Spec']];
+export const KIND_LABEL = { client: 'Client', support: 'Feature', tier: 'Tier', spec: 'Spec' };
 // The README, the home page and the feeds show this many days before as_of; older events fold away
 export const RECENT_DAYS = 30;
 const LABEL = Object.fromEntries(COLUMNS);
@@ -64,7 +65,7 @@ export function changelog({ data }) {
     .sort((a, b) => b.date.localeCompare(a.date) || KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (a.client?.name || '').localeCompare(b.client?.name || '') || a.text.localeCompare(b.text));
 }
 
-// The first day still inside the recent window: as_of minus RECENT_DAYS, exclusive
+// The last day outside the recent window (as_of minus RECENT_DAYS): recent events are later than it
 export function recentCutoff(asOf) {
   return new Date(Date.parse(`${asOf}T00:00:00Z`) - RECENT_DAYS * 864e5).toISOString().slice(0, 10);
 }

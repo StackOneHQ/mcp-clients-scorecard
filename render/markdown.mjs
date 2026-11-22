@@ -1,7 +1,7 @@
 // README sections and EVIDENCE.md, all generated from data/
 import { COLUMNS, HARNESS, GROUPS, MIN_ISSUES, protocolGrade, formatDate } from './data.mjs';
 import { featureSeries, firstShippers, datedCounts } from './history.mjs';
-import { changelog, splitRecent, KINDS, RECENT_DAYS } from './changelog.mjs';
+import { changelog, splitRecent, KINDS, KIND_LABEL, RECENT_DAYS } from './changelog.mjs';
 
 const KIND = { cli: 'CLI', app: 'App or IDE' };
 // Status icons are small SVGs in assets/icons, so the tables keep their colours without emoji
@@ -153,7 +153,6 @@ export function changesSection(model) {
   const { data } = model;
   const events = changelog(model);
   const { recent, older } = splitRecent(events, String(data.as_of));
-  const KIND_LABEL = { client: 'Client', support: 'Feature', tier: 'Tier', spec: 'Spec' };
   const row = e => {
     const who = e.client ? (e.client.slug ? `[${pipe(e.client.name)}](EVIDENCE.md#${anchor(e.client.name)}) ` : `${pipe(e.client.name)} `) : '';
     return `| ${e.date} | ${KIND_LABEL[e.kind]} | ${who}${pipe(e.text)}${e.source ? ` ([source](${e.source}))` : ''} |`;

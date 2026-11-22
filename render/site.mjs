@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate, featureScore } from './data.mjs';
 import { TIER_COLOR, logo, esc } from './images.mjs';
 import { fixText } from './markdown.mjs';
-import { changelog, splitRecent, plainEvent, KINDS, RECENT_DAYS } from './changelog.mjs';
+import { changelog, splitRecent, plainEvent, KINDS, KIND_LABEL, RECENT_DAYS } from './changelog.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(ROOT + 'package.json', 'utf8'));
 const SITE = pkg.homepage.replace(/\/$/, '');
@@ -390,7 +390,6 @@ const ROBOTS = `User-agent: *\nContent-Signal: search=yes, ai-input=yes, ai-trai
 
 // ---------- changelog: render/changelog.mjs builds the events; these draw them for the home page, its Markdown copy and the feeds
 
-const KIND_LABEL = { client: 'Client', support: 'Feature', tier: 'Tier', spec: 'Spec' };
 const eventUrl = e => (e.client?.slug ? SITE + `/clients/${e.client.slug}/` : e.source || `${SITE}/#changes`);
 const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.kind}|${plainEvent(e)}`).digest('hex').slice(0, 16);
 
@@ -421,14 +420,13 @@ function changelogJson(data, events) {
   return { as_of: String(data.as_of), recent_days: RECENT_DAYS, kinds: Object.fromEntries(KINDS), events: events.map(e => ({ date: e.date, kind: e.kind, client: e.client?.slug ?? null, client_name: e.client?.name ?? null, title: plainEvent(e), url: eventUrl(e), source: e.source })) };
 }
 
-const xml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 function atom(data, events) {
   const list = events.slice(0, 100);
   const updated = `${data.as_of}T00:00:00Z`;
   return `<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>${xml(TITLE)}: changes</title><subtitle>MCP clients joining the board, features shipped, tier moves and spec releases</subtitle>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>${attr(TITLE)}: changes</title><subtitle>MCP clients joining the board, features shipped, tier moves and spec releases</subtitle>
 <link rel="self" href="${SITE}/changelog.xml"/><link rel="alternate" type="text/html" href="${SITE}/#changes"/><id>${SITE}/changelog.xml</id><updated>${updated}</updated><author><name>StackOne</name><uri>${SO}</uri></author>
-${list.map(e => `<entry><id>${SITE}/changelog#${eventId(e)}</id><title>${xml(`${KIND_LABEL[e.kind]}: ${plainEvent(e)}`)}</title><link href="${xml(eventUrl(e))}"/><updated>${e.date}T00:00:00Z</updated><category term="${e.kind}"/><summary>${xml(plainEvent(e))}${e.source ? xml(`. Source: ${e.source}`) : ''}</summary></entry>`).join('\n')}
+${list.map(e => `<entry><id>${SITE}/changelog#${eventId(e)}</id><title>${attr(`${KIND_LABEL[e.kind]}: ${plainEvent(e)}`)}</title><link href="${attr(eventUrl(e))}"/><updated>${e.date}T00:00:00Z</updated><category term="${e.kind}"/><summary>${attr(plainEvent(e))}${e.source ? attr(`. Source: ${e.source}`) : ''}</summary></entry>`).join('\n')}
 </feed>
 `;
 }
