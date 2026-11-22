@@ -16,9 +16,9 @@ const cellText = (key, cell, versions) => {
 const pipe = s => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 // Link text and URL land inside a table cell, so brackets in the text are escaped, except inside the status icons
 const ICON = /(!\[[a-z ]+\]\(assets\/icons\/[a-z-]+\.svg\))/;
-const escText = s => pipe(s).split(ICON).map((part, i) => (i % 2 ? part : part.replace(/[[\]]/g, m => '\\' + m))).join('');
+export const escText = s => pipe(s).split(ICON).map((part, i) => (i % 2 ? part : part.replace(/[[\]]/g, m => '\\' + m))).join('');
 // Percent-encode what a Markdown link target cannot hold (spaces, brackets, pipes, non-ASCII), keeping existing %XX escapes as they are
-const encUrl = url => url.replace(/%(?![0-9A-Fa-f]{2})/g, '%25')
+export const encUrl = url => url.replace(/%(?![0-9A-Fa-f]{2})/g, '%25')
   .replace(/[^A-Za-z0-9\-._~:/?#@!$&'*+,;=%]/gu, c => (c === '(' ? '%28' : c === ')' ? '%29' : encodeURIComponent(c)));
 const link = (text, url) => `[${escText(text)}](${encUrl(url)})`;
 export const fixText = f => (f.kind === 'rate' ? `${f.pct}% of ${f.n}` : f.kind === 'few' ? 'too few issues' : 'no public tracker');
@@ -38,7 +38,7 @@ export function readmeTable({ data }) {
     for (const c of data.clients.filter(c => c.group === g)) {
       const cells = COLUMNS.map(([k]) => link(cellText(k, c.cells[k], data.spec_versions), c.cells[k].source));
       const tracker = c.tracker ? `[${fixText(c.fix)}](https://github.com/${c.tracker.repo}/issues)` : fixText(c.fix);
-      out.push(`| **${c.tier}** | [${pipe(c.name)}](EVIDENCE.md#${anchor(c.name)})${c.website ? ` [↗](${c.website})` : ''} | ${c.version_checked ? '`' + pipe(c.version_checked) + '`' : 'hosted'} | ${tracker} | ${cells.join(' | ')} |`);
+      out.push(`| **${c.tier}** | [${pipe(c.name)}](EVIDENCE.md#${anchor(c.name)})${c.website ? ` [↗](${encUrl(c.website)})` : ''} | ${c.version_checked ? '`' + pipe(c.version_checked) + '`' : 'hosted'} | ${tracker} | ${cells.join(' | ')} |`);
     }
     out.push('');
   }
@@ -154,8 +154,8 @@ export function changesSection(model) {
   const events = changelog(model);
   const { recent, older } = splitRecent(events, String(data.as_of));
   const row = e => {
-    const who = e.client ? (e.client.slug ? `[${pipe(e.client.name)}](EVIDENCE.md#${anchor(e.client.name)}) ` : `${pipe(e.client.name)} `) : '';
-    return `| ${e.date} | ${KIND_LABEL[e.kind]} | ${who}${pipe(e.text)}${e.source ? ` ([source](${e.source}))` : ''} |`;
+    const who = e.client ? (e.client.slug ? `[${escText(e.client.name)}](EVIDENCE.md#${anchor(e.client.name)}) ` : `${escText(e.client.name)} `) : '';
+    return `| ${e.date} | ${KIND_LABEL[e.kind]} | ${who}${escText(e.text)}${e.source ? ` ([source](${encUrl(e.source)}))` : ''} |`;
   };
   const table = list => ['| Date | Kind | Change |', '| --- | --- | --- |', ...list.map(row)];
   const counts = KINDS.map(([k, l]) => `${l}: ${recent.filter(e => e.kind === k).length}`).join(' · ');

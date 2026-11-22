@@ -142,7 +142,8 @@ function validate(data, bugs) {
         if (!isDate(s.date)) errs.push(`${ca}.since: date must be YYYY-MM-DD`);
         else if (String(s.date) > asOf) errs.push(`${ca}.since: date ${s.date} is after as_of ${asOf}`);
         if (!isUrl(s.source)) errs.push(`${ca}.since: source must be an https URL`);
-        if (s.version !== undefined && (typeof s.version !== 'string' || !s.version.trim())) errs.push(`${ca}.since: version must be a quoted string, for example "1.102"`);
+        // The version lands in Markdown tables and the Atom feed, so it is held to version characters
+        if (s.version !== undefined && (typeof s.version !== 'string' || !/^[\w.+-]{1,40}$/.test(s.version))) errs.push(`${ca}.since: version must be a quoted version string, for example "1.102"`);
       }
     }
   }

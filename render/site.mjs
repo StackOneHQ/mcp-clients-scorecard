@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate, featureScore } from './data.mjs';
 import { TIER_COLOR, logo, esc } from './images.mjs';
-import { fixText } from './markdown.mjs';
+import { fixText, escText, encUrl } from './markdown.mjs';
 import { changelog, splitRecent, plainEvent, KINDS, KIND_LABEL, RECENT_DAYS } from './changelog.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(ROOT + 'package.json', 'utf8'));
@@ -367,7 +367,7 @@ function homeMarkdown(data, faq, events) {
     ...changesMd(data, events),
     '## Tiers', '', ...TIERS.map(t => `- **${t}**: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), '',
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
-    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${c.website})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
+    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${encUrl(c.website)})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
     '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
     '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${plain(f.definition)} (${f.url})`), '',
     `Source and methodology: ${REPO}`, ''].join('\n');
@@ -411,7 +411,7 @@ ${older.length ? `<details class="cl-more"><summary>Show ${older.length} older c
 
 function changesMd(data, events) {
   const { recent } = splitRecent(events, String(data.as_of));
-  const line = e => `- ${e.date} · ${KIND_LABEL[e.kind]} · ${e.client?.slug ? `[${e.client.name}](${SITE}/clients/${e.client.slug}/) ${e.text}` : plainEvent(e)}${e.source ? ` ([source](${e.source}))` : ''}`;
+  const line = e => `- ${e.date} · ${KIND_LABEL[e.kind]} · ${e.client?.slug ? `[${escText(e.client.name)}](${SITE}/clients/${e.client.slug}/) ${escText(e.text)}` : escText(plainEvent(e))}${e.source ? ` ([source](${encUrl(e.source)}))` : ''}`;
   return ['## Recent changes', '', `The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Every change, older ones included: ${SITE}/changelog.json (Atom: ${SITE}/changelog.xml)`, '',
     ...(recent.length ? recent.map(line) : [`No changes in the last ${RECENT_DAYS} days.`]), ''];
 }
