@@ -186,7 +186,7 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
 .sort[data-dir=desc]::after{content:"↓";opacity:1;color:var(--green)}.sort[data-dir=asc]::after{content:"↑";opacity:1;color:var(--green)}
 .matrix td{text-align:center}
 .matrix tbody th{position:sticky;left:0;z-index:2;background:var(--panel);white-space:nowrap}
-.matrix tbody th a{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:500}
+.matrix tbody th a:not(.ext){display:inline-flex;align-items:center;vertical-align:middle;gap:10px;text-decoration:none;font-weight:500}
 .matrix tbody th img{background:#fff;border-radius:6px;padding:2px;width:24px;height:24px}
 .matrix td a{display:inline-flex;align-items:center;gap:4px;text-decoration:none;padding:4px;border-radius:6px}
 .matrix td a:hover{background:var(--card)}

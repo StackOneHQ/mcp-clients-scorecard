@@ -391,7 +391,7 @@ const ROBOTS = `User-agent: *\nContent-Signal: search=yes, ai-input=yes, ai-trai
 // ---------- changelog: render/changelog.mjs builds the events; these draw them for the home page, its Markdown copy and the feeds
 
 const eventUrl = e => (e.client?.slug ? SITE + `/clients/${e.client.slug}/` : e.source || `${SITE}/#changes`);
-const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.kind}|${plainEvent(e)}`).digest('hex').slice(0, 16);
+const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.key}`).digest('hex').slice(0, 16);
 
 function eventLi(e) {
   const who = e.client ? (e.client.slug ? `<a href="/clients/${attr(e.client.slug)}/">${esc(e.client.name)}</a> ` : `${esc(e.client.name)} `) : '';
@@ -406,7 +406,7 @@ function changesSection(data, events) {
   return `<section id="changes" class="wrap sec" data-f="all"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes are dated by the weekly check, shipped features by their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
 <div class="seg cl-tabs" role="group" aria-label="Show changes of one kind">${tabs.map(([k, l, n], i) => `<button type="button" data-cl="${k}" aria-pressed="${i === 0}">${esc(l)}<span class="n">${n}</span></button>`).join('')}</div>
 ${recent.length ? `<ol class="cl" id="cl-recent">${recent.map(eventLi).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing of this kind in the last ${RECENT_DAYS} days.</p>
-${older.length ? `<details class="cl-more"><summary>Show ${older.length} older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(eventLi).join('')}</ol></details>` : ''}</section>`;
+${older.length ? `<details class="cl-more"><summary>Show <span class="cl-n">${older.length}</span> older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(eventLi).join('')}</ol></details>` : ''}</section>`;
 }
 
 function changesMd(data, events) {

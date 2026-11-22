@@ -63,11 +63,19 @@
     const clTabs = $$('[data-cl]', changes);
     const empty = $('.cl-empty', changes);
     const recent = $$('#cl-recent li', changes);
+    const more = $('.cl-more', changes);
+    const older = more ? $$('li', more) : [];
     clTabs.forEach(b => b.addEventListener('click', () => {
       const f = b.dataset.cl;
+      const shown = li => f === 'all' || li.dataset.kind === f;
       clTabs.forEach(t => t.setAttribute('aria-pressed', t === b));
       changes.dataset.f = f;
-      empty.hidden = recent.some(li => f === 'all' || li.dataset.kind === f);
+      empty.hidden = recent.some(shown);
+      if (more) {
+        const n = older.filter(shown).length;
+        $('.cl-n', more).textContent = n;
+        more.hidden = !n;
+      }
     }));
   }
 

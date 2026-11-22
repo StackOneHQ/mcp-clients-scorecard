@@ -136,10 +136,29 @@ test('the changelog lists the last 30 days near the top, every kind tab, and fol
   for (const k of ['all', ...KINDS.map(([k]) => k)]) assert.ok(home.includes(`data-cl="${k}"`), k);
   const shown = home.match(/<ol class="cl" id="cl-recent">([\s\S]*?)<\/ol>/)?.[1] ?? '';
   assert.equal((shown.match(/<li /g) || []).length, recent.length);
-  if (older.length) assert.match(home, new RegExp(`Show ${older.length} older change`));
+  if (older.length) assert.match(home, new RegExp(`Show <span class="cl-n">${older.length}</span> older change`));
   assert.match(read('changelog.xml'), /^<\?xml[\s\S]*<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom">[\s\S]*<\/feed>\n$/);
   const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
   assert.ok(readme.indexOf('<!-- changes:start -->') < readme.indexOf('<!-- table:start -->'));
+});
+
+test('the changelog dates board changes against the live data, with ids that ignore labels', () => {
+  const live = structuredClone(data);
+  live.as_of = '2099-01-01';
+  const [gone, moved, flipped] = live.clients;
+  live.clients = live.clients.filter(c => c !== gone);
+  live.clients.push({ ...structuredClone(moved), slug: 'newcomer', name: 'Newcomer' });
+  moved.tier = moved.tier === 'S' ? 'C' : 'S';
+  const k = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na')[0];
+  const was = flipped.cells[k].value;
+  flipped.cells[k].value = was === 'y' ? 'n' : 'y';
+  const today = changelog({ data: live }).filter(e => e.date === '2099-01-01').map(e => [e.kind, e.key]);
+  assert.deepEqual(today.sort(), [
+    ['client', 'join:newcomer'],
+    ['client', `leave:${gone.slug}`],
+    ['support', `recheck:${flipped.slug}:${k}=${was}>${flipped.cells[k].value}`],
+    ['tier', `tier:${moved.slug}:${data.clients[1].tier}>${moved.tier}`],
+  ].sort());
 });
 
 test('every matrix row and the README table link the client website', () => {
