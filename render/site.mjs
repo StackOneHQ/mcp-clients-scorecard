@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate, featureScore } from './data.mjs';
 import { TIER_COLOR, logo, esc } from './images.mjs';
 import { fixText } from './markdown.mjs';
+import { changelog, splitRecent, plainEvent, KINDS, RECENT_DAYS } from './changelog.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(ROOT + 'package.json', 'utf8'));
 const SITE = pkg.homepage.replace(/\/$/, '');
@@ -27,8 +28,7 @@ const clientUrl = c => `/clients/${c.slug}/`;
 export function buildSite(out) {
   const model = load();
   const { data } = model;
-  const previous = previousSnapshot(data.as_of);
-  const changes = previous ? diff(previous, data) : [];
+  const events = changelog(model);
   fs.rmSync(out, { recursive: true, force: true });
   const write = (f, s) => {
     fs.mkdirSync(path.dirname(path.join(out, f)), { recursive: true });
@@ -54,8 +54,8 @@ export function buildSite(out) {
     modified: data.as_of,
     jsonld: homeJsonld(data, faq),
     markdown: '/index.md',
-    body: home(data, changes, previous, faq),
-  }, homeMarkdown(data, faq));
+    body: home(data, events, faq),
+  }, homeMarkdown(data, faq, events));
   data.clients.forEach((c, i) => {
     const qa = clientFaq(data, c);
     both(`clients/${c.slug}/`, {
@@ -72,10 +72,12 @@ export function buildSite(out) {
   write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
   write('llms.txt', llms(data));
-  write('llms-full.txt', llmsFull(data));
+  write('llms-full.txt', llmsFull(data, events));
   write('robots.txt', ROBOTS);
   write('sitemap.xml', sitemap(data));
   write('sitemap.md', sitemapMd(data));
+  write('changelog.json', JSON.stringify(changelogJson(data, events), null, 2) + '\n');
+  write('changelog.xml', atom(data, events));
   write('style.css', CSS);
   write('app.js', JS);
   fs.cpSync(ROOT + 'assets/mark.svg', path.join(out, 'favicon.svg'));
@@ -85,7 +87,7 @@ export function buildSite(out) {
   // Short badge URLs for READMEs: /badges/<slug>.svg
   fs.cpSync(ROOT + 'assets/badges', path.join(out, 'badges'), { recursive: true });
 
-  return { pages: data.clients.length + 2, changes: changes.length };
+  return { pages: data.clients.length + 2, changes: splitRecent(events, String(data.as_of)).recent.length };
 }
 
 // ---------- pages
@@ -106,7 +108,7 @@ function page({ title, description, path: p, image, body, noindex = false, modif
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${attr(description)}"><meta name="theme-color" content="#242424"><meta name="color-scheme" content="dark">
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${attr(SITE + p)}"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">`}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-${markdown ? `<link rel="alternate" type="text/markdown" href="${attr(markdown)}">` : ''}<link rel="alternate" type="application/json" href="/data.json" title="Scorecard data"><meta name="author" content="StackOne">
+${markdown ? `<link rel="alternate" type="text/markdown" href="${attr(markdown)}">` : ''}<link rel="alternate" type="application/json" href="/data.json" title="Scorecard data"><link rel="alternate" type="application/atom+xml" href="/changelog.xml" title="Scorecard changes"><meta name="author" content="StackOne">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${TITLE}"><meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${attr(SITE + p)}"><meta property="og:image" content="${attr(image)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">${modified ? `<meta property="og:updated_time" content="${modified}">` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
@@ -151,7 +153,7 @@ const READING = [
 // stackone.com setup guides for clients on this board
 const SO_GUIDE = { chatgpt: 'chatgpt', 'claude-app': 'claude', 'claude-code': 'claude-code', codex: 'codex', cursor: 'cursor', 'gemini-cli': 'gemini-cli', goose: 'goose', 'vs-code': 'vscode' };
 
-function home(data, changes, previous, faq) {
+function home(data, events, faq) {
   const perTier = Object.fromEntries(TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]));
   const shareText = `${data.clients.length} MCP clients ranked S to D, with a source behind every cell`;
   const supporters = k => data.clients.filter(c => c.cells[k].value === 'y');
@@ -172,6 +174,8 @@ function home(data, changes, previous, faq) {
 <p class="share-line">Share ${share(shareText, SITE + '/')}</p></div>
 ${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tabs" role="tablist">${asks.map((k, i) => `<button type="button" role="tab" id="tab-${k}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" aria-controls="ask-${k}" data-ask="${k}">${esc(LABEL[k])}</button>`).join('')}</div>${asks.map(askPanel).join('')}</div>` : ''}</section>
 
+${changesSection(data, events)}
+
 <section id="board" class="wrap sec"><div class="sec-hd"><h2>Tier list</h2><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each dot under a logo is one check, in column order.</p></div>
 <div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
 <div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${esc(l)}</button>`).join('')}</div>
@@ -181,8 +185,6 @@ ${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tab
 ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small>${perTier[t]} client${perTier[t] === 1 ? '' : 's'}</small></div>${GROUPS.map(([g, l]) => `<div class="lane"><span class="glabel">${l}</span>${data.clients.filter(c => c.group === g && c.tier === t).map(c => card(data, c)).join('')}</div>`).join('')}</div>`).join('\n')}
 </div>
 <div class="legend"><span><i class="bdot y"></i>Yes</span><span><i class="bdot p"></i>Partly</span><span><i class="bdot"></i>No</span><span class="muted">Dots in column order: ${FEATURES.map(([, l]) => esc(l)).join(', ')}</span></div></section>
-
-${changes.length ? `<section id="changes" class="wrap sec"><h2>What changed since ${formatDate(previous.as_of)}</h2><ul class="changes">${changes.map(ch => `<li><i class="bdot y"></i><span>${ch}</span></li>`).join('')}</ul></section>` : `<section id="changes" class="wrap sec"><h2>What changed</h2><p class="note">${previous ? `No changes since ${formatDate(previous.as_of)}.` : 'No earlier snapshot to compare against yet.'}</p></section>`}
 
 <section id="matrix" class="wrap sec"><div class="sec-hd"><h2>Every cell, with its source</h2><p class="note">Hover or focus a cell for the evidence, click it for the source. Click a column to sort. Harness columns are how a client handles tools, not part of the MCP spec.</p></div>
 <div class="mx">${matrix(data)}</div>
@@ -218,7 +220,7 @@ function matrix(data) {
   const head = `<tr><th>${sortBtn('name', 'Client')}</th><th>${sortBtn('tier', 'Tier')}</th><th>${sortBtn('fix', 'MCP bugs fixed')}</th>${COLUMNS.map(([k, l]) => `<th data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}>${sortBtn(k, l)}</th>`).join('')}</tr>`;
   let i = 0;
   const bodies = GROUPS.map(([g, label]) => `<tbody><tr class="grp"><td colspan="${COLUMNS.length + 3}">${label}</td></tr>`
-    + data.clients.filter(c => c.group === g).map(c => `<tr ${filterAttrs(data, c)} data-i="${i++}" data-name="${attr(c.name.toLowerCase())}" data-score="${featureScore(c)}" data-fix="${c.fix.kind === 'rate' ? c.fix.ratio : -1}"><th><a href="${clientUrl(c)}"><img src="/assets/logos/${attr(c.logo)}" alt="" width="22" height="22">${esc(c.name)}</a></th>`
+    + data.clients.filter(c => c.group === g).map(c => `<tr ${filterAttrs(data, c)} data-i="${i++}" data-name="${attr(c.name.toLowerCase())}" data-score="${featureScore(c)}" data-fix="${c.fix.kind === 'rate' ? c.fix.ratio : -1}"><th><a href="${clientUrl(c)}"><img src="/assets/logos/${attr(c.logo)}" alt="" width="22" height="22">${esc(c.name)}</a><a class="ext" href="${attr(c.website)}" rel="noopener" aria-label="${attr(c.name)} website" title="${attr(c.name)} website">↗</a></th>`
       + `<td><span class="tb t-${c.tier}">${c.tier}</span></td><td class="fix">${esc(fixText(c.fix))}</td>`
       + COLUMNS.map(([k]) => {
         const cell = c.cells[k];
@@ -359,12 +361,13 @@ const mdCell = (data, k, cell) => (k === 'protocol' ? String(cell.value) : MARK[
 const yamlString = v => JSON.stringify(String(v));
 const frontmatter = (meta, asOf) => ['---', `title: ${yamlString(meta.title)}`, `description: ${yamlString(meta.description)}`, `canonical_url: ${SITE + meta.path}`, `last_updated: ${asOf}`, '---', '', ''].join('\n');
 
-function homeMarkdown(data, faq) {
+function homeMarkdown(data, faq, events) {
   const ranked = byRank(data);
   return [`# ${TITLE}`, '', `> ${data.clients.length} MCP clients ranked S to D on ${COLUMNS.length} checks, with a linked, dated source for every cell. Updated ${formatDate(data.as_of)}, rechecked every Monday. Maintained by StackOne. Data MIT licensed: ${SITE}/data.json`, '',
+    ...changesMd(data, events),
     '## Tiers', '', ...TIERS.map(t => `- **${t}**: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), '',
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
-    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
+    ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${c.website})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
     '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
     '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${plain(f.definition)} (${f.url})`), '',
     `Source and methodology: ${REPO}`, ''].join('\n');
@@ -377,42 +380,57 @@ function clientMarkdown(data, c, qa) {
     ...qa.flatMap(([q, a]) => [`### ${q}`, '', a, '']), `Full scorecard: ${SITE}/`, ''].join('\n');
 }
 
-function llmsFull(data) {
+function llmsFull(data, events) {
   const faq = homeFaq(data);
-  return [homeMarkdown(data, faq), ...byRank(data).map(c => clientMarkdown(data, c, clientFaq(data, c)))].join('\n---\n\n');
+  return [homeMarkdown(data, faq, events), ...byRank(data).map(c => clientMarkdown(data, c, clientFaq(data, c)))].join('\n---\n\n');
 }
 
 // Search engines and AI assistants may read, cite and learn from the data, which is MIT licensed
 const ROBOTS = `User-agent: *\nContent-Signal: search=yes, ai-input=yes, ai-train=yes\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`;
 
-// ---------- what changed: against the newest snapshot at least 6 days older than as_of, so the list covers a weekly refresh
+// ---------- changelog: render/changelog.mjs builds the events; these draw them for the home page, its Markdown copy and the feeds
 
-function previousSnapshot(asOf) {
-  const cutoff = new Date(Date.parse(asOf + 'T00:00:00Z') - 6 * 864e5).toISOString().slice(0, 10);
-  const dates = fs.readdirSync(ROOT + 'data/history').map(f => f.replace(/\.json$/, '')).filter(d => d <= cutoff).sort();
-  if (!dates.length) return null;
-  const file = `data/history/${dates.at(-1)}.json`;
-  const snap = JSON.parse(fs.readFileSync(ROOT + file, 'utf8'));
-  // Old snapshots are committed files that load() never validates, and they feed the home page
-  const bad = Object.entries(snap.clients).find(([, c]) => !TIERS.includes(c.tier) || typeof c.name !== 'string'
-    || COLUMNS.some(([k]) => k !== 'protocol' && c[k] !== undefined && !Object.hasOwn(MARK, c[k])));
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(snap.as_of) || bad) throw new Error(`${file}: invalid snapshot${bad ? ` entry ${bad[0]}` : ''}`);
-  return snap;
+const KIND_LABEL = { client: 'Client', support: 'Feature', tier: 'Tier', spec: 'Spec' };
+const eventUrl = e => (e.client?.slug ? SITE + `/clients/${e.client.slug}/` : e.source || `${SITE}/#changes`);
+const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.kind}|${plainEvent(e)}`).digest('hex').slice(0, 16);
+
+function eventLi(e) {
+  const who = e.client ? (e.client.slug ? `<a href="/clients/${attr(e.client.slug)}/">${esc(e.client.name)}</a> ` : `${esc(e.client.name)} `) : '';
+  const src = e.source ? ` <a class="cl-src" href="${attr(e.source)}" rel="nofollow">source ↗</a>` : '';
+  return `<li data-kind="${e.kind}"><time datetime="${e.date}">${esc(formatDate(e.date))}</time><span class="cl-k k-${e.kind}">${KIND_LABEL[e.kind]}</span><span class="cl-t">${who}${esc(e.text)}${src}</span></li>`;
 }
 
-function diff(previous, data) {
-  const out = [];
-  for (const c of data.clients) {
-    const was = Object.hasOwn(previous.clients, c.slug) && previous.clients[c.slug];
-    const name = `<a href="${clientUrl(c)}">${esc(c.name)}</a>`;
-    if (!was) { out.push(`${name} joins the board in ${c.tier} tier`); continue; }
-    if (was.tier !== c.tier) out.push(`${name} moves from ${esc(was.tier)} to ${c.tier} tier`);
-    const flips = COLUMNS.filter(([k]) => was[k] !== undefined && String(was[k]) !== String(c.cells[k].value))
-      .map(([k]) => `${esc(LABEL[k])} ${k === 'protocol' ? `${esc(was[k])} → ${esc(c.cells[k].value)}` : `${MARK[was[k]].toLowerCase()} → ${MARK[c.cells[k].value].toLowerCase()}`}`);
-    if (flips.length) out.push(`${name}: ${flips.join(', ')}`);
-  }
-  for (const [slug, was] of Object.entries(previous.clients)) if (!data.clients.some(c => c.slug === slug)) out.push(`${esc(was.name)} leaves the board`);
-  return out;
+function changesSection(data, events) {
+  const { recent, older } = splitRecent(events, String(data.as_of));
+  const count = (list, k) => list.filter(e => e.kind === k).length;
+  const tabs = [['all', 'All', recent.length], ...KINDS.map(([k, l]) => [k, l, count(recent, k)])];
+  return `<section id="changes" class="wrap sec" data-f="all"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes are dated by the weekly check, shipped features by their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
+<div class="seg cl-tabs" role="group" aria-label="Show changes of one kind">${tabs.map(([k, l, n], i) => `<button type="button" data-cl="${k}" aria-pressed="${i === 0}">${esc(l)}<span class="n">${n}</span></button>`).join('')}</div>
+${recent.length ? `<ol class="cl" id="cl-recent">${recent.map(eventLi).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing of this kind in the last ${RECENT_DAYS} days.</p>
+${older.length ? `<details class="cl-more"><summary>Show ${older.length} older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(eventLi).join('')}</ol></details>` : ''}</section>`;
+}
+
+function changesMd(data, events) {
+  const { recent } = splitRecent(events, String(data.as_of));
+  const line = e => `- ${e.date} · ${KIND_LABEL[e.kind]} · ${e.client?.slug ? `[${e.client.name}](${SITE}/clients/${e.client.slug}/) ${e.text}` : plainEvent(e)}${e.source ? ` ([source](${e.source}))` : ''}`;
+  return ['## Recent changes', '', `The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Every change, older ones included: ${SITE}/changelog.json (Atom: ${SITE}/changelog.xml)`, '',
+    ...(recent.length ? recent.map(line) : [`No changes in the last ${RECENT_DAYS} days.`]), ''];
+}
+
+function changelogJson(data, events) {
+  return { as_of: String(data.as_of), recent_days: RECENT_DAYS, kinds: Object.fromEntries(KINDS), events: events.map(e => ({ date: e.date, kind: e.kind, client: e.client?.slug ?? null, client_name: e.client?.name ?? null, title: plainEvent(e), url: eventUrl(e), source: e.source })) };
+}
+
+const xml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function atom(data, events) {
+  const list = events.slice(0, 100);
+  const updated = `${data.as_of}T00:00:00Z`;
+  return `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>${xml(TITLE)}: changes</title><subtitle>MCP clients joining the board, features shipped, tier moves and spec releases</subtitle>
+<link rel="self" href="${SITE}/changelog.xml"/><link rel="alternate" type="text/html" href="${SITE}/#changes"/><id>${SITE}/changelog.xml</id><updated>${updated}</updated><author><name>StackOne</name><uri>${SO}</uri></author>
+${list.map(e => `<entry><id>${SITE}/changelog#${eventId(e)}</id><title>${xml(`${KIND_LABEL[e.kind]}: ${plainEvent(e)}`)}</title><link href="${xml(eventUrl(e))}"/><updated>${e.date}T00:00:00Z</updated><category term="${e.kind}"/><summary>${xml(plainEvent(e))}${e.source ? xml(`. Source: ${e.source}`) : ''}</summary></entry>`).join('\n')}
+</feed>
+`;
 }
 
 // ---------- machine-readable copies
@@ -424,7 +442,7 @@ function publicData(data) {
     source: REPO,
     features: data.features.map(({ id, label, definition, ref, url, kind }) => ({ id, label, definition, ref, url, kind: kind || 'spec' })),
     clients: data.clients.map(c => ({
-      slug: c.slug, name: c.name, group: c.group, tier: c.tier, url: SITE + clientUrl(c), logo: `${SITE}/assets/logos/${c.logo}`, version_checked: c.version_checked ?? null,
+      slug: c.slug, name: c.name, group: c.group, tier: c.tier, url: SITE + clientUrl(c), website: c.website ?? null, logo: `${SITE}/assets/logos/${c.logo}`, version_checked: c.version_checked ?? null,
       mcp_bugs_fixed: c.fix, mcp_bugs_fixed_text: fixText(c.fix),
       cells: Object.fromEntries(COLUMNS.map(([k]) => {
         const { value, method, source, evidence, checked, label, quality, fallback, since } = c.cells[k];
@@ -436,7 +454,7 @@ function publicData(data) {
 
 function llms(data) {
   return [`# ${TITLE}`, '', `> Which MCP clients support which parts of the Model Context Protocol, with a linked source for every cell. As of ${data.as_of}. Maintained by StackOne.`, '',
-    `Full data as JSON: ${SITE}/data.json`, `Every page with its Markdown copy: ${SITE}/sitemap.md`, `Source and methodology: ${REPO}`, '', '## Tiers', '',
+    `Full data as JSON: ${SITE}/data.json`, `Every change, dated: ${SITE}/changelog.json (Atom: ${SITE}/changelog.xml)`, `Every page with its Markdown copy: ${SITE}/sitemap.md`, `Source and methodology: ${REPO}`, '', '## Tiers', '',
     ...TIERS.map(t => `- ${t}: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), ''].join('\n');
 }
 
@@ -445,7 +463,7 @@ function sitemapMd(data) {
   const row = (name, u) => `- [${name}](${SITE + u}) ([Markdown](${SITE + u}index.md))`;
   return [`# ${TITLE}: sitemap`, '', `Last updated ${data.as_of}.`, '', row('Tier list', '/'), '', '## Clients', '',
     ...byRank(data).map(c => row(`${c.name}, ${c.tier} tier`, clientUrl(c))), '', '## Data', '',
-    `- [data.json](${SITE}/data.json)`, `- [llms-full.txt](${SITE}/llms-full.txt)`, ''].join('\n');
+    `- [data.json](${SITE}/data.json)`, `- [changelog.json](${SITE}/changelog.json)`, `- [llms-full.txt](${SITE}/llms-full.txt)`, ''].join('\n');
 }
 
 function sitemap(data) {
@@ -503,5 +521,5 @@ const VERSION = crypto.createHash('sha256').update(CSS + JS).digest('hex').slice
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const r = buildSite(ROOT + 'dist');
-  console.log(`wrote dist/: ${r.pages} pages, ${r.changes} changes listed`);
+  console.log(`wrote dist/: ${r.pages} pages, ${r.changes} changes in the last ${RECENT_DAYS} days`);
 }

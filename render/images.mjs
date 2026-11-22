@@ -1,4 +1,5 @@
-// HTML for the PNGs in assets/: the tier board and per-feature matrix (1080x1350), and the two adoption charts (1200x700)
+// HTML for the PNGs in assets/: the tier board and the per-feature matrix (1080 wide, 1350 tall, taller once the
+// clients no longer fit: see tiersHeight and matrixHeight), and the two adoption charts (1200x700)
 import fs from 'node:fs';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, protocolGrade, formatDate } from './data.mjs';
 
@@ -18,23 +19,37 @@ const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.
 const WORDMARK = `<div class="so"><img src="${logo('stackone-white.svg')}" alt="StackOne"></div>`;
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// A tier cell holds up to 4 logos on one line; a fuller cell wraps 3 to a line. Each tier row is as tall as its
+// fullest cell, and the image grows past 1350 when the lines no longer fit
+const PER_LINE = n => (n > 4 ? 3 : 4);
+const tierLines = ({ data }) => TIERS.map(t => Math.max(1, ...GROUPS.map(([g]) => {
+  const n = data.clients.filter(c => c.group === g && c.tier === t).length;
+  return Math.ceil(n / PER_LINE(n));
+})));
+export const tiersHeight = model => Math.max(1350, 380 + tierLines(model).reduce((a, b) => a + b, 0) * 172);
+
 export function tiersHtml({ data }) {
-  const item = c => `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${logoClass(c.logo)}></div><span>${esc(c.name)}</span></div>`;
-  const cell = (g, t) => data.clients.filter(c => c.group === g && c.tier === t).map(item).join('');
-  const rows = TIERS.map(t => `<div class="tier" style="background:${TIER_COLOR[t]}">${t}</div><div class="items">${cell('cli', t)}</div><div class="bar"></div><div class="items">${cell('app', t)}</div>`).join('');
+  // Long names drop a size so they wrap in two lines, not three. A full cell wraps onto a second line of logos
+  const item = c => `<div class="it"><div class="chip"><img src="${logo(c.logo)}"${logoClass(c.logo)}></div><span${c.name.length > 14 ? ' class="long"' : ''}>${esc(c.name)}</span></div>`;
+  const cell = (g, t) => {
+    const list = data.clients.filter(c => c.group === g && c.tier === t);
+    return `<div class="items${list.length > 4 ? ' wrap' : ''}">${list.map(item).join('')}</div>`;
+  };
+  const rows = TIERS.map(t => `<div class="tier" style="background:${TIER_COLOR[t]}">${t}</div>${cell('cli', t)}<div class="bar"></div>${cell('app', t)}`).join('');
+  const lines = tierLines({ data });
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients tier list</title>${FONT}
 <style>
-${pageCss(1080, 1350, 'color:#fff;padding:60px 28px 48px;display:flex;flex-direction:column')}
+${pageCss(1080, tiersHeight({ data }), 'color:#fff;padding:60px 28px 48px;display:flex;flex-direction:column')}
 h1{font-size:60px;font-weight:800;letter-spacing:-1.5px;margin:0 0 34px 12px}
-.board{flex:1;display:grid;grid-template-columns:100px minmax(0,1fr) 10px minmax(0,1fr);grid-template-rows:60px repeat(5,1fr);gap:4px}
+.board{flex:1;display:grid;grid-template-columns:100px minmax(0,1fr) 10px minmax(0,1fr);grid-template-rows:60px ${lines.map(l => `${l}fr`).join(' ')};gap:4px}
 .hd{display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;color:#EDEDED}
 .tier{color:#1a1a17;font-size:96px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.items{background:#1A1A17;display:flex;align-items:center;justify-content:flex-start;gap:0}
+.items{background:#1A1A17;display:flex;align-items:center;align-content:center;justify-content:flex-start;gap:8px 0;padding:8px 0}.items.wrap{flex-wrap:wrap}
 .bar{background:#EDEDED;border-radius:3px}
-.it{flex:0 1 149px;min-width:0;height:164px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px}
+.it{flex:0 1 149px;min-width:0;height:156px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px}
 .chip{width:88px;height:88px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .chip img{width:58px;height:58px;object-fit:contain}.chip img.png{width:78px;height:78px;filter:brightness(1.08) contrast(1.25)}.chip img.av{width:84px;height:84px}
-.it span{font-size:30px;font-weight:500;color:#EDEDED;text-align:center;line-height:1.1}
+.it span{font-size:30px;font-weight:500;color:#EDEDED;text-align:center;line-height:1.1}.it span.long{font-size:22px}.wrap .it{flex:0 0 149px}
 .foot{margin:20px 0 0 12px;font-size:40px;color:#8A8A85}
 </style></head><body>${WORDMARK}<h1>MCP clients: tier list</h1>
 <div class="board"><div></div><div class="hd">${GROUPS[0][1]}</div><div class="bar"></div><div class="hd">${GROUPS[1][1]}</div>${rows}</div>
@@ -55,6 +70,9 @@ const SPEC_COLS = COLUMNS.filter(([k]) => !HARNESS.has(k)), HARNESS_COLS = COLUM
 const withDivider = (list, divider) => [...SPEC_COLS.map(list), ...(HARNESS_COLS.length ? [divider] : []), ...HARNESS_COLS.map(list)];
 const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '64px'], tool_search: ['Tool<br>search', '146px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
 
+// Rows keep a readable height: past about 19 clients the image grows taller instead of squeezing them
+export const matrixHeight = ({ data }) => Math.max(1350, 480 + (data.image_note ? 60 : 0) + data.clients.length * 46);
+
 export function matrixHtml({ data }) {
   const fix = f =>
     f.kind === 'rate' ? `<div class="conn ${rateClass(f.ratio)}"><b>${f.pct}%</b><i>of ${f.n}</i></div>`
@@ -72,7 +90,7 @@ export function matrixHtml({ data }) {
     for (const c of data.clients.filter(c => c.group === g)) {
       const cells = withDivider(([k]) => (k === 'protocol' ? proto(c.cells[k]) : k === 'tool_search' ? search(c.cells[k]) : mark(c.cells[k].value)), '<div class="dv"></div>').join('');
       const png = c.logo.endsWith('.png') ? ' class="png"' : '';
-      body += `<div class="r"><div class="name"><div class="tb" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div><div class="lg"><img src="${logo(c.logo)}"${png}></div><span>${esc(c.name)}</span></div>${fix(c.fix)}${cells}</div>`;
+      body += `<div class="r"><div class="name"><div class="tb" style="background:${TIER_COLOR[c.tier]}">${c.tier}</div><div class="lg"><img src="${logo(c.logo)}"${png}></div><span${c.name.length > 16 ? ' class="long"' : ''}>${esc(c.name)}</span></div>${fix(c.fix)}${cells}</div>`;
     }
   }
   const heads = ['MCP bugs<br>fixed', ...withDivider(([k, l]) => MATRIX_COL[k]?.[0] ?? esc(l), '')];
@@ -81,7 +99,7 @@ export function matrixHtml({ data }) {
   const groupRow = HARNESS_COLS.length ? `<div class="gh"><div style="grid-column:3 / span ${SPEC_COLS.length}">MCP spec</div><div class="hz" style="grid-column:${SPEC_COLS.length + 4} / span ${HARNESS_COLS.length}">Harness</div></div>` : '';
   return `<!doctype html><html><head><meta charset="utf-8"><title>MCP clients: the receipts</title>${FONT}
 <style>
-${pageCss(1080, 1350, 'color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column')}
+${pageCss(1080, matrixHeight({ data }), 'color:#EDEDED;padding:52px 32px 40px;display:flex;flex-direction:column')}
 h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26px 16px}
 .t{flex:1;display:flex;flex-direction:column;background:#1A1A17;border-radius:18px;padding:8px 0 10px}
 .h,.r,.gh{display:grid;grid-template-columns:${tracks};align-items:center}
@@ -95,10 +113,10 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .grp+.r{border-top:none}
 .r>*{justify-self:center}
 .name{justify-self:start;display:flex;align-items:center;gap:12px;padding-left:16px}
-.tb{width:30px;height:30px;border-radius:6px;color:#1a1a17;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
-.lg{width:44px;height:44px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center}
+.tb{flex:none;width:30px;height:30px;border-radius:6px;color:#1a1a17;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
+.lg{flex:none;width:44px;height:44px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center}
 .lg img{width:30px;height:30px;object-fit:contain}.lg img.png{width:42px;height:42px;filter:brightness(1.08) contrast(1.25)}
-.name span{font-size:22px;font-weight:600;color:#fff;white-space:nowrap}
+.name span{font-size:22px;font-weight:600;color:#fff;white-space:nowrap}.name span.long{font-size:18px;white-space:normal;line-height:1.1;max-width:150px}
 .m{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .m svg{width:26px;height:26px}
 .m.y{background:#4ADE80}.m.p{background:#FBBF24}.m.n{background:#F87171}.m.na{background:#55554F}

@@ -9,7 +9,7 @@ import path from 'node:path';
 import { screenshots } from './chrome.mjs';
 import { ROOT, load, tierMismatches } from './data.mjs';
 import { evidence, spliceReadme, readmeSections } from './markdown.mjs';
-import { tiersHtml, matrixHtml, historyFeaturesHtml, historyClientsHtml, badgeSvg } from './images.mjs';
+import { tiersHtml, tiersHeight, matrixHtml, matrixHeight, historyFeaturesHtml, historyClientsHtml, badgeSvg } from './images.mjs';
 import { snapshot, months, featureSeries, clientSeries } from './history.mjs';
 import { shareCards } from './site.mjs';
 
@@ -33,8 +33,8 @@ const outputs = {
 const ms = months(model.data);
 const features = featureSeries(model);
 const images = [
-  ['tiers', tiersHtml(model), 1080, 1350],
-  ['matrix', matrixHtml(model), 1080, 1350],
+  ['tiers', tiersHtml(model), 1080, tiersHeight(model)],
+  ['matrix', matrixHtml(model), 1080, matrixHeight(model)],
   ['history-features', historyFeaturesHtml(model, ms, features), 1200, 700],
   ['history-clients', historyClientsHtml(model, ms, clientSeries(model), features.map(f => f.label)), 1200, 700],
   // Committed so the website build (Cloudflare) needs no Chrome
