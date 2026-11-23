@@ -16,13 +16,19 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Live probe of 1.0.112: server/discover carries 2026-07-28; changelog 1.0.81 ships MCP 2026-07-28 support"
+    evidence: |-
+      Live probe of 1.0.112: `server/discover` carries **2026-07-28**.
+
+      - Changelog 1.0.81 ships MCP 2026-07-28 support.
     checked: 2026-11-16
   code_mode:
     value: n
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Not documented in the changelog or docs, and no code mode feature in the 1.0.112 bundle; the 1.0.106 `copilot help config` lists tool search but no code mode setting"
+    evidence: |-
+      Not documented in the changelog or docs, and **no code mode feature** in the 1.0.112 bundle.
+
+      - The 1.0.106 `copilot help config` lists tool search but no code mode setting.
     checked: 2026-11-16
   tool_search:
     value: y
@@ -30,7 +36,12 @@ cells:
     quality: strong
     method: source
     source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.112
-    evidence: "Docs: on by default above roughly 30 tools on supported Claude and GPT 5.4+ models, deferring MCP tools and matching against tool name, description and parameter names and descriptions; the 1.0.112 runtime sends Anthropic tool_search_tool_regex_20251119 with defer_loading for Claude and OpenAI hosted tool search for GPT, so ranking is done by the model provider and GitHub does not document it"
+    evidence: |-
+      Docs: tool search is **on by default** above roughly 30 tools on supported Claude and GPT 5.4+ models, deferring MCP tools.
+
+      - It matches against tool name, description and parameter names and descriptions.
+      - The 1.0.112 runtime sends Anthropic `tool_search_tool_regex_20251119` with `defer_loading` for Claude and OpenAI hosted tool search for GPT.
+      - Ranking is done by the model provider and GitHub does not document it.
     checked: 2026-11-16
     since:
       date: 2026-05-19
@@ -40,13 +51,21 @@ cells:
     value: na
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Live probe of 1.0.112 declares no io.modelcontextprotocol/ui extension; the runtime has an undocumented copilot_cli_mcp_apps flag for UI passthrough to a host, and nothing in the changelog"
+    evidence: |-
+      Live probe of 1.0.112 declares **no** `io.modelcontextprotocol/ui` extension.
+
+      - The runtime has an undocumented `copilot_cli_mcp_apps` flag for UI passthrough to a host.
+      - There is nothing in the changelog.
     checked: 2026-11-16
   tasks:
     value: p
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Changelog 1.0.41 adds experimental MCP Tasks, available only with experimental mode (off by default, --experimental or /settings experimental on); the default-mode probe of 1.0.112 declares no tasks, which matches"
+    evidence: |-
+      Changelog 1.0.41 adds **experimental** MCP Tasks, available only with experimental mode (**off by default**).
+
+      - Turn it on with `--experimental` or `/settings experimental on`.
+      - The default-mode probe of 1.0.112 declares no tasks, which matches.
     checked: 2026-11-16
     since:
       date: 2026-05-05
@@ -56,13 +75,17 @@ cells:
     value: n
     method: source
     source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.112
-    evidence: "No events/list or events/subscribe in the 1.0.112 bundle and nothing in the changelog"
+    evidence: |-
+      **No** `events/list` or `events/subscribe` in the 1.0.112 bundle and nothing in the changelog.
     checked: 2026-11-16
   cimd:
     value: y
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Changelog 1.0.83 adds Client ID Metadata Document (CIMD) support for MCP OAuth sign-in, and the 1.0.112 bundle checks client_id_metadata_document_supported"
+    evidence: |-
+      Changelog 1.0.83 adds **Client ID Metadata Document (CIMD)** support for MCP OAuth sign-in.
+
+      - The 1.0.112 bundle checks `client_id_metadata_document_supported`.
     checked: 2026-11-16
     since:
       date: 2026-09-04
@@ -72,13 +95,18 @@ cells:
     value: n
     method: source
     source: https://registry.npmjs.org/@github/copilot-linux-x64/1.0.112
-    evidence: "No ID-JAG token type or enterprise-managed authorization extension in the 1.0.112 bundle, and nothing in the changelog"
+    evidence: |-
+      **No** ID-JAG token type or enterprise-managed authorization extension in the 1.0.112 bundle, and nothing in the changelog.
     checked: 2026-11-16
   elicitation:
     value: y
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Live probe of 1.0.112 declares elicitation form and url; changelog 0.0.421 shows the form dialog and 0.0.423 adds URL mode"
+    evidence: |-
+      Live probe of 1.0.112 declares **elicitation form and url**.
+
+      - Changelog 0.0.421 shows the form dialog.
+      - Changelog 0.0.423 adds URL mode.
     checked: 2026-11-16
     since:
       date: 2026-03-03
@@ -88,5 +116,9 @@ cells:
     value: y
     method: changelog
     source: https://github.com/github/copilot-cli/blob/84ee80ea6490ce02d6000439356a609fcefbb9ae/changelog.md#L454
-    evidence: '1.0.71: "Keep MCP tool lists up to date when servers change". 1.0.85: "Fixed same-turn MCP tool-list refresh after received change notifications, including modern subscription-based servers"'
+    evidence: |-
+      Changelog entries 1.0.71 and 1.0.85 show **MCP tool lists refreshing** when servers change.
+
+      - 1.0.71: "Keep MCP tool lists up to date when servers change"
+      - 1.0.85: "Fixed same-turn MCP tool-list refresh after received change notifications, including modern subscription-based servers"
     checked: 2026-11-02

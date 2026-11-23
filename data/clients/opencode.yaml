@@ -17,13 +17,23 @@ cells:
     value: 2025-11-25
     method: probe
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L39
-    evidence: "Live probe of V1 1.19.5 on 2026-10-30 negotiated 2025-11-25; V1 uses @modelcontextprotocol/sdk 1.29.0 (bun.lock:1826), and V2 v2.2.3 still defaults to protocol legacy (up to 2025-11-25) with auto and 2026-07-28 as opt-ins (packages/schema/src/mcp.ts:20)"
+    evidence: |-
+      Live probe of V1 1.19.5 on 2026-10-30: negotiated **2025-11-25**.
+
+      - V1 uses `@modelcontextprotocol/sdk` 1.29.0 (`bun.lock:1826`).
+      - V2 v2.2.3 still defaults to protocol `legacy` (up to 2025-11-25), with `auto` and 2026-07-28 as opt-ins (`packages/schema/src/mcp.ts:20`).
     checked: 2026-10-30
   code_mode:
     value: p
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/effect/runtime-flags.ts#L48
-    evidence: "V1 1.19.5 has code mode behind OPENCODE_EXPERIMENTAL_CODE_MODE (or the OPENCODE_EXPERIMENTAL umbrella), off by default; when on, session/tools.ts:388 stops exposing MCP tools directly and routes them through execute. V2 v2.2.5 turns it on by default (packages/core/src/tool.ts:274), but V2 ships only through the separate opencode.ai/v2/install script and Homebrew tap, and the default installer and npm latest stay on 1.19.5"
+    evidence: |-
+      Source: V1 1.19.5 has code mode **behind `OPENCODE_EXPERIMENTAL_CODE_MODE`, off by default**.
+
+      - The `OPENCODE_EXPERIMENTAL` umbrella also turns it on.
+      - When on, `session/tools.ts:388` stops exposing MCP tools directly and routes them through `execute`.
+      - V2 v2.2.5 turns it on by default (`packages/core/src/tool.ts:274`).
+      - V2 ships only through the separate `opencode.ai/v2/install` script and Homebrew tap, and the default installer and npm latest stay on 1.19.5.
     checked: 2026-11-06
     since:
       date: 2026-07-06
@@ -35,47 +45,72 @@ cells:
     quality: basic
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/codemode/src/tool-runtime.ts#L411
-    evidence: "Inside code mode (experimental flag in V1), a partial catalog over a 2000 token budget points the model to search(), which tokenizes the query (camelCase split, naive plural stripping) and sums field-weighted substring scores: exact path or segment 20, path substring 8, description 4, parameter names and descriptions 2; ranking not documented in user docs"
+    evidence: |-
+      Source: search exists only **inside code mode** (experimental flag in V1).
+
+      - A partial catalog over a 2000 token budget points the model to `search()`.
+      - `search()` tokenizes the query (camelCase split, naive plural stripping) and sums field-weighted substring scores: exact path or segment 20, path substring 8, description 4, parameter names and descriptions 2.
+      - Ranking is not documented in user docs.
     checked: 2026-10-30
   apps:
     value: na
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L39
-    evidence: "V1 1.19.5 declares only roots, and grep for ext-apps, ui:// and io.modelcontextprotocol/ui finds nothing in V1 1.19.5 (apart from a test resource URI), its npm bundle or V2 v2.2.3"
+    evidence: |-
+      Source: **no MCP Apps support** found; V1 1.19.5 declares only `roots`.
+
+      - Grep for `ext-apps`, `ui://` and `io.modelcontextprotocol/ui` finds nothing in V1 1.19.5 (apart from a test resource URI), its npm bundle or V2 v2.2.3.
     checked: 2026-10-30
   tasks:
     value: n
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L47
-    evidence: "V1 1.19.5 mcp/index.ts:39-49 declares {roots: {}} with tasks commented out (issue 28567), matching the live probe; V2 v2.2.3 declares roots and elicitation only"
+    evidence: |-
+      Source: V1 1.19.5 declares `{roots: {}}` with **tasks commented out** (issue 28567), matching the live probe.
+
+      - The declaration is at `mcp/index.ts:39-49`.
+      - V2 v2.2.3 declares `roots` and `elicitation` only.
     checked: 2026-10-30
   events:
     value: n
     method: source
     source: https://github.com/anomalyco/opencode/tree/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp
-    evidence: "grep for events/subscribe and notifications/events finds nothing in V1 1.19.5, its npm bundle or V2 v2.2.3"
+    evidence: "Source: grep for `events/subscribe` and `notifications/events` finds **nothing** in V1 1.19.5, its npm bundle or V2 v2.2.3."
     checked: 2026-10-30
   cimd:
     value: n
     method: source
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L301
-    evidence: "V1 1.19.5 uses dynamic client registration or a configured clientId and sets no clientMetadataUrl; only V2 v2.2.3 sends CLIENT_METADATA_URL https://opencode.ai/oauth/opencode/client.json when the server supports CIMD (packages/core/src/mcp/oauth.ts:29,456)"
+    evidence: |-
+      Source: V1 1.19.5 uses dynamic client registration or a configured `clientId` and **sets no `clientMetadataUrl`**.
+
+      - Only V2 v2.2.3 sends `CLIENT_METADATA_URL` https://opencode.ai/oauth/opencode/client.json when the server supports CIMD (`packages/core/src/mcp/oauth.ts:29,456`).
     checked: 2026-10-30
   id_jag:
     value: n
     method: source
     source: https://github.com/anomalyco/opencode/tree/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp
-    evidence: "grep for id-jag, jwt-bearer and enterprise-managed finds nothing in V1 1.19.5 or V2 v2.2.3; the npm bundle has only SDK schema strings"
+    evidence: |-
+      Source: grep for `id-jag`, `jwt-bearer` and `enterprise-managed` finds **nothing** in V1 1.19.5 or V2 v2.2.3.
+
+      - The npm bundle has only SDK schema strings.
     checked: 2026-10-30
   elicitation:
     value: n
     method: probe
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L44
-    evidence: "Live probe of V1 1.19.5 declared only roots, and mcp/index.ts:44 has elicitation commented out (issue 23066); V2 v2.2.3 declares elicitation form and url (packages/core/src/mcp/client.ts:214)"
+    evidence: |-
+      Live probe of V1 1.19.5: declared only `roots`, with **elicitation commented out** (issue 23066).
+
+      - The comment is at `mcp/index.ts:44`.
+      - V2 v2.2.3 declares elicitation `form` and `url` (`packages/core/src/mcp/client.ts:214`).
     checked: 2026-10-30
   list_changed:
     value: y
     method: source
     source: https://github.com/anomalyco/opencode/blob/v1.19.5/packages/opencode/src/mcp/index.ts#L461-L471
-    evidence: 'The ToolListChangedNotification handler re-lists with McpCatalog.defs, updates s.defs and publishes ToolsChanged; session tools are resolved on every loop step'
+    evidence: |-
+      Source: the `ToolListChangedNotification` handler **re-lists** with `McpCatalog.defs`, updates `s.defs` and publishes `ToolsChanged`.
+
+      - Session tools are resolved on every loop step.
     checked: 2026-11-02

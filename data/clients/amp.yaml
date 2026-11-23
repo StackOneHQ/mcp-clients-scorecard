@@ -14,14 +14,25 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Own probe of the Amp CLI 0.0.1795334436-g660843 (npm @ampcode/cli, linux-x64 binary) with a local stdio server: amp mcp doctor sent server/discover with protocolVersion 2026-07-28 first and, when the server answered method not found, initialize with 2025-11-25; the docs link the 2025-11-25 elicitation spec"
+    evidence: |-
+      Own probe of the Amp CLI 0.0.1795334436-g660843: **2026-07-28 is sent first**, with 2025-11-25 as the fallback.
+
+      - Tested the linux-x64 binary (npm `@ampcode/cli`) with a local stdio server.
+      - `amp mcp doctor` sent `server/discover` with `protocolVersion` 2026-07-28 first.
+      - When the server answered method not found, it sent `initialize` with 2025-11-25.
+      - The docs link the 2025-11-25 elicitation spec.
     checked: 2026-11-22
     fallback: 2025-11-25
   code_mode:
     value: p
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Docs: agents call saved remote MCP tools (definitions stored on ampcode.com) by writing code for the code_exec tool that imports the server as a module; servers in local amp.mcpServers use different rules, so this is one of two modes"
+    evidence: |-
+      Docs: agents call saved remote MCP tools by **writing code for the `code_exec` tool**, so code mode is partial.
+
+      - Definitions of the saved remote tools are stored on ampcode.com.
+      - The code imports the server as a module.
+      - Servers in local `amp.mcpServers` use different rules, so this is one of two modes.
     checked: 2026-11-22
   tool_search:
     value: p
@@ -29,47 +40,74 @@ cells:
     quality: basic
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Docs: tool_search lists each saved remote MCP server as a module and discovers its tools (with return types) on demand, and the Efficient MCP Tool Loading post (2026-01-08) covers skill-bundled MCP servers that load only when a skill is invoked; local amp.mcpServers entries are not described as deferred, and the docs do not say how tool_search ranks results"
+    evidence: |-
+      Docs: `tool_search` lists each saved remote MCP server as a **module** and discovers its tools on demand.
+
+      - Discovery includes the return types of the tools.
+      - The Efficient MCP Tool Loading post (2026-01-08) covers skill-bundled MCP servers that load only when a skill is invoked.
+      - Local `amp.mcpServers` entries are *not* described as deferred.
+      - The docs do not say how `tool_search` ranks results.
     checked: 2026-11-22
   apps:
     value: y
     method: probe
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Own probe of 0.0.1795334436-g660843: the client declares extensions io.modelcontextprotocol/ui with mimeTypes text/html;profile=mcp-app in initialize, and the docs say MCP Apps can call remote tools when the policy is Ask First; the 2026-08-19 MCP in Orbs post still said MCP Apps are not supported, and no release note dates the change"
+    evidence: |-
+      Own probe of 0.0.1795334436-g660843: the client **declares MCP Apps support** (`io.modelcontextprotocol/ui`) in `initialize`.
+
+      - The declared mimeTypes entry is `text/html;profile=mcp-app`.
+      - The docs say MCP Apps can call remote tools when the policy is Ask First.
+      - The 2026-08-19 MCP in Orbs post still said MCP Apps are not supported.
+      - No release note dates the change.
     checked: 2026-11-22
   tasks:
     value: n
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "The MCP docs page covers tools, elicitation, OAuth and apps and never mentions tasks, and the probe of 0.0.1795334436-g660843 declares no tasks capability; not documented"
+    evidence: |-
+      Tasks are **not documented**, and the probe of 0.0.1795334436-g660843 declares no `tasks` capability.
+
+      - The MCP docs page covers tools, elicitation, OAuth and apps and never mentions tasks.
+      - The probe declares no `tasks` capability.
     checked: 2026-11-22
   events:
     value: n
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "The MCP docs page describes no server push of events, only tool list refreshes and elicitation; not documented"
+    evidence: The MCP docs page describes **no server push of events**, only tool list refreshes and elicitation; not documented
     checked: 2026-11-22
   cimd:
     value: y
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Docs: Amp supports Client ID Metadata Documents (CIMD) and falls back to dynamic client registration for servers that do not support CIMD"
+    evidence: "Docs: Amp supports **Client ID Metadata Documents** (CIMD) and falls back to dynamic client registration for servers that do not support CIMD"
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "The docs list OAuth with CIMD or DCR, manual client registration, bearer headers and Amp's own workload ID tokens (\"${amp:id-token}\" for orbs), but no enterprise-managed authorization or ID-JAG; not documented"
+    evidence: |-
+      The docs list **no enterprise-managed authorization or ID-JAG**; not documented.
+
+      - Documented auth: OAuth with CIMD or DCR, manual client registration, bearer headers and Amp's own workload ID tokens (`"${amp:id-token}"` for orbs).
     checked: 2026-11-22
   elicitation:
     value: y
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Docs: remote servers can ask for input mid-call in a dialog (text, number, yes or no and single-choice fields) and can send the user to a URL, with an Open in Browser button; multiple-choice fields are cancelled"
+    evidence: |-
+      Docs: remote servers can ask for input mid-call in a dialog, and **multiple-choice fields are cancelled**.
+
+      - Dialog fields: text, number, yes or no and single-choice.
+      - Servers can send the user to a URL, with an Open in Browser button.
     checked: 2026-11-22
   list_changed:
     value: n
     method: docs
     source: https://ampcode.com/docs/customize/mcp
-    evidence: "Docs describe tool lists refreshed in the background when a saved list is over a day old, by Refresh Tools, or by reloading MCP in a thread, and say nothing about acting on a list changed notice; the live probe could not test it because amp mcp doctor exits after connecting"
+    evidence: |-
+      Docs describe tool lists refreshed in the background and **say nothing about acting on a list changed notice**.
+
+      - Refreshes happen when a saved list is over a day old, by Refresh Tools, or by reloading MCP in a thread.
+      - The live probe could not test it because `amp mcp doctor` exits after connecting.
     checked: 2026-11-22

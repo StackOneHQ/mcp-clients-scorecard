@@ -15,7 +15,7 @@ cells:
     value: 2025-11-25           # newest revision the client negotiates, from data/meta.yaml spec_versions, or not published
     method: docs                # probe, source, docs, changelog or issue
     source: https://example.com/docs/mcp
-    evidence: What the source shows, in one sentence
+    evidence: What the source shows, as a verdict sentence then one bullet per fact (data/README.md#writing-evidence)
     checked: 2026-10-27         # the day you opened the source, YYYY-MM-DD
   code_mode:
     value: n                    # y, p or n

@@ -15,19 +15,32 @@ cells:
     value: 2025-11-25
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/bun.lock#L1923
-    evidence: 'packages/opencode/package.json:109 pins @modelcontextprotocol/sdk 1.32.1 (bun.lock:1923), whose LATEST_PROTOCOL_VERSION is 2025-11-25 (dist/esm/types.js:2 in that package); the patch in patches/ only adds determineScope to auth.'
+    evidence: |-
+      Source: the pinned MCP SDK 1.32.1 defaults to protocol **2025-11-25**.
+
+      - `packages/opencode/package.json:109` pins `@modelcontextprotocol/sdk` 1.32.1 (`bun.lock:1923`).
+      - Its `LATEST_PROTOCOL_VERSION` is 2025-11-25 (`dist/esm/types.js:2` in that package).
+      - The patch in `patches/` only adds `determineScope` to auth.
     checked: 2026-11-22
   code_mode:
     value: p
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/effect/runtime-flags.ts#L58
-    evidence: 'Behind KILO_EXPERIMENTAL_CODE_MODE (or the KILO_EXPERIMENTAL umbrella, or experimental.code_mode in config), off by default; when on, session/tools.ts:471 stops exposing MCP tools directly and tool/code-mode.ts routes them through a script runtime.'
+    evidence: |-
+      Source: code mode is **experimental and off by default**, behind `KILO_EXPERIMENTAL_CODE_MODE`.
+
+      - The `KILO_EXPERIMENTAL` umbrella or `experimental.code_mode` in config also turns it on.
+      - When on, `session/tools.ts:471` stops exposing MCP tools directly and `tool/code-mode.ts` routes them through a script runtime.
     checked: 2026-11-22
   tool_search:
     value: p
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/codemode/src/tool-runtime.ts#L386
-    evidence: 'Inside the experimental code mode, a budgeted catalog points the model to a search tool that scores path, description and parameter text by substring weights (exact path 20, path substring 8, description 4, other text 2); not available with code mode off.'
+    evidence: |-
+      Source: tool search exists only **inside the experimental code mode**, and is not available with code mode off.
+
+      - A budgeted catalog points the model to a search tool.
+      - It scores path, description and parameter text by substring weights: exact path 20, path substring 8, description 4, other text 2.
     checked: 2026-11-22
     label: Keyword
     quality: basic
@@ -35,25 +48,39 @@ cells:
     value: n
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L56-L66
-    evidence: 'CLIENT_OPTIONS declares only roots (sampling, elicitation and tasks are commented out); no io.modelcontextprotocol/ui extension or ui:// handling anywhere in packages/opencode, kilo-vscode or the web UIs.'
+    evidence: |-
+      Source: **no MCP Apps support**; `CLIENT_OPTIONS` declares only `roots`.
+
+      - Sampling, elicitation and tasks are commented out.
+      - No `io.modelcontextprotocol/ui` extension or `ui://` handling anywhere in `packages/opencode`, `kilo-vscode` or the web UIs.
     checked: 2026-11-22
   tasks:
     value: n
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L56-L66
-    evidence: '`// tasks: {}` is commented out in CLIENT_OPTIONS with a pointer to upstream issue anomalyco/opencode#28567, so no tasks capability is declared.'
+    evidence: |-
+      Source: **no tasks capability** is declared; `// tasks: {}` is commented out in `CLIENT_OPTIONS`.
+
+      - The comment points to upstream issue `anomalyco/opencode#28567`.
     checked: 2026-11-22
   events:
     value: n
     method: source
     source: https://github.com/Kilo-Org/kilocode/tree/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp
-    evidence: 'grep for notifications/events, events/subscribe and subscriptions/listen finds nothing in packages/opencode/src or kilo-vscode/src; only roots is declared.'
+    evidence: |-
+      Source: **no events support**; grep for `notifications/events`, `events/subscribe` and `subscriptions/listen` finds nothing in `packages/opencode/src` or `kilo-vscode/src`.
+
+      - Only `roots` is declared.
     checked: 2026-11-22
   cimd:
     value: y
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/oauth-provider.ts#L56-L63
-    evidence: 'The OAuth provider returns clientMetadataUrl https://kilo.ai/docs/oauth/kilo/client.json (hosted, 200) for the default callback with no configured client credentials, otherwise it falls back to dynamic registration or static credentials.'
+    evidence: |-
+      Source: the OAuth provider returns a **`clientMetadataUrl`** for the default callback when no client credentials are configured.
+
+      - The URL is a [hosted document](https://kilo.ai/docs/oauth/kilo/client.json) (200).
+      - Otherwise it falls back to dynamic registration or static credentials.
     checked: 2026-11-22
     since:
       date: 2026-09-24
@@ -63,17 +90,28 @@ cells:
     value: n
     method: source
     source: https://kilo.ai/docs/automate/mcp/using-in-kilo-code
-    evidence: 'No token-exchange, requested_token_type or id-jag code in packages/opencode/src/mcp or kilo-vscode/src, and the MCP docs page lists OAuth only as an automatic flow with dynamic registration.'
+    evidence: |-
+      Source: **no `id-jag` code** in the client.
+
+      - No `token-exchange`, `requested_token_type` or `id-jag` code in `packages/opencode/src/mcp` or `kilo-vscode/src`.
+      - The MCP docs page lists OAuth only as an automatic flow with dynamic registration.
     checked: 2026-11-22
   elicitation:
     value: n
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L56-L66
-    evidence: '`// elicitation: {}` is commented out in CLIENT_OPTIONS with a pointer to upstream issue anomalyco/opencode#23066, so the client does not declare the capability.'
+    evidence: |-
+      Source: elicitation is **not declared**; `// elicitation: {}` is commented out in `CLIENT_OPTIONS`.
+
+      - The comment points to upstream issue `anomalyco/opencode#23066`.
     checked: 2026-11-22
   list_changed:
     value: y
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L576-L585
-    evidence: 'Registers a ToolListChangedNotification handler that calls McpCatalog.defs to list tools again, stores the new definitions and publishes a ToolsChanged event.'
+    evidence: |-
+      Source: the client **registers a `ToolListChangedNotification` handler** that re-lists tools.
+
+      - It calls `McpCatalog.defs` to list tools again and stores the new definitions.
+      - It then publishes a `ToolsChanged` event.
     checked: 2026-11-22

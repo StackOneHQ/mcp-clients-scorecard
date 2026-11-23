@@ -17,6 +17,8 @@ export const logo = f => {
 const logoClass = f => (f === 'gh-continue.png' ? ' class="png"' : f.endsWith('.png') ? ' class="av"' : '');
 const WORDMARK = `<div class="so"><img src="${logo('stackone-white.svg')}" alt="StackOne"></div>`;
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Attribute values: esc() leaves quotes alone, which is fine in text but not inside href="..."
+export const attr = s => esc(s).replace(/"/g, '&quot;');
 
 // Up to 4 logos per line, 3 when a cell holds more; each tier row is as tall as its fullest cell
 const PER_LINE = n => (n > 4 ? 3 : 4);

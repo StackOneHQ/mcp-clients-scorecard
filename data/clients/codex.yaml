@@ -16,13 +16,19 @@ cells:
     value: 2025-06-18
     method: probe
     source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1739-L1744
-    evidence: "Live probe of 0.169.0: initialize carries 2025-06-18; the mcp_2026_07_28 feature is under development and off by default"
+    evidence: |-
+      Live probe of 0.169.0: `initialize` carries **2025-06-18**.
+
+      - The `mcp_2026_07_28` feature is under development and off by default.
     checked: 2026-11-16
   code_mode:
     value: p
     method: docs
     source: https://developers.openai.com/codex/config-reference
-    evidence: "features.code_mode is under development and off by default, and still Stage::UnderDevelopment with default_enabled false in features/src/lib.rs at rust-v0.169.0 (key code_mode, lib.rs#L1305-L1310)"
+    evidence: |-
+      `features.code_mode` is **under development and off by default**.
+
+      - It is still `Stage::UnderDevelopment` with `default_enabled` false in `features/src/lib.rs` at rust-v0.169.0 (key `code_mode`, `lib.rs#L1305-L1310`).
     checked: 2026-11-16
     since:
       date: 2026-03-11
@@ -34,7 +40,11 @@ cells:
     quality: strong
     method: source
     source: https://github.com/openai/codex/blob/6ff1e1ca3b30fc8b914720681fcf5fe62e95f856/codex-rs/core/src/tools/handlers/tool_search.rs#L171
-    evidence: "When the model supports the search tool, MCP tools are deferred and tool_search ranks them with BM25 (bm25 crate, English, fit to the corpus) over each tool name, the name with underscores as spaces, description, parameter names and descriptions, plus namespace name and description"
+    evidence: |-
+      When the model supports the search tool, MCP tools are deferred and `tool_search` ranks them with **BM25**.
+
+      - It uses the `bm25` crate, English, fit to the corpus.
+      - The indexed text is each tool name, the name with underscores as spaces, description, parameter names and descriptions, plus namespace name and description.
     checked: 2026-10-30
     since:
       date: 2026-04-10
@@ -44,25 +54,32 @@ cells:
     value: na
     method: probe
     source: https://github.com/openai/codex/issues/52524
-    evidence: "Live probe of 0.169.0 declares no io.modelcontextprotocol/ui extension; enable_mcp_apps is under development and off by default, and app rendering reports come from Codex Desktop, not the CLI"
+    evidence: |-
+      Live probe of 0.169.0 declares **no MCP Apps extension** (`io.modelcontextprotocol/ui`).
+
+      - `enable_mcp_apps` is under development and off by default.
+      - App rendering reports come from Codex Desktop, not the CLI.
     checked: 2026-11-16
   tasks:
     value: n
     method: probe
     source: https://github.com/openai/codex/issues/48617
-    evidence: "Live probe of 0.169.0 declares no tasks capability, and the feature request is still open"
+    evidence: Live probe of 0.169.0 declares no `tasks` capability, and the feature request is **still open**
     checked: 2026-11-16
   events:
     value: n
     method: source
     source: https://github.com/openai/codex/blob/d32063f96c2dff1dc96af839b3952abb6acfeda4/codex-rs/codex-mcp/src/resource_client.rs#L373
-    evidence: "events/list and events/stream are sent only to the built-in codex_apps hosted server, not to user-configured MCP servers; issue 49665 about event subscriptions is still open"
+    evidence: |-
+      `events/list` and `events/stream` are sent **only to the built-in `codex_apps` hosted server**, not to user-configured MCP servers.
+
+      - Issue 49665 about event subscriptions is still open.
     checked: 2026-11-16
   cimd:
     value: y
     method: docs
     source: https://developers.openai.com/codex/mcp
-    evidence: "Docs say Codex picks CIMD when the authorization server advertises client_id_metadata_document_supported, otherwise DCR"
+    evidence: Docs say Codex **picks CIMD** when the authorization server advertises `client_id_metadata_document_supported`, otherwise DCR
     checked: 2026-10-30
     since:
       date: 2026-08-18
@@ -72,7 +89,10 @@ cells:
     value: p
     method: source
     source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1781-L1786
-    evidence: "Enterprise-managed authorization (PR 55334) runs only with use_xaa, which is under development and off by default in 0.169.0, and needs an enterprise-managed auth config on the server (connection_manager.rs then forces the 2026-07-28 protocol for that server)"
+    evidence: |-
+      Enterprise-managed authorization (PR 55334) runs only with `use_xaa`, which is **under development and off by default** in 0.169.0.
+
+      - It needs an enterprise-managed auth config on the server (`connection_manager.rs` then forces the 2026-07-28 protocol for that server).
     checked: 2026-11-16
     since:
       date: 2026-10-23
@@ -82,7 +102,7 @@ cells:
     value: y
     method: probe
     source: https://github.com/openai/codex/pull/22188
-    evidence: "Live probe of 0.169.0 declares elicitation form and url"
+    evidence: Live probe of 0.169.0 declares `elicitation` **form and url**
     checked: 2026-11-16
     since:
       date: 2025-12-02
@@ -92,5 +112,9 @@ cells:
     value: p
     method: source
     source: https://github.com/openai/codex/blob/rust-v0.169.0/codex-rs/features/src/lib.rs#L1745-L1750
-    evidence: 'Re-listing on the notification sits behind the feature flag mcp_tool_list_changed (Stage::UnderDevelopment, default_enabled false). Without the flag the notification is only logged'
+    evidence: |-
+      Re-listing on the notification sits **behind the feature flag** `mcp_tool_list_changed`.
+
+      - The stage is `Stage::UnderDevelopment` with `default_enabled` false.
+      - Without the flag the notification is only logged.
     checked: 2026-11-16
