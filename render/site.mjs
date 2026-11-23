@@ -451,7 +451,7 @@ function publicData(data) {
       mcp_bugs_fixed: c.fix, mcp_bugs_fixed_text: fixText(c.fix),
       cells: Object.fromEntries(COLUMNS.map(([k]) => {
         const { value, method, source, evidence, checked, label, quality, fallback, since } = c.cells[k];
-        return [k, { value: String(value), method, source, evidence, checked: String(checked), ...(label && { label }), ...(quality && { quality }), ...(fallback && { fallback }), ...(since && { since: { ...since, date: String(since.date) } }) }];
+        return [k, { value: String(value), method, source, evidence, evidence_text: evidencePlain(evidence), checked: String(checked), ...(label && { label }), ...(quality && { quality }), ...(fallback && { fallback }), ...(since && { since: { ...since, date: String(since.date) } }) }];
       })),
     })),
   };
