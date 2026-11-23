@@ -16,59 +16,66 @@ cells:
     value: not published
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'The MCP docs page names no protocol revision and the app is closed source, so no revision is published'
+    evidence: "Docs: the MCP docs page names **no protocol revision**, and the app is closed source, so no revision is published."
     checked: 2026-11-22
   code_mode:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'The MCP docs page describes mcp.json servers and tool calls only; no code mode is documented'
+    evidence: "Docs: the MCP docs page describes `mcp.json` servers and tool calls only; **no code mode** is documented."
     checked: 2026-11-22
   tool_search:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'Not documented for LM Studio 0.4.28; MCPs load on demand since 0.4.0 build 17 but every tool is still passed to the model (the on-demand tool discovery in the changelog is Bionic 1.1.9, a separate app)'
+    evidence: |-
+      Docs: **not documented** for LM Studio 0.4.28; every tool is still passed to the model.
+
+      - MCPs load on demand since 0.4.0 build 17.
+      - The on-demand tool discovery in the changelog is Bionic 1.1.9, a separate app.
     checked: 2026-11-22
   apps:
     value: n
     method: issue
     source: https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1634
-    evidence: 'Open feature request (2026-03-11): MCP tool calls work but MCP apps (ui resources) are not supported'
+    evidence: "Issue: an **open feature request** (2026-03-11) says MCP tool calls work but MCP apps (ui resources) are not supported."
     checked: 2026-11-22
   tasks:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'Not documented: the MCP docs page and changelog name no tasks support, and the docs do not list supported capabilities'
+    evidence: "**Not documented**: the MCP docs page and changelog name no tasks support, and the docs do not list supported capabilities."
     checked: 2026-11-22
   events:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'Not documented: no events or trigger support in the MCP docs or the 0.4.x changelog'
+    evidence: "**Not documented**: no events or trigger support in the MCP docs or the 0.4.x changelog."
     checked: 2026-11-22
   cimd:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/integrations/mcp-remote
-    evidence: 'OAuth docs describe browser sign-in with dynamic client registration or your own CLIENT_ID and CLIENT_SECRET in mcp.json; CIMD is not mentioned'
+    evidence: "Docs: OAuth uses browser sign-in with dynamic client registration or your own `CLIENT_ID` and `CLIENT_SECRET` in `mcp.json`; **CIMD is not mentioned**."
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/integrations/mcp-remote
-    evidence: 'OAuth docs list browser sign-in and static client credentials only; enterprise-managed authorization is not mentioned'
+    evidence: "Docs: OAuth lists browser sign-in and static client credentials only; **enterprise-managed authorization is not mentioned**."
     checked: 2026-11-22
   elicitation:
     value: n
     method: issue
     source: https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/977
-    evidence: 'Open request for elicitation, sampling and progress support (2025-09-05), no vendor reply; issue 817 reports a tool call ending blank when a server elicits'
+    evidence: |-
+      Issue: an **open request** for elicitation, sampling and progress support (2025-09-05) has no vendor reply.
+
+      - Issue 817 reports a tool call ending blank when a server elicits.
     checked: 2026-11-22
   list_changed:
     value: n
     method: docs
     source: https://lmstudio.ai/docs/app/mcp
-    evidence: 'Not documented: the MCP docs page does not say the app re-lists tools after tools/list_changed, and no changelog entry names it'
+    evidence: "**Not documented**: the MCP docs page does not say the app re-lists tools after `tools/list_changed`, and no changelog entry names it."
     checked: 2026-11-22

@@ -12,59 +12,78 @@ cells:
     value: not published
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The AI Assistant MCP docs (2026.3) name no protocol revision; they list STDIO, Streamable HTTP and legacy SSE transports only. The client is closed source'
+    evidence: |-
+      Docs (2026.3): the AI Assistant MCP docs name **no protocol revision**.
+
+      - Only `STDIO`, Streamable HTTP and legacy SSE transports are listed.
+      - The client is closed source.
     checked: 2026-11-22
   code_mode:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs describe tools invoked automatically by the chat or manually with a / command, and no script-calls-tools mode; not documented'
+    evidence: "Docs: tools are invoked automatically by the chat or manually with a `/` command, with **no script-calls-tools mode**; not documented."
     checked: 2026-11-22
   tool_search:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs list the connected server''s tools in the Status column and expose them to the chat directly; no on-demand tool loading is documented (the router-only option on the page is for the IDE''s own MCP server, not this client)'
+    evidence: |-
+      Docs: the connected server's tools are listed in the Status column and exposed to the chat directly, with **no on-demand tool loading** documented.
+
+      - The router-only option on the page is for the IDE's own MCP server, not this client.
     checked: 2026-11-22
   apps:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs mention tools only and no rendering of server-returned UI; MCP Apps not documented'
+    evidence: "Docs mention tools only and no rendering of server-returned UI; **MCP Apps not documented**."
     checked: 2026-11-22
   tasks:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs mention tool calls only; the Tasks extension is not documented'
+    evidence: "Docs mention tool calls only; the **Tasks extension is not documented**."
     checked: 2026-11-22
   events:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs mention no server-pushed events; not documented'
+    evidence: "Docs mention no server-pushed events; **not documented**."
     checked: 2026-11-22
   cimd:
     value: n
     method: issue
     source: https://youtrack.jetbrains.com/issue/LLM-24541
-    evidence: 'Open bug (state Open, assignee set): AI Assistant MCP has no OAuth or HTTP authentication flow and a 401 from a server only shows "Expected status code 200 but was 401"; the reporter notes Junie MCP works, so no client registration of any kind exists here'
+    evidence: |-
+      Issue: an **open bug** shows AI Assistant MCP has no OAuth or HTTP authentication flow, so no client registration of any kind exists here.
+
+      - State is Open, assignee set.
+      - A 401 from a server only shows "Expected status code 200 but was 401".
+      - The reporter notes Junie MCP works.
     checked: 2026-11-22
   id_jag:
     value: n
     method: issue
     source: https://youtrack.jetbrains.com/issue/LLM-24541
-    evidence: 'Same open bug: AI Assistant MCP cannot authenticate to servers that need OAuth, so enterprise-managed authorization is not available'
+    evidence: "Issue: the same **open bug** means AI Assistant MCP cannot authenticate to servers that need OAuth, so enterprise-managed authorization is not available."
     checked: 2026-11-22
   elicitation:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs do not mention elicitation; the elicitation work in YouTrack (LLM-31540) is about ACP agents in AI Chat, not MCP servers'
+    evidence: |-
+      Docs do not mention elicitation (**not documented**).
+
+      - The elicitation work in YouTrack (`LLM-31540`) is about ACP agents in AI Chat, not MCP servers.
     checked: 2026-11-22
   list_changed:
     value: n
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
-    evidence: 'The docs describe a manual Reconnect button and an Automatically enable new and changed MCP servers setting (for config changes); no live refresh on a server tool-list notice is documented'
+    evidence: |-
+      Docs: **no live refresh** on a server tool-list notice is documented.
+
+      - The docs describe a manual Reconnect button.
+      - They also describe an `Automatically enable new and changed MCP servers` setting (for config changes).
     checked: 2026-11-22

@@ -15,14 +15,22 @@ cells:
     value: 2026-07-28
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L161
-    evidence: "v0.13.4 pins mcp==2.3.0 (pyproject.toml:57) and opens the session with mcp.Client at client.py:161 with the SDK default mode auto (mcp 2.3.0 client.py:335), which sends a server/discover probe at LATEST_MODERN_VERSION 2026-07-28 and falls back to the initialize handshake at 2025-11-25 on legacy servers (mcp 2.3.0 _probe.py:67, version.py); the MCP docs page says Open WebUI connects on the stateless 2026-07-28 revision and on older revisions"
+    evidence: |-
+      v0.13.4 pins `mcp==2.3.0` (`pyproject.toml:57`) and opens the session with `mcp.Client` at `client.py:161` in the SDK default mode `auto` (mcp 2.3.0 `client.py:335`).
+
+      - It sends a `server/discover` probe at `LATEST_MODERN_VERSION` **2026-07-28** and falls back to the `initialize` handshake at 2025-11-25 on legacy servers (mcp 2.3.0 `_probe.py:67`, `version.py`).
+      - The MCP docs page says Open WebUI connects on the stateless 2026-07-28 revision and on older revisions.
     checked: 2026-11-23
     fallback: 2025-11-25
   code_mode:
     value: n
     method: docs
     source: https://docs.openwebui.com/features/extensibility/mcp/
-    evidence: "The MCP docs page does not mention code mode or a way for the model to script MCP tool calls, and grep for code mode and code_mode in CHANGELOG.md at tag v0.13.4 finds 0 hits; MCP tools reach the model as ordinary tool definitions, or through search_tools and call_tool when Tool Search is on"
+    evidence: |-
+      The MCP docs page does not mention code mode or a way for the model to script MCP tool calls, so there is **no code mode**.
+
+      - Grep for code mode and `code_mode` in `CHANGELOG.md` at tag v0.13.4 finds 0 hits.
+      - MCP tools reach the model as ordinary tool definitions, or through `search_tools` and `call_tool` when Tool Search is on.
     checked: 2026-11-23
   tool_search:
     value: p
@@ -30,7 +38,12 @@ cells:
     quality: strong
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/tool_search.py#L253
-    evidence: "Tool Search defers tools with long definitions and gives the model search_tools and call_tool, ranking with BM25 by default (tool_search.py:253, engine switch at :475, embeddings and a relevance API as options); it is off by default (config.py:2295 ENABLE_TOOL_SEARCH False), switched on by an admin in Admin Settings > Interface, where it carries an Experimental badge (Interface.svelte:685-693), and the MCP docs page tells admins to turn it on for large MCP tool sets"
+    evidence: |-
+      Tool Search defers tools with long definitions and gives the model `search_tools` and `call_tool`, but it is **off by default** and carries an *Experimental* badge.
+
+      - Ranking is BM25 by default (`tool_search.py:253`, engine switch at :475, embeddings and a relevance API as options).
+      - `config.py:2295` `ENABLE_TOOL_SEARCH` is False; an admin switches it on in Admin Settings > Interface (`Interface.svelte:685-693`).
+      - The MCP docs page tells admins to turn it on for large MCP tool sets.
     checked: 2026-11-23
     since:
       date: 2026-10-10
@@ -40,7 +53,10 @@ cells:
     value: y
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L163
-    evidence: "client.py:163 advertises the io.modelcontextprotocol/ui extension with mimeTypes text/html;profile=mcp-app, and a tool whose _meta.ui.resourceUri points to a ui:// resource has its HTML shown inline in the chat in a sandboxed iframe (apps.py, MCP docs page section MCP Apps)"
+    evidence: |-
+      `client.py:163` advertises the `io.modelcontextprotocol/ui` extension with mimeTypes `text/html;profile=mcp-app`, so **MCP Apps render inline**.
+
+      - A tool whose `_meta.ui.resourceUri` points to a `ui://` resource has its HTML shown in the chat in a sandboxed iframe (`apps.py`, MCP docs page section MCP Apps).
     checked: 2026-11-23
     since:
       date: 2026-11-03
@@ -50,35 +66,62 @@ cells:
     value: n
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L163
-    evidence: "The only extension the client advertises is io.modelcontextprotocol/ui (client.py:163); grep for io.modelcontextprotocol/tasks, tasks/get, tasks/result and enable_tasks across backend at v0.13.4 finds 0 hits, and the MCP docs page does not mention tasks"
+    evidence: |-
+      The only extension the client advertises is `io.modelcontextprotocol/ui` (`client.py:163`), so there is **no MCP Tasks support**.
+
+      - Grep for `io.modelcontextprotocol/tasks`, `tasks/get`, `tasks/result` and `enable_tasks` across backend at v0.13.4 finds 0 hits.
+      - The MCP docs page does not mention tasks.
     checked: 2026-11-23
   events:
     value: n
     method: source
     source: https://github.com/open-webui/open-webui/tree/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui
-    evidence: "grep for events/list, events/poll, events/subscribe, subscriptions/listen, notifications/events and io.modelcontextprotocol/events across backend at v0.13.4 finds 0 hits, and the MCP docs page says the Open WebUI event system is only available for native Python tools, not MCP servers"
+    evidence: |-
+      **No MCP Events support**: grep across backend at v0.13.4 finds 0 hits.
+
+      - The patterns were `events/list`, `events/poll`, `events/subscribe`, `subscriptions/listen`, `notifications/events` and `io.modelcontextprotocol/events`.
+      - The MCP docs page says the Open WebUI event system is only available for native Python tools, *not* MCP servers.
     checked: 2026-11-23
   cimd:
     value: n
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/oauth.py#L581
-    evidence: "OAuth 2.1 connections register with dynamic client registration, posting client metadata to the server's registration endpoint (oauth.py:581-640), or use a static client ID and secret; grep for client_metadata_url, client_id_metadata and cimd across backend at v0.13.4 finds 0 hits, and the MCP docs page names only DCR and static clients"
+    evidence: |-
+      OAuth 2.1 connections use **dynamic client registration** or a static client ID, with *no* CIMD support.
+
+      - DCR posts client metadata to the server's registration endpoint (`oauth.py:581-640`); the static option uses a client ID and secret.
+      - Grep for `client_metadata_url`, `client_id_metadata` and `cimd` across backend at v0.13.4 finds 0 hits.
+      - The MCP docs page names only DCR and static clients.
     checked: 2026-11-23
   id_jag:
     value: n
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/oauth.py#L581
-    evidence: "grep for id-jag, id_jag, jwt-bearer, token-exchange and enterprise-managed across backend at v0.13.4 finds 0 hits, and the MCP docs page lists None, Bearer, Session, OAuth, OAuth 2.1 and OAuth 2.1 (Static) as the auth types"
+    evidence: |-
+      **No enterprise-managed authorization** found: grep across backend at v0.13.4 finds 0 hits.
+
+      - The patterns were `id-jag`, `id_jag`, `jwt-bearer`, `token-exchange` and `enterprise-managed`.
+      - The MCP docs page lists None, Bearer, Session, OAuth, OAuth 2.1 and OAuth 2.1 (Static) as the auth types.
     checked: 2026-11-23
   elicitation:
     value: y
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L87
-    evidence: "MCPClient.elicit (client.py:87-122) handles form requests, validating the answer against the server's JSON schema, and URL requests, passing http and https links to the chat, and is passed as elicitation_callback (client.py:165), so the SDK declares both form and url capabilities (mcp 2.3.0 session.py:634-636); it runs in chat sessions only, and the MCP docs page documents form and link requests"
+    evidence: |-
+      `MCPClient.elicit` (`client.py:87-122`) handles **form and URL** requests, so the SDK declares both capabilities.
+
+      - Form answers are validated against the server's JSON schema; URL requests pass http and https links to the chat.
+      - It is passed as `elicitation_callback` (`client.py:165`); mcp 2.3.0 `session.py:634-636` declares both.
+      - It runs in chat sessions *only*, and the MCP docs page documents form and link requests.
     checked: 2026-11-23
   list_changed:
     value: n
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L161
-    evidence: "The client passes no notification handler to mcp.Client (client.py:161-166) and grep for list_changed, ListChanged and listChanged across backend at v0.13.4 finds 0 hits; tools are listed once when the server is connected for a chat request (middleware.py:2687), so a server that adds a tool shows up on the next request, not through a change notice, and the MCP docs page does not mention list refresh"
+    evidence: |-
+      The client passes **no notification handler** to `mcp.Client` (`client.py:161-166`), so there is no list refresh on a change notice.
+
+      - Grep for `list_changed`, `ListChanged` and `listChanged` across backend at v0.13.4 finds 0 hits.
+      - Tools are listed once when the server is connected for a chat request (`middleware.py:2687`), so a new tool shows up on the next request.
+      - The MCP docs page does not mention list refresh.
     checked: 2026-11-23

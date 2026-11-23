@@ -5,8 +5,9 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate, featureScore } from './data.mjs';
-import { TIER_COLOR, logo, esc } from './images.mjs';
+import { TIER_COLOR, logo, esc, attr } from './images.mjs';
 import { fixText, escText, encUrl } from './markdown.mjs';
+import { evidenceHtml, evidencePlain, evidenceLead, inlineHtml, inlinePlain } from './evidence.mjs';
 import { changelog, splitRecent, plainEvent, KINDS, KIND_LABEL, RECENT_DAYS } from './changelog.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(ROOT + 'package.json', 'utf8'));
@@ -19,11 +20,8 @@ const LABEL = Object.fromEntries(COLUMNS);
 const MARK = { y: 'Yes', p: 'Partial', n: 'No', na: 'n/a' };
 const METHOD = { probe: 'live probe', source: 'source code', docs: 'docs', changelog: 'changelog', issue: 'issue' };
 const GRADE = { g: 'current spec', a: 'one version behind', rd: 'older spec', x: 'not published' };
-// Attribute values: esc() leaves quotes alone, which is fine in text but not inside href="..."
-const attr = s => esc(s).replace(/"/g, '&quot;');
-// Evidence strings mark code with backticks, as in the README
-const prose = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 const clientUrl = c => `/clients/${c.slug}/`;
+const shortUrl = u => u.replace(/^https:\/\/(www\.)?/, '').replace(/[?#].*$/, '');
 
 export function buildSite(out) {
   const model = load();
@@ -123,7 +121,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
 ${body}
 <footer class="foot"><div class="wrap foot-in">
 <div class="foot-brand"><a href="${SO}/">${STACKONE.replace('width="90" height="12"', 'width="120" height="16"')}</a>
-<p>We test the <a href="${SO}/platform/mcp/">StackOne MCP server</a> against every client on this board, so we keep this list for ourselves and publish it. StackOne is integration infrastructure for AI agents.</p></div>
+<p>We test the <a href="${SO}/platform/mcp/">StackOne MCP server</a> against every client on this board, so we keep this list up to date for ourselves anyway, and publish it. StackOne is integration infrastructure for AI agents.</p></div>
 <nav class="foot-links" aria-label="Project"><a href="${REPO}">${GITHUB}GitHub repo</a><a href="${REPO}/blob/main/CONTRIBUTING.md">Fix a wrong cell</a><a href="${REPO}/blob/main/methodology/RUBRIC.md">How tiers are scored</a><a href="/data.json">data.json</a><a href="/llms.txt">llms.txt</a><a href="/index.md">Markdown</a></nav>
 <p class="foot-meta">Data MIT licensed · <kbd data-mod>Ctrl</kbd> <kbd>K</kbd> search · <kbd>/</kbd> filter</p></div></footer>
 <dialog class="dlg palette" id="palette" aria-label="Search" data-repo="${attr(REPO)}"><div class="pal-in">${SEARCH}<input id="pal-q" type="search" placeholder="Search clients, tiers, features…" autocomplete="off" spellcheck="false" role="combobox" aria-controls="pal-list" aria-expanded="true"><kbd>esc</kbd></div>
@@ -157,26 +155,26 @@ function home(data, events, faq) {
   const perTier = Object.fromEntries(TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]));
   const shareText = `${data.clients.length} MCP clients ranked S to D, with a source behind every cell`;
   const supporters = k => data.clients.filter(c => c.cells[k].value === 'y');
-  const asks = ['apps', 'tasks', 'cimd', 'code_mode'].filter(k => Object.hasOwn(LABEL, k));
+  const asks = ['apps', 'tasks', 'events', 'cimd', 'code_mode'].filter(k => Object.hasOwn(LABEL, k));
   const askPanel = (k, i) => {
     const yes = supporters(k), part = data.clients.filter(c => c.cells[k].value === 'p');
     const who = (list, cls) => list.map(c => `<a class="${cls}" href="${clientUrl(c)}">${logoImg(c, 20)}<span>${esc(c.name)}</span><span class="tb t-${c.tier}">${c.tier}</span></a>`).join('');
     return `<div class="ask-panel${i === 0 ? ' on' : ''}" id="ask-${k}" role="tabpanel" aria-labelledby="tab-${k}"><p class="ask-q">Who supports ${esc(LABEL[k])}?</p>
 <p class="ask-n"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</p>
-<div class="ask-who">${who(yes, 'y') || '<span class="muted">Nobody yet</span>'}${who(part, 'p')}</div>
+<div class="ask-who">${who(yes, 'y') || `<span class="muted">${part.length ? 'No full support yet' : 'Nobody yet'}</span>`}${who(part, 'p')}</div>
 <button type="button" class="link" data-apply="${k}">Filter the tier list by ${esc(LABEL[k])}</button></div>`;
   };
   return `<main>
 <section class="wrap hero"><div class="hero-copy"><p class="meta-line"><i class="bdot"></i>Updated ${formatDate(data.as_of)}, rechecked every Monday</p>
 <h1>Which MCP clients actually support MCP?</h1>
-<p class="lede">${data.clients.length} MCP clients ranked S to D on the same ${COLUMNS.length} checks. Every cell links to a dated source: a live probe, the source code, the docs or a changelog.</p>
+<p class="lede">We put ${data.clients.length} MCP clients through the same ${COLUMNS.length} checks every week and rank them S to D. Every cell links to what we checked and when: a live probe, the source code, the docs or a changelog.</p>
 <div class="ctas"><a class="btn primary" href="#board">Explore the tier list</a><a class="btn" href="${REPO}">${GITHUB}View on GitHub</a></div>
 <p class="share-line">Share ${share(shareText, SITE + '/')}</p></div>
 ${asks.length ? `<div class="ask" aria-label="Ask the board"><div class="ask-tabs" role="tablist">${asks.map((k, i) => `<button type="button" role="tab" id="tab-${k}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" aria-controls="ask-${k}" data-ask="${k}">${esc(LABEL[k])}</button>`).join('')}</div>${asks.map(askPanel).join('')}</div>` : ''}</section>
 
 ${changesSection(data, events)}
 
-<section id="board" class="wrap sec"><div class="sec-hd"><h2>Tier list</h2><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each dot under a logo is one check, in column order.</p></div>
+<section id="board" class="wrap sec"><div class="sec-hd"><h2>Tier list</h2><p class="note">Tiers follow the <a href="${REPO}/blob/main/methodology/RUBRIC.md">rubric</a>. Each dot under a logo is one check, in the same order as the columns below.</p></div>
 <div class="cmdbar" role="search"><label class="field">${SEARCH}<span class="sr">Filter clients</span><input id="q" type="search" placeholder="${attr('Filter: a name, "s tier", "cli", a feature…')}" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
 <div class="seg" role="group" aria-label="Client type"><button type="button" data-g="all" aria-pressed="true">All</button>${GROUPS.map(([g, l]) => `<button type="button" data-g="${g}" aria-pressed="false">${esc(l)}</button>`).join('')}</div>
 <span class="result mono" id="count" aria-live="polite"><b>${data.clients.length}</b> of ${data.clients.length} clients</span><button type="button" class="reset" id="reset">Clear</button>
@@ -186,14 +184,14 @@ ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small
 </div>
 <div class="legend"><span><i class="bdot y"></i>Yes</span><span><i class="bdot p"></i>Partly</span><span><i class="bdot"></i>No</span><span class="muted">Dots in column order: ${FEATURES.map(([, l]) => esc(l)).join(', ')}</span></div></section>
 
-<section id="matrix" class="wrap sec"><div class="sec-hd"><h2>Every cell, with its source</h2><p class="note">Hover or focus a cell for the evidence, click it for the source. Click a column to sort. Harness columns are how a client handles tools, not part of the MCP spec.</p></div>
+<section id="matrix" class="wrap sec"><div class="sec-hd"><h2>Every cell, with its source</h2><p class="note">Hover a cell for the evidence, click it to open the source, and click a column to sort. The <strong>harness</strong> columns show how a client handles tools, which the MCP spec does not define.</p></div>
 <div class="mx">${matrix(data)}</div>
-<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${prose(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a>${READING.filter(([k]) => k === f.id).map(([, p, t]) => ` · <a href="${SO}${p}">${esc(t)}</a>`).join('')}</dd></div>`).join('')}
+<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${inlineHtml(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a>${READING.filter(([k]) => k === f.id).map(([, p, t]) => ` · <a href="${SO}${p}">${esc(t)}</a>`).join('')}</dd></div>`).join('')}
 <div><dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></div></dl></details></section>
 
 <section id="faq" class="wrap sec"><h2>Questions</h2><div class="faq">${faq.map(([q, a], i) => `<details${i === 0 ? " open" : ""}><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('')}</div></section>
 
-<section id="reading" class="wrap sec"><div class="sec-hd"><h2>Notes from StackOne</h2><p class="note">We run an MCP server and test it in these clients every week. What we wrote up along the way.</p></div>
+<section id="reading" class="wrap sec"><div class="sec-hd"><h2>Notes from StackOne</h2><p class="note">We run an MCP server and test it in every one of these clients each week. These are the write-ups that came out of it.</p></div>
 <ul class="reading">${READING.map(([k, p, t]) => `<li><a href="${SO}${p}">${esc(t)}</a>${k ? `<span class="muted">${esc(LABEL[k])}</span>` : ''}</li>`).join('')}</ul></section>
 
 <section class="wrap sec"><h2>Adoption over time</h2><div class="charts"><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
@@ -201,7 +199,7 @@ ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small
 </main>
 <div class="tray" id="tray" aria-live="polite"><span class="lgs"></span><span class="txt"></span><button type="button" class="btn sm primary" id="tray-go" disabled>Compare</button><button type="button" class="xbtn" id="tray-clear" aria-label="Clear the selection">×</button></div>
 <dialog class="dlg" id="compare" aria-label="Compare clients"><div class="dlg-hd"><h3>Compare</h3><label class="toggle"><input type="checkbox" id="cmp-diff">Only differences</label><button type="button" class="btn sm" id="cmp-share" data-copy="">Copy link</button><button type="button" class="xbtn" data-close aria-label="Close">×</button></div>
-<div class="cmp-body"></div><div class="cmp-add"><select id="cmp-pick" aria-label="Add a client to the comparison"></select><span>Rows with a dot differ. Hover a cell for its evidence.</span></div></dialog>`;
+<div class="cmp-body"></div><div class="cmp-add"><select id="cmp-pick" aria-label="Add a client to the comparison"></select><span>A dot marks the rows where the clients differ. Hover a cell for its evidence.</span></div></dialog>`;
 }
 
 const card = (data, c) => `<div class="card t-${c.tier}" ${filterAttrs(data, c)}><a class="card-link" href="${clientUrl(c)}">${logoImg(c, 40)}<span class="nm">${esc(c.name)}</span>${strip(c)}<span class="sr">${supportLine(c)} features</span></a><button type="button" class="cmp-btn" data-cmp="${attr(c.slug)}" aria-pressed="false" aria-label="Compare ${attr(c.name)}">+</button></div>`;
@@ -224,7 +222,7 @@ function matrix(data) {
       + `<td><span class="tb t-${c.tier}">${c.tier}</span></td><td class="fix">${esc(fixText(c.fix))}</td>`
       + COLUMNS.map(([k]) => {
         const cell = c.cells[k];
-        return `<td data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(cell.source)}" title="${attr(cell.evidence)}" data-v="${k === 'protocol' ? '' : cell.value}" data-m="${METHOD[cell.method]}" data-ck="${formatDate(cell.checked)}" data-head="${attr(`${c.name}, ${LABEL[k]}`)}" rel="nofollow">${cellHtml(data, k, cell)}</a></td>`;
+        return `<td data-k="${k}"${HARNESS.has(k) ? ' class="h"' : ''}><a href="${attr(cell.source)}" title="${attr(evidencePlain(cell.evidence))}" data-v="${k === 'protocol' ? '' : cell.value}" data-m="${METHOD[cell.method]}" data-ck="${formatDate(cell.checked)}" data-head="${attr(`${c.name}, ${LABEL[k]}`)}" rel="nofollow">${cellHtml(data, k, cell)}</a></td>`;
       }).join('')
       + '</tr>').join('') + '</tbody>').join('');
   return `<table class="matrix"><thead>${head}</thead>${bodies}</table>`;
@@ -247,8 +245,17 @@ function clientPage(data, c, prev, next) {
     const value = k === 'protocol'
       ? `<span class="pv ${g}">${esc(cell.value)}</span>${g === 'x' ? '' : ` ${GRADE[g]}`}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''}`
       : `<img src="/assets/icons/${cell.value}.svg" alt="" width="18" height="18">${MARK[cell.value]}${cell.value === 'y' && cell.label ? ` · ${esc(cell.label)}` : ''}`;
-    return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(f.definition)}">${esc(l)}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
-<p>${prose(cell.evidence)}</p><div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]} ↗</a><span>checked ${formatDate(cell.checked)}</span>${s ? `<span>shipped <a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}</a></span>` : ''}</div></article>`;
+    return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(inlinePlain(f.definition))}">${esc(l)}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
+<p class="ck-lead">${esc(evidenceLead(cell.evidence))}</p>
+<details class="proof" id="proof-${k}"><summary>See the proof</summary><div class="proof-body">
+<p class="proof-def"><em>${inlineHtml(f.definition)}</em></p>
+<div class="md">${evidenceHtml(cell.evidence)}</div>
+<dl class="proof-meta"><dt>Source</dt><dd><a href="${attr(cell.source)}" rel="nofollow">${METHOD[cell.method]} ↗</a><span class="url">${esc(shortUrl(cell.source))}</span></dd>
+<dt>Checked</dt><dd>${formatDate(cell.checked)}${c.version_checked && cell.method === 'probe' ? ` against v${esc(c.version_checked)}` : ''}</dd>
+${s ? `<dt>Shipped</dt><dd><a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''} ↗</a></dd>` : ''}${cell.fallback ? `<dt>Falls back to</dt><dd>${esc(cell.fallback)}</dd>` : ''}${cell.label ? `<dt>How it searches</dt><dd>${esc(cell.label)}${cell.quality ? ` (${cell.quality})` : ''}</dd>` : ''}
+<dt>Defined in</dt><dd><a href="${attr(f.url)}" rel="nofollow">${esc(f.ref)} ↗</a></dd></dl>
+<p class="proof-edit"><a href="${REPO}/edit/main/data/clients/${c.slug}.yaml">Wrong or out of date? Edit ${esc(c.slug)}.yaml</a></p></div></details>
+<div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]} ↗</a><span>checked ${formatDate(cell.checked)}</span>${s ? `<span>shipped <a href="${attr(s.source)}" rel="nofollow">${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}</a></span>` : ''}</div></article>`;
   }).join('\n');
   const pagerLink = (o, cls, dir) => `<a class="${cls}" href="${clientUrl(o)}">${cls === 'next' ? '' : logoImg(o, 28)}<span><small>${dir}</small>${esc(o.name)} · ${o.tier}</span>${cls === 'next' ? logoImg(o, 28) : ''}</a>`;
   return `<main class="wrap t-${c.tier}">
@@ -259,7 +266,7 @@ function clientPage(data, c, prev, next) {
 <div class="scorebox"><div class="ring" title="Feature score: yes counts 1, partly counts half"><svg viewBox="0 0 112 112" aria-hidden="true"><circle class="trk" cx="56" cy="56" r="${R}" fill="none" stroke-width="9"/><circle class="val" cx="56" cy="56" r="${R}" fill="none" stroke-width="9" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div><b>${score}</b><span>of ${FEATURES.length}</span></div></div>
 <div class="tierbig" title="Tier ${c.tier}">${c.tier}</div></div></section>
 <p class="summary">${esc(summary(data, c))}</p>
-${c.tier_note ? `<p class="callout">${prose(c.tier_note)}</p>` : ''}${c.note ? `<p class="callout">${prose(c.note)}</p>` : ''}
+${c.tier_note ? `<p class="callout">${inlineHtml(c.tier_note)}</p>` : ''}${c.note ? `<p class="callout">${inlineHtml(c.note)}</p>` : ''}
 <div class="ctas"><a class="btn" href="/#compare=${attr(c.slug)}">Compare with another client</a><a class="btn" href="${REPO}/edit/main/data/clients/${c.slug}.yaml">${GITHUB}Wrong? Edit ${esc(c.slug)}.yaml</a><p class="share-line">Share ${share(`${c.name} is ${c.tier} tier on the MCP clients scorecard`, pageUrl)}</p></div>
 <h2 class="checks-hd">Every check, with its source</h2>
 <div class="checks">${checks}</div>
@@ -269,7 +276,8 @@ ${SO_GUIDE[c.slug] ? `<p class="so-note">Connect ${esc(c.name)} to the business 
 <div class="code"><pre>${esc(md)}</pre><button type="button" class="btn" data-copy="${attr(md)}">Copy Markdown</button></div>
 <div class="code"><pre>${esc(html)}</pre><button type="button" class="btn" data-copy="${attr(html)}">Copy HTML</button></div></section>
 <nav class="pager" aria-label="Other clients">${prev ? pagerLink(prev, 'prev', '← previous') : ''}${next ? pagerLink(next, 'next', 'next →') : ''}</nav>
-</main>`;
+</main>
+<dialog class="dlg drawer" id="proof" aria-labelledby="proof-title"><div class="dlg-hd"><h3 id="proof-title"></h3><button type="button" class="xbtn" data-close aria-label="Close">×</button></div><div class="drawer-body"></div></dialog>`;
 }
 
 function share(text, url) {
@@ -286,8 +294,7 @@ function supportLine(c) {
 
 // ---------- answers for search and AI assistants: one plain-text source, shown on the page, in JSON-LD and in the Markdown copies
 
-const plain = s => String(s).replace(/`([^`]+)`/g, '$1');
-const sentence = s => plain(s).trim().replace(/[.;:,]?$/, '.');
+const sentence = s => evidencePlain(s).trim().replace(/[.;:,]?$/, '.');
 const list = (names, and = 'and') => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} ${and} ${names.at(-1)}`);
 const byRank = data => [...data.clients].sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || featureScore(b) - featureScore(a) || a.name.localeCompare(b.name));
 const withValue = (data, k, v) => byRank(data).filter(c => c.cells[k].value === v);
@@ -369,14 +376,14 @@ function homeMarkdown(data, faq, events) {
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
     ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${encUrl(c.website)})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
     '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
-    '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${plain(f.definition)} (${f.url})`), '',
+    '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${inlinePlain(f.definition)} (${f.url})`), '',
     `Source and methodology: ${REPO}`, ''].join('\n');
 }
 
 function clientMarkdown(data, c, qa) {
   return [`# ${c.name} MCP support`, '', `> ${summary(data, c)}`, '', `Tier: ${c.tier}. MCP bugs fixed: ${fixText(c.fix)}.${c.version_checked ? ` Version checked: ${c.version_checked}.` : ''}`, '',
     '| Check | Value | Evidence | Source | Checked |', '| --- | --- | --- | --- | --- |',
-    ...COLUMNS.map(([k, l]) => { const cell = c.cells[k]; return `| ${l} | ${mdCell(data, k, cell)} | ${plain(cell.evidence).replace(/\|/g, '\\|')} | ${cell.source} | ${cell.checked} |`; }), '',
+    ...COLUMNS.map(([k, l]) => { const cell = c.cells[k]; return `| ${l} | ${mdCell(data, k, cell)} | ${evidencePlain(cell.evidence).replace(/\|/g, '\\|')} | ${cell.source} | ${cell.checked} |`; }), '',
     ...qa.flatMap(([q, a]) => [`### ${q}`, '', a, '']), `Full scorecard: ${SITE}/`, ''].join('\n');
 }
 
@@ -403,9 +410,9 @@ function changesSection(data, events) {
   const { recent, older } = splitRecent(events, String(data.as_of));
   const count = (list, k) => list.filter(e => e.kind === k).length;
   const tabs = [['all', 'All', recent.length], ...KINDS.map(([k, l]) => [k, l, count(recent, k)])];
-  return `<section id="changes" class="wrap sec" data-f="all"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes are dated by the weekly check, shipped features by their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
+  return `<section id="changes" class="wrap sec" data-f="all"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes carry the date of the weekly check, shipped features the date of their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
 <div class="seg cl-tabs" role="group" aria-label="Show changes of one kind">${tabs.map(([k, l, n], i) => `<button type="button" data-cl="${k}" aria-pressed="${i === 0}">${esc(l)}<span class="n">${n}</span></button>`).join('')}</div>
-${recent.length ? `<ol class="cl" id="cl-recent">${recent.map(eventLi).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing of this kind in the last ${RECENT_DAYS} days.</p>
+${recent.length ? `<ol class="cl" id="cl-recent">${recent.map(eventLi).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing like this in the last ${RECENT_DAYS} days.</p>
 ${older.length ? `<details class="cl-more"><summary>Show <span class="cl-n">${older.length}</span> older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(eventLi).join('')}</ol></details>` : ''}</section>`;
 }
 

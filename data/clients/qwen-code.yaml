@@ -16,13 +16,21 @@ cells:
     value: 2025-11-25
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/package.json#L114
-    evidence: "v0.28.3 bundles @modelcontextprotocol/client 2.4.0, whose core LATEST_PROTOCOL_VERSION is 2025-11-25; createMcpClient uses legacy initialize for remote and default stdio servers and negotiates the 2026-07-28 modern revision only for stdio servers that opt in with versionNegotiation: auto"
+    evidence: |-
+      Source: v0.28.3 bundles `@modelcontextprotocol/client` 2.4.0, whose core `LATEST_PROTOCOL_VERSION` is **2025-11-25**.
+
+      - `createMcpClient` uses legacy `initialize` for remote and default stdio servers.
+      - It negotiates the **2026-07-28** modern revision only for stdio servers that opt in with `versionNegotiation: auto`.
     checked: 2026-11-22
   code_mode:
     value: p
     method: docs
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/docs/users/configuration/settings.md?plain=1#L407
-    evidence: "Settings doc: tools.codeModeOnly enables experimental Code Mode, where tools are discovered with tool_search and invoked through an exec script; it defaults to false and needs a restart"
+    evidence: |-
+      Settings doc: `tools.codeModeOnly` enables **experimental** Code Mode.
+
+      - Tools are discovered with `tool_search` and invoked through an `exec` script.
+      - It defaults to `false` and needs a restart.
     checked: 2026-11-22
   tool_search:
     value: y
@@ -30,47 +38,71 @@ cells:
     quality: strong
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/cli/src/config/settingsSchema.ts#L3231
-    evidence: "tools.toolSearch.enabled defaults to true and defers MCP tools behind a tool_search plus tool_call bridge (preload threshold 0); tool-search.ts supports select: lookups and weighted keyword scoring over name, description and search hint, with no BM25 or embeddings"
+    evidence: |-
+      Source: `tools.toolSearch.enabled` **defaults to true** and defers MCP tools behind a `tool_search` plus `tool_call` bridge.
+
+      - Preload threshold 0.
+      - `tool-search.ts` supports `select:` lookups and weighted keyword scoring over name, description and search hint.
+      - No BM25 or embeddings.
     checked: 2026-11-22
   apps:
     value: p
     method: docs
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/docs/users/features/mcp.md?plain=1#L528
-    evidence: "The client declares io.modelcontextprotocol/ui (mcp-client.ts L109, L485); docs say App HTML is mounted only in a daemon-backed WebShell session and in transcript replay, while terminal and headless sessions show the fallback text"
+    evidence: |-
+      Docs: App HTML is mounted *only* in a **daemon-backed WebShell session** and in transcript replay.
+
+      - The client declares `io.modelcontextprotocol/ui` (`mcp-client.ts` L109, L485).
+      - Terminal and headless sessions show the fallback text.
     checked: 2026-11-22
   tasks:
     value: n
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/tools/mcp-client.ts#L476-L492
-    evidence: "createMcpClient declares only the io.modelcontextprotocol/ui extension, with no tasks capability, and the file has no tasks handling"
+    evidence: |-
+      Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and **no tasks capability**.
+
+      - The file has no tasks handling.
     checked: 2026-11-22
   events:
     value: n
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/tools/mcp-client.ts#L476-L492
-    evidence: "createMcpClient declares only the io.modelcontextprotocol/ui extension and registers no server-event handler or subscriptions/listen stream"
+    evidence: "Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and registers **no server-event handler** or `subscriptions/listen` stream."
     checked: 2026-11-22
   cimd:
     value: n
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/mcp/oauth-provider.ts#L162
-    evidence: "The MCP OAuth provider takes a configured clientId or registers dynamically (registerClient); it has no Client ID Metadata Document path"
+    evidence: |-
+      Source: the MCP OAuth provider has **no Client ID Metadata Document path**.
+
+      - It takes a configured `clientId` or registers dynamically (`registerClient`).
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/
-    evidence: "The MCP docs list OAuth, Google credentials and service account impersonation as auth providers; enterprise-managed authorization (ID-JAG) is not documented"
+    evidence: |-
+      Docs: enterprise-managed authorization (ID-JAG) is **not documented**.
+
+      - The MCP docs list OAuth, Google credentials and service account impersonation as auth providers.
     checked: 2026-11-22
   elicitation:
     value: n
     method: issue
     source: https://github.com/QwenLM/qwen-code/issues/17316
-    evidence: "Open feature request 'support the elicitation capability in the MCP client'; v0.28.3 declares no elicitation capability"
+    evidence: |-
+      Issue: an **open feature request** 'support the elicitation capability in the MCP client'.
+
+      - v0.28.3 declares no elicitation capability.
     checked: 2026-11-22
   list_changed:
     value: n
     method: issue
     source: https://github.com/QwenLM/qwen-code/issues/13632
-    evidence: "Open feature request to refresh a server's tools on notifications/tools/list_changed; the tool snapshot is re-read only on reconnect or restart"
+    evidence: |-
+      Issue: an **open feature request** to refresh a server's tools on `notifications/tools/list_changed`.
+
+      - The tool snapshot is re-read *only* on reconnect or restart.
     checked: 2026-11-22

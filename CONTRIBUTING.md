@@ -44,6 +44,7 @@ Rules for the value:
 
 - `y` needs the feature to work in a released version, on by default or with a documented setting. A feature the vendor labels beta or preview counts as `y` when it meets that bar.
 - `p` is for features behind a flag, off by default, experimental, or one of two modes. Say which in `evidence`.
+- Write `evidence` as a verdict sentence, then one bullet per supporting fact, with the deciding fact in **bold** and identifiers in `code`. See [Writing evidence](data/README.md#writing-evidence).
 - Moving a cell to `n` needs a source as well, for example a docs page or an open feature request.
 
 Rules for `since`:

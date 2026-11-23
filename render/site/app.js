@@ -38,6 +38,23 @@
     if (x) x.closest('dialog')?.close();
   });
 
+  // ---------- client page: "See the proof" opens a side panel; without JS the details expand in place
+  const drawer = $('#proof');
+  const openProof = d => {
+    const card = d.closest('.check');
+    $('#proof-title', drawer).innerHTML = `${esc($('h3', card).textContent)} <span class="ck-v">${$('.ck-v', card).innerHTML}</span>`;
+    $('.drawer-body', drawer).innerHTML = $('.proof-body', d).innerHTML;
+    history.replaceState(null, '', '#' + d.id);
+    drawer.showModal();
+  };
+  if (drawer) {
+    $$('details.proof > summary').forEach(sm => sm.addEventListener('click', e => { e.preventDefault(); openProof(sm.parentElement); }));
+    drawer.addEventListener('close', () => history.replaceState(null, '', location.pathname + location.search));
+    drawer.addEventListener('click', e => { if (e.target === drawer) drawer.close(); });
+    const hashed = location.hash.startsWith('#proof-') && document.getElementById(location.hash.slice(1));
+    if (hashed && hashed.matches('details.proof')) openProof(hashed);
+  }
+
   // ---------- hero: "who supports X?" tabs
   const askTabs = $$('[data-ask]');
   const pickAsk = t => {
@@ -79,6 +96,8 @@
     }));
   }
 
+  // Evidence in data.json is a small Markdown subset (render/evidence.mjs); the popover shows it as one line of text
+  const plainEv = t => t.split(/\n+/).map(l => l.replace(/^[-*] /, '')).join(' ').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*]/g, '');
   // ---------- evidence popover (matrix and compare cells)
   // Hidden from assistive tech until it shows: an empty tooltip has no accessible name
   const pop = Object.assign(document.createElement('div'), { className: 'pop', role: 'tooltip' });
@@ -240,7 +259,7 @@
     const row = f => {
       const vals = cs.map(c => c.cells[f.id]);
       const same = vals.every(v => v.value === vals[0].value);
-      return `<tr class="${same ? 'same' : 'diff'}"><th>${esc(f.label)}${f.kind === 'harness' ? ' <span class="tag">harness</span>' : ''}</th>${vals.map(v => `<td data-k="${f.id}"><span data-ev="${esc(v.evidence)}" data-v="${f.id === 'protocol' ? '' : v.value}" data-m="${esc(v.method)}" data-ck="${esc(v.checked)}" tabindex="0">${f.id === 'protocol' ? `<span class="pv">${esc(v.value)}</span>` : `<img src="/assets/icons/${v.value}.svg" alt="${MARK[v.value]}" width="18" height="18">${v.label ? `<span class="lbl">${esc(v.label)}</span>` : ''}`}</span></td>`).join('')}</tr>`;
+      return `<tr class="${same ? 'same' : 'diff'}"><th>${esc(f.label)}${f.kind === 'harness' ? ' <span class="tag">harness</span>' : ''}</th>${vals.map(v => `<td data-k="${f.id}"><span data-ev="${esc(plainEv(v.evidence))}" data-v="${f.id === 'protocol' ? '' : v.value}" data-m="${esc(v.method)}" data-ck="${esc(v.checked)}" tabindex="0">${f.id === 'protocol' ? `<span class="pv">${esc(v.value)}</span>` : `<img src="/assets/icons/${v.value}.svg" alt="${MARK[v.value]}" width="18" height="18">${v.label ? `<span class="lbl">${esc(v.label)}</span>` : ''}`}</span></td>`).join('')}</tr>`;
     };
     const fixSame = cs.every(c => c.mcp_bugs_fixed_text === cs[0].mcp_bugs_fixed_text);
     const fixRow = `<tr class="${fixSame ? 'same' : 'diff'}"><th>MCP bugs fixed</th>${cs.map(c => `<td class="fix">${esc(c.mcp_bugs_fixed_text)}</td>`).join('')}</tr>`;

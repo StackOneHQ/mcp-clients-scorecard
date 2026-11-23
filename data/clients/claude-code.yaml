@@ -22,7 +22,13 @@ cells:
     value: p
     method: docs
     source: https://code.claude.com/docs/en/code-mode
-    evidence: "Docs: Code Mode is experimental and off by default; it is turned on with CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 and needs v2.1.323 or later, the Anthropic API and an interactive terminal. Changelog 2.1.323 adds Code Mode, an experimental opt-in in which Claude writes JavaScript to call its tools. The 2.1.325 bundle still refuses it when the server-side gate \"isn't open to your account yet\". The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated"
+    evidence: |-
+      Docs: Code Mode ships **experimental and off by default**.
+
+      - Turned on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1`; needs **v2.1.323** or later, the Anthropic API and an interactive terminal.
+      - Changelog 2.1.323 adds Code Mode, an experimental opt-in in which Claude writes JavaScript to call its tools.
+      - The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".
+      - The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated.
     checked: 2026-11-16
   tool_search:
     value: y
@@ -30,7 +36,13 @@ cells:
     quality: strong
     method: source
     source: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.325
-    evidence: "Docs: tool search is on by default and defers MCP tools behind a search tool (ENABLE_TOOL_SEARCH true, auto, auto:N, false); the 2.1.325 bundle ranks by exact name, select: and mcp__ prefix lookups, then weighted keyword scoring over server and tool name parts plus a word-boundary match on description and search hint, with no BM25 or embeddings"
+    evidence: |-
+      Docs: tool search is **on by default** and defers MCP tools behind a search tool.
+
+      - Controlled by `ENABLE_TOOL_SEARCH` with `true`, `auto`, `auto:N` or `false`.
+      - The 2.1.325 bundle ranks by exact name, `select:` and `mcp__` prefix lookups first.
+      - Then it applies weighted keyword scoring over server and tool name parts, plus a word-boundary match on description and search hint.
+      - It uses no BM25 or embeddings.
     checked: 2026-11-16
     since:
       date: 2026-01-14
@@ -40,13 +52,21 @@ cells:
     value: na
     method: probe
     source: https://github.com/anthropics/claude-code/issues/95149
-    evidence: "Live probe of 2.1.325 declares no io.modelcontextprotocol/ui extension; the bundle adds it only under an undocumented environment variable, and the feature request is still open"
+    evidence: |-
+      Live probe of 2.1.325 declares **no MCP Apps extension** (`io.modelcontextprotocol/ui`).
+
+      - The bundle adds it only under an undocumented environment variable.
+      - The feature request is still open.
     checked: 2026-11-16
   tasks:
     value: y
     method: docs
     source: https://code.claude.com/docs/en/mcp
-    evidence: "Docs: MCP tasks are public beta from v2.1.304, turned on by Anthropic feature flags for terminal, Agent SDK and GitHub Actions sessions on 2026-07-28 connections, and a one-shot claude -p run does not get them, which is why the unauthenticated -p probe saw no tasks"
+    evidence: |-
+      Docs: MCP tasks are **public beta from v2.1.304**.
+
+      - Anthropic feature flags turn them on for terminal, Agent SDK and GitHub Actions sessions on 2026-07-28 connections.
+      - A one-shot `claude -p` run does not get them, which is why the unauthenticated `-p` probe saw no tasks.
     checked: 2026-10-30
     since:
       date: 2026-10-19
@@ -56,13 +76,13 @@ cells:
     value: n
     method: issue
     source: https://github.com/anthropics/claude-code/issues/101434
-    evidence: "Open feature request to start routines from MCP events; channels are a Claude-specific push path, not the working group design"
+    evidence: "**Open feature request** to start routines from MCP events; channels are a Claude-specific push path, not the working group design"
     checked: 2026-11-16
   cimd:
     value: y
     method: docs
     source: https://code.claude.com/docs/en/mcp
-    evidence: "Docs list Client ID Metadata Document support, and the 2.1.81 release note names CIMD (SEP-991)"
+    evidence: Docs list **Client ID Metadata Document** support, and the 2.1.81 release note names CIMD (SEP-991)
     checked: 2026-10-30
     since:
       date: 2026-03-20
@@ -72,13 +92,17 @@ cells:
     value: y
     method: docs
     source: https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth
-    evidence: "The MCP blog says Anthropic implemented enterprise-managed authorization so admins can authorize MCP servers across Claude, Claude Code and Cowork, which is a documented admin policy and so counts as y. Setting up XAA locally in the CLI without that policy needs an undocumented switch"
+    evidence: |-
+      The MCP blog says Anthropic implemented **enterprise-managed authorization**, a documented admin policy, so this counts as `y`.
+
+      - Admins can authorize MCP servers across Claude, Claude Code and Cowork.
+      - Setting up XAA locally in the CLI without that policy needs an undocumented switch.
     checked: 2026-10-30
   elicitation:
     value: y
     method: probe
     source: https://code.claude.com/docs/en/mcp
-    evidence: "Live probe of 2.1.325 declares elicitation form and url, matching the docs"
+    evidence: Live probe of 2.1.325 declares `elicitation` **form and url**, matching the docs
     checked: 2026-11-16
     since:
       date: 2026-03-14
