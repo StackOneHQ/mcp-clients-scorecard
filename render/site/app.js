@@ -57,6 +57,28 @@
     });
   });
 
+  // ---------- recent changes: one kind at a time. The CSS hides rows by the section's data-f
+  const changes = $('#changes');
+  if (changes) {
+    const clTabs = $$('[data-cl]', changes);
+    const empty = $('.cl-empty', changes);
+    const recent = $$('#cl-recent li', changes);
+    const more = $('.cl-more', changes);
+    const older = more ? $$('li', more) : [];
+    clTabs.forEach(b => b.addEventListener('click', () => {
+      const f = b.dataset.cl;
+      const shown = li => f === 'all' || li.dataset.kind === f;
+      clTabs.forEach(t => t.setAttribute('aria-pressed', t === b));
+      changes.dataset.f = f;
+      empty.hidden = recent.some(shown);
+      if (more) {
+        const n = older.filter(shown).length;
+        $('.cl-n', more).textContent = n;
+        more.hidden = !n;
+      }
+    }));
+  }
+
   // ---------- evidence popover (matrix and compare cells)
   // Hidden from assistive tech until it shows: an empty tooltip has no accessible name
   const pop = Object.assign(document.createElement('div'), { className: 'pop', role: 'tooltip' });

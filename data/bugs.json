@@ -2,6 +2,11 @@
   "as_of": "2026-11-23",
   "window_start": "2026-07-28",
   "repos": {
+    "augmentcode/auggie": {
+      "issues": 6,
+      "completed": 1,
+      "duplicates": 0
+    },
     "anthropics/claude-ai-mcp": {
       "issues": 627,
       "completed": 79,
@@ -52,6 +57,21 @@
       "completed": 193,
       "duplicates": 8
     },
+    "Kilo-Org/kilocode": {
+      "issues": 32,
+      "completed": 9,
+      "duplicates": 0
+    },
+    "kirodotdev/Kiro": {
+      "issues": 109,
+      "completed": 32,
+      "duplicates": 1
+    },
+    "lmstudio-ai/lmstudio-bug-tracker": {
+      "issues": 22,
+      "completed": 0,
+      "duplicates": 0
+    },
     "open-webui/open-webui": {
       "issues": 67,
       "completed": 49,
@@ -72,10 +92,20 @@
       "completed": 33,
       "duplicates": 0
     },
+    "QwenLM/qwen-code": {
+      "issues": 100,
+      "completed": 55,
+      "duplicates": 0
+    },
     "microsoft/vscode": {
-      "issues": 385,
+      "issues": 386,
       "completed": 171,
       "duplicates": 18
+    },
+    "warpdotdev/warp": {
+      "issues": 12,
+      "completed": 3,
+      "duplicates": 1
     },
     "zed-industries/zed": {
       "issues": 22,
