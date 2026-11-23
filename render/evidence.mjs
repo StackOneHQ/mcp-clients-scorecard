@@ -8,15 +8,18 @@ export function blocks(s) {
   let gap = false;
   for (const line of String(s).trim().split('\n')) {
     const t = line.trim();
+    if (!t) {
+      gap = true;
+      continue;
+    }
     const item = t.match(/^[-*] (.*)$/);
     const last = out.at(-1);
-    if (!t) gap = true;
-    else if (item && last?.list) last.list.push(item[1]);
+    if (item && last?.list) last.list.push(item[1]);
     else if (item) out.push({ list: [item[1]] });
-    else if (last?.list && !gap && /^\s/.test(line)) last.list[last.list.length - 1] += ' ' + t;
+    else if (last?.list && !gap && /^\s/.test(line)) last.list.push(`${last.list.pop()} ${t}`);
     else if (last?.text !== undefined && !gap) last.text += ' ' + t;
     else out.push({ text: t });
-    if (t) gap = false;
+    gap = false;
   }
   return out;
 }
