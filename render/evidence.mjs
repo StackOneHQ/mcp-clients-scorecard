@@ -32,7 +32,7 @@ function inline(s, code, link, bold, ital, text) {
   const restore = t => t.replace(/\0(\d+)\0/g, (_, i) => held[i]);
   const marks = t => text(t)
     .replace(/\*\*((?:[^*]|\*(?!\*))+?)\*\*/g, (_, x) => bold(x))
-    .replace(/(^|[^\w*])\*(\w(?:[^*]*?[^\s*])?)\*(?=$|[^\w*])/g, (_, p, x) => p + ital(x));
+    .replace(/(^|[^\w*])\*([\w\0](?:[^*]*?[^\s*])?)\*(?=$|[^\w*])/g, (_, p, x) => p + ital(x));
   const masked = String(s).replace(/\0/g, '')
     .replace(/`[^`]+`/g, m => hold(code(m.slice(1, -1))))
     .replace(LINK, (_, t, u) => hold(link(restore(marks(t)), u)));

@@ -24,7 +24,7 @@ cells:
     method: source
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1
     evidence: |-
-      Source: the `Script` tool calls MCP tools from JavaScript, but in the 1.12.1 binary it is **off unless the model is listed** server-side.
+      Source: the `Script` tool calls MCP tools from JavaScript, but in the 1.12.1 binary it is **off unless the model is listed** server-side or a hidden exec flag forces it.
 
       - `Script` calls tools as `tools.<server>.<tool>`.
       - The execution mode is `direct_only` unless the model is in the `script_tool_models` config (default empty list) or the hidden exec flag `--tool-execution-mode script-only` overrides it.

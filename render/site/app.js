@@ -50,11 +50,13 @@
   if (drawer) {
     $$('details.proof > summary').forEach(sm => sm.addEventListener('click', e => { e.preventDefault(); openProof(sm.parentElement); }));
     drawer.addEventListener('close', () => history.replaceState(null, '', location.pathname + location.search));
-    drawer.addEventListener('click', e => {
+    const onBackdrop = e => {
       const r = drawer.getBoundingClientRect();
-      const onBackdrop = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
-      if (e.target === drawer && onBackdrop) drawer.close();
-    });
+      return e.target === drawer && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
+    };
+    let pressedBackdrop = false;
+    drawer.addEventListener('pointerdown', e => { pressedBackdrop = onBackdrop(e); });
+    drawer.addEventListener('click', e => { if (pressedBackdrop && onBackdrop(e)) drawer.close(); });
     const hashed = location.hash.startsWith('#proof-') && document.getElementById(location.hash.slice(1));
     if (hashed && hashed.matches('details.proof')) openProof(hashed);
   }

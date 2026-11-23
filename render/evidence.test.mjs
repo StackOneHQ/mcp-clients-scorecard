@@ -22,6 +22,7 @@ test('marks can wrap code spans and links, and a lone * in a glob stays', () => 
     '<p><strong>never sets <code>clientMetadataUrl</code></strong> in <a href="https://a.b/c" rel="nofollow">the <code>x</code> doc</a></p>');
   assert.equal(evidencePlain('Reads `crates/*.rs` and *args'), 'Reads crates/*.rs and *args');
   assert.equal(evidenceHtml('Matches *.ts and *.js files'), '<p>Matches *.ts and *.js files</p>');
+  assert.equal(evidenceHtml('*`x`* and *[a](https://a.b)*'), '<p><em><code>x</code></em> and <em><a href="https://a.b" rel="nofollow">a</a></em></p>');
   assert.equal(evidenceHtml('**bold with *ital* inside**'), '<p><strong>bold with <em>ital</em> inside</strong></p>');
   assert.equal(evidenceHtml('see [wiki](https://en.wikipedia.org/wiki/Foo_(bar))'), '<p>see <a href="https://en.wikipedia.org/wiki/Foo_(bar)" rel="nofollow">wiki</a></p>');
 });
