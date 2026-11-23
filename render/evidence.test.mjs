@@ -14,10 +14,25 @@ test('evidence renders paragraphs, lists, bold, italic, code and https links', (
 test('evidence escapes HTML and leaves marks inside code and identifiers alone', () => {
   assert.equal(evidenceHtml('<script>x</script> and [bad](javascript:alert(1))'), '<p>&lt;script&gt;x&lt;/script&gt; and [bad](javascript:alert(1))</p>');
   assert.equal(evidenceHtml('`mcp__**x**` and snake_case_name'), '<p><code>mcp__**x**</code> and snake_case_name</p>');
+  assert.equal(evidenceHtml('`<b>&</b>`'), '<p><code>&lt;b&gt;&amp;&lt;/b&gt;</code></p>');
+});
+
+test('marks can wrap code spans and links, and a lone * in a glob stays', () => {
+  assert.equal(evidenceHtml('**never sets `clientMetadataUrl`** in [the `x` doc](https://a.b/c)'),
+    '<p><strong>never sets <code>clientMetadataUrl</code></strong> in <a href="https://a.b/c" rel="nofollow">the <code>x</code> doc</a></p>');
+  assert.equal(evidencePlain('Reads `crates/*.rs` and *args'), 'Reads crates/*.rs and *args');
 });
 
 test('the plain, lead and table forms drop the markup', () => {
   assert.equal(evidenceLead(ev), 'Docs: Code Mode ships experimental and off by default.');
   assert.equal(evidencePlain(ev), 'Docs: Code Mode ships experimental and off by default. Turned on with CODE_MODE=1, see the docs. The gate is not open to every account.');
   assert.equal(evidenceTableCell('a | b\n\n- one\n- two'), 'a \\| b<br>• one<br>• two');
+});
+
+test('a long run of unclosed brackets renders in linear time', () => {
+  for (const s of ['['.repeat(80000), '[a](https://'.repeat(8000), '](https://x'.repeat(8000)]) {
+    const t = performance.now();
+    evidenceHtml(s);
+    assert.ok(performance.now() - t < 200, `${s.slice(0, 12)} took too long`);
+  }
 });

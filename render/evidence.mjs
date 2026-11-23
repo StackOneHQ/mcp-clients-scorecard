@@ -2,8 +2,6 @@
 // paragraphs, "- " bullet lists, **bold**, *italic*, `code` and [text](https://...) links.
 import { esc, attr } from './images.mjs';
 
-const LINK_ONE = /^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/;
-
 // Blocks: a run of "- " lines is a list, anything else up to a blank line is a paragraph
 export function blocks(s) {
   const out = [];
@@ -19,19 +17,22 @@ export function blocks(s) {
   return out.filter(Boolean);
 }
 
-// Code spans and link targets are cut out first, so ** or _ inside them stay literal
+// Code spans and links are held aside behind \0n\0 placeholders while ** and * are applied to the whole line,
+// so marks can wrap them and marks inside them stay literal. Labels and URLs exclude brackets so a run of
+// unclosed "[" is scanned once, not once per bracket.
+const LINK = /\[([^[\]]+)\]\((https:\/\/[^\s()[\]\0]+)\)/g;
+
 function inline(s, code, link, bold, ital, text) {
+  const held = [];
+  const hold = out => `\0${held.push(out) - 1}\0`;
+  const restore = t => t.replace(/\0(\d+)\0/g, (_, i) => held[i]);
   const marks = t => text(t)
     .replace(/\*\*([^*]+)\*\*/g, (_, x) => bold(x))
-    .replace(/(^|[^\w*])[*_]([^*_\s][^*_]*?)[*_](?=$|[^\w*])/g, (_, p, x) => p + ital(x));
-  return String(s).split(/(`[^`]+`)/).map((part, i) => {
-    if (i % 2) return code(part.slice(1, -1));
-    return part.split(/(\[[^\]]+\]\(https:\/\/[^\s)]+\))/).map((seg, j) => {
-      if (!(j % 2)) return marks(seg);
-      const [, t, u] = seg.match(LINK_ONE);
-      return link(marks(t), u);
-    }).join('');
-  }).join('');
+    .replace(/(^|[^\w*])\*([^*\s][^*]*?)\*(?=$|[^\w*])/g, (_, p, x) => p + ital(x));
+  const masked = String(s).replace(/\0/g, '')
+    .replace(/`[^`]+`/g, m => hold(code(m.slice(1, -1))))
+    .replace(LINK, (_, t, u) => hold(link(restore(marks(t)), u)));
+  return restore(marks(masked));
 }
 
 export const inlineHtml = s => inline(s, t => `<code>${esc(t)}</code>`, (t, u) => `<a href="${attr(u)}" rel="nofollow">${t}</a>`, t => `<strong>${t}</strong>`, t => `<em>${t}</em>`, esc);
