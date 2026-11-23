@@ -16,9 +16,10 @@ cells:
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L161
     evidence: |-
-      v0.13.4 pins `mcp==2.3.0` (`pyproject.toml:57`) and opens the session with `mcp.Client` at `client.py:161` in the SDK default mode `auto` (mcp 2.3.0 `client.py:335`).
+      Source: v0.13.4 negotiates **2026-07-28** first and falls back to 2025-11-25 on legacy servers.
 
-      - It sends a `server/discover` probe at `LATEST_MODERN_VERSION` **2026-07-28** and falls back to the `initialize` handshake at 2025-11-25 on legacy servers (mcp 2.3.0 `_probe.py:67`, `version.py`).
+      - It pins `mcp==2.3.0` (`pyproject.toml:57`) and opens the session with `mcp.Client` at `client.py:161` in the SDK default mode `auto` (mcp 2.3.0 `client.py:335`).
+      - It sends a `server/discover` probe at `LATEST_MODERN_VERSION` 2026-07-28 and falls back to the `initialize` handshake at 2025-11-25 (mcp 2.3.0 `_probe.py:67`, `version.py`).
       - The MCP docs page says Open WebUI connects on the stateless 2026-07-28 revision and on older revisions.
     checked: 2026-11-23
     fallback: 2025-11-25

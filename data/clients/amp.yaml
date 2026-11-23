@@ -44,7 +44,7 @@ cells:
       Docs: `tool_search` lists each saved remote MCP server as a **module** and discovers its tools on demand.
 
       - Discovery includes the return types of the tools.
-      - The Efficient MCP Tool Loading post (2026-01-08) covers skill-bundled MCP servers that load only when a skill is invoked.
+      - The *Efficient MCP Tool Loading* post (2026-01-08) covers skill-bundled MCP servers that load only when a skill is invoked.
       - Local `amp.mcpServers` entries are *not* described as deferred.
       - The docs do not say how `tool_search` ranks results.
     checked: 2026-11-22
@@ -57,7 +57,7 @@ cells:
 
       - The declared mimeTypes entry is `text/html;profile=mcp-app`.
       - The docs say MCP Apps can call remote tools when the policy is Ask First.
-      - The 2026-08-19 MCP in Orbs post still said MCP Apps are not supported.
+      - The 2026-08-19 *MCP in Orbs* post still said MCP Apps are not supported.
       - No release note dates the change.
     checked: 2026-11-22
   tasks:

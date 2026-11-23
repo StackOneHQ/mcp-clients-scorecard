@@ -131,7 +131,7 @@ function validate(data, bugs) {
       if (cell.quality !== undefined && !QUALITIES.has(cell.quality)) errs.push(`${ca}: quality must be strong or basic`);
       if (!METHODS.has(cell.method)) errs.push(`${ca}: method must be one of ${[...METHODS].join(', ')}`);
       if (!isUrl(cell.source)) errs.push(`${ca}: source must be an https URL`);
-      if (!cell.evidence) errs.push(`${ca}: evidence is empty`);
+      if (!String(cell.evidence ?? '').trim()) errs.push(`${ca}: evidence is empty`);
       if (!isDate(cell.checked)) errs.push(`${ca}: checked must be YYYY-MM-DD`);
       else if (String(cell.checked) > asOf) errs.push(`${ca}: checked ${cell.checked} is after as_of ${asOf}`);
       if (cell.since !== undefined) {

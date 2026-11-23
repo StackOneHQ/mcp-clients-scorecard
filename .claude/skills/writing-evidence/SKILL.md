@@ -9,7 +9,7 @@ Every value on the scorecard is backed by a `source` URL and an `evidence` text.
 
 1. **Verdict first.** One sentence, under 25 words, saying what the source shows and why that gives the value. Keep the source prefix: `Docs:`, `Live probe of 2.1.325:`, `Changelog 1.102:`.
 2. **One fact per bullet.** Supporting facts go in `- ` bullets after a blank line. A cell with one fact stays one sentence.
-3. **Bold the deciding fact**: the version, the setting, *off by default*, *still open*. One or two per cell.
+3. **Bold the deciding fact**: the version, the setting, **off by default**, **still open**. One or two per cell.
 4. **`code` for identifiers**: env vars, flags, settings keys, commands, method, capability and extension ids, file and package names.
 5. *Italic* (with `*`, never `_`) for a caveat word or a doc title. `[text](https://...)` for a second source.
 6. Multi-line text uses `evidence: |-`. No headings, tables or HTML. No em or en dashes.

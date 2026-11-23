@@ -79,7 +79,7 @@ Evidence is a small Markdown subset, so a long proof stays easy to scan. The cli
 - **Open with the verdict in one sentence**, ideally under 25 words: what the source shows and why that gives this value. It is the only part a card shows, so it has to stand on its own.
 - **One fact needs nothing more.** Do not pad a short cell into a list.
 - **Two or more supporting facts go in a bullet list** under the opening sentence, one fact per bullet, separated from it by a blank line. Keep each bullet to one sentence.
-- **Bold** the fact that decides the value: the version, the setting that turns it on, *off by default*, *experimental*, *still open*. One or two bold phrases per cell, not every noun.
+- **Bold** the fact that decides the value: the version, the setting that turns it on, **off by default**, **experimental**, **still open**. One or two bold phrases per cell, not every noun.
 - *Italic* for a caveat word the reader must not miss (*not*, *only*), or the title of a doc or release note.
 - `Code` for environment variables, flags, settings keys, commands, method names, capability and extension ids, file names and package names.
 - `[text](https://...)` links for a second source; the main one goes in `source`. Only `https` links are rendered.

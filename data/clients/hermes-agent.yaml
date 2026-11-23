@@ -91,7 +91,7 @@ cells:
     evidence: |-
       Docs say Hermes identifies itself with a **Client ID Metadata Document** on servers that support one and falls back to Dynamic Client Registration otherwise, automatically.
 
-      - `mcp_oauth.py:992` sets the document URL https://nousresearch.github.io/hermes-agent/docs/oauth/client-metadata.json.
+      - `mcp_oauth.py:992` sets the document URL [client-metadata.json](https://nousresearch.github.io/hermes-agent/docs/oauth/client-metadata.json).
       - `_maybe_use_cimd` (:1049) passes it as `client_metadata_url`.
       - `cimd false` and `client_metadata_url` are config overrides.
     checked: 2026-11-23

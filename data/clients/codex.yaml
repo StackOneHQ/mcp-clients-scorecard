@@ -114,7 +114,7 @@ cells:
     method: source
     source: https://github.com/openai/codex/blob/ccf9be8cc458bd6b8336fe84d68d8893f2691a5e/codex-rs/features/src/lib.rs#L1785-L1790
     evidence: |-
-      Re-listing on the notification sits behind the feature flag `mcp_tool_list_changed` (Stage::UnderDevelopment, default_enabled false).
+      Re-listing on the notification sits behind the feature flag `mcp_tool_list_changed` (`Stage::UnderDevelopment`, `default_enabled` false).
 
       - Without the flag the notification is *only* logged.
     checked: 2026-11-23
