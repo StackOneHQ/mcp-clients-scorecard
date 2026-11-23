@@ -23,7 +23,7 @@
   spec_event: Tasks enter the spec as experimental
 - id: events
   label: Events
-  definition: The client accepts events that a server pushes, without the client polling for them. Events is an official Beta extension (poll, push and webhook delivery), not part of the 2026-07-28 core spec.
+  definition: The client accepts event notifications from a server through polling, push streams or webhooks. Events is an official Beta extension, not part of the 2026-07-28 core spec.
   ref: MCP Events extension (io.modelcontextprotocol/events)
   url: https://modelcontextprotocol.io/extensions/events/overview
   spec_date: 2026-11-19

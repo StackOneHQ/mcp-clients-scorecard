@@ -83,7 +83,7 @@ cells:
     value: p
     method: probe
     source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/documentation/docs/guides/mcp-elicitation.md#L16
-    evidence: "Own probe of 1.57.0 declared elicitation {} (form only under the 2025-11-25 spec, from enable_elicitation at mcp_client.rs:451), and the elicitation guide says goose supports form mode requests; URL requests are only passed to the same form UI (mcp_client.rs:412), so form without URL mode is p. v1.60.0 (PR 13428) now declares form elicitation explicitly and still not URL mode"
+    evidence: "Own probe of 1.57.0 declared elicitation {} (form only under the 2025-11-25 spec, from enable_elicitation at mcp_client.rs:451), and the elicitation guide says goose supports form mode requests; URL requests are only passed to the same form UI (mcp_client.rs:412), so form without URL mode is p"
     checked: 2026-10-30
     since:
       date: 2025-12-18
