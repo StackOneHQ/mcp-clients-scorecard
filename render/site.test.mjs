@@ -179,3 +179,17 @@ test('the worker lets other sites fetch the changelog feeds', async () => {
     assert.equal(res.headers.get('Access-Control-Allow-Origin'), '*', f);
   }
 });
+
+test('every check card links its proof, which works without JS and opens in the side panel with it', () => {
+  for (const c of data.clients) {
+    const html = read(`clients/${c.slug}/index.html`);
+    assert.ok(html.includes('<dialog class="dlg drawer" id="proof"'), c.slug);
+    for (const [k] of COLUMNS) {
+      assert.match(html, new RegExp(`<details class="proof" id="proof-${k}"><summary>See the proof</summary><div class="proof-body">`), `${c.slug} ${k}`);
+    }
+  }
+});
+
+test('the hero asks who supports Events', () => {
+  assert.match(read('index.html'), /id="ask-events" role="tabpanel"/);
+});

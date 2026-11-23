@@ -73,11 +73,14 @@ h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;margin:
 .ask-tabs{display:none;gap:4px;padding:4px;border-radius:12px;background:var(--page);overflow-x:auto;scrollbar-width:none}
 .ask-tabs::-webkit-scrollbar{display:none}
 .js .ask-tabs{display:flex}
+/* Every panel shares one grid cell, so the card keeps the tallest panel's height whichever tab is open */
+.js .ask{display:grid}
+.js .ask-panel{grid-area:2/1;display:flex;flex-direction:column}
 .ask-tabs button{flex:1;height:32px;padding:0 12px;border:0;border-radius:8px;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .15s var(--ease),background-color .15s var(--ease)}
 .ask-tabs button:hover{color:var(--text)}
 .ask-tabs button[aria-selected=true]{background:var(--card);color:var(--text)}
 .ask-panel{padding:20px 16px 16px}
-.js .ask-panel:not(.on){display:none}
+.js .ask-panel:not(.on){visibility:hidden}
 .js .ask-panel.on{animation:rise .3s var(--ease) both}
 .ask-q{font-family:var(--head);font-size:24px;line-height:1.2;color:var(--text);margin:0 0 4px;letter-spacing:-.01em}
 .ask-n{font-family:var(--mono);font-size:13px;color:var(--muted);margin:0 0 16px}.ask-n b{color:var(--green);font-weight:500}
@@ -88,7 +91,7 @@ h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;margin:
 .ask-who a.p{color:var(--body)}
 .ask-who .lg{width:28px;height:28px;border-radius:7px}.ask-who .lg img{width:20px;height:20px}
 .ask-who .tb{width:22px;height:22px;font-size:12px;border-radius:6px}
-.ask-panel .link{font-size:14px}
+.ask-panel .link{font-size:14px;align-self:flex-start;margin-top:auto}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ---------- filter bar */
@@ -290,6 +293,27 @@ th,td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;verti
 .ck-v{font-family:var(--mono);font-size:12px;display:inline-flex;align-items:center;gap:6px;color:var(--body)}
 .ck-v img{width:18px;height:18px}
 .check p{margin:0;color:var(--body);font-size:14px;overflow-wrap:anywhere}
+.ck-lead{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.proof summary{cursor:pointer;font-size:14px;font-weight:500;color:var(--text);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px;list-style:none;width:fit-content}
+.proof summary::-webkit-details-marker{display:none}
+.proof summary:hover{text-decoration-color:currentColor}
+.proof-body{margin-top:12px}
+.check .proof-def,.drawer .proof-def{color:var(--muted)}
+.md{font-size:14px;line-height:1.6;color:var(--body);overflow-wrap:anywhere}
+.check .md p,.md p{margin:0 0 8px}.md ul{margin:0 0 8px;padding-left:20px}.md li{margin:0 0 4px}
+.md strong{color:var(--text);font-weight:500}.md code{font-size:12.5px}
+.proof-meta{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 16px;margin:16px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px}
+.proof-meta dt{color:var(--muted);font-family:var(--mono);font-size:12px}
+.proof-meta dd{margin:0;color:var(--body);min-width:0;overflow-wrap:anywhere}
+.proof-meta .url{display:block;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.check .proof-edit,.drawer .proof-edit{margin:16px 0 0;font-size:13px}
+.drawer{margin:0 0 0 auto;height:100vh;max-height:100vh;width:min(560px,100vw);max-width:100vw;border-radius:20px 0 0 20px;border-right:0}
+.drawer[open]{animation:slide .22s var(--ease)}
+.drawer .dlg-hd h3{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.drawer .dlg-hd .ck-v{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--body);display:inline-flex;align-items:center;gap:6px}
+.drawer-body{padding:20px}
+@keyframes slide{from{transform:translateX(32px);opacity:0}to{transform:none;opacity:1}}
+@media (max-width:640px){.drawer{width:100vw;border-radius:0}}
 .src{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:auto;display:flex;flex-wrap:wrap;gap:4px 12px}
 .src a{color:var(--body)}
 .embed{margin-top:48px;padding:32px;border-radius:20px;background:var(--panel)}

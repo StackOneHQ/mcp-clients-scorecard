@@ -16,13 +16,22 @@ cells:
     value: 2025-11-25
     method: source
     source: https://github.com/openclaw/openclaw/blob/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents/agent-bundle-mcp-runtime.ts#L357
-    evidence: "The embedded agent runtime builds its MCP client with the bundled @modelcontextprotocol/client 2.3.1 (package.json:2401) and versionNegotiation mode 'legacy' (agent-bundle-mcp-runtime.ts:357), so it initializes with that SDK's LATEST_PROTOCOL_VERSION 2025-11-25 (core 2.3.1 dist/constants: LATEST_PROTOCOL_VERSION = '2025-11-25'); only the native Codex harness bridge (nativeContext) uses mode 'auto', which tries 2026-07-28 first"
+    evidence: |-
+      The embedded agent runtime builds its MCP client at **2025-11-25** through the bundled `@modelcontextprotocol/client` 2.3.1 in `legacy` mode.
+
+      - `package.json:2401` bundles the client; `agent-bundle-mcp-runtime.ts:357` sets `versionNegotiation` mode 'legacy'.
+      - That is the SDK's `LATEST_PROTOCOL_VERSION` (core 2.3.1 `dist/constants`: `LATEST_PROTOCOL_VERSION = '2025-11-25'`).
+      - Only the native Codex harness bridge (`nativeContext`) uses mode 'auto', which tries 2026-07-28 first.
     checked: 2026-11-23
   code_mode:
     value: p
     method: docs
     source: https://docs.openclaw.ai/tools/code-mode
-    evidence: "Docs call Code Mode 'an experimental OpenClaw agent-runtime feature': the model sees exec and wait and writes JavaScript that searches, describes and calls the hidden tool catalog (MCP tools included, src/agents/code-mode-mcp-api.ts); with tools.codeMode absent it engages only for models marked as preferred Code Mode performers, otherwise it is turned on in Settings, Agents and Tools, Labs, so p"
+    evidence: |-
+      Docs call Code Mode 'an experimental OpenClaw agent-runtime feature', so it is **experimental** and mostly opt-in.
+
+      - The model sees `exec` and `wait` and writes JavaScript that searches, describes and calls the hidden tool catalog (MCP tools included, `src/agents/code-mode-mcp-api.ts`).
+      - With `tools.codeMode` absent it engages only for models marked as preferred Code Mode performers; otherwise it is turned on in Settings, Agents and Tools, Labs, so p.
     checked: 2026-11-23
     since:
       date: 2026-05-14
@@ -34,7 +43,11 @@ cells:
     quality: strong
     method: source
     source: https://github.com/openclaw/openclaw/blob/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents/tool-search-ranking.ts#L371
-    evidence: "tool-search-ranking.ts:371 scoreLexical is Okapi BM25 (K1 1.2, B 0.75 at :35-38) over tool names, descriptions and parameter text; the model gets tool_search, tool_describe and dispatch_action over a catalog that includes MCP tools, and docs/tools/tool-search.md:22 says embedded runs use Tool Search automatically when tools.toolSearch is unset (the page also labels it experimental)"
+    evidence: |-
+      The model gets `tool_search`, `tool_describe` and `dispatch_action` over a catalog that includes MCP tools, ranked by **Okapi BM25**.
+
+      - `tool-search-ranking.ts:371` `scoreLexical` ranks over tool names, descriptions and parameter text (K1 1.2, B 0.75 at :35-38).
+      - `docs/tools/tool-search.md:22` says embedded runs use Tool Search automatically when `tools.toolSearch` is unset; the page also labels it experimental.
     checked: 2026-11-23
     since:
       date: 2026-05-14
@@ -44,41 +57,71 @@ cells:
     value: y
     method: docs
     source: https://docs.openclaw.ai/cli/mcp/apps
-    evidence: "The MCP Apps page documents rendering apps from the 'stable MCP Apps extension' in the Control UI behind the documented setting mcp.apps.enabled; the client advertises io.modelcontextprotocol/ui with mimeTypes text/html;profile=mcp-app only when Apps are enabled (mcp-metadata.ts:13-15), so a web view exists although the CLI itself is a terminal tool"
+    evidence: |-
+      The MCP Apps page documents rendering apps from the 'stable MCP Apps extension' in the Control UI behind the documented setting `mcp.apps.enabled`.
+
+      - The client advertises `io.modelcontextprotocol/ui` with mimeTypes `text/html;profile=mcp-app` *only* when Apps are enabled (`mcp-metadata.ts:13-15`).
+      - So a web view exists although the CLI itself is a terminal tool.
     checked: 2026-11-23
   tasks:
     value: n
     method: source
     source: https://github.com/openclaw/openclaw/tree/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents
-    evidence: "Not found: grep for io.modelcontextprotocol/tasks, tasks/get and tasks/list in src/agents and extensions/mcp-events at tag v2026.11.7 finds no MCP Tasks code, the client capabilities at mcp-metadata.ts:9-20 declare no tasks entry, and docs.openclaw.ai/tools/mcp does not mention Tasks (the only task store hits are the A2A extension, a different protocol)"
+    evidence: |-
+      **Not found**: no MCP Tasks code at tag v2026.11.7.
+
+      - Grep for `io.modelcontextprotocol/tasks`, `tasks/get` and `tasks/list` in `src/agents` and `extensions/mcp-events` finds none.
+      - The client capabilities at `mcp-metadata.ts:9-20` declare no tasks entry.
+      - docs.openclaw.ai/tools/mcp does not mention Tasks (the only task store hits are the A2A extension, a different protocol).
     checked: 2026-11-23
   events:
     value: p
     method: docs
     source: https://docs.openclaw.ai/automation/mcp-events
-    evidence: "The opt-in bundled mcp-events plugin implements only the OpenAI webhook profile on MCP 2026-07-28 (server/discover, events/list, events/subscribe, events/unsubscribe over Streamable HTTP, mcp-event-request.ts:12-18) and the page says 'Polling, push streams' and the gap and terminated notifications are not part of it, so one delivery mode of three and off until the plugin is enabled"
+    evidence: |-
+      The opt-in bundled `mcp-events` plugin implements **only the OpenAI webhook profile** on MCP 2026-07-28, so it is one delivery mode of three and off until the plugin is enabled.
+
+      - It covers `server/discover`, `events/list`, `events/subscribe` and `events/unsubscribe` over Streamable HTTP (`mcp-event-request.ts:12-18`).
+      - The page says 'Polling, push streams' and the gap and terminated notifications are *not* part of it.
     checked: 2026-11-23
   cimd:
     value: p
     method: source
     source: https://github.com/openclaw/openclaw/blob/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents/mcp-oauth-provider.ts#L167
-    evidence: "mcp-oauth-provider.ts:167 passes mcp.servers.*.oauth.clientMetadataUrl (an https URL with a non-root path, zod-schema.mcp-server.ts:46, also the CLI flag --oauth-client-metadata-url at mcp-cli.ts:876) to the SDK, which uses it as the client_id when the server advertises client_id_metadata_document_supported; there is no default hosted metadata document and the docs pages do not describe it, so the user has to host one"
+    evidence: |-
+      CIMD works only when the user **hosts a metadata document**; there is no default hosted one.
+
+      - `mcp-oauth-provider.ts:167` passes `mcp.servers.*.oauth.clientMetadataUrl` (an https URL with a non-root path, `zod-schema.mcp-server.ts:46`, also the CLI flag `--oauth-client-metadata-url` at `mcp-cli.ts:876`) to the SDK.
+      - The SDK uses it as the `client_id` when the server advertises `client_id_metadata_document_supported`.
+      - The docs pages do not describe it.
     checked: 2026-11-23
   id_jag:
     value: n
     method: source
     source: https://github.com/openclaw/openclaw/tree/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents
-    evidence: "Not found: grep for id-jag, id_jag, enterprise-managed, jwt-bearer and token-exchange in src/agents, src/cli/mcp*, src/config and docs/cli at tag v2026.11.7 finds no MCP enterprise-managed authorization; docs.openclaw.ai/cli/mcp/transports lists only auth oauth with login, authProfileId and per-requester identity"
+    evidence: |-
+      **Not found**: no MCP enterprise-managed authorization at tag v2026.11.7.
+
+      - Grep for `id-jag`, `id_jag`, `enterprise-managed`, `jwt-bearer` and `token-exchange` in `src/agents`, `src/cli/mcp*`, `src/config` and `docs/cli` finds nothing.
+      - docs.openclaw.ai/cli/mcp/transports lists only auth `oauth` with `login`, `authProfileId` and per-requester identity.
     checked: 2026-11-23
   elicitation:
     value: p
     method: source
     source: https://github.com/openclaw/openclaw/blob/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents/mcp-metadata.ts#L12
-    evidence: "mcp-metadata.ts:12 declares elicitation {form: {}, url: {}} and mcp-client-elicitation.ts handles both modes, but only when the opt-in MCP Apps host is enabled (agent-bundle-mcp-runtime.ts:94 and :383); otherwise the client declares empty capabilities, and the MCP docs pages do not describe elicitation, so p"
+    evidence: |-
+      `mcp-metadata.ts:12` declares `elicitation {form: {}, url: {}}` and `mcp-client-elicitation.ts` handles both modes, but only when the **opt-in MCP Apps host** is enabled, so p.
+
+      - The gate is at `agent-bundle-mcp-runtime.ts:94` and :383; otherwise the client declares empty capabilities.
+      - The MCP docs pages do not describe elicitation.
     checked: 2026-11-23
   list_changed:
     value: y
     method: source
     source: https://github.com/openclaw/openclaw/blob/e31bbf056de321127988ec5c1a36ff1b59297de0/src/agents/agent-bundle-mcp-runtime.ts#L363
-    evidence: "The client registers a tools listChanged handler (agent-bundle-mcp-runtime.ts:363-373) whose onChanged calls invalidateCatalog (:118-121), so the next listing refetches tools/list; docs/tools/tool-search.md:299 says a server's tools/list_changed update applies on the next turn"
+    evidence: |-
+      The client registers a `tools` listChanged handler (`agent-bundle-mcp-runtime.ts:363-373`), so a change notice **refetches `tools/list`** on the next listing.
+
+      - Its `onChanged` calls `invalidateCatalog` (:118-121).
+      - `docs/tools/tool-search.md:299` says a server's `tools/list_changed` update applies on the next turn.
     checked: 2026-11-23

@@ -15,13 +15,22 @@ cells:
     value: 2025-11-25
     method: probe
     source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
-    evidence: "Own probe of pi 1.4.0 (pi mcp list against a local stdio server, empty HOME) on 2026-10-30 sent initialize with protocolVersion 2025-11-25, matching packages/mcp/src/protocol/types.ts:4 LATEST_PROTOCOL_VERSION at tag v1.4.0"
+    evidence: |-
+      Own probe of pi 1.4.0 on 2026-10-30: the client sends `initialize` with `protocolVersion` **2025-11-25**.
+
+      - Run as `pi mcp list` against a local stdio server, empty HOME.
+      - Matches `LATEST_PROTOCOL_VERSION` in `packages/mcp/src/protocol/types.ts:4` at tag v1.4.0.
     checked: 2026-10-30
   code_mode:
     value: y
     method: source
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L195
-    evidence: "docs/mcp.md:195 makes codemode the default MCP exposure, and :204 says Pi activates the codemode tool (model-written JavaScript in a QuickJS sandbox) when such a server connects; the probe listed the server as codemode. Unchanged in v1.5.0 (mcp.md:197)"
+    evidence: |-
+      Docs: `docs/mcp.md:195` makes **codemode the default** MCP exposure.
+
+      - `:204` says Pi activates the `codemode` tool (model-written JavaScript in a QuickJS sandbox) when such a server connects.
+      - The probe listed the server as `codemode`.
+      - Unchanged in v1.5.0 (`mcp.md:197`).
     checked: 2026-11-06
     since:
       date: 2026-09-29
@@ -33,7 +42,13 @@ cells:
     quality: strong
     method: source
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/extensions/tool-search/tool.ts#L118
-    evidence: "Okapi BM25 (k1 1.2, b 0.75) over each tool's name, name with underscores as spaces, description, schema property names and descriptions, and namespace name, description and instructions, with camelCase splitting, stop words and naive singular stemming; shared by searchTools() in codemode and the tool_search tool, and documented as BM25 in docs/codemode.md:32"
+    evidence: |-
+      Source: Pi ranks tools with **Okapi BM25** (`k1` 1.2, `b` 0.75).
+
+      - It scores each tool's name, name with underscores as spaces, description, schema property names and descriptions, and namespace name, description and instructions.
+      - Text handling includes camelCase splitting, stop words and naive singular stemming.
+      - Shared by `searchTools()` in codemode and the `tool_search` tool.
+      - Documented as BM25 in `docs/codemode.md:32`.
     checked: 2026-10-30
     since:
       date: 2026-09-29
@@ -43,25 +58,34 @@ cells:
     value: na
     method: source
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L246
-    evidence: "docs/mcp.md:246 says resources for MCP Apps (ui:// or text/html;profile=mcp-app) are omitted because Pi does not render them, and extensions/mcp/resources.ts:49 filters them out"
+    evidence: |-
+      Docs: MCP Apps resources are **omitted** because Pi does not render them.
+
+      - `docs/mcp.md:246` names them as `ui://` or `text/html;profile=mcp-app` resources.
+      - `extensions/mcp/resources.ts:49` filters them out.
     checked: 2026-10-30
   tasks:
     value: n
     method: probe
     source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
-    evidence: "Own probe of 1.4.0 declared only roots; extensions/mcp/runtime.ts:360-365 builds McpClient with roots only, and grep for tasks/get and io.modelcontextprotocol/tasks finds nothing at tag v1.4.0"
+    evidence: |-
+      Own probe of 1.4.0 declared `roots` and **nothing else**.
+
+      - `extensions/mcp/runtime.ts:360-365` builds `McpClient` with roots only.
+      - A grep for `tasks/get` and `io.modelcontextprotocol/tasks` finds nothing at tag v1.4.0.
     checked: 2026-10-30
   events:
     value: n
     method: source
     source: https://github.com/earendil-works/pi/tree/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/mcp/src
-    evidence: "grep for events/subscribe and notifications/events finds nothing in packages/mcp or the coding agent at tag v1.4.0"
+    evidence: "A grep for `events/subscribe` and `notifications/events` finds **nothing** in `packages/mcp` or the coding agent at tag v1.4.0."
     checked: 2026-10-30
   cimd:
     value: y
     method: docs
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L162
-    evidence: "docs/mcp.md:162-172 documents oauth.clientRegistration cimd, which identifies Pi by https://pi.dev/oauth/client.json instead of dynamic registration (extensions/mcp/oauth.ts:246-265); a documented setting, so y"
+    evidence: |-
+      Docs: `docs/mcp.md:162-172` documents `oauth.clientRegistration` set to `cimd`, a documented setting, so **y**. Pi is identified by https://pi.dev/oauth/client.json instead of dynamic registration (`extensions/mcp/oauth.ts:246-265`).
     checked: 2026-10-30
     since:
       date: 2026-10-03
@@ -71,17 +95,22 @@ cells:
     value: n
     method: source
     source: https://github.com/earendil-works/pi/tree/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/mcp/src
-    evidence: "grep for id-jag, jwt-bearer and enterprise-managed finds nothing in packages/mcp or the coding agent at tag v1.4.0"
+    evidence: "A grep for `id-jag`, `jwt-bearer` and `enterprise-managed` finds **nothing** in `packages/mcp` or the coding agent at tag v1.4.0."
     checked: 2026-10-30
   elicitation:
     value: n
     method: probe
     source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/1.4.0
-    evidence: "Own probe of 1.4.0 declared capabilities {roots: {}} only; runtime.ts:360-365 passes no elicitation capability or handler, and the docs never mention elicitation"
+    evidence: |-
+      Own probe of 1.4.0 declared capabilities `{roots: {}}` **only**.
+
+      - `runtime.ts:360-365` passes no elicitation capability or handler.
+      - The docs never mention elicitation.
     checked: 2026-10-30
   list_changed:
     value: y
     method: source
     source: https://github.com/earendil-works/pi/blob/v1.4.0/packages/coding-agent/src/extensions/mcp/runtime.ts#L380-L382
-    evidence: 'The built-in MCP extension handles notifications/tools/list_changed by calling refreshTools, which calls listTools and updates the session active tools'
+    evidence: |-
+      Source: the built-in MCP extension **refreshes tools** when it handles `notifications/tools/list_changed`. It calls `refreshTools`, which calls `listTools` and updates the session active tools.
     checked: 2026-11-02

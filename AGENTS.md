@@ -23,6 +23,16 @@ To change a chart, change `data/` or the templates in `render/images.mjs` (share
 
 Only use `npm run build -- --no-images` when no Chrome can be installed. It warns which charts it left stale. Say so in the pull request: the build workflow redraws the charts and commits them to the branch after you push, so wait for that commit and pull it before you push again. On a fork the workflow only runs if Actions is enabled there; otherwise a maintainer has to rebuild the charts.
 
+## Writing evidence and site copy
+
+Every claim on the site is backed by a cell's `source` and `evidence`, and the client pages show the whole evidence in a proof panel. Write `evidence` as structured Markdown, never as one long run-on sentence:
+
+- open with the verdict in one sentence (the card shows only that line),
+- when there are two or more supporting facts, put each in its own `- ` bullet (one fact stays a second sentence, never a one-item list),
+- **bold** the one or two facts that decide the value, *italic* for a caveat word, `code` for env vars, flags, settings keys, method and extension ids.
+
+The full rules and an example are in [data/README.md#writing-evidence](data/README.md#writing-evidence). `render/evidence.mjs` renders the subset; anything else (headings, tables, HTML) shows as plain text. Page copy in `render/site.mjs` follows the same habit: short sentences, lists for parallel items, bold for the one fact a reader must not miss. No em or en dashes anywhere.
+
 ## CI
 
 - `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.

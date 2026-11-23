@@ -18,7 +18,7 @@
     "check": "node render/build.mjs --check",
     "bugs": "node scripts/bugs.mjs",
     "probe": "bash probe/run.sh",
-    "test": "node --test render/site.test.mjs probe/report.test.mjs bench/tool-search/lib/openai.test.mjs",
+    "test": "node --test render/site.test.mjs render/evidence.test.mjs probe/report.test.mjs bench/tool-search/lib/openai.test.mjs",
     "bench:tool-search": "node bench/tool-search/run.mjs",
     "site": "node render/site.mjs"
   },

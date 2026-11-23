@@ -13,13 +13,21 @@ cells:
     value: 2025-11-25
     method: probe
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "Live probe of 1.0.77 on 2026-11-08 with grok mcp doctor negotiated 2025-11-25 (clientInfo grok-shell-probe 1.0.77); a full session was not probed because headless runs need a signed-in account"
+    evidence: |-
+      Live probe of 1.0.77 on 2026-11-08 with `grok mcp doctor` negotiated **2025-11-25**.
+
+      - The clientInfo was `grok-shell-probe` 1.0.77.
+      - A full session was not probed because headless runs need a signed-in account.
     checked: 2026-11-08
   code_mode:
     value: n
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: No tool in the 1.0.77 binary runs model-written code against MCP tools; MCP calls go through use_tool one at a time, and the docs and changelog do not mention a code or script mode
+    evidence: |-
+      **No tool** in the 1.0.77 binary runs model-written code against MCP tools.
+
+      - MCP calls go through `use_tool` one at a time.
+      - The docs and changelog do not mention a code or script mode.
     checked: 2026-11-08
   tool_search:
     value: y
@@ -27,43 +35,61 @@ cells:
     quality: basic
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "The 1.0.77 binary defers MCP tools behind search_tools and dispatches them through use_tool; changelog 1.0.46: Tool search activity folds as Ran N tool searches. Ranking is not documented"
+    evidence: |-
+      The 1.0.77 binary **defers MCP tools** behind `search_tools` and dispatches them through `use_tool`.
+
+      - Changelog 1.0.46: Tool search activity folds as Ran N tool searches.
+      - Ranking is not documented.
     checked: 2026-11-08
   apps:
     value: na
     method: probe
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "Terminal client with no UI to render into: the live probe declared extension io.modelcontextprotocol/ui (mimeType text/html;profile=mcp-app) and the binary forwards a tool's resourceUri, but it has no ui/initialize handler or app bridge and the docs never describe rendering a UI"
+    evidence: |-
+      Terminal client with **no UI to render into**: it declares the ui extension but has no app bridge.
+
+      - The live probe declared extension `io.modelcontextprotocol/ui` (mimeType `text/html;profile=mcp-app`).
+      - The binary forwards a tool's `resourceUri`.
+      - It has no `ui/initialize` handler or app bridge.
+      - The docs never describe rendering a UI.
     checked: 2026-11-08
   tasks:
     value: n
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: tasks/get and tasks/cancel appear only in bundled MCP library schemas in the 1.0.77 binary, and the probe saw no tasks capability
+    evidence: |-
+      Only bundled MCP library schemas mention tasks in the 1.0.77 binary, and the probe saw **no tasks capability**. `tasks/get` and `tasks/cancel` appear only there.
     checked: 2026-11-08
   events:
     value: n
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: 0 hits for events/subscribe or notifications/events in the 1.0.77 binary
+    evidence: |-
+      **0 hits** for `events/subscribe` or `notifications/events` in the 1.0.77 binary.
     checked: 2026-11-08
   cimd:
     value: n
     method: docs
     source: https://docs.x.ai/build/features/mcp-servers
-    evidence: "Docs: OAuth runs automatically through dynamic client registration or a bundled client ID (changelog 0.2.23); Client ID Metadata Documents are not mentioned"
+    evidence: "Docs: OAuth runs automatically through dynamic client registration or a bundled client ID (changelog 0.2.23); **Client ID Metadata Documents are not mentioned**."
     checked: 2026-11-08
   id_jag:
     value: n
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: Only the generic jwt-bearer and token-exchange grant strings from the bundled OAuth library in the 1.0.77 binary, with no ID-JAG wiring
+    evidence: Only the generic `jwt-bearer` and `token-exchange` grant strings from the bundled OAuth library in the 1.0.77 binary, with **no ID-JAG wiring**.
     checked: 2026-11-08
   elicitation:
     value: y
     method: changelog
     source: https://github.com/xai-org/grok-build/blob/2bdd1d6a6369de0e8c68132ea4539e9abd9e14a8/crates/codegen/xai-grok-shell/changelogs/1.0.8.md
-    evidence: "Changelog 1.0.8: \"MCP servers can now ask for form input or URL consent through the same popup used for questions\". The user guide embedded in the 1.0.77 binary describes the same elicitation card for form fields or URL consent, and the public source builds the client with both form and url elicitation capabilities in interactive sessions (xai-grok-mcp servers.rs make_client_info). The grok mcp doctor handshake declares none because it has no interactive channel"
+    evidence: |-
+      Changelog 1.0.8 and the public source show **form and url elicitation** in interactive sessions.
+
+      - Changelog 1.0.8: "MCP servers can now ask for form input or URL consent through the same popup used for questions".
+      - The user guide embedded in the 1.0.77 binary describes the same elicitation card for form fields or URL consent.
+      - The public source builds the client with both form and url elicitation capabilities in interactive sessions (`xai-grok-mcp` `servers.rs` `make_client_info`).
+      - The `grok mcp doctor` handshake declares none because it has no interactive channel.
     checked: 2026-11-16
     since:
       date: 2026-08-20
@@ -73,5 +99,9 @@ cells:
     value: n
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
-    evidence: "Only the bundled MCP library's ToolListChangedNotification types in the 1.0.77 binary, with no product handler found; in the doctor probe the client did not list again after notifications/tools/list_changed, and changelog 0.2.112 (tools appear without restart after enrolling a managed service) covers Grok's managed services, not this notification"
+    evidence: |-
+      Only the bundled MCP library's `ToolListChangedNotification` types are in the 1.0.77 binary, with **no product handler found**.
+
+      - In the doctor probe the client did not list again after `notifications/tools/list_changed`.
+      - Changelog 0.2.112 (tools appear without restart after enrolling a managed service) covers Grok's managed services, not this notification.
     checked: 2026-11-08

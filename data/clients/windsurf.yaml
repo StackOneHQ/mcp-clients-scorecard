@@ -13,13 +13,21 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: 'Devin CLI 3000.11.234, the agent harness Devin Local in Desktop 3.11.234 shares, opened the probe server with `server/discover` on 2026-07-28 (client rmcp 3.2.0), matching Desktop v3.10.67: "Added support for connecting to MCP servers on protocol revision 2026-07-28"'
+    evidence: |-
+      Live probe of Devin CLI 3000.11.234: it opened the probe server with `server/discover` on **2026-07-28**.
+
+      - Devin CLI is the agent harness Devin Local in Desktop 3.11.234 shares (client rmcp 3.2.0).
+      - Matches Desktop v3.10.67: "Added support for connecting to MCP servers on protocol revision 2026-07-28".
     checked: 2026-10-30
   code_mode:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: 'No execute_javascript or code execution over MCP tools in the 3000.11.234 binary; the "code_mode" strings and the changelog''s "Code mode" are the permission mode next to Ask, Plan, Smart and Bypass, and the changelog through 3.11.238 adds no MCP scripting'
+    evidence: |-
+      Source: **no** `execute_javascript` or code execution over MCP tools in the 3000.11.234 binary.
+
+      - The "code_mode" strings and the changelog's "Code mode" are the permission mode next to Ask, Plan, Smart and Bypass.
+      - The changelog through 3.11.238 adds no MCP scripting.
     checked: 2026-11-06
   tool_search:
     value: y
@@ -27,47 +35,68 @@ cells:
     quality: basic
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: 'The 3000.11.234 binary ships a `tool_search` tool (toolbox-core/src/tools/tool_search.rs) described as "Only a core set of tools is shown to you", taking `query` (matched against tool names, descriptions and parameter names), exact `names` and `limit` (default 6, max 12) and loading the matches for the next turn, plus a HostedToolSearchConfig with an Anthropic regex or bm25 variant; ranking not documented, and neither is mentioned in the Desktop or CLI docs'
+    evidence: |-
+      Source: the 3000.11.234 binary **ships a tool search tool**, described as "Only a core set of tools is shown to you".
+
+      - `tool_search` is defined in `toolbox-core/src/tools/tool_search.rs`.
+      - It takes `query` (matched against tool names, descriptions and parameter names), exact `names` and `limit` (default 6, max 12), and loads the matches for the next turn.
+      - There is also a `HostedToolSearchConfig` with an Anthropic regex or bm25 variant.
+      - Ranking is not documented, and neither is mentioned in the Desktop or CLI docs.
     checked: 2026-10-30
   apps:
     value: p
     method: probe
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: 'Devin CLI 3000.11.234 declares `extensions: {"io.modelcontextprotocol/ui": {mimeTypes: ["text/html;profile=mcp-app"]}}` in its server/discover capabilities (probe via `devin mcp list`), but no Desktop or CLI doc or changelog says either one renders MCP Apps, so this is p until rendering is confirmed'
+    evidence: |-
+      Live probe of Devin CLI 3000.11.234: it declares the UI extension but no doc says it renders MCP Apps, so **p until rendering is confirmed**.
+
+      - Declares `extensions: {"io.modelcontextprotocol/ui": {mimeTypes: ["text/html;profile=mcp-app"]}}` in its `server/discover` capabilities (probe via `devin mcp list`).
+      - No Desktop or CLI doc or changelog says either one renders MCP Apps.
     checked: 2026-10-30
   tasks:
     value: n
     method: probe
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: The probe handshake declares no tasks capability or extension; the tasks/get strings in the binary are the rmcp SDK schema, and no Desktop or CLI changelog mentions tasks
+    evidence: |-
+      Live probe: the handshake declares **no tasks capability or extension**.
+
+      - The `tasks/get` strings in the binary are the rmcp SDK schema.
+      - No Desktop or CLI changelog mentions tasks.
     checked: 2026-10-30
   events:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: No events/subscribe or notifications/events in the 3000.11.234 binary and no changelog entry
+    evidence: "Source: no `events/subscribe` or `notifications/events` in the 3000.11.234 binary and **no changelog entry**."
     checked: 2026-10-30
   cimd:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: No client_id_metadata_document in the 3000.11.234 binary; the CLI MCP configuration docs show dynamic registration, a pre-registered `oauthClientId` and an `oauthResource` override only
+    evidence: |-
+      Source: **no** `client_id_metadata_document` in the 3000.11.234 binary. The CLI MCP configuration docs show *only* dynamic registration, a pre-registered `oauthClientId` and an `oauthResource` override.
     checked: 2026-10-30
   id_jag:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: No id-jag token type or jwt-bearer grant in the 3000.11.234 binary, and no Desktop or CLI doc or changelog mentions Cross App Access
+    evidence: |-
+      Source: **no** `id-jag` token type or `jwt-bearer` grant in the 3000.11.234 binary. No Desktop or CLI doc or changelog mentions Cross App Access.
     checked: 2026-10-30
   elicitation:
     value: n
     method: probe
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
-    evidence: The probe handshake declares no elicitation capability; the elicitation strings in the binary are the rmcp schema and ACP elicitation for the agent's own ask_user_question, and the Desktop line "Improved handling for less common MCP server features" (v3.2.16, not v3.11.1108) names no feature
+    evidence: |-
+      Live probe: the handshake declares **no elicitation capability**.
+
+      - The elicitation strings in the binary are the rmcp schema and ACP elicitation for the agent's own `ask_user_question`.
+      - The Desktop line "Improved handling for less common MCP server features" (v3.2.16, not v3.11.1108) names no feature.
     checked: 2026-10-30
   list_changed:
     value: n
     method: docs
     source: https://docs.devin.ai/windsurf/plugins/cascade/mcp
-    evidence: 'The docs and changelog describe only a manual MCP refresh button and say nothing about notifications/tools/list_changed'
+    evidence: |-
+      Docs: the docs and changelog describe *only* a **manual MCP refresh button**. They say nothing about `notifications/tools/list_changed`.
     checked: 2026-11-02

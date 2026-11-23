@@ -16,14 +16,20 @@ cells:
     value: 2026-07-28
     method: source
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/tools/mcp_tool_transport.py#L229
-    evidence: "pyproject.toml:431 pins mcp==2.3.0 (uv.lock 3554-3556), whose mcp_types LATEST_PROTOCOL_VERSION is 2026-07-28; _negotiate_session (mcp_tool_transport.py:198-239) in the default protocol auto mode sends the legacy initialize at 2025-11-25 first and falls back to server/discover at 2026-07-28 when the server rejects it as modern-only, and protocol stateless probes discover first (documented in mcp-config-reference.md:59); not probed live"
+    evidence: |-
+      `pyproject.toml:431` pins `mcp==2.3.0` (`uv.lock` 3554-3556), whose `mcp_types` `LATEST_PROTOCOL_VERSION` is **2026-07-28**; not probed live.
+
+      - `_negotiate_session` (`mcp_tool_transport.py:198-239`) in the default protocol `auto` mode sends the legacy `initialize` at 2025-11-25 first.
+      - It falls back to `server/discover` at 2026-07-28 when the server rejects that as modern-only.
+      - Protocol `stateless` probes discover first (documented in `mcp-config-reference.md:59`).
     checked: 2026-11-23
     fallback: 2025-11-25
   code_mode:
     value: n
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/code-execution.md#L153
-    evidence: "The execute_code tool runs Python scripts that call Hermes tools over RPC, but the docs state scripts cannot call MCP tools, and SANDBOX_ALLOWED_TOOLS (tools/code_execution_tool.py:40) lists only web_search, web_extract, read_file, write_file, search_files, patch and terminal"
+    evidence: |-
+      The `execute_code` tool runs Python scripts that call Hermes tools over RPC, but the docs state scripts **cannot call MCP tools**. `SANDBOX_ALLOWED_TOOLS` (`tools/code_execution_tool.py:40`) lists only `web_search`, `web_extract`, `read_file`, `write_file`, `search_files`, `patch` and `terminal`.
     checked: 2026-11-23
   tool_search:
     value: y
@@ -31,7 +37,11 @@ cells:
     quality: strong
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/tool-search.md#L133
-    evidence: "Documented Tool Search replaces MCP and plugin tools with three bridge tools (tool_search, tool_describe, tool_call) and loads schemas on demand; enabled defaults to auto, which activates whenever a deferred tool exists (config_defaults.py:1944), and tools/tool_search_catalog.py ranks stemmed queries with BM25"
+    evidence: |-
+      Documented Tool Search replaces MCP and plugin tools with three bridge tools (`tool_search`, `tool_describe`, `tool_call`) and loads schemas on demand.
+
+      - `enabled` defaults to `auto`, which activates whenever a deferred tool exists (`config_defaults.py:1944`).
+      - `tools/tool_search_catalog.py` ranks stemmed queries with **BM25**.
     checked: 2026-11-23
     since:
       date: 2026-06-06
@@ -41,19 +51,32 @@ cells:
     value: na
     method: source
     source: https://github.com/NousResearch/hermes-agent/tree/caafe5389ae585ef77387a962aee05b1bcf17029/tools
-    evidence: "Terminal agent: grep for ui://, mcp-app and io.modelcontextprotocol/ui across the .py, .ts, .tsx and .md files of the repo at tag v0.23.3 finds nothing, and the session kwargs built in mcp_tool_transport.py:182-196 pass sampling, elicitation, message and logging callbacks but no UI extension"
+    evidence: |-
+      Terminal agent: **no MCP Apps support** found at tag v0.23.3.
+
+      - Grep for `ui://`, `mcp-app` and `io.modelcontextprotocol/ui` across the .py, .ts, .tsx and .md files of the repo finds nothing.
+      - The session kwargs built in `mcp_tool_transport.py:182-196` pass sampling, elicitation, message and logging callbacks but no UI extension.
     checked: 2026-11-23
   tasks:
     value: n
     method: source
     source: https://github.com/NousResearch/hermes-agent/tree/caafe5389ae585ef77387a962aee05b1bcf17029/tools
-    evidence: "grep for io.modelcontextprotocol/tasks, tasks/get, tasks/result and enable_tasks in tools/mcp*.py at tag v0.23.3 finds nothing, and the MCP docs page does not mention tasks (the only tasks hits in the repo are the A2A plugin, a different protocol)"
+    evidence: |-
+      **No MCP Tasks support** found at tag v0.23.3.
+
+      - Grep for `io.modelcontextprotocol/tasks`, `tasks/get`, `tasks/result` and `enable_tasks` in `tools/mcp*.py` finds nothing.
+      - The MCP docs page does not mention tasks.
+      - The only tasks hits in the repo are the A2A plugin, a different protocol.
     checked: 2026-11-23
   events:
     value: p
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/mcp.md#L1038
-    evidence: "Documented as experimental and opt-in per server (mcp_servers.<name>.events: true, default false); it implements events/list, events/subscribe and events/unsubscribe with webhook delivery to the gateway listener only, and mcp_tool_events.py:9-10 says poll and push delivery are not implemented"
+    evidence: |-
+      Documented as **experimental and opt-in** per server (`mcp_servers.<name>.events: true`, default false).
+
+      - It implements `events/list`, `events/subscribe` and `events/unsubscribe` with webhook delivery to the gateway listener *only*.
+      - `mcp_tool_events.py:9-10` says poll and push delivery are not implemented.
     checked: 2026-11-23
     since:
       date: 2026-11-05
@@ -63,19 +86,29 @@ cells:
     value: y
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/mcp.md#L354
-    evidence: "Docs say Hermes identifies itself with a Client ID Metadata Document on servers that support one and falls back to Dynamic Client Registration otherwise, automatically; mcp_oauth.py:992 sets the document URL https://nousresearch.github.io/hermes-agent/docs/oauth/client-metadata.json and _maybe_use_cimd (:1049) passes it as client_metadata_url, with cimd false and client_metadata_url as config overrides"
+    evidence: |-
+      Docs say Hermes identifies itself with a **Client ID Metadata Document** on servers that support one and falls back to Dynamic Client Registration otherwise, automatically.
+
+      - `mcp_oauth.py:992` sets the document URL [client-metadata.json](https://nousresearch.github.io/hermes-agent/docs/oauth/client-metadata.json).
+      - `_maybe_use_cimd` (:1049) passes it as `client_metadata_url`.
+      - `cimd false` and `client_metadata_url` are config overrides.
     checked: 2026-11-23
   id_jag:
     value: n
     method: source
     source: https://github.com/NousResearch/hermes-agent/tree/caafe5389ae585ef77387a962aee05b1bcf17029/tools
-    evidence: "grep for id-jag, id_jag, enterprise-managed, jwt-bearer and token-exchange in tools/mcp*.py at tag v0.23.3 finds nothing (the only token exchange hits are provider logins in hermes_cli/auth_*.py), and the MCP docs and config reference do not mention enterprise-managed authorization"
+    evidence: |-
+      **No enterprise-managed authorization** found at tag v0.23.3.
+
+      - Grep for `id-jag`, `id_jag`, `enterprise-managed`, `jwt-bearer` and `token-exchange` in `tools/mcp*.py` finds nothing; the only token exchange hits are provider logins in `hermes_cli/auth_*.py`.
+      - The MCP docs and config reference do not mention enterprise-managed authorization.
     checked: 2026-11-23
   elicitation:
     value: p
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/mcp.md#L1023
-    evidence: "Docs say form-mode elicitations are asked on the session's clarify surface, enabled by default per server, and that URL-mode elicitations are declined as unsupported; code matches (mcp_tool_sampling.py:377-379 declines mode url), so form without URL mode is p"
+    evidence: |-
+      Docs say **form-mode** elicitations are asked on the session's clarify surface, enabled by default per server, and that URL-mode elicitations are declined as unsupported, so form without URL mode is p. The code matches: `mcp_tool_sampling.py:377-379` declines mode `url`.
     checked: 2026-11-23
     since:
       date: 2026-06-19
@@ -85,5 +118,9 @@ cells:
     value: y
     method: source
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/tools/mcp_tool_health.py#L109
-    evidence: "The message_handler schedules _refresh_tools on ToolListChangedNotification (mcp_tool_health.py:109-113), which re-lists tools with list_tools and updates the registry without a restart, as documented at mcp.md:773; prompts and resources list_changed are ignored"
+    evidence: |-
+      The `message_handler` schedules `_refresh_tools` on `ToolListChangedNotification` (`mcp_tool_health.py:109-113`), so tools refresh **without a restart**.
+
+      - It re-lists tools with `list_tools` and updates the registry, as documented at `mcp.md:773`.
+      - Prompts and resources list_changed are ignored.
     checked: 2026-11-23

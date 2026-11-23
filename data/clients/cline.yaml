@@ -15,59 +15,82 @@ cells:
     value: 2025-11-25
     method: source
     source: https://github.com/cline/cline/blob/a459f1d04dea030833b558be645011ab739c463b/apps/vscode/src/services/mcp/McpHub.ts#L466
-    evidence: 'At the v4.1.26 tag the VS Code extension McpHub.ts:466-473 builds an SDK `Client` with `capabilities: {}` and bun.lock:1689 resolves @modelcontextprotocol/sdk 1.30.0, whose latest protocol is 2025-11-25 (the separate SDK-core stdio client in sdk/packages/core/src/extensions/mcp/client.ts:49 hand-sends 2024-11-05, but the extension does not use it).'
+    evidence: |-
+      At the v4.1.26 tag the VS Code extension uses an SDK `Client` whose latest protocol is **2025-11-25**.
+
+      - `McpHub.ts:466-473` builds the SDK `Client` with `capabilities: {}`.
+      - `bun.lock:1689` resolves `@modelcontextprotocol/sdk` 1.30.0.
+      - The separate SDK-core stdio client in `sdk/packages/core/src/extensions/mcp/client.ts:49` hand-sends 2024-11-05, but the extension does not use it.
     checked: 2026-10-30
   code_mode:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps
-    evidence: A grep of apps and sdk at the v4.1.26 tag for code mode and execute_javascript finds no MCP code mode; v4.1.26 is still the latest tag on 2026-11-06.
+    evidence: |-
+      A grep of apps and sdk at the v4.1.26 tag for code mode and `execute_javascript` finds **no MCP code mode**. V4.1.26 is still the latest tag on 2026-11-06.
     checked: 2026-11-06
   tool_search:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/sdk/packages/core/src
-    evidence: A grep at the v4.1.26 tag for tool_search, defer_loading and deferred tools finds only Composio meta tools and BM25 over session history, nothing that searches MCP tools.
+    evidence: |-
+      A grep at the v4.1.26 tag finds **nothing that searches MCP tools**.
+
+      - It searched for `tool_search`, `defer_loading` and deferred tools.
+      - The hits are only Composio meta tools and BM25 over session history.
     checked: 2026-10-30
   apps:
     value: n
     method: source
     source: https://github.com/cline/cline/blob/a459f1d04dea030833b558be645011ab739c463b/sdk/DOC.md#L513
-    evidence: 'sdk/DOC.md:513-516 says "MCP Apps support is off by default" behind `createDefaultMcpServerClientFactory({ mcpApps: true })`, but no shipped app sets mcpApps and the VS Code extension McpHub declares `capabilities: {}`, so it stays n until a released app exposes it.'
+    evidence: |-
+      `sdk/DOC.md:513-516` says **"MCP Apps support is off by default"**, and no shipped app turns it on.
+
+      - The setting is `createDefaultMcpServerClientFactory({ mcpApps: true })`.
+      - No shipped app sets `mcpApps`, and the VS Code extension McpHub declares `capabilities: {}`.
+      - It stays n until a released app exposes it.
     checked: 2026-10-30
   tasks:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps
-    evidence: A grep of apps and sdk at the v4.1.26 tag for tasks/get, io.modelcontextprotocol/tasks and callToolStream finds nothing.
+    evidence: A grep of apps and sdk at the v4.1.26 tag for `tasks/get`, `io.modelcontextprotocol/tasks` and `callToolStream` finds **nothing**.
     checked: 2026-10-30
   events:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps
-    evidence: A grep of apps and sdk at the v4.1.26 tag for events/subscribe and notifications/events finds nothing.
+    evidence: A grep of apps and sdk at the v4.1.26 tag for `events/subscribe` and `notifications/events` finds **nothing**.
     checked: 2026-10-30
   cimd:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps/vscode/src/services/mcp
-    evidence: A grep of apps and sdk at the v4.1.26 tag for client_id_metadata, clientMetadataUrl and cimd finds nothing; OAuth goes through the SDK provider with DCR.
+    evidence: A grep of apps and sdk at the v4.1.26 tag for `client_id_metadata`, `clientMetadataUrl` and `cimd` finds **nothing**; OAuth goes through the SDK provider with DCR.
     checked: 2026-10-30
   id_jag:
     value: n
     method: source
     source: https://github.com/cline/cline/tree/a459f1d04dea030833b558be645011ab739c463b/apps
-    evidence: A grep of apps and sdk at the v4.1.26 tag for id-jag, jwt-bearer and token-exchange finds nothing.
+    evidence: A grep of apps and sdk at the v4.1.26 tag for `id-jag`, `jwt-bearer` and `token-exchange` finds **nothing**.
     checked: 2026-10-30
   elicitation:
     value: n
     method: source
     source: https://github.com/cline/cline/blob/a459f1d04dea030833b558be645011ab739c463b/apps/vscode/src/services/mcp/McpHub.ts#L472
-    evidence: 'McpHub.ts:472 at the v4.1.26 tag declares `capabilities: {}` and a grep of apps and sdk for elicit finds no handler.'
+    evidence: |-
+      At the v4.1.26 tag, Cline declares `capabilities: {}` and has **no elicitation handler**.
+
+      - `McpHub.ts:472` declares `capabilities: {}`.
+      - A grep of apps and sdk for `elicit` finds no handler.
     checked: 2026-10-30
   list_changed:
     value: y
     method: source
     source: https://github.com/cline/cline/blob/v4.1.26/apps/vscode/src/services/mcp/McpHub.ts#L769
-    evidence: 'At tag v4.1.26, McpHub registers a ToolListChangedNotificationSchema handler that lists tools again, and sdk-mcp-coordinator restarts the session with the new tools, keeping its messages. This covers the VS Code extension; the Cline CLI has no handler'
+    evidence: |-
+      At tag v4.1.26, McpHub registers a `ToolListChangedNotificationSchema` handler that **lists tools again**.
+
+      - `sdk-mcp-coordinator` restarts the session with the new tools, keeping its messages.
+      - This covers the VS Code extension; the Cline CLI has *no* handler.
     checked: 2026-11-02

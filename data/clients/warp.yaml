@@ -13,13 +13,22 @@ cells:
     value: 2026-07-28
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L654-L658
-    evidence: 'negotiate_protocol starts with ProtocolVersion::LATEST and discover: true; the rmcp 3.5.0 pinned in Cargo.lock defines LATEST as V_2026_07_28 (rust-sdk model.rs L177), and Warp falls back to initialize with 2025-11-25 for servers that do not answer discover'
+    evidence: |-
+      Source: Warp opens with **2026-07-28**, the latest version in its pinned rmcp, and falls back to 2025-11-25 for servers that do not answer `discover`.
+
+      - `negotiate_protocol` starts with `ProtocolVersion::LATEST` and `discover: true`.
+      - The rmcp 3.5.0 pinned in `Cargo.lock` defines LATEST as `V_2026_07_28` (rust-sdk `model.rs` L177).
+      - Warp falls back to `initialize` with 2025-11-25.
     checked: 2026-11-22
   code_mode:
     value: n
     method: docs
     source: https://docs.warp.dev/agents/capabilities/mcp
-    evidence: 'The MCP docs page describes tool calls through the agent only (allowlist, denylist, agent decides); no script-calls-tools mode in the docs or in the open-source client at f8223ce'
+    evidence: |-
+      Docs: the MCP docs page describes tool calls **through the agent only**.
+
+      - The page lists an allowlist and denylist, and the agent decides.
+      - No script-calls-tools mode in the docs or in the open-source client at f8223ce.
     checked: 2026-11-22
   tool_search:
     value: y
@@ -27,7 +36,12 @@ cells:
     quality: strong
     method: docs
     source: https://www.warp.dev/blog/mcp-search-subagent
-    evidence: 'Engineering post 2026-01-02: the main agent sees a short list of MCP servers and calls a search subagent that does an LLM-mediated search over all servers'' tools and resources and returns only the relevant ones; rolled out to all production users'
+    evidence: |-
+      Engineering post 2026-01-02: the main agent calls a **search subagent** that does an LLM-mediated search over MCP tools.
+
+      - The main agent sees a short list of MCP servers.
+      - The subagent searches all servers' tools and resources and returns only the relevant ones.
+      - Rolled out to all production users.
     checked: 2026-11-22
     since:
       date: 2026-01-02
@@ -36,41 +50,64 @@ cells:
     value: n
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L905-L917
-    evidence: 'make_client_info builds ClientConfig::new(Default::default(), Implementation) so the client declares no extensions (no io.modelcontextprotocol/ui); the MCP docs page does not mention MCP Apps'
+    evidence: |-
+      Source: the client declares **no extensions**, including no `io.modelcontextprotocol/ui`.
+
+      - `make_client_info` builds `ClientConfig::new(Default::default(), Implementation)`.
+      - The MCP docs page does not mention MCP Apps.
     checked: 2026-11-22
   tasks:
     value: n
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L905-L917
-    evidence: 'Client capabilities are the empty default (no io.modelcontextprotocol/tasks extension); a user log in warpdotdev/warp issue 11873 shows the initialize request sent with "capabilities":{}'
+    evidence: |-
+      Source: client capabilities are the **empty default**, with no `io.modelcontextprotocol/tasks` extension. A user log in warpdotdev/warp issue 11873 shows the `initialize` request sent with `"capabilities":{}`.
     checked: 2026-11-22
   events:
     value: n
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L905-L917
-    evidence: 'Empty default client capabilities and no handler for server-pushed events anywhere in crates/mcp or app/src/ai/mcp; not in the MCP docs page'
+    evidence: |-
+      Source: Warp has **no handler for server-pushed events**.
+
+      - Client capabilities are the empty default.
+      - No such handler anywhere in `crates/mcp` or `app/src/ai/mcp`.
+      - Not in the MCP docs page.
     checked: 2026-11-22
   cimd:
     value: n
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/oauth.rs#L346-L398
-    evidence: 'OAuth registers either with a pre-registered client for known issuers or with dynamic client registration (start_authorization with client name "Warp"); no client metadata URL is set, and the docs list only OAuth login, env vars and custom headers'
+    evidence: |-
+      Source: Warp sets **no client metadata URL**.
+
+      - OAuth registers either with a pre-registered client for known issuers or with dynamic client registration (`start_authorization` with client name "Warp").
+      - The docs list only OAuth login, env vars and custom headers.
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://docs.warp.dev/agents/capabilities/mcp
-    evidence: 'The MCP authentication section lists environment variables, browser OAuth login and custom headers only; no enterprise-managed authorization or ID-JAG token exchange in crates/mcp/src/oauth.rs'
+    evidence: |-
+      Docs: the MCP authentication section lists *only* environment variables, browser OAuth login and custom headers. **No** enterprise-managed authorization or ID-JAG token exchange in `crates/mcp/src/oauth.rs`.
     checked: 2026-11-22
   elicitation:
     value: n
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L905-L917
-    evidence: 'The client declares no elicitation capability (default ClientCapabilities) and the handler is the SDK no-op ClientConfig handler, so servers cannot ask the user for input; the docs page does not mention elicitation'
+    evidence: |-
+      Source: the client declares **no elicitation capability** (default `ClientCapabilities`).
+
+      - The handler is the SDK no-op `ClientConfig` handler, so servers cannot ask the user for input.
+      - The docs page does not mention elicitation.
     checked: 2026-11-22
   list_changed:
     value: n
     method: source
     source: https://github.com/modelcontextprotocol/rust-sdk/blob/0cde3c5cf3e6aff0cc852ce6045f107e95991f48/crates/rmcp/src/handler/client.rs#L241-L246
-    evidence: 'Warp serves with the default ClientConfig handler, whose on_tool_list_changed is a no-op in rmcp 3.5.0, and lists tools once at connect (list_all_tools in runtime.rs); no re-list on a tool change notice, so a server reconnect is needed'
+    evidence: |-
+      Source: Warp has **no re-list on a tool change notice**, so a server reconnect is needed.
+
+      - It serves with the default `ClientConfig` handler, whose `on_tool_list_changed` is a no-op in rmcp 3.5.0.
+      - It lists tools once at connect (`list_all_tools` in `runtime.rs`).
     checked: 2026-11-22

@@ -16,13 +16,22 @@ cells:
     value: 2025-11-25
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The 1.2.2 package bundle (auggie-v2.mjs.d/extensions/mcp/index.js) sends an initialize request with the bundled MCP SDK's LATEST_PROTOCOL_VERSION 2025-11-25 and accepts 2025-06-18, 2025-03-26, 2024-11-05 and 2024-10-07; it has no 2026-07-28 handling"
+    evidence: |-
+      The 1.2.2 package bundle sends `initialize` with **2025-11-25** and has no 2026-07-28 handling.
+
+      - Source: `auggie-v2.mjs.d/extensions/mcp/index.js`.
+      - 2025-11-25 is the bundled MCP SDK's `LATEST_PROTOCOL_VERSION`.
+      - It accepts 2025-06-18, 2025-03-26, 2024-11-05 and 2024-10-07.
     checked: 2026-11-22
   code_mode:
     value: n
     method: docs
     source: https://docs.augmentcode.com/cli/integrations
-    evidence: "The MCP docs describe only direct tool calls and the find-tool and execute-tool meta-tools, which run one MCP tool at a time; no script-calling code mode is documented"
+    evidence: |-
+      The MCP docs document **no script-calling code mode**.
+
+      - They describe only direct tool calls and the `find-tool` and `execute-tool` meta-tools.
+      - Those meta-tools run one MCP tool at a time.
     checked: 2026-11-22
   tool_search:
     value: p
@@ -30,47 +39,63 @@ cells:
     quality: strong
     method: docs
     source: https://docs.augmentcode.com/cli/integrations
-    evidence: "Docs: MCP Tool Search is disabled by default and turned on with --enable-tool-search or enableToolSearch in settings.json; it hides MCP tools behind find-tool and execute-tool, and find-tool asks a lightweight model to pick the best tool on a server"
+    evidence: |-
+      Docs: MCP Tool Search is **disabled by default** and, once on, hides MCP tools behind `find-tool` and `execute-tool`.
+
+      - Turned on with `--enable-tool-search` or `enableToolSearch` in `settings.json`.
+      - `find-tool` asks a lightweight model to pick the best tool on a server.
     checked: 2026-11-22
   apps:
     value: na
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "Terminal CLI; the 1.2.2 MCP client declares no capabilities (no io.modelcontextprotocol/ui extension) and the bundle has no ui:// resource handling"
+    evidence: |-
+      Terminal CLI, and the 1.2.2 MCP client **declares no capabilities**.
+
+      - No `io.modelcontextprotocol/ui` extension is declared.
+      - The bundle has no `ui://` resource handling.
     checked: 2026-11-22
   tasks:
     value: n
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The 1.2.2 MCP client is created with an empty capabilities object, so it declares no tasks capability"
+    evidence: The 1.2.2 MCP client is created with an empty capabilities object, so it **declares no `tasks` capability**
     checked: 2026-11-22
   events:
     value: n
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The 1.2.2 MCP client declares no capabilities and registers no handler for server-pushed events beyond the list-changed notification"
+    evidence: The 1.2.2 MCP client declares no capabilities and registers **no handler for server-pushed events** beyond the list-changed notification
     checked: 2026-11-22
   cimd:
     value: n
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The only clientMetadataUrl code in the 1.2.2 bundle is the MCP SDK's OAuth helper; Auggie's own MCP code never sets it, and the MCP docs do not mention it"
+    evidence: |-
+      Auggie **never sets `clientMetadataUrl`** in the 1.2.2 bundle.
+
+      - The only `clientMetadataUrl` code is the MCP SDK's OAuth helper, and Auggie's own MCP code never sets it.
+      - The MCP docs do not mention it.
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://docs.augmentcode.com/cli/integrations
-    evidence: "The MCP docs list header-based auth for http servers and do not mention enterprise-managed authorization (ID-JAG)"
+    evidence: The MCP docs list header-based auth for http servers and **do not mention enterprise-managed authorization** (ID-JAG)
     checked: 2026-11-22
   elicitation:
     value: n
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The 1.2.2 MCP client is created with an empty capabilities object and has no elicitation/create request handler, so it never advertises elicitation"
+    evidence: |-
+      The 1.2.2 MCP client **never advertises elicitation**.
+
+      - It is created with an empty capabilities object.
+      - It has no `elicitation/create` request handler.
     checked: 2026-11-22
   list_changed:
     value: y
     method: source
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
-    evidence: "The 1.2.2 MCP extension registers a notifications/tools/list_changed handler that re-lists the server's tools and updates the agent's cached tool list"
+    evidence: The 1.2.2 MCP extension registers a `notifications/tools/list_changed` handler that **re-lists the server's tools** and updates the agent's cached tool list
     checked: 2026-11-22

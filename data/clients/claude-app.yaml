@@ -14,13 +14,17 @@ cells:
     value: not published
     method: docs
     source: https://claude.com/docs/connectors/building
-    evidence: The connector build page names only the 2025-03-26, 2025-06-18 and 2025-11-25 authorization specs and publishes no protocol version for the client.
+    evidence: The connector build page names only the 2025-03-26, 2025-06-18 and 2025-11-25 authorization specs and **publishes no protocol version** for the client.
     checked: 2026-10-30
   code_mode:
     value: n
     method: changelog
     source: https://claude.com/docs/cowork/changelog
-    evidence: Neither the connector docs nor the Claude Desktop and Cowork changelog through v4.23118.0 (2026-11-05) mention a code mode for MCP tools; the Claude Code 2.1.318 experiment is not exposed in the app.
+    evidence: |-
+      Neither the connector docs nor the Claude Desktop and Cowork changelog mention a **code mode** for MCP tools.
+
+      - The changelog check runs through v4.23118.0 (2026-11-05).
+      - The Claude Code 2.1.318 experiment is *not* exposed in the app.
     checked: 2026-11-06
   tool_search:
     value: y
@@ -28,7 +32,8 @@ cells:
     quality: strong
     method: docs
     source: https://support.claude.com/en/articles/13730515-manage-claude-s-tool-access
-    evidence: 'The default Auto mode lets Claude decide "dynamically which connectors to load", and On demand mode loads no connector "until Claude searches for the right one based on your request"; ranking not documented.'
+    evidence: |-
+      The default Auto mode lets Claude decide "dynamically which connectors to load", and **ranking is not documented**. On demand mode loads no connector "until Claude searches for the right one based on your request".
     checked: 2026-10-30
   apps:
     value: y
@@ -43,25 +48,35 @@ cells:
     value: n
     method: docs
     source: https://code.claude.com/docs/en/mcp
-    evidence: The Claude Code MCP page limits MCP tasks to terminal, Agent SDK and GitHub Actions sessions and says "Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks".
+    evidence: |-
+      The Claude Code MCP page limits MCP tasks to **terminal, Agent SDK and GitHub Actions sessions**. It says "Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks".
     checked: 2026-10-30
   events:
     value: n
     method: docs
     source: https://claude.com/docs/connectors/building
-    evidence: 'The connector build page says Claude "doesn''t yet support" resource subscriptions, sampling, or advanced or draft capabilities, and nothing documents MCP Events.'
+    evidence: |-
+      The connector build page says Claude **"doesn't yet support"** resource subscriptions, sampling, or advanced or draft capabilities. Nothing documents MCP Events.
     checked: 2026-10-30
   cimd:
     value: y
     method: docs
     source: https://claude.com/docs/connectors/building/authentication
-    evidence: The authentication page lists `oauth_cimd` as "Supported by default", used when the authorization server advertises `client_id_metadata_document_supported` and `none` auth, else falling back to DCR.
+    evidence: |-
+      The authentication page lists `oauth_cimd` as **"Supported by default"**.
+
+      - It is used when the authorization server advertises `client_id_metadata_document_supported` and `none` auth.
+      - Otherwise Claude falls back to DCR.
     checked: 2026-10-30
   id_jag:
     value: y
     method: docs
     source: https://claude.com/docs/connectors/building/enterprise-managed-auth
-    evidence: The Enterprise Managed Auth page says Claude exchanges a signed identity assertion from the IdP at the server's token endpoint with the JWT bearer grant, per the MCP enterprise managed authorization extension, and the announcement says it became generally available on 2026-08-24.
+    evidence: |-
+      The Enterprise Managed Auth page documents the flow, and the announcement says it became **generally available on 2026-08-24**.
+
+      - Claude exchanges a signed identity assertion from the IdP at the server's token endpoint with the JWT bearer grant.
+      - This follows the MCP enterprise managed authorization extension.
     checked: 2026-10-30
     since:
       date: 2026-06-18
@@ -70,11 +85,17 @@ cells:
     value: n
     method: issue
     source: https://github.com/anthropics/claude-ai-mcp/issues/1085
-    evidence: Cowork declares `elicitation` with form and url but never renders the request (still reproducing on 2.1.310 on 2026-10-25), and the claude.ai request for elicitation (issue 153) is still open, while the connector docs list no elicitation support.
+    evidence: |-
+      Cowork declares `elicitation` with `form` and `url` but **never renders the request**.
+
+      - Still reproducing on 2.1.310 on 2026-10-25.
+      - The claude.ai request for elicitation (issue 153) is still open.
+      - The connector docs list no elicitation support.
     checked: 2026-10-30
   list_changed:
     value: n
     method: issue
     source: https://github.com/anthropics/claude-ai-mcp/issues/45
-    evidence: 'Open, labelled bug, known-issue and backlog: after notifications/tools/list_changed the app requests tools/list but keeps a stale cached list, so the new tool cannot be called'
+    evidence: |-
+      Open, labelled bug, known-issue and backlog: the app **keeps a stale cached list** after `notifications/tools/list_changed`. The app requests `tools/list`, but the new tool cannot be called.
     checked: 2026-11-02
