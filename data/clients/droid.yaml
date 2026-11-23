@@ -6,7 +6,7 @@ logo: gh-Factory-AI.png
 website: https://factory.com
 docs: https://docs.factory.com
 repo: https://github.com/Factory-AI/factory
-version_checked: 1.12.1
+version_checked: 1.17.2
 npm: "@factory/cli"
 tracker:
   repo: Factory-AI/factory
@@ -15,9 +15,9 @@ cells:
   protocol:
     value: 2025-11-25
     method: probe
-    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1
-    evidence: "Live probe of 1.12.1 on 2026-11-16 negotiated 2025-11-25 (clientInfo factory-cli); the 1.12.1 binary still ships flag mcp_2026_07_28 with defaultValue false"
-    checked: 2026-11-16
+    source: https://registry.npmjs.org/@factory/cli-linux-x64/1.17.2
+    evidence: "Live probe of 1.17.2 on 2026-11-23 negotiated 2025-11-25 (clientInfo factory-cli); the 1.17.2 binary still ships flag mcp_2026_07_28 off by default"
+    checked: 2026-11-23
   code_mode:
     value: p
     method: source

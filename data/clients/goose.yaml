@@ -7,7 +7,7 @@ logo: icon-goose.svg
 website: https://goose-docs.ai
 docs: https://goose-docs.ai/docs
 repo: https://github.com/aaif-goose/goose
-version_checked: 1.57.0
+version_checked: 1.60.2
 tracker:
   repo: aaif-goose/goose
   mcp_in_title: true
@@ -30,13 +30,13 @@ cells:
       version: "1.17.0"
       source: https://github.com/aaif-goose/goose/releases/tag/v1.17.0
   tool_search:
-    value: p
+    value: y
     label: LLM picks
     quality: basic
-    method: source
-    source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/agents/platform_extensions/code_execution.rs#L277
-    evidence: "Only inside Code Mode: list_functions returns every callable tool name with a short description, the model picks names, and get_function_details loads full schemas by exact name (code_execution.rs:277-278); there is no query or ranking, and grep for tool_search, search_tools and bm25 in crates finds nothing"
-    checked: 2026-10-30
+    method: docs
+    source: https://github.com/aaif-goose/goose/blob/fb55b5a6d7f5b5df96c8f817f1cde6a81880d9f1/documentation/docs/guides/config-files.md#L54
+    evidence: "Since v1.59.0 (PR 13378, minimal deferred MCP tools) the documented setting GOOSE_TOOL_DEFERRAL=lookup publishes MCP tool names up front and the model calls enable_tools to load schemas on demand, off when unset; there is no query or ranking, so the model picks from the name list. Code Mode also loads schemas by exact name (list_functions, then get_function_details, code_execution.rs:277-278 at v1.57.0)"
+    checked: 2026-11-23
     since:
       date: 2025-12-18
       version: "1.17.0"
@@ -83,7 +83,7 @@ cells:
     value: p
     method: probe
     source: https://github.com/aaif-goose/goose/blob/30bba95105e59bc3e7df624cf6b4d433690cfe12/documentation/docs/guides/mcp-elicitation.md#L16
-    evidence: "Own probe of 1.57.0 declared elicitation {} (form only under the 2025-11-25 spec, from enable_elicitation at mcp_client.rs:451), and the elicitation guide says goose supports form mode requests; URL requests are only passed to the same form UI (mcp_client.rs:412), so form without URL mode is p"
+    evidence: "Own probe of 1.57.0 declared elicitation {} (form only under the 2025-11-25 spec, from enable_elicitation at mcp_client.rs:451), and the elicitation guide says goose supports form mode requests; URL requests are only passed to the same form UI (mcp_client.rs:412), so form without URL mode is p. v1.60.0 (PR 13428) now declares form elicitation explicitly and still not URL mode"
     checked: 2026-10-30
     since:
       date: 2025-12-18

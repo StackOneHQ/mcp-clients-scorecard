@@ -1,23 +1,23 @@
 # Gemini CLI. Field reference: data/README.md. After editing, run npm run build.
 name: Gemini CLI
 group: cli
-tier: D
+tier: C
 logo: icon-gemini.svg
 website: https://geminicli.com
 docs: https://geminicli.com/docs
 repo: https://github.com/google-gemini/gemini-cli
-version_checked: 0.68.0
+version_checked: 0.70.0
 npm: "@google/gemini-cli"
 tracker:
   repo: google-gemini/gemini-cli
   mcp_in_title: true
 cells:
   protocol:
-    value: 2025-06-18
+    value: 2025-11-25
     method: probe
-    source: https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/package.json#L34
-    evidence: "v0.68.0 still pins @modelcontextprotocol/sdk 1.23.0 (packages/core/package.json:34), whose LATEST_PROTOCOL_VERSION is 2025-06-18, and the live probe agrees"
-    checked: 2026-11-16
+    source: https://github.com/google-gemini/gemini-cli/blob/8468962efadfbcdfd988a8fd04af4110a68c886e/packages/core/package.json#L34
+    evidence: "Live probe of 0.70.0 on 2026-11-23 negotiated 2025-11-25 (it asked for 2025-11-25, where 0.68.0 asked for 2025-06-18); v0.70.0 now pins @modelcontextprotocol/sdk 1.32.2 (packages/core/package.json:34), up from 1.23.0 in v0.68.0. packages/core/src/tools/mcp-client.ts and packages/core/src/mcp/oauth-provider.ts are byte-identical at v0.68.0 and v0.70.0, so the other cells carry over"
+    checked: 2026-11-23
   code_mode:
     value: n
     method: source

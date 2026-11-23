@@ -1,25 +1,25 @@
 {
-  "as_of": "2026-11-16",
+  "as_of": "2026-11-23",
   "window_start": "2026-07-28",
   "repos": {
     "anthropics/claude-ai-mcp": {
-      "issues": 593,
-      "completed": 77,
+      "issues": 627,
+      "completed": 79,
       "duplicates": 31
     },
     "anthropics/claude-code": {
-      "issues": 964,
-      "completed": 82,
-      "duplicates": 64
+      "issues": 987,
+      "completed": 84,
+      "duplicates": 77
     },
     "cline/cline": {
-      "issues": 49,
+      "issues": 52,
       "completed": 6,
       "duplicates": 0
     },
     "openai/codex": {
-      "issues": 557,
-      "completed": 34,
+      "issues": 588,
+      "completed": 35,
       "duplicates": 13
     },
     "continuedev/continue": {
@@ -28,9 +28,9 @@
       "duplicates": 0
     },
     "github/copilot-cli": {
-      "issues": 157,
-      "completed": 53,
-      "duplicates": 3
+      "issues": 166,
+      "completed": 68,
+      "duplicates": 9
     },
     "Factory-AI/factory": {
       "issues": 3,
@@ -38,29 +38,44 @@
       "duplicates": 0
     },
     "google-gemini/gemini-cli": {
-      "issues": 36,
+      "issues": 43,
       "completed": 6,
-      "duplicates": 0
+      "duplicates": 1
     },
     "aaif-goose/goose": {
-      "issues": 78,
-      "completed": 40,
+      "issues": 83,
+      "completed": 45,
+      "duplicates": 0
+    },
+    "NousResearch/hermes-agent": {
+      "issues": 669,
+      "completed": 193,
+      "duplicates": 8
+    },
+    "open-webui/open-webui": {
+      "issues": 67,
+      "completed": 49,
+      "duplicates": 2
+    },
+    "openclaw/openclaw": {
+      "issues": 345,
+      "completed": 145,
       "duplicates": 0
     },
     "anomalyco/opencode": {
-      "issues": 434,
-      "completed": 80,
-      "duplicates": 58
+      "issues": 454,
+      "completed": 84,
+      "duplicates": 68
     },
     "earendil-works/pi": {
-      "issues": 101,
+      "issues": 107,
       "completed": 33,
       "duplicates": 0
     },
     "microsoft/vscode": {
-      "issues": 364,
-      "completed": 170,
-      "duplicates": 17
+      "issues": 385,
+      "completed": 171,
+      "duplicates": 18
     },
     "zed-industries/zed": {
       "issues": 22,

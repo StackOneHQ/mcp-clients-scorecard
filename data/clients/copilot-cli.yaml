@@ -6,7 +6,7 @@ logo: si-githubcopilot.svg
 website: https://github.com/features/copilot
 docs: https://docs.github.com/en/copilot/how-tos/copilot-cli
 repo: https://github.com/github/copilot-cli
-version_checked: 1.0.112
+version_checked: 1.0.114
 npm: "@github/copilot"
 tracker:
   repo: github/copilot-cli
@@ -16,8 +16,8 @@ cells:
     value: 2026-07-28
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
-    evidence: "Live probe of 1.0.112: server/discover carries 2026-07-28; changelog 1.0.81 ships MCP 2026-07-28 support"
-    checked: 2026-11-16
+    evidence: "Live probe of 1.0.114 on 2026-11-23: server/discover carries 2026-07-28; changelog 1.0.81 ships MCP 2026-07-28 support"
+    checked: 2026-11-23
   code_mode:
     value: n
     method: changelog

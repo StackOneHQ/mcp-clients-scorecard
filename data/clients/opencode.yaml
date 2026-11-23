@@ -2,12 +2,12 @@
 name: opencode
 group: cli
 tier: B
-note: Rated on 1.19.5, the npm latest, where code mode and its tool search sit behind an experimental flag. The V2 build turns them on and adds CIMD and elicitation.
+note: Rated on 1.19.6, the npm latest, where code mode and its tool search sit behind an experimental flag. The V2 build turns them on and adds CIMD and elicitation, and its v2.4.0 release (2026-11-23) adds MCP events.
 logo: icon-opencode.svg
 website: https://opencode.ai
 docs: https://opencode.ai/docs
 repo: https://github.com/anomalyco/opencode
-version_checked: 1.19.5
+version_checked: 1.19.6
 npm: opencode-ai
 tracker:
   repo: anomalyco/opencode
@@ -17,8 +17,8 @@ cells:
     value: 2025-11-25
     method: probe
     source: https://github.com/anomalyco/opencode/blob/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp/index.ts#L39
-    evidence: "Live probe of V1 1.19.5 on 2026-10-30 negotiated 2025-11-25; V1 uses @modelcontextprotocol/sdk 1.29.0 (bun.lock:1826), and V2 v2.2.3 still defaults to protocol legacy (up to 2025-11-25) with auto and 2026-07-28 as opt-ins (packages/schema/src/mcp.ts:20)"
-    checked: 2026-10-30
+    evidence: "Live probe of V1 1.19.6 on 2026-11-23 negotiated 2025-11-25 (1.19.5 on 2026-10-30 did the same); V1 uses @modelcontextprotocol/sdk 1.29.0 (bun.lock:1826), and V2 v2.2.3 still defaults to protocol legacy (up to 2025-11-25) with auto and 2026-07-28 as opt-ins (packages/schema/src/mcp.ts:20)"
+    checked: 2026-11-23
   code_mode:
     value: p
     method: source
