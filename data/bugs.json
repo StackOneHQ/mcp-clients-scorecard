@@ -1,25 +1,30 @@
 {
-  "as_of": "2026-11-16",
+  "as_of": "2026-11-22",
   "window_start": "2026-07-28",
   "repos": {
+    "augmentcode/auggie": {
+      "issues": 6,
+      "completed": 1,
+      "duplicates": 0
+    },
     "anthropics/claude-ai-mcp": {
-      "issues": 593,
-      "completed": 77,
+      "issues": 623,
+      "completed": 79,
       "duplicates": 31
     },
     "anthropics/claude-code": {
-      "issues": 964,
-      "completed": 82,
-      "duplicates": 64
+      "issues": 984,
+      "completed": 84,
+      "duplicates": 77
     },
     "cline/cline": {
-      "issues": 49,
+      "issues": 52,
       "completed": 6,
       "duplicates": 0
     },
     "openai/codex": {
-      "issues": 557,
-      "completed": 34,
+      "issues": 587,
+      "completed": 35,
       "duplicates": 13
     },
     "continuedev/continue": {
@@ -28,9 +33,9 @@
       "duplicates": 0
     },
     "github/copilot-cli": {
-      "issues": 157,
-      "completed": 53,
-      "duplicates": 3
+      "issues": 164,
+      "completed": 67,
+      "duplicates": 8
     },
     "Factory-AI/factory": {
       "issues": 3,
@@ -38,29 +43,54 @@
       "duplicates": 0
     },
     "google-gemini/gemini-cli": {
-      "issues": 36,
+      "issues": 42,
       "completed": 6,
-      "duplicates": 0
+      "duplicates": 1
     },
     "aaif-goose/goose": {
-      "issues": 78,
-      "completed": 40,
+      "issues": 82,
+      "completed": 45,
+      "duplicates": 0
+    },
+    "Kilo-Org/kilocode": {
+      "issues": 32,
+      "completed": 9,
+      "duplicates": 0
+    },
+    "kirodotdev/Kiro": {
+      "issues": 108,
+      "completed": 32,
+      "duplicates": 1
+    },
+    "lmstudio-ai/lmstudio-bug-tracker": {
+      "issues": 22,
+      "completed": 0,
       "duplicates": 0
     },
     "anomalyco/opencode": {
-      "issues": 434,
-      "completed": 80,
-      "duplicates": 58
+      "issues": 452,
+      "completed": 83,
+      "duplicates": 66
     },
     "earendil-works/pi": {
-      "issues": 101,
+      "issues": 105,
       "completed": 33,
       "duplicates": 0
     },
+    "QwenLM/qwen-code": {
+      "issues": 100,
+      "completed": 55,
+      "duplicates": 0
+    },
     "microsoft/vscode": {
-      "issues": 364,
-      "completed": 170,
-      "duplicates": 17
+      "issues": 385,
+      "completed": 171,
+      "duplicates": 18
+    },
+    "warpdotdev/warp": {
+      "issues": 11,
+      "completed": 3,
+      "duplicates": 1
     },
     "zed-industries/zed": {
       "issues": 22,

@@ -1,0 +1,70 @@
+# Mistral Vibe (formerly Le Chat): Work, Code and Chat modes. Field reference: data/README.md. After editing, run npm run build.
+name: Mistral Vibe
+group: app
+tier: C
+logo: gh-mistralai.png
+website: https://mistral.ai/products/le-chat
+docs: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+repo: null
+tracker: null
+cells:
+  protocol:
+    value: not published
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'The MCP Connectors docs name no protocol revision (hosted, closed source); troubleshooting only says the server must answer the initialize call'
+    checked: 2026-11-22
+  code_mode:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'The MCP Connectors docs describe per-function tool calls with approvals; no code mode over connector tools is documented'
+    checked: 2026-11-22
+  tool_search:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Not documented: connector docs describe per-function Always allow toggles and a Functions tab, with no on-demand tool search'
+    checked: 2026-11-22
+  apps:
+    value: p
+    method: docs
+    source: https://docs.mistral.ai/resources/release-notes
+    evidence: 'Limited: the release notes say the Workflow Visualizer renders as an MCP App inside Vibe (2026-10-14) and Studio apps surface in Vibe Code Web through an MCP apps server (2026-11-05); for custom connectors, Studio workflows surface a connector tool ui:// MCP App only with allow_mcp_ui=True (default False) and only for direct call_tool calls, and the custom connector docs do not list MCP Apps'
+    checked: 2026-11-22
+  tasks:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Not documented: the custom connector docs list unsupported capabilities (dynamic tool discovery, resources, prompt templates) and do not mention tasks'
+    checked: 2026-11-22
+  events:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Not documented: no events or trigger support appears in the MCP Connectors docs'
+    checked: 2026-11-22
+  cimd:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Docs list OAuth 2.1 with dynamic client registration as the only OAuth option for custom connectors; CIMD is not mentioned'
+    checked: 2026-11-22
+  id_jag:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Docs list no auth, bearer or basic, and OAuth 2.1 with dynamic client registration; enterprise-managed authorization (ID-JAG) is not mentioned'
+    checked: 2026-11-22
+  elicitation:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Not documented: the docs do not mention elicitation (the Work follow-up questions in the Get started docs are the product asking, not an MCP server)'
+    checked: 2026-11-22
+  list_changed:
+    value: n
+    method: docs
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: 'Current limitations list ''Dynamic tool discovery'' as unsupported for custom MCP connectors'
+    checked: 2026-11-22
