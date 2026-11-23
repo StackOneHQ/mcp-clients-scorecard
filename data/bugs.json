@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-22",
+  "as_of": "2026-11-23",
   "window_start": "2026-07-28",
   "repos": {
     "augmentcode/auggie": {
@@ -8,12 +8,12 @@
       "duplicates": 0
     },
     "anthropics/claude-ai-mcp": {
-      "issues": 623,
+      "issues": 627,
       "completed": 79,
       "duplicates": 31
     },
     "anthropics/claude-code": {
-      "issues": 984,
+      "issues": 987,
       "completed": 84,
       "duplicates": 77
     },
@@ -23,7 +23,7 @@
       "duplicates": 0
     },
     "openai/codex": {
-      "issues": 587,
+      "issues": 588,
       "completed": 35,
       "duplicates": 13
     },
@@ -33,9 +33,9 @@
       "duplicates": 0
     },
     "github/copilot-cli": {
-      "issues": 164,
-      "completed": 67,
-      "duplicates": 8
+      "issues": 166,
+      "completed": 68,
+      "duplicates": 9
     },
     "Factory-AI/factory": {
       "issues": 3,
@@ -43,14 +43,19 @@
       "duplicates": 0
     },
     "google-gemini/gemini-cli": {
-      "issues": 42,
+      "issues": 43,
       "completed": 6,
       "duplicates": 1
     },
     "aaif-goose/goose": {
-      "issues": 82,
+      "issues": 83,
       "completed": 45,
       "duplicates": 0
+    },
+    "NousResearch/hermes-agent": {
+      "issues": 669,
+      "completed": 193,
+      "duplicates": 8
     },
     "Kilo-Org/kilocode": {
       "issues": 32,
@@ -58,7 +63,7 @@
       "duplicates": 0
     },
     "kirodotdev/Kiro": {
-      "issues": 108,
+      "issues": 109,
       "completed": 32,
       "duplicates": 1
     },
@@ -67,13 +72,23 @@
       "completed": 0,
       "duplicates": 0
     },
+    "open-webui/open-webui": {
+      "issues": 67,
+      "completed": 49,
+      "duplicates": 2
+    },
+    "openclaw/openclaw": {
+      "issues": 345,
+      "completed": 145,
+      "duplicates": 0
+    },
     "anomalyco/opencode": {
-      "issues": 452,
-      "completed": 83,
-      "duplicates": 66
+      "issues": 454,
+      "completed": 84,
+      "duplicates": 68
     },
     "earendil-works/pi": {
-      "issues": 105,
+      "issues": 107,
       "completed": 33,
       "duplicates": 0
     },
@@ -83,12 +98,12 @@
       "duplicates": 0
     },
     "microsoft/vscode": {
-      "issues": 385,
+      "issues": 386,
       "completed": 171,
       "duplicates": 18
     },
     "warpdotdev/warp": {
-      "issues": 11,
+      "issues": 12,
       "completed": 3,
       "duplicates": 1
     },

@@ -23,12 +23,12 @@
   spec_event: Tasks enter the spec as experimental
 - id: events
   label: Events
-  definition: The client accepts events that a server pushes, without the client polling for them. The working group has a draft design sketch; no spec release defines events yet.
-  ref: Triggers and Events working group (draft design sketch, not a released spec)
-  url: https://github.com/modelcontextprotocol/experimental-ext-triggers-events
-  spec_date: 2026-04-09
-  spec_source: https://github.com/modelcontextprotocol/experimental-ext-triggers-events/commits/main
-  spec_event: Events design sketch published (draft, not a released spec)
+  definition: The client accepts event notifications from a server through polling, push streams or webhooks. Events is an official Beta extension, not part of the 2026-07-28 core spec.
+  ref: MCP Events extension (io.modelcontextprotocol/events)
+  url: https://modelcontextprotocol.io/extensions/events/overview
+  spec_date: 2026-11-19
+  spec_source: https://modelcontextprotocol.io/seps/3415-events-extension
+  spec_event: Events becomes an official extension (Beta, SEP-3415 Final)
 - id: cimd
   label: CIMD
   definition: The client registers with OAuth servers through a Client ID Metadata Document, which the 2026-07-28 spec prefers over dynamic client registration.

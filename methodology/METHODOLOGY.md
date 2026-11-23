@@ -13,7 +13,7 @@ Each client gets ten cells, one per entry in [data/features.yaml](../data/featur
 | Tool search | `y`, `p` or `n`, plus a label for how it searches | Client feature, not in the spec ([Anthropic](https://www.anthropic.com/engineering/advanced-tool-use)) |
 | MCP Apps | `y`, `p` or `n`; `na` for a terminal CLI | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
 | Tasks | `y`, `p` or `n` | [Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview), experimental in the 2025-11-25 spec |
-| Events | `y`, `p` or `n` | [Triggers and Events working group](https://github.com/modelcontextprotocol/experimental-ext-triggers-events) |
+| Events | `y`, `p` or `n` | [Events extension](https://modelcontextprotocol.io/extensions/events/overview), official Beta since 2026-11-19 |
 | CIMD | `y`, `p` or `n` | [Authorization, client registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration) |
 | ID-JAG | `y`, `p` or `n` | [Enterprise-Managed Authorization extension](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization) |
 | Elicitation | `y`, `p` or `n` | [Client elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation) |
