@@ -30,9 +30,7 @@ cells:
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
     evidence: |-
-      Docs and [changelog](https://dev.meta.ai/docs/muse-code/changelog): **no deferred loading or search** over MCP tools through 1.4.13.
-
-      - The tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client.
+      Docs and [changelog](https://dev.meta.ai/docs/muse-code/changelog): **no deferred loading or search** over MCP tools through 1.4.13. The tool search page on dev.meta.ai is a Meta model API feature, not part of Muse Code's MCP client.
     checked: 2026-11-08
   apps:
     value: na
@@ -57,9 +55,7 @@ cells:
     method: changelog
     source: https://dev.meta.ai/docs/muse-code/changelog#v1-1-1
     evidence: |-
-      Changelog 1.1.1: `muse mcp login` uses **dynamic client registration**; Client ID Metadata Documents are *not* mentioned.
-
-      - OAuth 2.1 with dynamic client registration is the default (`mcp_oauth_dynamic_client_registration`).
+      Changelog 1.1.1: `muse mcp login` uses **dynamic client registration**; Client ID Metadata Documents are *not* mentioned. OAuth 2.1 with dynamic client registration is the default (`mcp_oauth_dynamic_client_registration`).
     checked: 2026-11-08
   id_jag:
     value: n
@@ -72,16 +68,12 @@ cells:
     method: docs
     source: https://dev.meta.ai/docs/muse-code/extending
     evidence: |-
-      Docs: **no MCP `elicitation/create` handler** is documented; user-input dialogs belong to Muse Code's own session protocol.
-
-      - The 2025-06-18 version it advertises defines elicitation.
+      Docs: **no MCP `elicitation/create` handler** is documented; user-input dialogs belong to Muse Code's own session protocol. The 2025-06-18 version it advertises defines elicitation.
     checked: 2026-11-08
   list_changed:
     value: n
     method: changelog
     source: https://dev.meta.ai/docs/muse-code/changelog#v1-1-1
     evidence: |-
-      Changelog: **no entry through 1.4.13** says tools are listed again on `notifications/tools/list_changed`.
-
-      - Changelog 1.1.1 mentions live refreshes of the server list.
+      Changelog: **no entry through 1.4.13** says tools are listed again on `notifications/tools/list_changed`. Changelog 1.1.1 mentions live refreshes of the server list.
     checked: 2026-11-08

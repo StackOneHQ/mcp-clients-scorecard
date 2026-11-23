@@ -29,9 +29,7 @@ cells:
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
     evidence: |-
-      Docs: the connected server's tools are listed in the Status column and exposed to the chat directly, with **no on-demand tool loading** documented.
-
-      - The router-only option on the page is for the IDE's own MCP server, not this client.
+      Docs: the connected server's tools are listed in the Status column and exposed to the chat directly, with **no on-demand tool loading** documented. The router-only option on the page is for the IDE's own MCP server, not this client.
     checked: 2026-11-22
   apps:
     value: n
@@ -73,9 +71,7 @@ cells:
     method: docs
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
     evidence: |-
-      Docs do not mention elicitation (**not documented**).
-
-      - The elicitation work in YouTrack (`LLM-31540`) is about ACP agents in AI Chat, not MCP servers.
+      Docs do not mention elicitation (**not documented**). The elicitation work in YouTrack (`LLM-31540`) is about ACP agents in AI Chat, not MCP servers.
     checked: 2026-11-22
   list_changed:
     value: n

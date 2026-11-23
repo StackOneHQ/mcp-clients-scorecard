@@ -77,7 +77,7 @@ Unknown keys fail the check, so a typo in a field name does not pass silently.
 Evidence is a small Markdown subset, so a long proof stays easy to scan. The client page shows the opening line on the card and the whole text in the proof panel; `EVIDENCE.md`, the matrix tooltip, `llms.txt` and the FAQ use the same text.
 
 - **Open with the verdict in one sentence**, ideally under 25 words: what the source shows and why that gives this value. It is the only part a card shows, so it has to stand on its own.
-- **One fact needs nothing more.** Do not pad a short cell into a list.
+- **One supporting fact goes in the same paragraph** as a second sentence. Do not pad a short cell into a one-item list.
 - **Two or more supporting facts go in a bullet list** under the opening sentence, one fact per bullet, separated from it by a blank line. Keep each bullet to one sentence.
 - **Bold** the fact that decides the value: the version, the setting that turns it on, **off by default**, **experimental**, **still open**. One or two bold phrases per cell, not every noun.
 - *Italic* for a caveat word the reader must not miss (*not*, *only*), or the title of a doc or release note.
@@ -91,7 +91,8 @@ code_mode:
   evidence: |-
     Docs: Code Mode ships **experimental and off by default**.
 
-    - Turned on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1`; needs **v2.1.323** or later, the Anthropic API and an interactive terminal.
+    - Turned on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1`.
+    - Needs **v2.1.323** or later, the Anthropic API and an interactive terminal.
     - Changelog 2.1.323 adds it as an opt-in in which Claude writes JavaScript to call its tools.
     - The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".
 ```

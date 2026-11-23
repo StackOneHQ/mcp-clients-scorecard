@@ -29,9 +29,7 @@ cells:
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/code-execution.md#L153
     evidence: |-
-      The `execute_code` tool runs Python scripts that call Hermes tools over RPC, but the docs state scripts **cannot call MCP tools**.
-
-      - `SANDBOX_ALLOWED_TOOLS` (`tools/code_execution_tool.py:40`) lists only `web_search`, `web_extract`, `read_file`, `write_file`, `search_files`, `patch` and `terminal`.
+      The `execute_code` tool runs Python scripts that call Hermes tools over RPC, but the docs state scripts **cannot call MCP tools**. `SANDBOX_ALLOWED_TOOLS` (`tools/code_execution_tool.py:40`) lists only `web_search`, `web_extract`, `read_file`, `write_file`, `search_files`, `patch` and `terminal`.
     checked: 2026-11-23
   tool_search:
     value: y
@@ -110,9 +108,7 @@ cells:
     method: docs
     source: https://github.com/NousResearch/hermes-agent/blob/caafe5389ae585ef77387a962aee05b1bcf17029/website/docs/user-guide/features/mcp.md#L1023
     evidence: |-
-      Docs say **form-mode** elicitations are asked on the session's clarify surface, enabled by default per server, and that URL-mode elicitations are declined as unsupported, so form without URL mode is p.
-
-      - The code matches: `mcp_tool_sampling.py:377-379` declines mode `url`.
+      Docs say **form-mode** elicitations are asked on the session's clarify surface, enabled by default per server, and that URL-mode elicitations are declined as unsupported, so form without URL mode is p. The code matches: `mcp_tool_sampling.py:377-379` declines mode `url`.
     checked: 2026-11-23
     since:
       date: 2026-06-19

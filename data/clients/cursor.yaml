@@ -75,9 +75,7 @@ cells:
     method: source
     source: https://downloads.cursor.com/production/b1aa50cb6db84fd3e8c808259cb172ea73425c1f/linux/x64/Cursor-3.27.22-x86_64.AppImage
     evidence: |-
-      **No** "notifications/events" or "events/subscribe" in the 3.27.22 `cursor-mcp` or `cursor-agent-exec` bundles.
-
-      - There is no Events row in the docs support table.
+      **No** "notifications/events" or "events/subscribe" in the 3.27.22 `cursor-mcp` or `cursor-agent-exec` bundles. There is no Events row in the docs support table.
     checked: 2026-10-30
   cimd:
     value: n

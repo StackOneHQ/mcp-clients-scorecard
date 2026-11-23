@@ -50,7 +50,11 @@
   if (drawer) {
     $$('details.proof > summary').forEach(sm => sm.addEventListener('click', e => { e.preventDefault(); openProof(sm.parentElement); }));
     drawer.addEventListener('close', () => history.replaceState(null, '', location.pathname + location.search));
-    drawer.addEventListener('click', e => { if (e.target === drawer) drawer.close(); });
+    drawer.addEventListener('click', e => {
+      const r = drawer.getBoundingClientRect();
+      const onBackdrop = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      if (e.target === drawer && onBackdrop) drawer.close();
+    });
     const hashed = location.hash.startsWith('#proof-') && document.getElementById(location.hash.slice(1));
     if (hashed && hashed.matches('details.proof')) openProof(hashed);
   }
@@ -112,7 +116,7 @@
     const v = el.dataset.v;
     const head = el.dataset.head || '';
     pop.innerHTML = `<div class="ph">${v && MARK[v] ? `<img src="/assets/icons/${v}.svg" alt="">${MARK[v]}` : esc(el.textContent.trim())}${head ? ` <span class="muted">· ${esc(head)}</span>` : ''}</div>`
-      + `<div>${esc(el.dataset.ev).replace(/`([^`]+)`/g, '<code>$1</code>')}</div>`
+      + `<div>${esc(el.dataset.ev)}</div>`
       + `<div class="pm">${esc(el.dataset.m)}${el.dataset.ck ? ` · checked ${esc(el.dataset.ck)}` : ''}</div>`
       + (touch && el.href ? `<div class="pm"><a href="${esc(el.href)}" rel="nofollow">Open source ↗</a></div>` : '');
     pop.classList.toggle('touch', touch);

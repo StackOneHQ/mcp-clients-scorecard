@@ -13,9 +13,7 @@ cells:
     method: docs
     source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
     evidence: |-
-      Docs: the MCP Connectors docs name **no protocol revision** (hosted, closed source).
-
-      - Troubleshooting only says the server must answer the `initialize` call.
+      Docs: the MCP Connectors docs name **no protocol revision** (hosted, closed source). Troubleshooting only says the server must answer the `initialize` call.
     checked: 2026-11-22
   code_mode:
     value: n
@@ -69,9 +67,7 @@ cells:
     method: docs
     source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
     evidence: |-
-      **Not documented**: the docs do not mention elicitation.
-
-      - The Work follow-up questions in the Get started docs are the product asking, not an MCP server.
+      **Not documented**: the docs do not mention elicitation. The Work follow-up questions in the Get started docs are the product asking, not an MCP server.
     checked: 2026-11-22
   list_changed:
     value: n

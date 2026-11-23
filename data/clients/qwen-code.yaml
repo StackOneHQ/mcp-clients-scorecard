@@ -60,9 +60,7 @@ cells:
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/tools/mcp-client.ts#L476-L492
     evidence: |-
-      Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and **no tasks capability**.
-
-      - The file has no tasks handling.
+      Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and **no tasks capability**. The file has no tasks handling.
     checked: 2026-11-22
   events:
     value: n
@@ -75,34 +73,26 @@ cells:
     method: source
     source: https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/mcp/oauth-provider.ts#L162
     evidence: |-
-      Source: the MCP OAuth provider has **no Client ID Metadata Document path**.
-
-      - It takes a configured `clientId` or registers dynamically (`registerClient`).
+      Source: the MCP OAuth provider has **no Client ID Metadata Document path**. It takes a configured `clientId` or registers dynamically (`registerClient`).
     checked: 2026-11-22
   id_jag:
     value: n
     method: docs
     source: https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/
     evidence: |-
-      Docs: enterprise-managed authorization (ID-JAG) is **not documented**.
-
-      - The MCP docs list OAuth, Google credentials and service account impersonation as auth providers.
+      Docs: enterprise-managed authorization (ID-JAG) is **not documented**. The MCP docs list OAuth, Google credentials and service account impersonation as auth providers.
     checked: 2026-11-22
   elicitation:
     value: n
     method: issue
     source: https://github.com/QwenLM/qwen-code/issues/17316
     evidence: |-
-      Issue: an **open feature request** 'support the elicitation capability in the MCP client'.
-
-      - v0.28.3 declares no elicitation capability.
+      Issue: an **open feature request** 'support the elicitation capability in the MCP client'. V0.28.3 declares no elicitation capability.
     checked: 2026-11-22
   list_changed:
     value: n
     method: issue
     source: https://github.com/QwenLM/qwen-code/issues/13632
     evidence: |-
-      Issue: an **open feature request** to refresh a server's tools on `notifications/tools/list_changed`.
-
-      - The tool snapshot is re-read *only* on reconnect or restart.
+      Issue: an **open feature request** to refresh a server's tools on `notifications/tools/list_changed`. The tool snapshot is re-read *only* on reconnect or restart.
     checked: 2026-11-22

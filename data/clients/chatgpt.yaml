@@ -77,18 +77,14 @@ cells:
     method: docs
     source: https://developers.openai.com/plugins/build/auth
     evidence: |-
-      The plugin auth page lists CIMD, DCR, predefined OAuth clients and PKCE with **no enterprise-managed auth or ID-JAG**.
-
-      - Okta's Cross App Access partner list (2026-09-24) names no OpenAI app.
+      The plugin auth page lists CIMD, DCR, predefined OAuth clients and PKCE with **no enterprise-managed auth or ID-JAG**. Okta's Cross App Access partner list (2026-09-24) names no OpenAI app.
     checked: 2026-10-30
   elicitation:
     value: p
     method: docs
     source: https://developers.openai.com/plugins/build/mcp-server
     evidence: |-
-      The plugin MCP server page says "Use MCP elicitation when the server needs structured information that was not provided in the original tool call", but **not whether form or URL mode** is meant.
-
-      - This stays `p` until both modes are confirmed.
+      The plugin MCP server page says "Use MCP elicitation when the server needs structured information that was not provided in the original tool call", but **not whether form or URL mode** is meant. This stays `p` until both modes are confirmed.
     checked: 2026-10-30
   list_changed:
     value: n

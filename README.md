@@ -310,7 +310,7 @@ flowchart LR
 
 1. Copy [data/clients/_template.yaml](data/clients/_template.yaml) to `data/clients/<slug>.yaml`, where the slug is your client's name in lower case with hyphens.
 2. Add a square SVG logo to [assets/logos/](assets/logos/) and name it in `logo`.
-3. Fill in all ten cells. Each one needs a value, a public https `source`, one sentence of `evidence` and the date you checked it. Add `since` with the release that first shipped a feature, so your client shows up in the adoption charts (every column except Live tool lists).
+3. Fill in all ten cells. Each one needs a value, a public https `source`, `evidence` written as a verdict sentence plus a bullet per supporting fact when there are two or more ([how to write it](data/README.md#writing-evidence)) and the date you checked it. Add `since` with the release that first shipped a feature, so your client shows up in the adoption charts (every column except Live tool lists).
 4. Run `npm ci && npm run build`. The build validates the file, prints the tier the rubric gives, and regenerates the tables and charts.
 5. Open a pull request. CI runs `npm run check`, and a maintainer opens every source before merging.
 

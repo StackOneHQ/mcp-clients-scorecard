@@ -65,10 +65,7 @@ cells:
     method: docs
     source: https://ampcode.com/docs/customize/mcp
     evidence: |-
-      Tasks are **not documented**, and the probe of 0.0.1795334436-g660843 declares no `tasks` capability.
-
-      - The MCP docs page covers tools, elicitation, OAuth and apps and never mentions tasks.
-      - The probe declares no `tasks` capability.
+      Tasks are **not documented**, and the probe of 0.0.1795334436-g660843 declares no `tasks` capability. The MCP docs page covers tools, elicitation, OAuth and apps and never mentions tasks.
     checked: 2026-11-22
   events:
     value: n
@@ -87,18 +84,16 @@ cells:
     method: docs
     source: https://ampcode.com/docs/customize/mcp
     evidence: |-
-      The docs list **no enterprise-managed authorization or ID-JAG**; not documented.
-
-      - Documented auth: OAuth with CIMD or DCR, manual client registration, bearer headers and Amp's own workload ID tokens (`"${amp:id-token}"` for orbs).
+      The docs list **no enterprise-managed authorization or ID-JAG**; not documented. Documented auth: OAuth with CIMD or DCR, manual client registration, bearer headers and Amp's own workload ID tokens (`"${amp:id-token}"` for orbs).
     checked: 2026-11-22
   elicitation:
     value: y
     method: docs
     source: https://ampcode.com/docs/customize/mcp
     evidence: |-
-      Docs: remote servers can ask for input mid-call in a dialog, and **multiple-choice fields are cancelled**.
+      Docs: remote servers can **ask for input mid-call in a dialog**.
 
-      - Dialog fields: text, number, yes or no and single-choice.
+      - Dialog fields: text, number, yes or no and single-choice; *multiple-choice fields are cancelled*.
       - Servers can send the user to a URL, with an Open in Browser button.
     checked: 2026-11-22
   list_changed:

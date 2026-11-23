@@ -58,9 +58,7 @@ cells:
     method: source
     source: https://x.ai/cli/grok-1.0.77-linux-x86_64
     evidence: |-
-      Only bundled MCP library schemas mention tasks in the 1.0.77 binary, and the probe saw **no tasks capability**.
-
-      - `tasks/get` and `tasks/cancel` appear only there.
+      Only bundled MCP library schemas mention tasks in the 1.0.77 binary, and the probe saw **no tasks capability**. `tasks/get` and `tasks/cancel` appear only there.
     checked: 2026-11-08
   events:
     value: n

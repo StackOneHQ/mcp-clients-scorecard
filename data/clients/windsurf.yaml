@@ -74,18 +74,14 @@ cells:
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
     evidence: |-
-      Source: **no** `client_id_metadata_document` in the 3000.11.234 binary.
-
-      - The CLI MCP configuration docs show *only* dynamic registration, a pre-registered `oauthClientId` and an `oauthResource` override.
+      Source: **no** `client_id_metadata_document` in the 3000.11.234 binary. The CLI MCP configuration docs show *only* dynamic registration, a pre-registered `oauthClientId` and an `oauthResource` override.
     checked: 2026-10-30
   id_jag:
     value: n
     method: source
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
     evidence: |-
-      Source: **no** `id-jag` token type or `jwt-bearer` grant in the 3000.11.234 binary.
-
-      - No Desktop or CLI doc or changelog mentions Cross App Access.
+      Source: **no** `id-jag` token type or `jwt-bearer` grant in the 3000.11.234 binary. No Desktop or CLI doc or changelog mentions Cross App Access.
     checked: 2026-10-30
   elicitation:
     value: n
@@ -102,7 +98,5 @@ cells:
     method: docs
     source: https://docs.devin.ai/windsurf/plugins/cascade/mcp
     evidence: |-
-      Docs: the docs and changelog describe *only* a **manual MCP refresh button**.
-
-      - They say nothing about `notifications/tools/list_changed`.
+      Docs: the docs and changelog describe *only* a **manual MCP refresh button**. They say nothing about `notifications/tools/list_changed`.
     checked: 2026-11-02

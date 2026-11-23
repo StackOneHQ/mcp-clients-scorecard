@@ -104,9 +104,7 @@ cells:
     method: source
     source: https://github.com/aaif-goose/goose/tree/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates/goose/src/oauth
     evidence: |-
-      Grep for `id-jag` and `id_jag` in `crates` at tag v1.57.0 finds **nothing**.
-
-      - The only `jwt-bearer` use is Google provider auth, not MCP.
+      Grep for `id-jag` and `id_jag` in `crates` at tag v1.57.0 finds **nothing**. The only `jwt-bearer` use is Google provider auth, not MCP.
     checked: 2026-10-30
   elicitation:
     value: p
@@ -128,7 +126,5 @@ cells:
     method: source
     source: https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/agents/mcp_client.rs#L358
     evidence: |-
-      `on_tool_list_changed` bumps `tools_version` (L208), so `extension_manager public_tools` sees a stale cache and **lists tools again**.
-
-      - The new tool reaches the model on the next turn.
+      `on_tool_list_changed` bumps `tools_version` (L208), so `extension_manager public_tools` sees a stale cache and **lists tools again**. The new tool reaches the model on the next turn.
     checked: 2026-11-02

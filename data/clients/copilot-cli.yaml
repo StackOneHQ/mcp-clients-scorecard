@@ -17,18 +17,14 @@ cells:
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: |-
-      Live probe of 1.0.114 on 2026-11-23: `server/discover` carries **2026-07-28**.
-
-      - Changelog 1.0.81 ships MCP 2026-07-28 support.
+      Live probe of 1.0.114 on 2026-11-23: `server/discover` carries **2026-07-28**. Changelog 1.0.81 ships MCP 2026-07-28 support.
     checked: 2026-11-23
   code_mode:
     value: n
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: |-
-      Not documented in the changelog or docs, and **no code mode feature** in the 1.0.112 bundle.
-
-      - The 1.0.106 `copilot help config` lists tool search but no code mode setting.
+      Not documented in the changelog or docs, and **no code mode feature** in the 1.0.112 bundle. The 1.0.106 `copilot help config` lists tool search but no code mode setting.
     checked: 2026-11-16
   tool_search:
     value: y
@@ -83,9 +79,7 @@ cells:
     method: changelog
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: |-
-      Changelog 1.0.83 adds **Client ID Metadata Document (CIMD)** support for MCP OAuth sign-in.
-
-      - The 1.0.112 bundle checks `client_id_metadata_document_supported`.
+      Changelog 1.0.83 adds **Client ID Metadata Document (CIMD)** support for MCP OAuth sign-in. The 1.0.112 bundle checks `client_id_metadata_document_supported`.
     checked: 2026-11-16
     since:
       date: 2026-09-04

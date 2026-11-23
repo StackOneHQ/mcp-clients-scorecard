@@ -51,9 +51,7 @@ cells:
     method: issue
     source: https://github.com/kirodotdev/Kiro/issues/11048
     evidence: |-
-      Open feature request for native MCP Apps (`ui://` resources) in chat; the MCP docs list **no Apps support**.
-
-      - A maintainer logged it as a feature request on 2026-09-21.
+      Open feature request for native MCP Apps (`ui://` resources) in chat; the MCP docs list **no Apps support**. A maintainer logged it as a feature request on 2026-09-21.
     checked: 2026-11-22
   tasks:
     value: n

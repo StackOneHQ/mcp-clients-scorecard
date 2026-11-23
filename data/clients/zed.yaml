@@ -36,9 +36,7 @@ cells:
     method: source
     source: https://github.com/zed-industries/zed/blob/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/agent_ui/src/conversation_view/thread_view.rs#L11062
     evidence: |-
-      Source: at tag v1.26.2 Zed has **no tool search**; every MCP tool is sent to the model.
-
-      - Grep for "tool_search", "deferred_tool", "search_tools", "defer_loading": only an icon name (`IconName::ToolSearch`, `thread_view.rs:11058-11062`).
+      Source: at tag v1.26.2 Zed has **no tool search**; every MCP tool is sent to the model. Grep for "tool_search", "deferred_tool", "search_tools", "defer_loading": only an icon name (`IconName::ToolSearch`, `thread_view.rs:11058-11062`).
     checked: 2026-10-30
   apps:
     value: n
@@ -98,7 +96,5 @@ cells:
     method: source
     source: https://github.com/zed-industries/zed/blob/v1.26.2/crates/agent/src/tools/context_server_registry.rs#L142-L158
     evidence: |-
-      Source: the native agent registry **reloads tools** on `notifications/tools/list_changed` with `reload_tools_for_server`.
-
-      - It sends `ListTools` and emits `ToolsChanged`.
+      Source: the native agent registry **reloads tools** on `notifications/tools/list_changed` with `reload_tools_for_server`. It sends `ListTools` and emits `ToolsChanged`.
     checked: 2026-11-02

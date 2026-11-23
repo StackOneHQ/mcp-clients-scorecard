@@ -48,9 +48,7 @@ cells:
     method: source
     source: https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src/tools/mcp-client.ts#L1869
     evidence: |-
-      `mcp-client.ts:1880` registers only roots, so **no tasks capability**.
-
-      - The weak `mcp list` probe also declared no tasks.
+      `mcp-client.ts:1880` registers only roots, so **no tasks capability**. The weak `mcp list` probe also declared no tasks.
     checked: 2026-11-16
   events:
     value: n
@@ -64,9 +62,7 @@ cells:
     method: source
     source: https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src/mcp/oauth-provider.ts#L105
     evidence: |-
-      At v0.68.0, `oauth-provider.ts:105` registers clients with its own RFC 7591 dynamic registration and **never uses a client metadata URL**.
-
-      - The bundle has `client_id_metadata_document_supported` only in SDK schemas.
+      At v0.68.0, `oauth-provider.ts:105` registers clients with its own RFC 7591 dynamic registration and **never uses a client metadata URL**. The bundle has `client_id_metadata_document_supported` only in SDK schemas.
     checked: 2026-11-16
   id_jag:
     value: n
@@ -90,7 +86,5 @@ cells:
     method: source
     source: https://github.com/google-gemini/gemini-cli/blob/v0.68.0/packages/core/src/tools/mcp-client.ts#L419-L427
     evidence: |-
-      The `ToolListChangedNotification` handler calls `refreshTools`, which **rediscovers and re-registers the tools**.
-
-      - `onContextUpdated` then calls `geminiClient.setTools()`.
+      The `ToolListChangedNotification` handler calls `refreshTools`, which **rediscovers and re-registers the tools**. `onContextUpdated` then calls `geminiClient.setTools()`.
     checked: 2026-11-16

@@ -59,18 +59,14 @@ cells:
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L56-L66
     evidence: |-
-      Source: **no tasks capability** is declared; `// tasks: {}` is commented out in `CLIENT_OPTIONS`.
-
-      - The comment points to upstream issue `anomalyco/opencode#28567`.
+      Source: **no tasks capability** is declared; `// tasks: {}` is commented out in `CLIENT_OPTIONS`. The comment points to upstream issue `anomalyco/opencode#28567`.
     checked: 2026-11-22
   events:
     value: n
     method: source
     source: https://github.com/Kilo-Org/kilocode/tree/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp
     evidence: |-
-      Source: **no events support**; grep for `notifications/events`, `events/subscribe` and `subscriptions/listen` finds nothing in `packages/opencode/src` or `kilo-vscode/src`.
-
-      - Only `roots` is declared.
+      Source: **no events support**; grep for `notifications/events`, `events/subscribe` and `subscriptions/listen` finds nothing in `packages/opencode/src` or `kilo-vscode/src`. Only `roots` is declared.
     checked: 2026-11-22
   cimd:
     value: y
@@ -101,9 +97,7 @@ cells:
     method: source
     source: https://github.com/Kilo-Org/kilocode/blob/2aa002cc0ab69d89f591f8174631152efa720877/packages/opencode/src/mcp/index.ts#L56-L66
     evidence: |-
-      Source: elicitation is **not declared**; `// elicitation: {}` is commented out in `CLIENT_OPTIONS`.
-
-      - The comment points to upstream issue `anomalyco/opencode#23066`.
+      Source: elicitation is **not declared**; `// elicitation: {}` is commented out in `CLIENT_OPTIONS`. The comment points to upstream issue `anomalyco/opencode#23066`.
     checked: 2026-11-22
   list_changed:
     value: y

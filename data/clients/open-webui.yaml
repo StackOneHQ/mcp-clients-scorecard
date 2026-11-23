@@ -55,9 +55,7 @@ cells:
     method: source
     source: https://github.com/open-webui/open-webui/blob/0666e59d26a4d056e0bacee41742486badd71cf8/backend/open_webui/utils/mcp/client.py#L163
     evidence: |-
-      `client.py:163` advertises the `io.modelcontextprotocol/ui` extension with mimeTypes `text/html;profile=mcp-app`, so **MCP Apps render inline**.
-
-      - A tool whose `_meta.ui.resourceUri` points to a `ui://` resource has its HTML shown in the chat in a sandboxed iframe (`apps.py`, MCP docs page section MCP Apps).
+      `client.py:163` advertises the `io.modelcontextprotocol/ui` extension with mimeTypes `text/html;profile=mcp-app`, so **MCP Apps render inline**. A tool whose `_meta.ui.resourceUri` points to a `ui://` resource has its HTML shown in the chat in a sandboxed iframe (`apps.py`, MCP docs page section MCP Apps).
     checked: 2026-11-23
     since:
       date: 2026-11-03

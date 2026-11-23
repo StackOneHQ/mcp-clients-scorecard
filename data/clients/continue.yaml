@@ -28,18 +28,14 @@ cells:
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
     evidence: |-
-      A grep of `core` and `extensions/cli` at the final commit for code mode and `execute_javascript` finds **nothing**.
-
-      - The repository is read-only after the final 2.0.0 release.
+      A grep of `core` and `extensions/cli` at the final commit for code mode and `execute_javascript` finds **nothing**. The repository is read-only after the final 2.0.0 release.
     checked: 2026-11-06
   tool_search:
     value: n
     method: source
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core/context/mcp
     evidence: |-
-      A grep of `core` and `extensions/cli` at the final commit for `tool_search`, `defer_loading` and deferred tools finds **nothing**.
-
-      - The only BM25 is the codebase index, not MCP tools.
+      A grep of `core` and `extensions/cli` at the final commit for `tool_search`, `defer_loading` and deferred tools finds **nothing**. The only BM25 is the codebase index, not MCP tools.
     checked: 2026-10-30
   apps:
     value: p
@@ -60,9 +56,7 @@ cells:
     method: probe
     source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/extensions/cli/src/services/MCPService.ts#L405
     evidence: |-
-      The `cn` 1.5.47 probe declared `capabilities: {}` with **no tasks extension**.
-
-      - A grep of `core` and `extensions/cli` for `tasks/get` and `io.modelcontextprotocol/tasks` finds nothing.
+      The `cn` 1.5.47 probe declared `capabilities: {}` with **no tasks extension**. A grep of `core` and `extensions/cli` for `tasks/get` and `io.modelcontextprotocol/tasks` finds nothing.
     checked: 2026-10-30
   events:
     value: n
@@ -98,7 +92,5 @@ cells:
     method: source
     source: https://github.com/continuedev/continue/blob/5522c6f44ca0ac3528b37244818fbfa39b5af470/extensions/cli/src/services/MCPService.ts#L299-L310
     evidence: |-
-      `MCPService` lists tools only on connect and registers **no** `list_changed` handler.
-
-      - `core/context/mcp/MCPConnection.ts:284` reads "TODO register server notification handlers"
+      `MCPService` lists tools only on connect and registers **no** `list_changed` handler. `core/context/mcp/MCPConnection.ts:284` reads "TODO register server notification handlers".
     checked: 2026-11-02

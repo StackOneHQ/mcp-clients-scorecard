@@ -17,18 +17,17 @@ cells:
     method: probe
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.17.2
     evidence: |-
-      Live probe of 1.17.2 on 2026-11-23 negotiated **2025-11-25** (clientInfo `factory-cli`).
-
-      - The 1.17.2 binary still ships flag `mcp_2026_07_28`, **off by default**.
+      Live probe of 1.17.2 on 2026-11-23 negotiated **2025-11-25** (clientInfo `factory-cli`). The 1.17.2 binary still ships flag `mcp_2026_07_28`, **off by default**.
     checked: 2026-11-23
   code_mode:
     value: p
     method: source
     source: https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1
     evidence: |-
-      The `Script` tool runs JavaScript that calls MCP tools as `tools.<server>.<tool>`.
+      Source: the `Script` tool calls MCP tools from JavaScript, but in the 1.12.1 binary it is **off unless the model is listed** server-side.
 
-      - In the 1.12.1 binary the execution mode is `direct_only` **unless the model is listed** in the server-side `script_tool_models` config (default empty list) or the hidden exec flag `--tool-execution-mode script-only` overrides it.
+      - `Script` calls tools as `tools.<server>.<tool>`.
+      - The execution mode is `direct_only` unless the model is in the `script_tool_models` config (default empty list) or the hidden exec flag `--tool-execution-mode script-only` overrides it.
       - This is the same logic as the 1.6.0 binary.
       - Release notes mention Script from CLI v0.233.0 (October 3, 2026, Script output trimming), but the MCP docs do not.
     checked: 2026-11-16
@@ -77,9 +76,7 @@ cells:
     method: docs
     source: https://docs.factory.com/harness/mcp
     evidence: |-
-      Docs: Droid uses Factory's published client metadata when the server supports **Client ID Metadata Documents (CIMD)**.
-
-      - The 1.12.1 binary handles a `clientMetadataUrl` override.
+      Docs: Droid uses Factory's published client metadata when the server supports **Client ID Metadata Documents (CIMD)**. The 1.12.1 binary handles a `clientMetadataUrl` override.
     checked: 2026-11-16
     since:
       date: 2026-06-12

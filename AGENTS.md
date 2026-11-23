@@ -28,7 +28,7 @@ Only use `npm run build -- --no-images` when no Chrome can be installed. It warn
 Every claim on the site is backed by a cell's `source` and `evidence`, and the client pages show the whole evidence in a proof panel. Write `evidence` as structured Markdown, never as one long run-on sentence:
 
 - open with the verdict in one sentence (the card shows only that line),
-- put each supporting fact in its own `- ` bullet,
+- when there are two or more supporting facts, put each in its own `- ` bullet (one fact stays a second sentence, never a one-item list),
 - **bold** the one or two facts that decide the value, *italic* for a caveat word, `code` for env vars, flags, settings keys, method and extension ids.
 
 The full rules and an example are in [data/README.md#writing-evidence](data/README.md#writing-evidence). `render/evidence.mjs` renders the subset; anything else (headings, tables, HTML) shows as plain text. Page copy in `render/site.mjs` follows the same habit: short sentences, lists for parallel items, bold for the one fact a reader must not miss. No em or en dashes anywhere.

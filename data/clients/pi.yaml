@@ -85,9 +85,7 @@ cells:
     method: docs
     source: https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/mcp.md#L162
     evidence: |-
-      Docs: `docs/mcp.md:162-172` documents `oauth.clientRegistration` set to `cimd`, a documented setting, so **y**.
-
-      - Pi is identified by https://pi.dev/oauth/client.json instead of dynamic registration (`extensions/mcp/oauth.ts:246-265`).
+      Docs: `docs/mcp.md:162-172` documents `oauth.clientRegistration` set to `cimd`, a documented setting, so **y**. Pi is identified by https://pi.dev/oauth/client.json instead of dynamic registration (`extensions/mcp/oauth.ts:246-265`).
     checked: 2026-10-30
     since:
       date: 2026-10-03
@@ -114,7 +112,5 @@ cells:
     method: source
     source: https://github.com/earendil-works/pi/blob/v1.4.0/packages/coding-agent/src/extensions/mcp/runtime.ts#L380-L382
     evidence: |-
-      Source: the built-in MCP extension **refreshes tools** when it handles `notifications/tools/list_changed`.
-
-      - It calls `refreshTools`, which calls `listTools` and updates the session active tools.
+      Source: the built-in MCP extension **refreshes tools** when it handles `notifications/tools/list_changed`. It calls `refreshTools`, which calls `listTools` and updates the session active tools.
     checked: 2026-11-02

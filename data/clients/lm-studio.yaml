@@ -69,9 +69,7 @@ cells:
     method: issue
     source: https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/977
     evidence: |-
-      Issue: an **open request** for elicitation, sampling and progress support (2025-09-05) has no vendor reply.
-
-      - Issue 817 reports a tool call ending blank when a server elicits.
+      Issue: an **open request** for elicitation, sampling and progress support (2025-09-05) has no vendor reply. Issue 817 reports a tool call ending blank when a server elicits.
     checked: 2026-11-22
   list_changed:
     value: n

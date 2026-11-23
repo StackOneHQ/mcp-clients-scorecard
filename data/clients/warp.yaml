@@ -14,7 +14,7 @@ cells:
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L654-L658
     evidence: |-
-      Source: Warp tries the newest protocol first and falls back to **2025-11-25** for servers that do not answer `discover`.
+      Source: Warp opens with **2026-07-28**, the latest version in its pinned rmcp, and falls back to 2025-11-25 for servers that do not answer `discover`.
 
       - `negotiate_protocol` starts with `ProtocolVersion::LATEST` and `discover: true`.
       - The rmcp 3.5.0 pinned in `Cargo.lock` defines LATEST as `V_2026_07_28` (rust-sdk `model.rs` L177).
@@ -61,9 +61,7 @@ cells:
     method: source
     source: https://github.com/warpdotdev/warp/blob/f8223cef2d167a5858bf233df8a1fb6f74537fa5/crates/mcp/src/runtime.rs#L905-L917
     evidence: |-
-      Source: client capabilities are the **empty default**, with no `io.modelcontextprotocol/tasks` extension.
-
-      - A user log in warpdotdev/warp issue 11873 shows the `initialize` request sent with `"capabilities":{}`.
+      Source: client capabilities are the **empty default**, with no `io.modelcontextprotocol/tasks` extension. A user log in warpdotdev/warp issue 11873 shows the `initialize` request sent with `"capabilities":{}`.
     checked: 2026-11-22
   events:
     value: n
@@ -91,9 +89,7 @@ cells:
     method: docs
     source: https://docs.warp.dev/agents/capabilities/mcp
     evidence: |-
-      Docs: the MCP authentication section lists *only* environment variables, browser OAuth login and custom headers.
-
-      - **No** enterprise-managed authorization or ID-JAG token exchange in `crates/mcp/src/oauth.rs`.
+      Docs: the MCP authentication section lists *only* environment variables, browser OAuth login and custom headers. **No** enterprise-managed authorization or ID-JAG token exchange in `crates/mcp/src/oauth.rs`.
     checked: 2026-11-22
   elicitation:
     value: n
