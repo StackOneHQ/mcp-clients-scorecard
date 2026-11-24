@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { load, COLUMNS } from './data.mjs';
 import { buildSite } from './site.mjs';
-import { changelog, splitRecent, recentCutoff, KINDS } from './changelog.mjs';
+import { changelog, splitRecent, recentCutoff, forFeature, KINDS } from './changelog.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'site-test-'));
 buildSite(out);
@@ -30,7 +30,8 @@ test('the home page links every client and the sitemap lists every page', () => 
   }
 });
 
-const pages = ['index.html', '404.html', ...data.clients.map(c => `clients/${c.slug}/index.html`)];
+const FEATURE_IDS = data.features.map(f => f.id).filter(k => k !== 'protocol');
+const pages = ['index.html', '404.html', ...data.clients.map(c => `clients/${c.slug}/index.html`), ...FEATURE_IDS.map(k => `features/${k}/index.html`)];
 
 // worker/index.js sets a Content-Security-Policy without 'unsafe-inline', so the browser would drop these.
 // JSON-LD is data, never run, so CSP leaves it alone.
@@ -174,7 +175,7 @@ test('every matrix row and the README table link the client website', () => {
 test('the worker lets other sites fetch the changelog feeds', async () => {
   const { default: worker } = await import('../worker/index.js');
   const ASSETS = { fetch: async () => new Response('{}', { headers: { 'Content-Type': 'application/json' } }) };
-  for (const f of ['changelog.json', 'changelog.xml']) {
+  for (const f of ['changelog.json', 'changelog.xml', 'features/events/changelog.json', 'features/id_jag/changelog.xml']) {
     const res = await worker.fetch(new Request(`https://x.dev/${f}`), { ASSETS });
     assert.equal(res.headers.get('Access-Control-Allow-Origin'), '*', f);
   }
@@ -192,4 +193,68 @@ test('every check card links its proof, which works without JS and opens in the 
 
 test('the hero asks who supports Events', () => {
   assert.match(read('index.html'), /id="ask-events" role="tabpanel"/);
+});
+
+test('every feature column gets a page that lists every client, with its source, a Markdown copy and its own feeds', () => {
+  assert.ok(!fs.existsSync(path.join(out, 'features/protocol')), 'the spec version has no feature page');
+  for (const k of FEATURE_IDS) {
+    const html = read(`features/${k}/index.html`);
+    for (const c of data.clients) {
+      assert.ok(html.includes(`href="/clients/${c.slug}/"`), `${k} ${c.slug}`);
+      assert.ok(html.includes(href(c.cells[k].source)), `${k} ${c.slug} source`);
+    }
+    assert.ok(html.includes(`<link rel="canonical" href="https://mcpclients.dev/features/${k}/">`), k);
+    assert.ok(html.includes(`<link rel="alternate" type="application/atom+xml" href="/features/${k}/changelog.xml"`), k);
+    assert.ok(html.includes(`href="/features/${k}/changelog.json"`), k);
+    assert.ok(read(`features/${k}/index.md`).startsWith('---\ntitle: '), k);
+    assert.match(read(`features/${k}/changelog.xml`), new RegExp(`^<\\?xml[\\s\\S]*<link rel="self" href="https://mcpclients.dev/features/${k}/changelog.xml"/>[\\s\\S]*</feed>\\n$`), k);
+    assert.equal(JSON.parse(read(`features/${k}/changelog.json`)).feature, k);
+    assert.ok(read('sitemap.xml').includes(`/features/${k}/</loc>`), k);
+    assert.ok(read('sitemap.md').includes(`/features/${k}/index.md`), k);
+    assert.ok(read('llms.txt').includes(`/features/${k}/changelog.xml`), k);
+  }
+});
+
+test('the Events page lists ChatGPT, Hermes Agent and OpenClaw as Partial and nobody as Yes', () => {
+  const html = read('features/events/index.html');
+  const group = id => html.match(new RegExp(`<section class="fgroup" id="${id}">([\\s\\S]*?)</section>`))?.[1] ?? '';
+  const slugs = id => [...group(id).matchAll(/<article class="fcell" id="([^"]+)"/g)].map(m => m[1]).sort();
+  const want = v => data.clients.filter(c => c.cells.events.value === v).map(c => c.slug).sort();
+  assert.deepEqual(slugs('yes'), want('y'));
+  assert.deepEqual(slugs('partial'), want('p'));
+  assert.deepEqual(slugs('no'), want('n'));
+  for (const s of ['chatgpt', 'hermes-agent', 'openclaw']) assert.ok(slugs('partial').includes(s), s);
+  const y = want('y').length, p = want('p').length;
+  assert.ok(html.includes(`<b>${y}</b> of ${data.clients.length} clients support it${p ? `, <b class="p">${p}</b> partly` : ''}.`));
+  assert.match(read('index.html'), /<div class="ask-panel[^"]*" id="ask-events"[\s\S]*?<a href="\/features\/events\/">See every Events cell<\/a>/);
+});
+
+test('a feature feed carries only the events about that feature', () => {
+  const events = changelog({ data });
+  for (const k of FEATURE_IDS) {
+    const own = forFeature(events, k);
+    for (const e of own) {
+      const ok = e.key === `feature:${k}` || e.key === `ship:${e.client?.slug}:${k}` || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`)));
+      assert.ok(ok, `${k}: ${e.key}`);
+    }
+    const expected = events.filter(e => e.key === `feature:${k}` || e.key.endsWith(`:${k}`) && e.key.startsWith('ship:') || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`))));
+    assert.equal(own.length, expected.length, k);
+    assert.equal(JSON.parse(read(`features/${k}/changelog.json`)).events.length, own.length, k);
+    assert.equal((read(`features/${k}/changelog.xml`).match(/<entry>/g) || []).length, Math.min(own.length, 100), k);
+  }
+  const titles = JSON.parse(read('features/events/changelog.json')).events.map(e => e.title);
+  assert.ok(titles.length && titles.every(t => /Events/.test(t)), titles.join('; '));
+});
+
+test('a recheck that moved several columns shows only the one feature in that feature feed', () => {
+  const live = structuredClone(data);
+  live.as_of = '2099-01-01';
+  const c = live.clients.find(c => ['events', 'tasks'].every(k => c.cells[k].value !== 'na'));
+  for (const k of ['events', 'tasks']) c.cells[k].value = c.cells[k].value === 'y' ? 'n' : 'y';
+  const events = changelog({ data: live });
+  const both = events.find(e => e.date === '2099-01-01' && e.key.startsWith(`recheck:${c.slug}:`));
+  assert.match(both.text, /Tasks .*Events|Events .*Tasks/);
+  const own = forFeature(events, 'events').find(e => e.key === both.key);
+  assert.match(own.text, /^rechecked: Events \w+ → \w+$/);
+  assert.equal(forFeature(events, 'tasks').find(e => e.key === both.key).text.includes('Events'), false);
 });

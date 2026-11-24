@@ -3,8 +3,8 @@
 // AI agents get each page's Markdown copy (index.md): when they ask with `Accept: text/markdown`,
 // when their User-Agent names a known AI fetcher, or when they add .md to a page URL (/clients/codex.md).
 const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
-// Data other sites may fetch from the browser: badges in READMEs, the JSON, the text copies
-const OPEN = /^\/(badges\/.*|data\.json|changelog\.(json|xml)|llms(-full)?\.txt|sitemap\.md|(.*\/)?index\.md)$/;
+// Data other sites may fetch from the browser: badges in READMEs, the JSON, the feeds (site-wide and per feature), the text copies
+const OPEN = /^\/(badges\/.*|data\.json|(features\/[\w-]+\/)?changelog\.(json|xml)|llms(-full)?\.txt|sitemap\.md|(.*\/)?index\.md)$/;
 // AI crawlers and fetchers that read text. Search engine crawlers (Googlebot, Bingbot) are not on the list and get HTML.
 const AGENT_UA = /ClaudeBot|Claude-User|Claude-SearchBot|anthropic-ai|GPTBot|ChatGPT-User|OAI-SearchBot|PerplexityBot|Perplexity-User|CCBot|cohere-ai|Meta-ExternalAgent|Amazonbot|DuckAssistBot|MistralAI-User/i;
 

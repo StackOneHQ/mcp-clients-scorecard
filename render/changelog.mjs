@@ -31,7 +31,8 @@ function readSnapshots(asOf) {
 const flip = (k, from, to) => (k === 'protocol' ? `spec version ${from} → ${to}` : `${LABEL[k]} ${WORD[from]} → ${WORD[to]}`);
 
 // Each event: { date, kind, client: { slug, name } | null, text, source | null, key }. With a client, text follows its name.
-// key names what changed in stable terms (column keys, tiers, values), so a feed id survives a label or name change
+// key names what changed in stable terms (column keys, tiers, values), so a feed id survives a label or name change.
+// Events about one column also carry feature (its id); a recheck carries changes, one [id, text] per column that moved.
 export function changelog({ data }) {
   const events = [];
   const live = new Set(data.clients.map(c => c.slug));
@@ -50,7 +51,8 @@ export function changelog({ data }) {
         events.push({ date, kind: 'tier', client: who(slug, c.name), text: `${up ? 'moves up' : 'moves down'} from ${was.tier} to ${c.tier} tier`, source: null, key: `tier:${slug}:${was.tier}>${c.tier}` });
       }
       const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k])).map(([k]) => k);
-      if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changed.map(k => flip(k, was[k], c[k])).join(', ')}`, source: null, key: `recheck:${slug}:${changed.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}` });
+      const changes = changed.map(k => [k, flip(k, was[k], c[k])]);
+      if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changes.map(([, t]) => t).join(', ')}`, source: null, key: `recheck:${slug}:${changed.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}`, changes });
     }
     for (const [slug, c] of Object.entries(prev.clients)) if (!cur.clients[slug]) events.push({ date, kind: 'client', client: who(slug, c.name), text: 'leaves the board', source: null, key: `leave:${slug}` });
   }
@@ -58,10 +60,10 @@ export function changelog({ data }) {
     for (const [k, l] of COLUMNS) {
       const cell = c.cells[k], s = cell.since;
       if (!s || (cell.value !== 'y' && cell.value !== 'p')) continue;
-      events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${cell.value === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}` });
+      events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${cell.value === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}`, feature: k });
     }
   }
-  for (const f of data.features) if (f.spec_date && f.spec_event) events.push({ date: String(f.spec_date), kind: 'spec', client: null, text: f.spec_event, source: f.spec_source ?? f.url, key: `feature:${f.id}` });
+  for (const f of data.features) if (f.spec_date && f.spec_event) events.push({ date: String(f.spec_date), kind: 'spec', client: null, text: f.spec_event, source: f.spec_source ?? f.url, key: `feature:${f.id}`, feature: f.id });
   for (const v of data.spec_versions) events.push({ date: String(v), kind: 'spec', client: null, text: `MCP spec ${v} released`, source: `https://modelcontextprotocol.io/specification/${v}`, key: `spec:${v}` });
   const asOf = String(data.as_of);
   return events.filter(e => e.date <= asOf)
@@ -76,6 +78,16 @@ export function recentCutoff(asOf) {
 export function splitRecent(events, asOf) {
   const cut = recentCutoff(asOf);
   return { recent: events.filter(e => e.date > cut), older: events.filter(e => e.date <= cut) };
+}
+
+// The events about one column, for its page and feeds: its spec milestone, each client shipping it, and the rechecks
+// that moved it. A recheck that moved several columns keeps only this one in its text.
+export function forFeature(events, id) {
+  return events.flatMap(e => {
+    if (e.feature === id) return [e];
+    const part = e.changes?.find(([k]) => k === id);
+    return part ? [{ ...e, text: `rechecked: ${part[1]}` }] : [];
+  });
 }
 
 export const plainEvent = e => (e.client ? `${e.client.name} ${e.text}` : e.text);
