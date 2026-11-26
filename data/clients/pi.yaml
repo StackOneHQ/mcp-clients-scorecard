@@ -80,6 +80,13 @@ cells:
     source: https://github.com/earendil-works/pi/tree/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/mcp/src
     evidence: "A grep for `events/subscribe` and `notifications/events` finds **nothing** in `packages/mcp` or the coding agent at tag v1.4.0."
     checked: 2026-10-30
+  skills:
+    value: n
+    method: source
+    source: https://github.com/earendil-works/pi/blob/44b6a1367b6000a458f96fb98b44375606fadf67/packages/mcp/README.md
+    evidence: |-
+      Source: pi's `packages/mcp` client converts tool results and resource links but has **no `skills/list` or `skill://` handling**.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

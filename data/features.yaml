@@ -29,6 +29,14 @@
   spec_date: 2026-11-19
   spec_source: https://modelcontextprotocol.io/seps/3415-events-extension
   spec_event: Events becomes an official extension (Beta, SEP-3415 Final)
+- id: skills
+  label: Skills
+  definition: The client loads Agent Skills that an MCP server serves (skills/list and skill:// resources) and offers them to the model like local skills. Skills in a local folder do not count.
+  ref: MCP Skills extension (io.modelcontextprotocol/skills)
+  url: https://modelcontextprotocol.io/extensions/skills/overview
+  spec_date: 2026-09-13
+  spec_source: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2640
+  spec_event: Skills becomes an official extension (SEP-2640 Final)
 - id: cimd
   label: CIMD
   definition: The client registers with OAuth servers through a Client ID Metadata Document, which the 2026-07-28 spec prefers over dynamic client registration.

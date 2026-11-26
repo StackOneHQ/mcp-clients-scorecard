@@ -77,6 +77,13 @@ cells:
     evidence: |-
       **No** "notifications/events" or "events/subscribe" in the 3.27.22 `cursor-mcp` or `cursor-agent-exec` bundles. There is no Events row in the docs support table.
     checked: 2026-10-30
+  skills:
+    value: n
+    method: docs
+    source: https://cursor.com/docs/mcp
+    evidence: |-
+      Docs: The MCP page lists supported capabilities as Tools, Prompts, Resources, Roots, Elicitation and Apps, and **does not mention skills served by MCP servers** (`skills/list`, `skill://`).
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

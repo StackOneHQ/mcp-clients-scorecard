@@ -58,6 +58,19 @@ cells:
     evidence: |-
       The connector build page says Claude **"doesn't yet support"** resource subscriptions, sampling, or advanced or draft capabilities. Nothing documents MCP Events.
     checked: 2026-10-30
+  skills:
+    value: y
+    method: docs
+    source: https://claude.com/resources/articles/skills-over-mcp-tasks-and-more
+    evidence: |-
+      Announcement: skills over MCP are in **public beta in Claude, on by default for Pro, Max and Ultra**.
+
+      - Team plans get it on request; Enterprise is listed as coming.
+      - Open issue [claude-ai-mcp#1160](https://github.com/anthropics/claude-ai-mcp/issues/1160) reports that *Cowork* does not run served skills yet.
+    checked: 2026-11-26
+    since:
+      date: 2026-11-24
+      source: https://claude.com/resources/articles/skills-over-mcp-tasks-and-more
   cimd:
     value: y
     method: docs

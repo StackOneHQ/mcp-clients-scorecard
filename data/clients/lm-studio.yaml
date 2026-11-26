@@ -52,6 +52,13 @@ cells:
     source: https://lmstudio.ai/docs/app/mcp
     evidence: "**Not documented**: no events or trigger support in the MCP docs or the 0.4.x changelog."
     checked: 2026-11-22
+  skills:
+    value: n
+    method: docs
+    source: https://lmstudio.ai/docs/app/mcp
+    evidence: |-
+      Docs: the MCP page covers adding servers and tool use only, and has **no mention of skills, `skill://` or MCP resources**.
+    checked: 2026-11-26
   cimd:
     value: n
     method: docs

@@ -67,6 +67,13 @@ cells:
     source: https://registry.npmjs.org/@augmentcode/auggie/-/auggie-1.2.2.tgz
     evidence: The 1.2.2 MCP client declares no capabilities and registers **no handler for server-pushed events** beyond the list-changed notification
     checked: 2026-11-22
+  skills:
+    value: n
+    method: docs
+    source: https://docs.augmentcode.com/cli/integrations
+    evidence: |-
+      Docs: the Auggie CLI integrations page and changelog **do not mention skills served by MCP servers** (no `skills/list`, `skill://` or SEP-2640).
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

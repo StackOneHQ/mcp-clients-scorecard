@@ -65,6 +65,13 @@ cells:
     source: https://kiro.dev/docs/mcp/
     evidence: "Docs: the MCP docs describe **no server-pushed events**; not documented."
     checked: 2026-11-22
+  skills:
+    value: n
+    method: docs
+    source: https://kiro.dev/docs/mcp/
+    evidence: |-
+      Docs: the Kiro MCP docs and changelog **do not mention skills served by MCP servers**; skills are read from the local `.kiro/skills` folder.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

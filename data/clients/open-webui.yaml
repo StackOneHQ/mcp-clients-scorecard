@@ -81,6 +81,13 @@ cells:
       - The patterns were `events/list`, `events/poll`, `events/subscribe`, `subscriptions/listen`, `notifications/events` and `io.modelcontextprotocol/events`.
       - The MCP docs page says the Open WebUI event system is only available for native Python tools, *not* MCP servers.
     checked: 2026-11-23
+  skills:
+    value: n
+    method: docs
+    source: https://docs.openwebui.com/features/extensibility/mcp/
+    evidence: |-
+      Docs: the MCP page covers tools and MCP Apps only, with **no skills served by MCP servers** (`skills/list` or `skill://`).
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

@@ -6,7 +6,7 @@ logo: icon-claude.svg
 website: https://claude.com/product/claude-code
 docs: https://code.claude.com/docs/en/overview
 repo: https://github.com/anthropics/claude-code
-version_checked: 2.1.330
+version_checked: 2.1.332
 npm: "@anthropic-ai/claude-code"
 tracker:
   repo: anthropics/claude-code
@@ -78,6 +78,20 @@ cells:
     source: https://github.com/anthropics/claude-code/issues/101434
     evidence: "**Open feature request** to start routines from MCP events; channels are a Claude-specific push path, not the working group design"
     checked: 2026-11-16
+  skills:
+    value: y
+    method: changelog
+    source: https://github.com/anthropics/claude-code/blob/eb8e6d253d0dbee6e52fb0d5fdcb72c9396fe3e8/CHANGELOG.md#L5
+    evidence: |-
+      Changelog 2.1.332: **added skills from MCP servers (beta)**, shown as `server:skill` in the `/` menu.
+
+      - The docs add that each new skill version needs approval before it runs.
+      - Docs: [Use skills from MCP servers](https://code.claude.com/docs/en/mcp#use-skills-from-mcp-servers).
+    checked: 2026-11-26
+    since:
+      date: 2026-11-24
+      version: 2.1.332
+      source: https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.332
   cimd:
     value: y
     method: docs

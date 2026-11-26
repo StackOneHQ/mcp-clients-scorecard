@@ -69,6 +69,13 @@ cells:
     source: https://static.devin.ai/cli/3000.11.234/devin-3000.11.234-x86_64-unknown-linux.tar.gz
     evidence: "Source: no `events/subscribe` or `notifications/events` in the 3000.11.234 binary and **no changelog entry**."
     checked: 2026-10-30
+  skills:
+    value: n
+    method: docs
+    source: https://docs.devin.ai/windsurf/plugins/cascade/mcp
+    evidence: |-
+      Docs: the Cascade MCP page covers servers, tools and their settings, and **does not mention skills served by MCP servers** (`skills/list`, `skill://`).
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

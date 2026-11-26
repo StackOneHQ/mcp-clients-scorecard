@@ -53,6 +53,12 @@ cells:
     source: https://example.com/docs/mcp
     evidence: What the source shows
     checked: 2026-10-27
+  skills:
+    value: n
+    method: docs
+    source: https://example.com/docs/mcp
+    evidence: What the source shows
+    checked: 2026-10-27
   cimd:
     value: n
     method: docs

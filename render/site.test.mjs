@@ -8,7 +8,10 @@ import { buildSite } from './site.mjs';
 import { changelog, splitRecent, recentCutoff, forFeature, KINDS } from './changelog.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'site-test-'));
+const SHA = 'c0ffee0000000000000000000000000000000000';
+process.env.SITE_COMMIT = SHA;
 buildSite(out);
+delete process.env.SITE_COMMIT;
 after(() => fs.rmSync(out, { recursive: true, force: true }));
 const read = f => fs.readFileSync(path.join(out, f), 'utf8');
 const { data } = load();
@@ -106,6 +109,12 @@ test('data.json carries every client with every cell', () => {
   const json = JSON.parse(read('data.json'));
   assert.equal(json.clients.length, data.clients.length);
   for (const c of json.clients) assert.deepEqual(Object.keys(c.cells).sort(), COLUMNS.map(([k]) => k).sort());
+});
+
+test('version.json names the data date and the deployed commit', () => {
+  const v = JSON.parse(read('version.json'));
+  assert.equal(v.as_of, String(data.as_of));
+  assert.equal(v.commit, SHA);
 });
 
 test('the badge files the pages embed exist', () => {

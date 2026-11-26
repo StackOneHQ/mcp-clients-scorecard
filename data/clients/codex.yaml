@@ -69,6 +69,13 @@ cells:
     evidence: |-
       `events/list` and `events/stream` are sent **only to the built-in `codex_apps` hosted server**, not to user-configured MCP servers. Issue 49665 about event subscriptions is still open.
     checked: 2026-11-16
+  skills:
+    value: n
+    method: issue
+    source: https://github.com/openai/codex/issues/48000
+    evidence: |-
+      Issue #48000 "support SEP-2640: Skills Extension" is **open** (created 2026-09-25), with no linked PR; the `skills/list` in the repo is Codex's own app-server method for local skills.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

@@ -66,6 +66,13 @@ cells:
     since:
       date: 2026-09-29
       source: https://help.openai.com/en/articles/6825453-chatgpt-release-notes
+  skills:
+    value: n
+    method: docs
+    source: https://developers.openai.com/plugins/build/skills.md
+    evidence: |-
+      Docs: skills reach ChatGPT **packaged inside a plugin**, not served by an MCP server; no page in the Plugins docs mentions `skills/list`, `skill://` or SEP-2640.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs
