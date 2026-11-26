@@ -94,9 +94,12 @@ jobs:
         env:
           WANT: ${{ needs.build.outputs.sha }}
         run: |
+          seen=nothing
           for i in $(seq 1 40); do
             got="$(curl -fsS --max-time 10 "https://mcpclients.dev/version.json?t=$i" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).commit)}catch{}})' || true)"
-            if [ -n "$got" ]; then
+            # Only a full commit hash reaches git: the response is outside input
+            if printf '%s' "$got" | grep -Eqx '[0-9a-f]{40}'; then
+              seen="$got"
               [ "$got" = "$WANT" ] && { echo "mcpclients.dev serves $WANT"; exit 0; }
               # A later push already deployed: that commit contains this one
               git fetch -q origin main
@@ -104,5 +107,5 @@ jobs:
             fi
             sleep 15
           done
-          echo "::error::mcpclients.dev serves ${got:-nothing}, expected $WANT. Check the Workers Builds run for this commit in the Cloudflare dashboard."
+          echo "::error::mcpclients.dev serves $seen, expected $WANT. Check the Workers Builds run for this commit in the Cloudflare dashboard."
           exit 1
