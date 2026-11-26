@@ -27,6 +27,11 @@ The last 30 days to 26 Nov 2026. Clients: 14 · Feature support: 24 · Tier move
 | 2026-11-23 | Tier | [Gemini CLI](EVIDENCE.md#gemini-cli) moves up from D to C tier |
 | 2026-11-22 | Client | [Amp](EVIDENCE.md#amp) joins the board in A tier |
 | 2026-11-22 | Client | [Auggie](EVIDENCE.md#auggie) joins the board in C tier |
+
+<details><summary>35 more from the last 30 days</summary>
+
+| Date | Kind | Change |
+| --- | --- | --- |
 | 2026-11-22 | Client | [JetBrains AI Assistant](EVIDENCE.md#jetbrains-ai-assistant) joins the board in C tier |
 | 2026-11-22 | Client | [Kilo Code](EVIDENCE.md#kilo-code) joins the board in A tier |
 | 2026-11-22 | Client | [Kiro](EVIDENCE.md#kiro) joins the board in A tier |
@@ -62,6 +67,8 @@ The last 30 days to 26 Nov 2026. Clients: 14 · Feature support: 24 · Tier move
 | 2026-10-30 | Feature | [goose](EVIDENCE.md#goose) rechecked: Elicitation yes → partly, Code mode partly → yes |
 | 2026-10-30 | Feature | [opencode](EVIDENCE.md#opencode) rechecked: Code mode no → partly, Tool search no → partly |
 | 2026-10-30 | Feature | [Windsurf](EVIDENCE.md#windsurf) rechecked: MCP Apps no → partly, Tool search no → yes |
+
+</details>
 
 <details><summary>Older changes (61)</summary>
 

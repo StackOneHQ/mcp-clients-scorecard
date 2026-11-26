@@ -88,12 +88,28 @@
     const recent = $$('#cl-recent li', changes);
     const more = $('.cl-more', changes);
     const older = more ? $$('li', more) : [];
+    const load = $('.cl-load', changes);
+    const PAGE = 10; // CHANGES_PAGE in render/site.mjs, which marks the rows past the first page .over
+    let f = 'all', limit = PAGE;
+    const shown = li => f === 'all' || li.dataset.kind === f;
+    // Among the current tab's rows, .over hides those past the limit
+    const paginate = () => {
+      const rows = recent.filter(shown);
+      rows.forEach((li, i) => li.classList.toggle('over', i >= limit));
+      const left = rows.length - limit;
+      if (!load) return;
+      load.hidden = left <= 0;
+      $('.cl-load-t', load).textContent = `Show ${Math.min(left, PAGE)} more`;
+      $('.n', load).textContent = `of ${left}`;
+    };
+    load?.addEventListener('click', () => { limit += PAGE; paginate(); });
     clTabs.forEach(b => b.addEventListener('click', () => {
-      const f = b.dataset.cl;
-      const shown = li => f === 'all' || li.dataset.kind === f;
+      f = b.dataset.cl;
+      limit = PAGE;
       clTabs.forEach(t => t.setAttribute('aria-pressed', t === b));
       changes.dataset.f = f;
       empty.hidden = recent.some(shown);
+      paginate();
       if (more) {
         const n = older.filter(shown).length;
         $('.cl-n', more).textContent = n;

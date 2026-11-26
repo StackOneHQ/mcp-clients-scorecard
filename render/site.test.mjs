@@ -151,6 +151,19 @@ test('the changelog lists the last 30 days near the top, every kind tab, and fol
   assert.ok(readme.indexOf('<!-- changes:start -->') < readme.indexOf('<!-- table:start -->'));
 });
 
+test('recent changes show 10 rows, then a load more button for the rest', () => {
+  const home = read('index.html');
+  const { recent } = splitRecent(changelog({ data }), String(data.as_of));
+  const rows = home.match(/<ol class="cl" id="cl-recent">([\s\S]*?)<\/ol>/)?.[1].match(/<li[^>]*>/g) ?? [];
+  assert.deepEqual(rows.map(li => li.includes('class="over"')), recent.map((e, i) => i >= 10));
+  if (recent.length > 10) assert.match(home, new RegExp(`<button type="button" class="btn sm cl-load"><span class="cl-load-t">Show ${Math.min(recent.length - 10, 10)} more</span><span class="n">of ${recent.length - 10}</span></button>`));
+  else assert.doesNotMatch(home, /cl-load/);
+  const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  const section = readme.slice(readme.indexOf('<!-- changes:start -->'), readme.indexOf('<!-- changes:end -->'));
+  const firstTable = section.split('<details>')[0];
+  assert.equal((firstTable.match(/^\| \d{4}-/gm) || []).length, Math.min(recent.length, 10));
+});
+
 test('the changelog dates board changes against the live data, with ids that ignore labels', () => {
   const live = structuredClone(data);
   live.as_of = '2099-01-01';
