@@ -1,0 +1,474 @@
+{
+  "preset": "default",
+  "config": {
+    "scanners": [
+      {
+        "id": "opus-general",
+        "engine": "claude",
+        "model": "claude-opus-5-5",
+        "lens": "scan-general",
+        "mode": "batch",
+        "effort": "xhigh"
+      },
+      {
+        "id": "sonnet-security",
+        "engine": "claude",
+        "model": "claude-sonnet-5-5",
+        "lens": "lens-security",
+        "mode": "pr",
+        "onDelta": "whole"
+      },
+      {
+        "id": "sonnet-intent",
+        "engine": "claude",
+        "model": "claude-sonnet-5-5",
+        "lens": "lens-intent",
+        "mode": "pr"
+      }
+    ],
+    "verifier": {
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "shardSize": 5,
+      "second": {
+        "engine": "gemini",
+        "model": "gemini-4-neon"
+      },
+      "effort": "high"
+    },
+    "filesPerBatch": 2,
+    "report": {
+      "lowShare": 0.2
+    },
+    "codexSecurity": {
+      "deadlineSeconds": 360
+    },
+    "securityGate": {
+      "engine": "claude",
+      "model": "claude-haiku-5-5"
+    }
+  },
+  "scope": {
+    "mode": "pr",
+    "pr": 17,
+    "label": "#17 into main",
+    "base": "refs/remotes/origin/main",
+    "head": "e2e6a74f83c9611e458a9312c3ecddc203e0d976"
+  },
+  "base": "7450c84c3cb123eb5cd597ad3dd5bdcea807e24e",
+  "head": "e2e6a74f83c9611e458a9312c3ecddc203e0d976",
+  "files": 7,
+  "timings": {
+    "prep": 583,
+    "scan": 8459,
+    "verify": 30228,
+    "total": 39344
+  },
+  "costUsd": 0.069711,
+  "costByModel": {
+    "claude-opus-5-5": 0,
+    "claude-haiku-5-5": 0,
+    "claude-sonnet-5-5": 0,
+    "gemini-4-neon": 0.069711
+  },
+  "unpricedModels": [
+    "gpt-6-sol"
+  ],
+  "tokens": {
+    "in": 6874,
+    "out": 3987
+  },
+  "windows": null,
+  "loaded": {
+    "plugins": [],
+    "skills": [],
+    "commands": []
+  },
+  "counts": {
+    "candidates": 1,
+    "bySource": {
+      "codex-security": 1
+    },
+    "confirmed": 1,
+    "reported": 1,
+    "uncorroborated": 0,
+    "lowsTrimmed": 0,
+    "unanswered": 0
+  },
+  "ticket": false,
+  "earlierThreads": 0,
+  "calls": [
+    {
+      "stage": "scan",
+      "scanner": "opus-general",
+      "part": 3,
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "ms": 2721,
+      "endedAt": 1795690032857,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "gate",
+      "scanner": "security-gate",
+      "part": 0,
+      "engine": "claude",
+      "model": "claude-haiku-5-5",
+      "ms": 2811,
+      "endedAt": 1795690032898,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "warning": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "sonnet-security",
+      "part": 0,
+      "engine": "claude",
+      "model": "claude-sonnet-5-5",
+      "ms": 2982,
+      "endedAt": 1795690033082,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "sonnet-intent",
+      "part": 0,
+      "engine": "claude",
+      "model": "claude-sonnet-5-5",
+      "ms": 2987,
+      "endedAt": 1795690033088,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "opus-general",
+      "part": 2,
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "ms": 3074,
+      "endedAt": 1795690033198,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "opus-general",
+      "part": 0,
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "ms": 3455,
+      "endedAt": 1795690033563,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "opus-general",
+      "part": 1,
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "ms": 3536,
+      "endedAt": 1795690033650,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "scan",
+      "scanner": "codex-security",
+      "part": 0,
+      "engine": "codex",
+      "model": "gpt-6-sol",
+      "ms": 5621,
+      "endedAt": 1795690038531,
+      "usage": {
+        "input_tokens": 1047,
+        "input_tokens_details": {
+          "cache_write_tokens": 1044,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 1044
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 505,
+        "output_tokens_details": {
+          "reasoning_tokens": 368
+        },
+        "total_tokens": 1552
+      },
+      "program": "daybreak_blue",
+      "effectiveProgram": "daybreak_blue",
+      "transport": "api-key"
+    },
+    {
+      "stage": "verify",
+      "part": 0,
+      "engine": "claude",
+      "model": "claude-opus-5-5",
+      "ms": 1565,
+      "endedAt": 1795690040104,
+      "costUsd": 0,
+      "usage": {
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "",
+        "iterations": [],
+        "speed": "standard",
+        "fallback_credit": null
+      },
+      "error": "Not logged in · Please run /login"
+    },
+    {
+      "stage": "verify-security",
+      "part": 1,
+      "engine": "gemini",
+      "model": "gemini-4-neon",
+      "ms": 30225,
+      "endedAt": 1795690068772,
+      "costUsd": 0.069711,
+      "usage": {
+        "promptTokenCount": 5827,
+        "candidatesTokenCount": 269,
+        "totalTokenCount": 9309,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 5827
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 269
+          }
+        ],
+        "thoughtsTokenCount": 3213,
+        "serviceTier": "standard"
+      },
+      "error": null
+    }
+  ],
+  "candidates": [
+    {
+      "path": ".github/workflows/build.yml",
+      "line": 82,
+      "severity": "medium",
+      "claim": "A contributor whose newer commit reaches main while this run is building can have that commit deployed even if its own build fails. `needs: build` gates the run that triggered this workflow, but checkout uses the moving `github.ref` (`main`) rather than the commit that passed the build. This breaks the rule that only a successfully built commit is published to the live site. Check out the tested SHA, or pass the SHA of a regenerated commit from the build job and validate that exact commit before deployment.",
+      "category": "security",
+      "source": "codex-security",
+      "id": "c1"
+    }
+  ],
+  "verdicts": [
+    {
+      "id": "c1",
+      "verdict": "CONFIRMED",
+      "severity": "medium",
+      "path": ".github/workflows/build.yml",
+      "line": 82,
+      "claim": "`deploy` checks out moving `github.ref` instead of the SHA `build` validated. If a commit lands on `main` while `build` runs (including the lost-race exit-0 path at lines 50–60), `deploy` publishes that untested commit even if its checks/tests fail. Pass the validated SHA from `build` to `deploy` and skip on a lost race.",
+      "proof": ".github/workflows/build.yml:82 checks out `ref: ${{ github.ref }}` and deploys via `npm run site` and `npx wrangler deploy` (lines 90, 100) without running `npm run check` or `npm test`; `build` validates only its own checkout (lines 27, 70-71) and exits 0 when a concurrent push moves `main` (lines 50-60), so `deploy` can ship a newer, untested commit.",
+      "rescuedBy": "gemini-4-neon"
+    }
+  ],
+  "skippedScanners": [],
+  "securityReview": {
+    "status": "completed",
+    "transport": "api-key",
+    "requestedProgram": "daybreak_blue",
+    "effectiveProgram": "daybreak_blue",
+    "droppedFindings": 0,
+    "gate": {
+      "status": "error",
+      "engine": "claude",
+      "model": "claude-haiku-5-5",
+      "tokens": {
+        "in": 0,
+        "out": 0
+      }
+    },
+    "files": [
+      {
+        "path": ".github/workflows/build.yml",
+        "signals": [
+          "security-sensitive path",
+          "trust boundary"
+        ]
+      }
+    ],
+    "withheld": [],
+    "omitted": [],
+    "batches": 1
+  }
+}

@@ -353,7 +353,7 @@ Setup, once:
 
 1. In Cloudflare, create an API token from the **Edit Cloudflare Workers** template, scoped to the account that holds the `mcp-clients-scorecard` Worker.
 2. In this repo, add two Actions secrets: `CLOUDFLARE_API_TOKEN` (that token) and `CLOUDFLARE_ACCOUNT_ID` (the account id from the Workers overview page).
-3. Register `mcpclients.dev` (Cloudflare Registrar sells it at cost) and add it as a Custom Domain on the `mcp-clients-scorecard` Worker. `.dev` only works over HTTPS, which Cloudflare provides. Until then the site answers only on its workers.dev address, while its links, canonical URLs and share cards already point at the domain.
+3. Attach `mcpclients.dev` as a Custom Domain on the `mcp-clients-scorecard` Worker. The deploy job checks https://mcpclients.dev/version.json, so a fork or a new account without that domain sees every deploy fail at that check.
 
 ## Repository layout
 

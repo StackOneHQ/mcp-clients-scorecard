@@ -69,7 +69,7 @@ export function buildSite(out) {
   });
   write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
-  // Lets the weekly refresh tell which commit the live site runs; SITE_COMMIT is set by the deploy job
+  // The deploy job sets SITE_COMMIT, then reads this file back from the live site to confirm the deploy
   write('version.json', JSON.stringify({ as_of: String(data.as_of), commit: process.env.SITE_COMMIT || null }) + '\n');
   write('llms.txt', llms(data));
   write('llms-full.txt', llmsFull(data, events));

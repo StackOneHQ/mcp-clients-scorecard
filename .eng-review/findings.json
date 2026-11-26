@@ -1,0 +1,8 @@
+[
+  {
+    "severity": "medium",
+    "path": ".github/workflows/build.yml",
+    "line": 82,
+    "claim": "`deploy` checks out moving `github.ref` instead of the SHA `build` validated. If a commit lands on `main` while `build` runs (including the lost-race exit-0 path at lines 50–60), `deploy` publishes that untested commit even if its checks/tests fail. Pass the validated SHA from `build` to `deploy` and skip on a lost race."
+  }
+]
