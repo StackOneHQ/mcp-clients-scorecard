@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { load, COLUMNS } from './data.mjs';
 import { buildSite } from './site.mjs';
-import { changelog, splitRecent, recentCutoff, KINDS } from './changelog.mjs';
+import { changelog, splitRecent, recentCutoff, KINDS, CHANGES_PAGE } from './changelog.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'site-test-'));
 const SHA = 'c0ffee0000000000000000000000000000000000';
@@ -151,17 +151,16 @@ test('the changelog lists the last 30 days near the top, every kind tab, and fol
   assert.ok(readme.indexOf('<!-- changes:start -->') < readme.indexOf('<!-- table:start -->'));
 });
 
-test('recent changes show 10 rows, then a load more button for the rest', () => {
+test('recent changes page by CHANGES_PAGE: every row in the HTML, a load more button, a short README table', () => {
   const home = read('index.html');
   const { recent } = splitRecent(changelog({ data }), String(data.as_of));
-  const rows = home.match(/<ol class="cl" id="cl-recent">([\s\S]*?)<\/ol>/)?.[1].match(/<li[^>]*>/g) ?? [];
-  assert.deepEqual(rows.map(li => li.includes('class="over"')), recent.map((e, i) => i >= 10));
-  if (recent.length > 10) assert.match(home, new RegExp(`<button type="button" class="btn sm cl-load"><span class="cl-load-t">Show ${Math.min(recent.length - 10, 10)} more</span><span class="n">of ${recent.length - 10}</span></button>`));
-  else assert.doesNotMatch(home, /cl-load/);
+  // Every row ships in the HTML: app.js hides the rest, so the page still works without it
+  assert.match(home, new RegExp(`<section id="changes" class="wrap sec" data-f="all" data-page="${CHANGES_PAGE}">`));
+  assert.doesNotMatch(home, /class="over"/);
+  assert.equal(home.includes('<button type="button" class="btn sm cl-load" hidden>'), recent.length > CHANGES_PAGE);
   const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
   const section = readme.slice(readme.indexOf('<!-- changes:start -->'), readme.indexOf('<!-- changes:end -->'));
-  const firstTable = section.split('<details>')[0];
-  assert.equal((firstTable.match(/^\| \d{4}-/gm) || []).length, Math.min(recent.length, 10));
+  assert.equal((section.split('<details>')[0].match(/^\| \d{4}-/gm) || []).length, Math.min(recent.length, CHANGES_PAGE));
 });
 
 test('the changelog dates board changes against the live data, with ids that ignore labels', () => {

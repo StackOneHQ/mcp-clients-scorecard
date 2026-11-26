@@ -89,20 +89,28 @@
     const more = $('.cl-more', changes);
     const older = more ? $$('li', more) : [];
     const load = $('.cl-load', changes);
-    const PAGE = 10; // CHANGES_PAGE in render/site.mjs, which marks the rows past the first page .over
+    const PAGE = Number(changes.dataset.page);
     let f = 'all', limit = PAGE;
     const shown = li => f === 'all' || li.dataset.kind === f;
-    // Among the current tab's rows, .over hides those past the limit
+    // .over hides the current tab's rows past the limit; rows of other kinds are hidden by data-f
     const paginate = () => {
-      const rows = recent.filter(shown);
-      rows.forEach((li, i) => li.classList.toggle('over', i >= limit));
-      const left = rows.length - limit;
+      let i = 0;
+      for (const li of recent) li.classList.toggle('over', shown(li) && i++ >= limit);
+      const left = i - limit;
       if (!load) return;
       load.hidden = left <= 0;
       $('.cl-load-t', load).textContent = `Show ${Math.min(left, PAGE)} more`;
       $('.n', load).textContent = `of ${left}`;
     };
-    load?.addEventListener('click', () => { limit += PAGE; paginate(); });
+    load?.addEventListener('click', () => {
+      const next = recent.filter(shown)[limit];
+      limit += PAGE;
+      paginate();
+      // The button hides on the last page: keep keyboard focus in the list instead of losing it to <body>
+      if (load.hidden && next) { next.tabIndex = -1; next.focus(); }
+    });
+    paginate();
+    changes.classList.add('paged');
     clTabs.forEach(b => b.addEventListener('click', () => {
       f = b.dataset.cl;
       limit = PAGE;
