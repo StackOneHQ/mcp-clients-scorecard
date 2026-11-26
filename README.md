@@ -361,13 +361,12 @@ The same data is published at [mcpclients.dev](https://mcpclients.dev): the tier
 
 `npm run site` builds it into `dist/` from `data/` and the committed PNGs, without Chrome; nothing in `dist/` is committed. The share cards in `assets/og/` are drawn by `npm run build` with the charts. [worker/index.js](worker/index.js) serves `dist/` ([wrangler.jsonc](wrangler.jsonc)): it sets the security headers and serves the page's Markdown copy to AI agents (by `Accept` header, User-Agent or a `.md` URL). Search engine crawlers get HTML at page URLs; a `.md` URL returns Markdown to every client.
 
-Deploys run in GitHub Actions: on every push to `main`, the `deploy` job in [build.yml](.github/workflows/build.yml) waits for the build job (tables, charts, `npm run check`, `npm test`), runs `npm run site` and `wrangler deploy` on the commit that build tested, then fails unless https://mcpclients.dev/version.json reports that commit. A merged pull request reaches the site within minutes. A red deploy job on `main` means the deploy or the live check failed: its log says which.
+Cloudflare Workers Builds deploys the site: on every push to `main` it runs `npm ci && npm run site` and `npx wrangler deploy`, so a merged pull request reaches the site within minutes. It sets `WORKERS_CI_COMMIT_SHA`, which `npm run site` writes to https://mcpclients.dev/version.json. The `live` job in [build.yml](.github/workflows/build.yml) then waits for that file to report the commit the build job tested, or a newer one. A red `live` job on `main` means the site did not update: check the Workers Builds run for that commit in the Cloudflare dashboard.
 
-Setup, once:
+Setup, once, in the Cloudflare dashboard:
 
-1. In Cloudflare, create an API token from the **Edit Cloudflare Workers** template, scoped to the account that holds the `mcp-clients-scorecard` Worker.
-2. In this repo, add two Actions secrets: `CLOUDFLARE_API_TOKEN` (that token) and `CLOUDFLARE_ACCOUNT_ID` (the account id from the Workers overview page).
-3. Attach `mcpclients.dev` as a Custom Domain on the `mcp-clients-scorecard` Worker. The deploy job checks https://mcpclients.dev/version.json, so a fork or a new account without that domain sees every deploy fail at that check.
+1. Connect this repository to the `mcp-clients-scorecard` Worker under *Settings > Builds*, with the build command `npm ci && npm run site`, the deploy command `npx wrangler deploy` and `main` as the production branch.
+2. Attach `mcpclients.dev` as a Custom Domain on the Worker. The `live` job reads https://mcpclients.dev/version.json, so a fork without that domain sees the job fail.
 
 ## Repository layout
 

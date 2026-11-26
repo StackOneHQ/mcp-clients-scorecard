@@ -3,7 +3,7 @@
 # A merged pull request that only edits data/ therefore gets its tables and charts redrawn on main.
 # Commits made with GITHUB_TOKEN start no new push runs, so this cannot loop. It then starts
 # the check workflow on the new commit, because a GITHUB_TOKEN push does not start it either.
-# On main, the deploy job then publishes the website to Cloudflare from that commit (README.md#website).
+# On main, Cloudflare Workers Builds deploys the website, and the live job checks it serves that commit (README.md#website).
 name: build
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # wrangler is a dev dependency for the deploy job only; keep its install scripts away from this job's write token
+      # wrangler is a dev dependency for local previews only; keep its install scripts away from this job's write token
       - run: npm ci --omit=dev
       - name: Build tables and charts
         run: CHROME_PATH="$(command -v google-chrome)" npm run build
@@ -75,7 +75,9 @@ jobs:
         run: gh workflow run check.yml --ref "$BRANCH" || echo "::warning::Could not start the check workflow on the regenerated commit"
       - run: npm run check
       - run: npm test
-  deploy:
+  live:
+    # Cloudflare Workers Builds deploys every push to main (README.md#website). This job only checks
+    # that mcpclients.dev ends up serving the commit the build job tested, or a newer one.
     needs: build
     if: github.ref == 'refs/heads/main' && needs.build.outputs.sha != ''
     runs-on: ubuntu-latest
@@ -85,33 +87,22 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          # The commit the build job tested, including its regenerated files (that push starts no run)
-          ref: ${{ needs.build.outputs.sha }}
+          ref: main
+          fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: Build the website
-        run: SITE_COMMIT="$(git rev-parse HEAD)" npm run site
-      - name: Deploy to Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "::error::Set the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets (README.md#website)"
-            exit 1
-          fi
-          npx wrangler deploy
       - name: Check the live site serves this commit
+        env:
+          WANT: ${{ needs.build.outputs.sha }}
         run: |
-          want="$(git rev-parse HEAD)"
-          for i in $(seq 1 12); do
+          for i in $(seq 1 40); do
             got="$(curl -fsS --max-time 10 "https://mcpclients.dev/version.json?t=$i" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).commit)}catch{}})' || true)"
-            [ "$got" = "$want" ] && { echo "mcpclients.dev serves $want"; exit 0; }
-            sleep 10
+            if [ -n "$got" ]; then
+              [ "$got" = "$WANT" ] && { echo "mcpclients.dev serves $WANT"; exit 0; }
+              # A later push already deployed: that commit contains this one
+              git fetch -q origin main
+              git merge-base --is-ancestor "$WANT" "$got" 2>/dev/null && { echo "mcpclients.dev serves $got, which contains $WANT"; exit 0; }
+            fi
+            sleep 15
           done
-          echo "::error::mcpclients.dev serves ${got:-nothing}, expected $want"
+          echo "::error::mcpclients.dev serves ${got:-nothing}, expected $WANT. Check the Workers Builds run for this commit in the Cloudflare dashboard."
           exit 1
