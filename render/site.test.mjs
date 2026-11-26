@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { load, COLUMNS } from './data.mjs';
 import { buildSite } from './site.mjs';
-import { changelog, splitRecent, recentCutoff, forFeature, KINDS } from './changelog.mjs';
+import { changelog, splitRecent, recentCutoff, forFeature, KINDS, CHANGES_PAGE } from './changelog.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'site-test-'));
 const SHA = 'c0ffee0000000000000000000000000000000000';
@@ -150,6 +150,21 @@ test('the changelog lists the last 30 days near the top, every kind tab, and fol
   assert.match(read('changelog.xml'), /^<\?xml[\s\S]*<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom">[\s\S]*<\/feed>\n$/);
   const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
   assert.ok(readme.indexOf('<!-- changes:start -->') < readme.indexOf('<!-- table:start -->'));
+});
+
+test('recent changes page by CHANGES_PAGE: rows past it marked, a load more link, a short README table', () => {
+  const home = read('index.html');
+  const { recent } = splitRecent(changelog({ data }), String(data.as_of));
+  assert.match(home, new RegExp(`<section id="changes" class="wrap sec" data-f="all" data-page="${CHANGES_PAGE}">`));
+  // Every row ships in the HTML; style.css hides the .over ones until the reader asks for more
+  const rows = home.match(/<ol class="cl" id="cl-recent">([\s\S]*?)<\/ol>/)?.[1].match(/<li[^>]*>/g) ?? [];
+  assert.deepEqual(rows.map(li => li.includes('class="over"')), recent.map((e, i) => i >= CHANGES_PAGE));
+  // Only the home page pages its list: a feature page shows every change
+  assert.doesNotMatch(read('features/events/index.html'), /class="over"/);
+  assert.equal(home.includes(`<a class="btn sm cl-load" href="#cl-recent"><span class="cl-load-t">Show all</span><span class="n">${recent.length}</span></a>`), recent.length > CHANGES_PAGE);
+  const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  const section = readme.slice(readme.indexOf('<!-- changes:start -->'), readme.indexOf('<!-- changes:end -->'));
+  assert.equal((section.split('<details>')[0].match(/^\| \d{4}-/gm) || []).length, Math.min(recent.length, CHANGES_PAGE));
 });
 
 test('the changelog dates board changes against the live data, with ids that ignore labels', () => {
