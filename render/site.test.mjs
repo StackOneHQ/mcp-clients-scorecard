@@ -107,6 +107,12 @@ test('data.json carries every client with every cell', () => {
   for (const c of json.clients) assert.deepEqual(Object.keys(c.cells).sort(), COLUMNS.map(([k]) => k).sort());
 });
 
+test('version.json names the data date and the deployed commit', () => {
+  const v = JSON.parse(read('version.json'));
+  assert.equal(v.as_of, String(data.as_of));
+  assert.equal(v.commit, process.env.SITE_COMMIT || null);
+});
+
 test('the badge files the pages embed exist', () => {
   for (const c of data.clients) assert.ok(fs.existsSync(path.join(out, 'badges', `${c.slug}.svg`)), c.slug);
 });
