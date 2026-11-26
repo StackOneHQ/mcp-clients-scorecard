@@ -98,7 +98,7 @@ jobs:
           for i in $(seq 1 40); do
             got="$(curl -fsS --max-time 10 "https://mcpclients.dev/version.json?t=$i" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).commit)}catch{}})' || true)"
             # Only a full commit hash reaches git: the response is outside input
-            if printf '%s' "$got" | grep -Eqx '[0-9a-f]{40}'; then
+            if [[ "$got" =~ ^[0-9a-f]{40}$ ]]; then
               seen="$got"
               [ "$got" = "$WANT" ] && { echo "mcpclients.dev serves $WANT"; exit 0; }
               # A later push already deployed: that commit contains this one
