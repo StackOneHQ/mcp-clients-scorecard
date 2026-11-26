@@ -102,7 +102,8 @@
       $('.cl-load-t', load).textContent = `Show ${Math.min(left, PAGE)} more`;
       $('.n', load).textContent = `of ${left}`;
     };
-    load?.addEventListener('click', () => {
+    load?.addEventListener('click', ev => {
+      ev.preventDefault();
       const next = recent.filter(shown)[limit];
       limit += PAGE;
       paginate();
@@ -110,7 +111,6 @@
       if (load.hidden && next) { next.tabIndex = -1; next.focus(); }
     });
     paginate();
-    changes.classList.add('paged');
     clTabs.forEach(b => b.addEventListener('click', () => {
       f = b.dataset.cl;
       limit = PAGE;

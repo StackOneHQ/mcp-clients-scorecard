@@ -151,13 +151,14 @@ test('the changelog lists the last 30 days near the top, every kind tab, and fol
   assert.ok(readme.indexOf('<!-- changes:start -->') < readme.indexOf('<!-- table:start -->'));
 });
 
-test('recent changes page by CHANGES_PAGE: every row in the HTML, a load more button, a short README table', () => {
+test('recent changes page by CHANGES_PAGE: rows past it marked, a load more link, a short README table', () => {
   const home = read('index.html');
   const { recent } = splitRecent(changelog({ data }), String(data.as_of));
-  // Every row ships in the HTML: app.js hides the rest, so the page still works without it
   assert.match(home, new RegExp(`<section id="changes" class="wrap sec" data-f="all" data-page="${CHANGES_PAGE}">`));
-  assert.doesNotMatch(home, /class="over"/);
-  assert.equal(home.includes('<button type="button" class="btn sm cl-load" hidden>'), recent.length > CHANGES_PAGE);
+  // Every row ships in the HTML; style.css hides the .over ones until the reader asks for more
+  const rows = home.match(/<ol class="cl" id="cl-recent">([\s\S]*?)<\/ol>/)?.[1].match(/<li[^>]*>/g) ?? [];
+  assert.deepEqual(rows.map(li => li.includes('class="over"')), recent.map((e, i) => i >= CHANGES_PAGE));
+  assert.equal(home.includes(`<a class="btn sm cl-load" href="#cl-recent"><span class="cl-load-t">Show all</span><span class="n">${recent.length}</span></a>`), recent.length > CHANGES_PAGE);
   const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
   const section = readme.slice(readme.indexOf('<!-- changes:start -->'), readme.indexOf('<!-- changes:end -->'));
   assert.equal((section.split('<details>')[0].match(/^\| \d{4}-/gm) || []).length, Math.min(recent.length, CHANGES_PAGE));

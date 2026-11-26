@@ -402,10 +402,11 @@ const ROBOTS = `User-agent: *\nContent-Signal: search=yes, ai-input=yes, ai-trai
 const eventUrl = e => (e.client?.slug ? SITE + `/clients/${e.client.slug}/` : e.source || `${SITE}/#changes`);
 const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.key}`).digest('hex').slice(0, 16);
 
-function eventLi(e) {
+// over: past the first page of recent changes, hidden until the reader asks for more (style.css)
+function eventLi(e, over = false) {
   const who = e.client ? (e.client.slug ? `<a href="/clients/${attr(e.client.slug)}/">${esc(e.client.name)}</a> ` : `${esc(e.client.name)} `) : '';
   const src = e.source ? ` <a class="cl-src" href="${attr(e.source)}" rel="nofollow">source ↗</a>` : '';
-  return `<li data-kind="${e.kind}"><time datetime="${e.date}">${esc(formatDate(e.date))}</time><span class="cl-k k-${e.kind}">${KIND_LABEL[e.kind]}</span><span class="cl-t">${who}${esc(e.text)}${src}</span></li>`;
+  return `<li${over ? ' class="over"' : ''} data-kind="${e.kind}"><time datetime="${e.date}">${esc(formatDate(e.date))}</time><span class="cl-k k-${e.kind}">${KIND_LABEL[e.kind]}</span><span class="cl-t">${who}${esc(e.text)}${src}</span></li>`;
 }
 
 function changesSection(data, events) {
@@ -414,9 +415,9 @@ function changesSection(data, events) {
   const tabs = [['all', 'All', recent.length], ...KINDS.map(([k, l]) => [k, l, count(recent, k)])];
   return `<section id="changes" class="wrap sec" data-f="all" data-page="${CHANGES_PAGE}"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes carry the date of the weekly check, shipped features the date of their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
 <div class="seg cl-tabs" role="group" aria-label="Show changes of one kind">${tabs.map(([k, l, n], i) => `<button type="button" data-cl="${k}" aria-pressed="${i === 0}">${esc(l)}<span class="n">${n}</span></button>`).join('')}</div>
-${recent.length ? `<ol class="cl" id="cl-recent">${recent.map(eventLi).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing like this in the last ${RECENT_DAYS} days.</p>
-${recent.length > CHANGES_PAGE ? '<button type="button" class="btn sm cl-load" hidden><span class="cl-load-t"></span><span class="n"></span></button>' : ''}
-${older.length ? `<details class="cl-more"><summary>Show <span class="cl-n">${older.length}</span> older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(eventLi).join('')}</ol></details>` : ''}</section>`;
+${recent.length ? `<ol class="cl" id="cl-recent">${recent.map((e, i) => eventLi(e, i >= CHANGES_PAGE)).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing like this in the last ${RECENT_DAYS} days.</p>
+${recent.length > CHANGES_PAGE ? `<a class="btn sm cl-load" href="#cl-recent"><span class="cl-load-t">Show all</span><span class="n">${recent.length}</span></a>` : ''}
+${older.length ? `<details class="cl-more"><summary>Show <span class="cl-n">${older.length}</span> older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(e => eventLi(e)).join('')}</ol></details>` : ''}</section>`;
 }
 
 function changesMd(data, events) {
