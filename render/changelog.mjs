@@ -10,6 +10,8 @@ export const KINDS = [['client', 'Clients'], ['support', 'Feature support'], ['t
 export const KIND_LABEL = { client: 'Client', support: 'Feature', tier: 'Tier', spec: 'Spec' };
 // The README, the home page and the feeds show this many days before as_of; older events fold away
 export const RECENT_DAYS = 30;
+// Recent changes shown before a reader asks for more: the home page pages by it, the README folds after it
+export const CHANGES_PAGE = 10;
 const LABEL = Object.fromEntries(COLUMNS);
 const WORD = { y: 'yes', p: 'partly', n: 'no', na: 'n/a' };
 const KIND_ORDER = Object.fromEntries(KINDS.map(([k], i) => [k, i]));

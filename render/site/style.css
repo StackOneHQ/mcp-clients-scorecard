@@ -161,6 +161,10 @@ h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;margin:
 .k-client::before{background:var(--green)}.k-support::before{background:var(--blue)}.k-tier::before{background:var(--orange)}
 .cl-src{color:var(--muted);font-size:13px;white-space:nowrap}
 .cl-empty{margin-top:16px}
+/* Rows past the first page hide from the first paint, but only where scripts can run: without them every row
+   shows and the button stays hidden. If app.js never runs, the button is a #cl-recent link and :target shows all */
+.cl-load{display:none;margin-top:12px}.cl-load .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+@media (scripting:enabled){#changes .cl li.over{display:none}#cl-recent:target li.over{display:grid}.cl-load{display:inline-flex}.cl-load[hidden]{display:none}}
 .cl-more{margin-top:12px}
 .cl-more summary{cursor:pointer;color:var(--muted);font-size:14px;width:max-content}.cl-more summary:hover{color:var(--text)}
 #changes[data-f=client] .cl li:not([data-kind=client]),#changes[data-f=support] .cl li:not([data-kind=support]),

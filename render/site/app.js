@@ -88,12 +88,36 @@
     const recent = $$('#cl-recent li', changes);
     const more = $('.cl-more', changes);
     const older = more ? $$('li', more) : [];
+    const load = $('.cl-load', changes);
+    const PAGE = Number(changes.dataset.page);
+    let f = 'all', limit = PAGE;
+    const shown = li => f === 'all' || li.dataset.kind === f;
+    // .over hides the current tab's rows past the limit; rows of other kinds are hidden by data-f
+    const paginate = () => {
+      let i = 0;
+      for (const li of recent) li.classList.toggle('over', shown(li) && i++ >= limit);
+      const left = i - limit;
+      if (!load) return;
+      load.hidden = left <= 0;
+      $('.cl-load-t', load).textContent = `Show ${Math.min(left, PAGE)} more`;
+      $('.n', load).textContent = `of ${left}`;
+    };
+    load?.addEventListener('click', ev => {
+      ev.preventDefault();
+      const next = recent.filter(shown)[limit];
+      limit += PAGE;
+      paginate();
+      // The button hides on the last page: keep keyboard focus in the list instead of losing it to <body>
+      if (load.hidden && next) { next.tabIndex = -1; next.focus(); }
+    });
+    paginate();
     clTabs.forEach(b => b.addEventListener('click', () => {
-      const f = b.dataset.cl;
-      const shown = li => f === 'all' || li.dataset.kind === f;
+      f = b.dataset.cl;
+      limit = PAGE;
       clTabs.forEach(t => t.setAttribute('aria-pressed', t === b));
       changes.dataset.f = f;
       empty.hidden = recent.some(shown);
+      paginate();
       if (more) {
         const n = older.filter(shown).length;
         $('.cl-n', more).textContent = n;
