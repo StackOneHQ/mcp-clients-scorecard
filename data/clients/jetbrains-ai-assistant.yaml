@@ -49,6 +49,13 @@ cells:
     source: https://www.jetbrains.com/help/ai-assistant/mcp.html
     evidence: "Docs mention no server-pushed events; **not documented**."
     checked: 2026-11-22
+  skills:
+    value: n
+    method: docs
+    source: https://www.jetbrains.com/help/ai-assistant/mcp.html
+    evidence: |-
+      Docs: the AI Assistant MCP page **does not mention skills served by MCP servers** (no `skills/list`, `skill://` or SEP-2640).
+    checked: 2026-11-26
   cimd:
     value: n
     method: issue

@@ -60,6 +60,13 @@ cells:
     source: https://github.com/zed-industries/zed/tree/c4273271092b0287f7d181f616bd5171e0a2f70c/crates/context_server
     evidence: "At tag v1.26.2, a grep for \"events/subscribe\" and \"notifications/events\" gives **no hits**."
     checked: 2026-10-30
+  skills:
+    value: n
+    method: docs
+    source: https://zed.dev/docs/ai/mcp
+    evidence: |-
+      Docs: Zed says it supports MCP **Tools and Prompts**, and lists Discovery, Sampling and Elicitation as welcome contributions; skills are not mentioned. Repo search for `skills/list` and `skill://` found nothing.
+    checked: 2026-11-26
   cimd:
     value: y
     method: source

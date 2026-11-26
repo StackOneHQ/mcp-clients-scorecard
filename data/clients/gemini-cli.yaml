@@ -57,6 +57,13 @@ cells:
     evidence: |-
       **No** `events/list`, `events/subscribe` or `notifications/events` at v0.68.0 or in the 0.68.0 bundle.
     checked: 2026-11-16
+  skills:
+    value: n
+    method: source
+    source: https://github.com/google-gemini/gemini-cli/tree/8468962efadfbcdfd988a8fd04af4110a68c886e
+    evidence: |-
+      Repo search: **no `skill://` match** in the repo, and `skills/list` only matches the local `gemini skills list` command, not an MCP request. No open issue or PR for skills over MCP.
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

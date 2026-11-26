@@ -74,6 +74,13 @@ cells:
       - No such handler anywhere in `crates/mcp` or `app/src/ai/mcp`.
       - Not in the MCP docs page.
     checked: 2026-11-22
+  skills:
+    value: n
+    method: issue
+    source: https://github.com/warpdotdev/warp/issues/16967
+    evidence: |-
+      Issue: **support for the MCP Skills extension is requested in issue #16967 (open)**; the MCP docs page does not mention it.
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

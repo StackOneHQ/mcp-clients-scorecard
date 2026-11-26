@@ -82,6 +82,13 @@ cells:
       date: 2026-11-05
       version: "v0.23.0"
       source: https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.0
+  skills:
+    value: n
+    method: issue
+    source: https://github.com/NousResearch/hermes-agent/pull/137746
+    evidence: |-
+      PR #137746 adds opt-in `mcp_servers.<name>.skills.enabled` loading of server skills, but it is **open and not merged**.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

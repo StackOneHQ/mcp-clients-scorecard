@@ -68,6 +68,13 @@ cells:
     evidence: |-
       Source: **no events support**; grep for `notifications/events`, `events/subscribe` and `subscriptions/listen` finds nothing in `packages/opencode/src` or `kilo-vscode/src`. Only `roots` is declared.
     checked: 2026-11-22
+  skills:
+    value: n
+    method: issue
+    source: https://github.com/Kilo-Org/kilocode/issues/15733
+    evidence: |-
+      Issue: **client support for SEP-2640 is requested in issue #15733 (open)**; no implementing PR found.
+    checked: 2026-11-26
   cimd:
     value: y
     method: source
