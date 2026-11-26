@@ -75,6 +75,13 @@ cells:
     source: https://github.com/anomalyco/opencode/tree/810c0eba1a7348036f8bdf61e6632d0c36c6876c/packages/opencode/src/mcp
     evidence: "Source: grep for `events/subscribe` and `notifications/events` finds **nothing** in V1 1.19.5, its npm bundle or V2 v2.2.3."
     checked: 2026-10-30
+  skills:
+    value: n
+    method: source
+    source: https://github.com/anomalyco/opencode/pull/66201
+    evidence: |-
+      PR #66201 adds `skills/list` support, but it merged on 2026-11-25 **behind the `mcp_skills` flag, which is off in releases**. The latest release, v1.19.6 (2026-11-17), predates it.
+    checked: 2026-11-26
   cimd:
     value: n
     method: source

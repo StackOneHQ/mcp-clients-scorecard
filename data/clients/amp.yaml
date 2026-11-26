@@ -73,6 +73,13 @@ cells:
     source: https://ampcode.com/docs/customize/mcp
     evidence: The MCP docs page describes **no server push of events**, only tool list refreshes and elicitation; not documented
     checked: 2026-11-22
+  skills:
+    value: n
+    method: docs
+    source: https://ampcode.com/manual
+    evidence: |-
+      Docs: the Amp manual and news feed **do not mention skills served over MCP** (no `skills/list`, `skill://` or SEP-2640); Amp skills are local `SKILL.md` folders.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

@@ -74,6 +74,13 @@ cells:
     evidence: |-
       **No** `events/list` or `events/subscribe` in the 1.0.112 bundle and nothing in the changelog.
     checked: 2026-11-16
+  skills:
+    value: n
+    method: changelog
+    source: https://github.com/github/copilot-cli/blob/main/changelog.md
+    evidence: |-
+      Changelog through 1.0.116 (2026-11-25) has **no entry for skills served by MCP servers**, and neither the repo README nor the GitHub Docs MCP page mentions `skills/list` or SEP-2640.
+    checked: 2026-11-26
   cimd:
     value: y
     method: changelog

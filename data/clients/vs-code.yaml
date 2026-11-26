@@ -84,6 +84,17 @@ cells:
     source: https://github.com/microsoft/vscode/tree/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp
     evidence: "At tag 1.144.0, a grep of `src` and `extensions` for \"events/subscribe\", \"notifications/events\" and \"io.modelcontextprotocol/events\" gives **no hits**."
     checked: 2026-10-30
+  skills:
+    value: y
+    method: changelog
+    source: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_147.md
+    evidence: |-
+      Release notes 1.147: Skills over MCP (SEP-2640) is **now enabled by default**, with per-server consent; opt out via `chat.agentHost.mcpSkills.enabled`.
+    checked: 2026-11-26
+    since:
+      date: 2026-11-11
+      version: 1.146.0
+      source: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_146.md
   cimd:
     value: y
     method: source

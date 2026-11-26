@@ -68,7 +68,7 @@ Below 20 issues after removing duplicates the rate is not shown. The counts live
 
 ## Tiers
 
-Tiers come from the feature score (`y` = 1, `p` = 0.5 across the nine feature columns), the spec grade and the fix rate. The rules are in [RUBRIC.md](RUBRIC.md) and in `rubricTier` in [render/data.mjs](../render/data.mjs). A client can sit in another tier only with a written `tier_note`, and the build fails on any other mismatch.
+Tiers come from the feature score (`y` = 1, `p` = 0.5 across the ten feature columns), the spec grade and the fix rate. The rules are in [RUBRIC.md](RUBRIC.md) and in `rubricTier` in [render/data.mjs](../render/data.mjs). A client can sit in another tier only with a written `tier_note`, and the build fails on any other mismatch.
 
 ## Dating support
 

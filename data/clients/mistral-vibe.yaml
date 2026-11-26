@@ -50,6 +50,13 @@ cells:
     source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
     evidence: "**Not documented**: no events or trigger support appears in the MCP Connectors docs."
     checked: 2026-11-22
+  skills:
+    value: n
+    method: source
+    source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
+    evidence: |-
+      Docs: the connectors page lists **Resources among unsupported MCP capabilities** for custom connectors, and never mentions skills served by MCP.
+    checked: 2026-11-26
   cimd:
     value: n
     method: docs

@@ -85,6 +85,13 @@ cells:
     source: https://github.com/aaif-goose/goose/tree/30bba95105e59bc3e7df624cf6b4d433690cfe12/crates
     evidence: Grep for `events/subscribe` and `notifications/events` in `crates` at tag v1.57.0 finds **nothing**.
     checked: 2026-10-30
+  skills:
+    value: n
+    method: issue
+    source: https://github.com/aaif-goose/goose/issues/12068
+    evidence: |-
+      Issue: **host support for SEP-2640 is requested in issue #12068 (open)**; the implementing PRs #12724 and #13645 were closed, not merged.
+    checked: 2026-11-26
   cimd:
     value: y
     method: source

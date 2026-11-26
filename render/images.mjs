@@ -68,7 +68,7 @@ const rateClass = r => (r >= 0.4 ? 'g' : r >= 0.15 ? 'a' : 'rd');
 // A divider track goes before the first harness column, so spec and harness columns read as two groups
 const SPEC_COLS = COLUMNS.filter(([k]) => !HARNESS.has(k)), HARNESS_COLS = COLUMNS.filter(([k]) => HARNESS.has(k));
 const withDivider = (list, divider) => [...SPEC_COLS.map(list), ...(HARNESS_COLS.length ? [divider] : []), ...HARNESS_COLS.map(list)];
-const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '64px'], tool_search: ['Tool<br>search', '146px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
+const MATRIX_COL = { protocol: ['Spec<br>version', '112px'], code_mode: ['Code<br>mode', '64px'], tool_search: ['Tool<br>search', '140px'], apps: ['MCP<br>Apps'], elicitation: ['Elicit'] };
 
 // Rows keep a readable height: past about 19 clients the image grows taller instead of squeezing them
 export const matrixHeight = ({ data }) => Math.max(1350, 480 + (data.image_note ? 60 : 0) + data.clients.length * 46);
@@ -106,7 +106,7 @@ h1{font-size:52px;font-weight:800;letter-spacing:-1.5px;color:#fff;margin:0 0 26
 .gh{height:34px;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9A9A94;text-align:center}
 .gh div{border-bottom:2px solid #3A3A35;margin:0 6px;padding-bottom:4px}.gh .hz{color:#76D6AE;border-color:#76D6AE}
 .dv{align-self:stretch;justify-self:center;width:2px;background:#3A3A35}
-.h{height:68px;font-size:16px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
+.h{height:68px;font-size:14px;font-weight:600;color:#9A9A94;line-height:1.15;text-align:center;border-bottom:2px solid #2E2E2A}
 .h div:first-child{text-align:left;padding-left:16px}
 .grp{font-size:20px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#76D6AE;padding:14px 20px 4px}
 .r{flex:1;border-top:1px solid #2A2A26}

@@ -84,6 +84,13 @@ cells:
       - It covers `server/discover`, `events/list`, `events/subscribe` and `events/unsubscribe` over Streamable HTTP (`mcp-event-request.ts:12-18`).
       - The page says 'Polling, push streams' and the gap and terminated notifications are *not* part of it.
     checked: 2026-11-23
+  skills:
+    value: n
+    method: source
+    source: https://docs.openclaw.ai/cli/mcp
+    evidence: |-
+      Docs: the `openclaw mcp` page manages saved servers and lists tools, with **no skills over MCP**; repo code has no MCP `skill://` client.
+    checked: 2026-11-26
   cimd:
     value: p
     method: source

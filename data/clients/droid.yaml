@@ -71,6 +71,13 @@ cells:
     evidence: |-
       **0 hits** for `events/subscribe` or `notifications/events` in the 1.12.1 binary.
     checked: 2026-11-16
+  skills:
+    value: n
+    method: docs
+    source: https://docs.factory.ai/cli/configuration/mcp
+    evidence: |-
+      Docs: the Droid MCP docs **do not mention** `skills/list`, `skill://` or the skills extension, and the Factory-AI/factory repo has no request for it.
+    checked: 2026-11-26
   cimd:
     value: y
     method: docs

@@ -64,6 +64,13 @@ cells:
     source: https://github.com/continuedev/continue/tree/5522c6f44ca0ac3528b37244818fbfa39b5af470/core
     evidence: A grep of `core` and `extensions/cli` at the final commit for `events/subscribe` and `notifications/events` finds **nothing**.
     checked: 2026-10-30
+  skills:
+    value: n
+    method: source
+    source: https://github.com/continuedev/continue
+    evidence: |-
+      Repo search: **no match for `skills/list` or `skill://`** and no issue or PR about skills over MCP. The MCP docs page does not mention skills.
+    checked: 2026-11-26
   cimd:
     value: n
     method: source
