@@ -36,7 +36,7 @@ The full rules and an example are in [data/README.md#writing-evidence](data/READ
 ## CI
 
 - `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.
-- Deploys are not in GitHub Actions: Cloudflare's GitHub app (Workers Builds) runs `npm ci && npm run site` and `npx wrangler deploy` on every push to `main` (README.md#website). That build has no Chrome, which is why the share cards are committed.
+- On `main`, the `deploy` job in `build.yml` runs `npm run site` and `wrangler deploy` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets, then checks that https://mcpclients.dev/version.json reports the deployed commit (README.md#website). It runs no Chrome, which is why the share cards are committed.
 - `.github/workflows/check.yml` runs `npm run check` and `npm test` on pull requests. A pull request with stale charts fails it.
 
 ## Other commands

@@ -1,5 +1,5 @@
-// The website, generated from data/ into dist/. Cloudflare's GitHub app builds it with `npm run site` and deploys it
-// with worker/index.js on every push to main. No Chrome needed: the share cards are drawn by `npm run build`.
+// The website, generated from data/ into dist/. The build workflow runs `npm run site` and deploys it with
+// worker/index.js on every push to main. No Chrome needed: the share cards are drawn by `npm run build`.
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
@@ -69,6 +69,8 @@ export function buildSite(out) {
   });
   write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
+  // The deploy job sets SITE_COMMIT, then reads this file back from the live site to confirm the deploy
+  write('version.json', JSON.stringify({ as_of: String(data.as_of), commit: process.env.SITE_COMMIT || null }) + '\n');
   write('llms.txt', llms(data));
   write('llms-full.txt', llmsFull(data, events));
   write('robots.txt', ROBOTS);
