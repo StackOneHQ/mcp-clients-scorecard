@@ -105,7 +105,7 @@ jobs:
               seen="$got"
               [ "$got" = "$WANT" ] && { echo "mcpclients.dev serves $WANT"; exit 0; }
               # A later push already deployed: that commit contains this one
-              git cat-file -e "$got^{commit}" 2>/dev/null || git fetch -q --filter=blob:none origin main
+              git cat-file -e "$got^{commit}" 2>/dev/null || git fetch -q --filter=blob:none origin main || true
               git merge-base --is-ancestor "$WANT" "$got" 2>/dev/null && { echo "mcpclients.dev serves $got, which contains $WANT"; exit 0; }
             fi
             sleep 15
