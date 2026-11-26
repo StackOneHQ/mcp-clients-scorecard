@@ -4,7 +4,7 @@ How every cell in the [scorecard](../README.md) is graded, where the evidence co
 
 ## What is graded
 
-Each client gets ten cells, one per entry in [data/features.yaml](../data/features.yaml):
+Each client gets eleven cells, one per entry in [data/features.yaml](../data/features.yaml):
 
 | Column | Graded as | Where it is defined |
 | --- | --- | --- |
@@ -14,6 +14,7 @@ Each client gets ten cells, one per entry in [data/features.yaml](../data/featur
 | MCP Apps | `y`, `p` or `n`; `na` for a terminal CLI | [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview) |
 | Tasks | `y`, `p` or `n` | [Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview), experimental in the 2025-11-25 spec |
 | Events | `y`, `p` or `n` | [Events extension](https://modelcontextprotocol.io/extensions/events/overview), official Beta since 2026-11-19 |
+| Skills | `y`, `p` or `n` | [Skills extension](https://modelcontextprotocol.io/extensions/skills/overview) (`io.modelcontextprotocol/skills`, SEP-2640), Final since 2026-09-13 |
 | CIMD | `y`, `p` or `n` | [Authorization, client registration](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration) |
 | ID-JAG | `y`, `p` or `n` | [Enterprise-Managed Authorization extension](https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization) |
 | Elicitation | `y`, `p` or `n` | [Client elicitation](https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation) |
@@ -96,7 +97,7 @@ The history snapshots in [data/history/](../data/history/) are a second record. 
 
 `npm run check` runs in CI on every pull request ([.github/workflows/check.yml](../.github/workflows/check.yml)) and fails when:
 
-- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all ten cells), its file name does not match its name, or it carries an unknown key;
+- a client file is missing a required field (`name`, `group`, `tier`, `logo`, `website`, all eleven cells), its file name does not match its name, or it carries an unknown key;
 - a `y` or `p` cell lacks a known `method`, an https `source`, `evidence`, or a `checked` date in YYYY-MM-DD form;
 - a `since` block has a date after `as_of` or a source that is not https;
 - a client's tier differs from the rubric without a `tier_note`;

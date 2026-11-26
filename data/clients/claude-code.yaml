@@ -6,7 +6,7 @@ logo: icon-claude.svg
 website: https://claude.com/product/claude-code
 docs: https://code.claude.com/docs/en/overview
 repo: https://github.com/anthropics/claude-code
-version_checked: 2.1.330
+version_checked: 2.1.332
 npm: "@anthropic-ai/claude-code"
 tracker:
   repo: anthropics/claude-code

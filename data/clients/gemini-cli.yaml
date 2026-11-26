@@ -60,7 +60,7 @@ cells:
   skills:
     value: n
     method: source
-    source: https://github.com/google-gemini/gemini-cli
+    source: https://github.com/google-gemini/gemini-cli/tree/60f8082b14ffa7f10b608270232f3f57b5abbec8
     evidence: |-
       Repo search: **no `skill://` match** in the repo, and `skills/list` only matches the local `gemini skills list` command, not an MCP request. No open issue or PR for skills over MCP.
     checked: 2026-11-26
