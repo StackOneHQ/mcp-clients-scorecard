@@ -17,6 +17,18 @@ const read = f => fs.readFileSync(path.join(out, f), 'utf8');
 const { data } = load();
 const href = url => `href="${url.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`;
 
+test('version.json falls back to the commit Workers Builds sets', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'site-ci-'));
+  process.env.WORKERS_CI_COMMIT_SHA = 'feed000000000000000000000000000000000000';
+  try {
+    buildSite(dir);
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'version.json'), 'utf8')).commit, process.env.WORKERS_CI_COMMIT_SHA);
+  } finally {
+    delete process.env.WORKERS_CI_COMMIT_SHA;
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('every client gets a page that links the source of every cell', () => {
   for (const c of data.clients) {
     const html = read(`clients/${c.slug}/index.html`);

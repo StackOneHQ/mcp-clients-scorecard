@@ -81,28 +81,31 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main' && needs.build.outputs.sha != ''
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Above the polling loop's worst case (30 x (15 s sleep + 10 s curl)), so its error annotation always prints
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: main
+          # History without file contents: enough to tell whether the live commit contains this one
           fetch-depth: 0
+          filter: blob:none
           persist-credentials: false
       - name: Check the live site serves this commit
         env:
           WANT: ${{ needs.build.outputs.sha }}
         run: |
           seen=nothing
-          for i in $(seq 1 40); do
+          for i in $(seq 1 30); do
             got="$(curl -fsS --max-time 10 "https://mcpclients.dev/version.json?t=$i" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).commit)}catch{}})' || true)"
             # Only a full commit hash reaches git: the response is outside input
             if [[ "$got" =~ ^[0-9a-f]{40}$ ]]; then
               seen="$got"
               [ "$got" = "$WANT" ] && { echo "mcpclients.dev serves $WANT"; exit 0; }
               # A later push already deployed: that commit contains this one
-              git fetch -q origin main
+              git cat-file -e "$got^{commit}" 2>/dev/null || git fetch -q --filter=blob:none origin main
               git merge-base --is-ancestor "$WANT" "$got" 2>/dev/null && { echo "mcpclients.dev serves $got, which contains $WANT"; exit 0; }
             fi
             sleep 15
