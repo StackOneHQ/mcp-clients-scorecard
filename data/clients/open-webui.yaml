@@ -83,10 +83,10 @@ cells:
     checked: 2026-11-23
   skills:
     value: n
-    method: source
+    method: docs
     source: https://docs.openwebui.com/features/extensibility/mcp/
     evidence: |-
-      Docs: the MCP page covers tools and MCP Apps only, and repo code has **no `skill://` or MCP `skills/list` client**.
+      Docs: the MCP page covers tools and MCP Apps only, with **no skills served by MCP servers** (`skills/list` or `skill://`).
     checked: 2026-11-26
   cimd:
     value: n

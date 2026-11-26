@@ -71,7 +71,7 @@ cells:
   skills:
     value: n
     method: source
-    source: https://github.com/QwenLM/qwen-code/tree/d98181e1e78deed85dd85d0511b2fd2d50513b75
+    source: https://github.com/QwenLM/qwen-code/tree/99fcf89892f1a3a8027c75468546c7e7be906245
     evidence: |-
       Repo search: **no match for `skills/list` or `skill://`**, and no issue or PR about skills over MCP. The MCP docs page covers `prompts/list` and `resources/list` only.
     checked: 2026-11-26

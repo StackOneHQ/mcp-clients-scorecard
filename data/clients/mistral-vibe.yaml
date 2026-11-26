@@ -52,7 +52,7 @@ cells:
     checked: 2026-11-22
   skills:
     value: n
-    method: source
+    method: docs
     source: https://docs.mistral.ai/vibe/work/connectors/mcp-connectors
     evidence: |-
       Docs: the connectors page lists **Resources among unsupported MCP capabilities** for custom connectors, and never mentions skills served by MCP.

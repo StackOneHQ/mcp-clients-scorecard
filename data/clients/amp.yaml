@@ -78,7 +78,7 @@ cells:
     method: docs
     source: https://ampcode.com/manual
     evidence: |-
-      Docs: the Amp manual and news feed **do not mention skills served over MCP** (no `skills/list`, `skill://` or SEP-2640); Amp skills are local `SKILL.md` folders.
+      Docs: the Amp manual and news feed **do not mention skills served over MCP** (no `skills/list`, `skill://` or SEP-2640).
     checked: 2026-11-26
   cimd:
     value: y
