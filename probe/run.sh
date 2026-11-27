@@ -26,8 +26,8 @@ agy_install() {
   local get=(curl -fsSL --proto '=https' --proto-redir '=https')
   "${get[@]}" --url https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json -o "$AGY/manifest.tmp" || return 1
   local url sha
-  url=$(node -p 'require(process.argv[1]).url' "$AGY/manifest.tmp") || return 1
-  sha=$(node -p 'require(process.argv[1]).sha512' "$AGY/manifest.tmp") || return 1
+  url=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).url' "$AGY/manifest.tmp") || return 1
+  sha=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).sha512' "$AGY/manifest.tmp") || return 1
   [[ "$sha" =~ ^[0-9a-f]{128}$ ]] || { echo "manifest has no valid sha512"; return 1; }
   "${get[@]}" --url "$url" -o "$AGY/agy.tar.gz" || return 1
   echo "$sha  $AGY/agy.tar.gz" | sha512sum -c --quiet || return 1
