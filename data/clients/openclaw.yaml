@@ -1,7 +1,7 @@
 # OpenClaw. Field reference: data/README.md. After editing, run npm run build.
 name: OpenClaw
 group: cli
-tier: S
+tier: A
 logo: gh-openclaw.png
 website: https://openclaw.ai
 docs: https://docs.openclaw.ai/cli/mcp

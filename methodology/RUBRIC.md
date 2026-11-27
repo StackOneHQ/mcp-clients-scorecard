@@ -30,7 +30,7 @@ The rate is coloured green at 40% or more, amber from 15%, and red below 15%. It
 Applied in order. The first rule that matches sets the tier.
 
 1. **D** if the client is no longer maintained, or scores 1 or less on an older spec.
-2. **S** if it scores 5 or more on the current spec or one behind.
+2. **S** if it scores 6 or more on the current spec or one behind. The bar is 60% of the feature columns, so it rises when a column is added.
 3. **C** if it scores 3 or more on an older spec and fixes under 15% of its MCP issues.
 4. **B** if it scores 3 or more but publishes neither a spec version nor a tracker.
 5. **A** if it scores 3 or more.

@@ -1,7 +1,7 @@
 # goose. Field reference: data/README.md. After editing, run npm run build.
 name: goose
 group: app
-tier: S
+tier: A
 note: Tries the 2026-07-28 handshake first, then falls back to 2025-11-25.
 logo: icon-goose.svg
 website: https://goose-docs.ai

@@ -165,13 +165,16 @@ export function featureScore(c) {
   return COLUMNS.filter(([k]) => k !== 'protocol').reduce((s, [k]) => s + ({ y: 1, p: 0.5 }[c.cells[k].value] || 0), 0);
 }
 
+// S needs this share of the feature columns, so the bar rises when a column is added
+const S_SHARE = 0.6;
+
 // The tier the rubric in methodology/RUBRIC.md gives a client. A client may sit elsewhere only with a tier_note.
 export function rubricTier(c, versions) {
   const score = featureScore(c);
   const spec = protocolGrade(c.cells.protocol.value, versions);
   const lowFix = c.fix.kind === 'rate' && c.fix.ratio < 0.15;
   if (c.unmaintained || (score <= 1 && spec === 'rd')) return 'D';
-  if (score >= 5 && (spec === 'g' || spec === 'a')) return 'S';
+  if (score >= S_SHARE * (COLUMNS.length - 1) && (spec === 'g' || spec === 'a')) return 'S';
   if (score >= 3 && spec === 'rd' && lowFix) return 'C';
   if (score >= 3 && spec === 'x' && c.fix.kind === 'none') return 'B';
   if (score >= 3) return 'A';

@@ -27,7 +27,7 @@
     "antigravity": {
       "name": "Antigravity",
       "group": "app",
-      "tier": "S",
+      "tier": "A",
       "protocol": "2026-07-28",
       "apps": "y",
       "tasks": "n",
@@ -219,7 +219,7 @@
     "goose": {
       "name": "goose",
       "group": "app",
-      "tier": "S",
+      "tier": "A",
       "protocol": "2026-07-28",
       "apps": "y",
       "tasks": "n",
@@ -379,7 +379,7 @@
     "openclaw": {
       "name": "OpenClaw",
       "group": "cli",
-      "tier": "S",
+      "tier": "A",
       "protocol": "2025-11-25",
       "apps": "y",
       "tasks": "n",
