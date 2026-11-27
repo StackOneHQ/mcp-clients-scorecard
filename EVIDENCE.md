@@ -23,12 +23,12 @@ Tier **S** · CLI · version checked `2.1.332` · tracker [anthropics/claude-cod
 | ID-JAG | [![yes](assets/icons/y.svg)](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth) | The MCP blog says Anthropic implemented **enterprise-managed authorization**, a documented admin policy, so this counts as `y`.<br>• Admins can authorize MCP servers across Claude, Claude Code and Cowork.<br>• Setting up XAA locally in the CLI without that policy needs an undocumented switch. | docs | 2026-10-30 | [2026-06-18](https://claude.com/blog/enterprise-managed-auth) |
 | Elicitation | [![yes](assets/icons/y.svg)](https://code.claude.com/docs/en/mcp) | Live probe of 2.1.325 declares `elicitation` **form and url**, matching the docs | probe | 2026-11-16 | [2026-03-14 (2.1.76)](https://github.com/anthropics/claude-code/releases/tag/v2.1.76) |
 | Live tool lists | [![yes](assets/icons/y.svg)](https://github.com/anthropics/claude-code/blob/80c6959d28c4c30ecd14fc1cdf172f19d9adad81/CHANGELOG.md#L8529) | 2.1.0: "Added support for MCP `list_changed` notifications, allowing MCP servers to dynamically update their available tools, prompts, and resources without requiring reconnection" | changelog | 2026-11-02 |  |
-| Code mode | [![partial](assets/icons/p.svg)](https://code.claude.com/docs/en/code-mode) | Docs: Code Mode ships **experimental and off by default**.<br>• Turned on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1`; needs **v2.1.323** or later, the Anthropic API and an interactive terminal.<br>• Changelog 2.1.323 adds Code Mode, an experimental opt-in in which Claude writes JavaScript to call its tools.<br>• The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".<br>• The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated. | docs | 2026-11-16 | [2026-11-12 (2.1.323)](https://github.com/anthropics/claude-code/releases/tag/v2.1.323) |
+| Code mode | [![partial](assets/icons/p.svg)](https://code.claude.com/docs/en/code-mode) | Docs: Code Mode ships **experimental and off by default**.<br>• Turned on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1`; needs **v2.1.323** or later, the Anthropic API and an interactive terminal.<br>• Changelog 2.1.323 adds Code Mode, an experimental opt-in in which Claude writes JavaScript to call its tools.<br>• The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".<br>• The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated. | docs | 2026-11-16 |  |
 | Tool search | [![yes](assets/icons/y.svg) Keyword](https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/2.1.325) | Docs: tool search is **on by default** and defers MCP tools behind a search tool.<br>• Controlled by `ENABLE_TOOL_SEARCH` with `true`, `auto`, `auto:N` or `false`.<br>• The 2.1.325 bundle ranks by exact name, `select:` and `mcp__` prefix lookups first.<br>• Then it applies weighted keyword scoring over server and tool name parts, plus a word-boundary match on description and search hint.<br>• It uses no BM25 or embeddings. | source | 2026-11-16 | [2026-01-14 (2.1.7)](https://github.com/anthropics/claude-code/releases/tag/v2.1.7) |
 
 ## OpenClaw
 
-Tier **S** · CLI · version checked `2026.11.10` · tracker [openclaw/openclaw](https://github.com/openclaw/openclaw/issues) · MCP bugs fixed: 42% of 345
+Tier **S** · CLI · version checked `2026.11.7` · tracker [openclaw/openclaw](https://github.com/openclaw/openclaw/issues) · MCP bugs fixed: 42% of 345
 
 [website](https://openclaw.ai) · [docs](https://docs.openclaw.ai/cli/mcp) · [repo](https://github.com/openclaw/openclaw) · [data file](data/clients/openclaw.yaml)
 
@@ -54,7 +54,7 @@ Tier **A** · CLI · version checked `1.0.117` · tracker [github/copilot-cli](h
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://github.com/github/copilot-cli/blob/main/changelog.md) | Live probe of 1.0.114 on 2026-11-23: `server/discover` carries **2026-07-28**. Changelog 1.0.81 ships MCP 2026-07-28 support. | probe | 2026-11-23 |  |
+| Spec version | [![current spec](assets/icons/spec-current.svg) 2026-07-28](https://github.com/github/copilot-cli/blob/main/changelog.md) | Live probe of 1.0.117 on 2026-11-27: `server/discover` carries **2026-07-28**. Changelog 1.0.81 ships MCP 2026-07-28 support. | probe | 2026-11-27 |  |
 | MCP Apps | [![not applicable](assets/icons/na.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | Live probe of 1.0.112 declares **no** `io.modelcontextprotocol/ui` extension.<br>• The runtime has an undocumented `copilot_cli_mcp_apps` flag for UI passthrough to a host.<br>• There is nothing in the changelog. | probe | 2026-11-16 |  |
 | Tasks | [![partial](assets/icons/p.svg)](https://github.com/github/copilot-cli/blob/main/changelog.md) | Changelog 1.0.41 adds **experimental** MCP Tasks, available only with experimental mode (**off by default**).<br>• Turn it on with `--experimental` or `/settings experimental on`.<br>• The default-mode probe of 1.0.112 declares no tasks, which matches. | changelog | 2026-11-16 | [2026-05-05 (1.0.41)](https://github.com/github/copilot-cli/releases/tag/v1.0.41) |
 | Events | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@github/copilot-linux-x64/1.0.112) | **No** `events/list` or `events/subscribe` in the 1.0.112 bundle and nothing in the changelog. | source | 2026-11-16 |  |
@@ -88,7 +88,7 @@ Tier **A** · CLI · version checked `0.0.1795334436-g660843` · MCP bugs fixed:
 
 ## Hermes Agent
 
-Tier **A** · CLI · version checked `0.23.4` · tracker [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent/issues) · MCP bugs fixed: 29% of 661
+Tier **A** · CLI · version checked `0.23.3` · tracker [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent/issues) · MCP bugs fixed: 29% of 661
 
 [website](https://hermes-agent.nousresearch.com) · [docs](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) · [repo](https://github.com/NousResearch/hermes-agent) · [data file](data/clients/hermes-agent.yaml)
 
@@ -110,7 +110,7 @@ Tier **A** · CLI · version checked `0.23.4` · tracker [NousResearch/hermes-ag
 
 ## Pi
 
-Tier **A** · CLI · version checked `1.6.1` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 107
+Tier **A** · CLI · version checked `1.6.0` · tracker [earendil-works/pi](https://github.com/earendil-works/pi/issues) · MCP bugs fixed: 31% of 107
 
 [website](https://pi.dev) · [docs](https://pi.dev/docs/latest) · [repo](https://github.com/earendil-works/pi) · [data file](data/clients/pi.yaml)
 
@@ -136,7 +136,7 @@ Tier **A** · CLI · version checked `1.21.1` · tracker [Factory-AI/factory](ht
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://registry.npmjs.org/@factory/cli-linux-x64/1.17.2) | Live probe of 1.17.2 on 2026-11-23 negotiated **2025-11-25** (clientInfo `factory-cli`). The 1.17.2 binary still ships flag `mcp_2026_07_28`, **off by default**. | probe | 2026-11-23 |  |
+| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://registry.npmjs.org/@factory/cli-linux-x64/1.21.1) | Live probe of 1.21.1 on 2026-11-27 negotiated **2025-11-25** (clientInfo `factory-cli`). The 1.17.2 binary shipped flag `mcp_2026_07_28`, **off by default**. | probe | 2026-11-27 |  |
 | MCP Apps | [![not applicable](assets/icons/na.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1) | **0 hits** for `io.modelcontextprotocol/ui` or `ui://` in the 1.12.1 binary. | source | 2026-11-16 |  |
 | Tasks | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1) | **0 hits** for `io.modelcontextprotocol/tasks` in the 1.12.1 binary.<br>• `tasks/get` appears only in bundled SDK schemas.<br>• The probe saw no tasks capability. | source | 2026-11-16 |  |
 | Events | [![no](assets/icons/n.svg)](https://registry.npmjs.org/@factory/cli-linux-x64/1.12.1) | **0 hits** for `events/subscribe` or `notifications/events` in the 1.12.1 binary. | source | 2026-11-16 |  |
@@ -192,14 +192,14 @@ Tier **B** · CLI · version checked `1.19.6` · tracker [anomalyco/opencode](ht
 
 ## Qwen Code
 
-Tier **B** · CLI · version checked `0.28.7` · tracker [QwenLM/qwen-code](https://github.com/QwenLM/qwen-code/issues) · MCP bugs fixed: 55% of 100
+Tier **B** · CLI · version checked `0.28.3` · tracker [QwenLM/qwen-code](https://github.com/QwenLM/qwen-code/issues) · MCP bugs fixed: 55% of 100
 
 [website](https://qwenlm.github.io/qwen-code-docs/) · [docs](https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/) · [repo](https://github.com/QwenLM/qwen-code) · [data file](data/clients/qwen-code.yaml)
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
 | Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/package.json#L114) | Source: v0.28.3 bundles `@modelcontextprotocol/client` 2.4.0, whose core `LATEST_PROTOCOL_VERSION` is **2025-11-25**.<br>• `createMcpClient` uses legacy `initialize` for remote and default stdio servers.<br>• It negotiates the **2026-07-28** modern revision only for stdio servers that opt in with `versionNegotiation: auto`. | source | 2026-11-22 |  |
-| MCP Apps | [![partial](assets/icons/p.svg)](https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/docs/users/features/mcp.md?plain=1#L528) | Docs: App HTML is mounted *only* in a **daemon-backed WebShell session** and in transcript replay.<br>• The client declares `io.modelcontextprotocol/ui` (`mcp-client.ts` L109, L485).<br>• Terminal and headless sessions show the fallback text. | docs | 2026-11-22 | [2026-08-25 (0.22.1)](https://github.com/QwenLM/qwen-code/releases/tag/v0.22.2) |
+| MCP Apps | [![partial](assets/icons/p.svg)](https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/docs/users/features/mcp.md?plain=1#L528) | Docs: App HTML is mounted *only* in a **daemon-backed WebShell session** and in transcript replay.<br>• The client declares `io.modelcontextprotocol/ui` (`mcp-client.ts` L109, L485).<br>• Terminal and headless sessions show the fallback text. | docs | 2026-11-22 | [2026-08-26 (0.22.2)](https://github.com/QwenLM/qwen-code/releases/tag/v0.22.2) |
 | Tasks | [![no](assets/icons/n.svg)](https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/tools/mcp-client.ts#L476-L492) | Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and **no tasks capability**. The file has no tasks handling. | source | 2026-11-22 |  |
 | Events | [![no](assets/icons/n.svg)](https://github.com/QwenLM/qwen-code/blob/99fcf89892f1a3a8027c75468546c7e7be906245/packages/core/src/tools/mcp-client.ts#L476-L492) | Source: `createMcpClient` declares only the `io.modelcontextprotocol/ui` extension and registers **no server-event handler** or `subscriptions/listen` stream. | source | 2026-11-22 |  |
 | Skills | [![no](assets/icons/n.svg)](https://github.com/QwenLM/qwen-code/tree/99fcf89892f1a3a8027c75468546c7e7be906245) | Repo search: **no match for `skills/list` or `skill://`**, and no issue or PR about skills over MCP. The MCP docs page covers `prompts/list` and `resources/list` only. | source | 2026-11-26 |  |
@@ -218,7 +218,7 @@ Tier **C** · CLI · version checked `0.172.0` · tracker [openai/codex](https:/
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![older spec](assets/icons/spec-older.svg) 2025-06-18](https://github.com/openai/codex/blob/ccf9be8cc458bd6b8336fe84d68d8893f2691a5e/codex-rs/features/src/lib.rs#L1779-L1784) | Live probe of 0.171.0 on 2026-11-23: `initialize` carries **2025-06-18**. The `mcp_2026_07_28` feature is still **under development and off by default** (`features/src/lib.rs` at rust-v0.171.0). | probe | 2026-11-23 |  |
+| Spec version | [![older spec](assets/icons/spec-older.svg) 2025-06-18](https://github.com/openai/codex/blob/ccf9be8cc458bd6b8336fe84d68d8893f2691a5e/codex-rs/features/src/lib.rs#L1779-L1784) | Live probe of 0.172.0 on 2026-11-27: `initialize` carries **2025-06-18**. The `mcp_2026_07_28` feature was still **under development and off by default** at rust-v0.171.0 (`features/src/lib.rs`). | probe | 2026-11-27 |  |
 | MCP Apps | [![not applicable](assets/icons/na.svg)](https://github.com/openai/codex/issues/52524) | Live probe of 0.171.0 declares **no** `io.modelcontextprotocol/ui` extension.<br>• `enable_mcp_apps` is under development and off by default.<br>• App rendering reports come from Codex Desktop, *not* the CLI. | probe | 2026-11-23 |  |
 | Tasks | [![no](assets/icons/n.svg)](https://github.com/openai/codex/issues/48617) | Live probe of 0.171.0 declares no tasks capability, and the feature request is still open | probe | 2026-11-23 |  |
 | Events | [![no](assets/icons/n.svg)](https://github.com/openai/codex/blob/d32063f96c2dff1dc96af839b3952abb6acfeda4/codex-rs/codex-mcp/src/resource_client.rs#L373) | `events/list` and `events/stream` are sent **only to the built-in `codex_apps` hosted server**, not to user-configured MCP servers. Issue 49665 about event subscriptions is still open. | source | 2026-11-16 |  |
@@ -232,7 +232,7 @@ Tier **C** · CLI · version checked `0.172.0` · tracker [openai/codex](https:/
 
 ## Auggie
 
-Tier **C** · CLI · version checked `1.2.3` · tracker [augmentcode/auggie](https://github.com/augmentcode/auggie/issues) · MCP bugs fixed: too few issues
+Tier **C** · CLI · version checked `1.2.2` · tracker [augmentcode/auggie](https://github.com/augmentcode/auggie/issues) · MCP bugs fixed: too few issues
 
 [website](https://www.augmentcode.com) · [docs](https://docs.augmentcode.com/cli/integrations) · [data file](data/clients/auggie.yaml)
 
@@ -258,7 +258,7 @@ Tier **C** · CLI · version checked `0.71.1` · tracker [google-gemini/gemini-c
 
 | Feature | Value | Evidence | Method | Checked | Shipped |
 | --- | --- | --- | --- | --- | --- |
-| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://github.com/google-gemini/gemini-cli/blob/8468962efadfbcdfd988a8fd04af4110a68c886e/packages/core/package.json#L34) | Live probe of 0.70.0 on 2026-11-23 negotiated **2025-11-25**, where 0.68.0 asked for 2025-06-18.<br>• v0.70.0 now pins `@modelcontextprotocol/sdk` 1.32.2 (`packages/core/package.json:34`), up from 1.23.0 in v0.68.0.<br>• `packages/core/src/tools/mcp-client.ts` and `packages/core/src/mcp/oauth-provider.ts` are byte-identical at v0.68.0 and v0.70.0, so the other cells carry over. | probe | 2026-11-23 |  |
+| Spec version | [![one version behind](assets/icons/spec-behind.svg) 2025-11-25](https://github.com/google-gemini/gemini-cli/blob/8468962efadfbcdfd988a8fd04af4110a68c886e/packages/core/package.json#L34) | Live probe of 0.71.1 on 2026-11-27 negotiated **2025-11-25**, as 0.70.0 did; 0.68.0 asked for 2025-06-18.<br>• v0.70.0 now pins `@modelcontextprotocol/sdk` 1.32.2 (`packages/core/package.json:34`), up from 1.23.0 in v0.68.0.<br>• `packages/core/src/tools/mcp-client.ts` and `packages/core/src/mcp/oauth-provider.ts` are byte-identical at v0.68.0 and v0.70.0, so the other cells carry over. | probe | 2026-11-27 |  |
 | MCP Apps | [![not applicable](assets/icons/na.svg)](https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src/tools/mcp-client.ts#L1869) | **No** `io.modelcontextprotocol/ui` extension or `ui://` handling at v0.68.0 or in the 0.68.0 bundle. | source | 2026-11-16 |  |
 | Tasks | [![no](assets/icons/n.svg)](https://github.com/google-gemini/gemini-cli/blob/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src/tools/mcp-client.ts#L1869) | `mcp-client.ts:1880` registers only roots, so **no tasks capability**. The weak `mcp list` probe also declared no tasks. | source | 2026-11-16 |  |
 | Events | [![no](assets/icons/n.svg)](https://github.com/google-gemini/gemini-cli/tree/5a5c7180ff3f0a02511f54b54db7f228d4982a30/packages/core/src) | **No** `events/list`, `events/subscribe` or `notifications/events` at v0.68.0 or in the 0.68.0 bundle. | source | 2026-11-16 |  |
@@ -294,7 +294,7 @@ Tier **D** · CLI · version checked `2.0.0` · tracker [continuedev/continue](h
 
 ## Muse Code
 
-Tier **D** · CLI · version checked `1.4.25` · MCP bugs fixed: no public tracker
+Tier **D** · CLI · version checked `1.4.24` · MCP bugs fixed: no public tracker
 
 [website](https://dev.meta.ai/docs/muse-code) · [docs](https://dev.meta.ai/docs/muse-code/extending) · [data file](data/clients/muse-code.yaml)
 
@@ -314,7 +314,7 @@ Tier **D** · CLI · version checked `1.4.25` · MCP bugs fixed: no public track
 
 ## VS Code
 
-Tier **S** · App or IDE · version checked `1.148.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 46% of 368
+Tier **S** · App or IDE · version checked `1.147.0` · tracker [microsoft/vscode](https://github.com/microsoft/vscode/issues) · MCP bugs fixed: 46% of 368
 
 [website](https://code.visualstudio.com) · [docs](https://code.visualstudio.com/docs/agent-customization/mcp-servers) · [repo](https://github.com/microsoft/vscode) · [data file](data/clients/vs-code.yaml)
 
@@ -334,7 +334,7 @@ Tier **S** · App or IDE · version checked `1.148.0` · tracker [microsoft/vsco
 
 ## goose
 
-Tier **S** · App or IDE · version checked `1.61.1` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 54% of 83
+Tier **S** · App or IDE · version checked `1.60.2` · tracker [aaif-goose/goose](https://github.com/aaif-goose/goose/issues) · MCP bugs fixed: 54% of 83
 
 [website](https://goose-docs.ai) · [docs](https://goose-docs.ai/docs) · [repo](https://github.com/aaif-goose/goose) · [data file](data/clients/goose.yaml)
 
@@ -396,7 +396,7 @@ Tier **A** · App or IDE · tracker [anthropics/claude-ai-mcp](https://github.co
 
 ## Kiro
 
-Tier **A** · App or IDE · version checked `3.6.2` · tracker [kirodotdev/Kiro](https://github.com/kirodotdev/Kiro/issues) · MCP bugs fixed: 30% of 108
+Tier **A** · App or IDE · version checked `3.5.0` · tracker [kirodotdev/Kiro](https://github.com/kirodotdev/Kiro/issues) · MCP bugs fixed: 30% of 108
 
 [website](https://kiro.dev) · [docs](https://kiro.dev/docs/mcp/) · [repo](https://github.com/kirodotdev/Kiro) · [data file](data/clients/kiro.yaml)
 
@@ -416,7 +416,7 @@ Tier **A** · App or IDE · version checked `3.6.2` · tracker [kirodotdev/Kiro]
 
 ## Cursor
 
-Tier **A** · App or IDE · version checked `3.32.10` · MCP bugs fixed: no public tracker
+Tier **A** · App or IDE · version checked `3.27.22` · MCP bugs fixed: no public tracker
 
 [website](https://cursor.com) · [docs](https://cursor.com/docs/mcp) · [data file](data/clients/cursor.yaml)
 
@@ -456,7 +456,7 @@ Tier **A** · App or IDE · MCP bugs fixed: no public tracker
 
 ## Kilo Code
 
-Tier **A** · App or IDE · version checked `7.8.40` · tracker [Kilo-Org/kilocode](https://github.com/Kilo-Org/kilocode/issues) · MCP bugs fixed: 28% of 32
+Tier **A** · App or IDE · version checked `7.8.32` · tracker [Kilo-Org/kilocode](https://github.com/Kilo-Org/kilocode/issues) · MCP bugs fixed: 28% of 32
 
 [website](https://kilo.ai) · [docs](https://kilo.ai/docs/automate/mcp/using-in-kilo-code) · [repo](https://github.com/Kilo-Org/kilocode) · [data file](data/clients/kilo-code.yaml)
 
@@ -476,7 +476,7 @@ Tier **A** · App or IDE · version checked `7.8.40` · tracker [Kilo-Org/kiloco
 
 ## Open WebUI
 
-Tier **B** · App or IDE · version checked `0.13.5` · tracker [open-webui/open-webui](https://github.com/open-webui/open-webui/issues) · MCP bugs fixed: 75% of 65
+Tier **B** · App or IDE · version checked `0.13.4` · tracker [open-webui/open-webui](https://github.com/open-webui/open-webui/issues) · MCP bugs fixed: 75% of 65
 
 [website](https://openwebui.com) · [docs](https://docs.openwebui.com/features/extensibility/mcp/) · [repo](https://github.com/open-webui/open-webui) · [data file](data/clients/open-webui.yaml)
 
@@ -496,7 +496,7 @@ Tier **B** · App or IDE · version checked `0.13.5` · tracker [open-webui/open
 
 ## Zed
 
-Tier **B** · App or IDE · version checked `v1.30.2` · tracker [zed-industries/zed](https://github.com/zed-industries/zed/issues) · MCP bugs fixed: 15% of 20
+Tier **B** · App or IDE · version checked `v1.29.3` · tracker [zed-industries/zed](https://github.com/zed-industries/zed/issues) · MCP bugs fixed: 15% of 20
 
 [website](https://zed.dev) · [docs](https://zed.dev/docs/ai/mcp) · [repo](https://github.com/zed-industries/zed) · [data file](data/clients/zed.yaml)
 
@@ -516,7 +516,7 @@ Tier **B** · App or IDE · version checked `v1.30.2` · tracker [zed-industries
 
 ## Windsurf
 
-Tier **C** · App or IDE · version checked `3.15.14` · MCP bugs fixed: no public tracker
+Tier **C** · App or IDE · version checked `3.11.234` · MCP bugs fixed: no public tracker
 
 [website](https://devin.ai/desktop) · [docs](https://docs.devin.ai/desktop) · [data file](data/clients/windsurf.yaml)
 
@@ -536,7 +536,7 @@ Tier **C** · App or IDE · version checked `3.15.14` · MCP bugs fixed: no publ
 
 ## Cline
 
-Tier **C** · App or IDE · version checked `4.1.28` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 12% of 52
+Tier **C** · App or IDE · version checked `4.1.27` · tracker [cline/cline](https://github.com/cline/cline/issues) · MCP bugs fixed: 12% of 52
 
 [website](https://cline.bot) · [docs](https://docs.cline.bot) · [repo](https://github.com/cline/cline) · [data file](data/clients/cline.yaml)
 
@@ -556,7 +556,7 @@ Tier **C** · App or IDE · version checked `4.1.28` · tracker [cline/cline](ht
 
 ## Warp
 
-Tier **C** · App or IDE · version checked `0.2026.11.18.08.17` · tracker [warpdotdev/warp](https://github.com/warpdotdev/warp/issues) · MCP bugs fixed: too few issues
+Tier **C** · App or IDE · version checked `0.2026.11.11.08.17` · tracker [warpdotdev/warp](https://github.com/warpdotdev/warp/issues) · MCP bugs fixed: too few issues
 
 [website](https://www.warp.dev) · [docs](https://docs.warp.dev/agents/capabilities/mcp) · [repo](https://github.com/warpdotdev/warp) · [data file](data/clients/warp.yaml)
 
@@ -616,7 +616,7 @@ Tier **C** · App or IDE · MCP bugs fixed: no public tracker
 
 ## LM Studio
 
-Tier **C** · App or IDE · version checked `0.4.29` · tracker [lmstudio-ai/lmstudio-bug-tracker](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues) · MCP bugs fixed: 0% of 22
+Tier **C** · App or IDE · version checked `0.4.28` · tracker [lmstudio-ai/lmstudio-bug-tracker](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues) · MCP bugs fixed: 0% of 22
 
 [website](https://lmstudio.ai) · [docs](https://lmstudio.ai/docs/app/mcp) · [repo](https://github.com/lmstudio-ai/lmstudio-bug-tracker) · [data file](data/clients/lm-studio.yaml)
 
