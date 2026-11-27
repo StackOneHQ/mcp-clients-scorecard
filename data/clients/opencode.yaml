@@ -52,6 +52,10 @@ cells:
       - `search()` tokenizes the query (camelCase split, naive plural stripping) and sums field-weighted substring scores: exact path or segment 20, path substring 8, description 4, parameter names and descriptions 2.
       - Ranking is not documented in user docs.
     checked: 2026-10-30
+    since:
+      date: 2026-07-06
+      version: "1.17.14"
+      source: https://github.com/anomalyco/opencode/releases/tag/v1.17.14
   apps:
     value: na
     method: source

@@ -38,6 +38,9 @@ cells:
       - Studio apps surface in Vibe Code Web through an MCP apps server (2026-11-05).
       - For custom connectors, Studio workflows surface a connector tool `ui://` MCP App *only* with `allow_mcp_ui=True` (default False), and only for direct `call_tool` calls.
     checked: 2026-11-22
+    since:
+      date: 2026-10-14
+      source: https://docs.mistral.ai/resources/release-note/2026-10-14-workflow-visualizer
   tasks:
     value: n
     method: docs

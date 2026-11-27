@@ -56,8 +56,8 @@ cells:
       Live probe of 2.1.325 declares **no MCP Apps extension** (`io.modelcontextprotocol/ui`).
 
       - The bundle adds it only under an undocumented environment variable.
-      - The feature request is still open.
-    checked: 2026-11-16
+      - The feature request was **closed as not planned** on 2026-11-25.
+    checked: 2026-11-27
   tasks:
     value: y
     method: docs
@@ -112,6 +112,9 @@ cells:
       - Admins can authorize MCP servers across Claude, Claude Code and Cowork.
       - Setting up XAA locally in the CLI without that policy needs an undocumented switch.
     checked: 2026-10-30
+    since:
+      date: 2026-06-18
+      source: https://claude.com/blog/enterprise-managed-auth
   elicitation:
     value: y
     method: probe

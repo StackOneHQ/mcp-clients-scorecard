@@ -1,0 +1,136 @@
+# Antigravity. Field reference: data/README.md. After editing, run npm run build.
+name: Antigravity
+group: app
+tier: S
+logo: icon-antigravity.svg
+website: https://antigravity.google
+docs: https://antigravity.google/docs/mcp
+repo: null
+version_checked: "2.35.2"
+tracker: null
+cells:
+  protocol:
+    value: 2026-07-28
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Own probe of the agent engine in App 2.35.2: **2026-07-28 is sent first**, with 2025-11-25 as the fallback.
+
+      - Ran `resources/bin/language_server` (engine 1.11.0) from the linux-x64 tarball against a local stdio server in `mcp_config.json`.
+      - It sent `server/discover` with `io.modelcontextprotocol/protocolVersion` 2026-07-28.
+      - When the server answered method not found, it sent `initialize` with 2025-11-25.
+      - When the server answered `server/discover`, it stayed on 2026-07-28 for `tools/list` and `subscriptions/listen`.
+      - Docs and changelog name no revision.
+    checked: 2026-11-27
+    fallback: 2025-11-25
+  code_mode:
+    value: n
+    method: docs
+    source: https://antigravity.google/docs/dynamic-workflows
+    evidence: |-
+      Docs: the only scripting feature, Dynamic Workflows, runs Python that **starts agents, not MCP tool calls**.
+
+      - The script API is `phase`, `log`, `agent`, `parallel`, `pipeline` and `trajectory`; each agent then makes its own tool calls.
+      - No `execute_code` or script runner over MCP tools in the 2.35.2 `language_server` strings.
+    checked: 2026-11-27
+  tool_search:
+    value: y
+    label: Files
+    quality: basic
+    method: docs
+    source: https://antigravity.google/docs/mcp
+    evidence: |-
+      Docs: MCP tools are **lazy-loaded by default**; the agent sees tool names and reads each schema from a file, with no search query.
+
+      - Each tool's schema is written to `<app-data-dir>/mcp/<serverName>/<toolName>.json`.
+      - The system prompt lists tool names per server under Eager and Lazy.
+      - The agent reads the file, then calls the tool through the built-in `call_mcp_tool`.
+      - `"eager": true` in `mcp_config.json` registers a tool up front; the probe of 2.35.2 wrote `~/.gemini/antigravity/mcp/probe/ping.json`.
+    checked: 2026-11-27
+  apps:
+    value: y
+    method: docs
+    source: https://antigravity.google/docs/mcp-apps
+    evidence: |-
+      Docs: `ui://` MCP App views **render in the Antigravity App (v2.34.0+)** inline, in the side panel, full page or as a file viewer.
+
+      - The App advertises `io.modelcontextprotocol/ui` plus `com.google.antigravity/ui` (entrypoints `aux_pane`, `global`, `file`) during `initialize`.
+      - The 2.35.2 `language_server` carries both ids and a `McpAppsEnabled` switch that the App turns on; the standalone probe did not declare them.
+      - Antigravity IDE and CLI *only* run the same tools as plain text.
+    checked: 2026-11-27
+    since:
+      date: 2026-11-20
+      version: "2.34.0"
+      source: https://antigravity.google/docs/changelog#rel-hub-2.34.0
+  tasks:
+    value: n
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Own probe of 2.35.2: the handshake declares **no tasks capability or extension**.
+
+      - Capabilities were only `elicitation` and `roots`.
+      - No `tasks/get` or `io.modelcontextprotocol/tasks` in the `language_server` strings.
+      - The `tools.<name>.background` setting in the MCP docs runs a call as an Antigravity background task, not an MCP task.
+    checked: 2026-11-27
+  events:
+    value: n
+    method: source
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Source: **no** `events/subscribe`, `notifications/events` or `io.modelcontextprotocol/events` in the 2.35.2 `language_server`. The docs and changelog do not mention MCP events.
+    checked: 2026-11-27
+  skills:
+    value: n
+    method: docs
+    source: https://antigravity.google/docs/skills
+    evidence: |-
+      Docs: skills load from `.agents/skills` folders and plugins, and the docs **do not mention skills served by MCP servers**.
+
+      - No `skills/list`, `skill://` or `io.modelcontextprotocol/skills` in the 2.35.2 `language_server` strings.
+    checked: 2026-11-27
+  cimd:
+    value: y
+    method: docs
+    source: https://antigravity.google/docs/mcp
+    evidence: |-
+      Docs: Antigravity **sends its hosted CIMD URL as `client_id`** when the authorization server advertises `client_id_metadata_document_supported`.
+
+      - The URL is `https://antigravity.google/oauth/client-metadata.json` (returns 200), with redirect `https://antigravity.google/oauth-callback`.
+      - Client resolution order is manual `oauth.clientId`, then CIMD, then DCR.
+      - In the Antigravity IDE, CIMD needs **2.6.0** or later.
+      - The 2.35.2 `language_server` contains the metadata URL and `client_id_metadata_document_supported`.
+    checked: 2026-11-27
+  id_jag:
+    value: n
+    method: source
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Source: **no** `id-jag` token type in the 2.35.2 `language_server`, and no doc or changelog entry for Cross App Access.
+
+      - `jwt-bearer` and `token-exchange` appear only in Google auth libraries (STS, Workforce Identity Federation).
+      - The MCP auth docs list Google ADC, OAuth (manual client, CIMD, DCR) and custom headers.
+      - The enterprise docs' identity provider support (BYOID) is for signing in to Antigravity.
+    checked: 2026-11-27
+  elicitation:
+    value: y
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Own probe of 2.35.2: the handshake declares **form and url elicitation**.
+
+      - Declares `elicitation: {form: {}, url: {}}` in both `server/discover` and `initialize`.
+      - `McpManager.handleElicitation` passes the request to a user interaction whose spec carries mode, message, requested schema and URL.
+      - No doc or changelog entry mentions MCP elicitation; the ACP docs cover the CLI's own question forms.
+    checked: 2026-11-27
+  list_changed:
+    value: y
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-hub/2.35.2-4585983447007232/linux-x64/Antigravity.tar.gz
+    evidence: |-
+      Own probe of 2.35.2: after `notifications/tools/list_changed` the engine **called `tools/list` again** and picked up the new tool.
+
+      - On 2025-11-25 it re-listed on the plain notice.
+      - On 2026-07-28 it opened `subscriptions/listen` with `toolsListChanged: true` and re-listed when the notice arrived on that stream.
+      - Both runs wrote the new tool's schema file next to the old one.
+    checked: 2026-11-27

@@ -97,6 +97,10 @@ cells:
       - Access is the organization's grant.
       - The docs never use the name ID-JAG, but the 3.5.0 binary's bundled docs index tags `kiro-cli mcp idp` with enterprise-managed authorization and `id-jag`.
     checked: 2026-11-22
+    since:
+      date: 2026-11-17
+      version: "3.5.0"
+      source: https://kiro.dev/changelog/cli/3-5
   elicitation:
     value: y
     method: docs

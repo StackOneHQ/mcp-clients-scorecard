@@ -120,6 +120,10 @@ cells:
       - It is passed as `elicitation_callback` (`client.py:165`); mcp 2.3.0 `session.py:634-636` declares both.
       - It runs in chat sessions *only*, and the MCP docs page documents form and link requests.
     checked: 2026-11-23
+    since:
+      date: 2026-10-10
+      version: "0.12.0"
+      source: https://github.com/open-webui/open-webui/releases/tag/v0.12.0
   list_changed:
     value: n
     method: source
