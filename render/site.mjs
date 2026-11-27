@@ -8,7 +8,7 @@ import { ROOT, COLUMNS, HARNESS, TIERS, GROUPS, load, protocolGrade, formatDate,
 import { TIER_COLOR, logo, esc, attr } from './images.mjs';
 import { fixText, escText, encUrl } from './markdown.mjs';
 import { evidenceHtml, evidencePlain, evidenceLead, inlineHtml, inlinePlain } from './evidence.mjs';
-import { changelog, splitRecent, plainEvent, KINDS, KIND_LABEL, RECENT_DAYS, CHANGES_PAGE } from './changelog.mjs';
+import { changelog, splitRecent, plainEvent, forFeature, KINDS, KIND_LABEL, RECENT_DAYS, CHANGES_PAGE } from './changelog.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(ROOT + 'package.json', 'utf8'));
 const SITE = pkg.homepage.replace(/\/$/, '');
@@ -21,6 +21,8 @@ const MARK = { y: 'Yes', p: 'Partial', n: 'No', na: 'n/a' };
 const METHOD = { probe: 'live probe', source: 'source code', docs: 'docs', changelog: 'changelog', issue: 'issue' };
 const GRADE = { g: 'current spec', a: 'one version behind', rd: 'older spec', x: 'not published' };
 const clientUrl = c => `/clients/${c.slug}/`;
+// One page per feature column. The spec version is a version, not yes, partly or no, so it has none
+const featureUrl = k => `/features/${k}/`;
 const shortUrl = u => u.replace(/^https:\/\/(www\.)?/, '').replace(/[?#].*$/, '');
 
 export function buildSite(out) {
@@ -67,6 +69,24 @@ export function buildSite(out) {
       body: clientPage(data, c, data.clients[i - 1], data.clients[i + 1]),
     }, clientMarkdown(data, c, qa));
   });
+  for (const f of data.features.filter(f => f.id !== 'protocol')) {
+    const dir = featureUrl(f.id);
+    const own = forFeature(events, f.id);
+    const qa = featureFaq(data, f);
+    both(dir.slice(1), {
+      title: `${f.label} support in MCP clients: ${countLine(data, f.id, true)}`,
+      description: `${featureAnswer(data, f.id, f.label)} Every cell links to a dated source.`,
+      path: dir,
+      image: ogImage('index'),
+      modified: data.as_of,
+      jsonld: featureJsonld(data, f, qa),
+      markdown: `${dir}index.md`,
+      feeds: [[`${dir}changelog.xml`, `${f.label} changes`]],
+      body: featurePage(data, f, own),
+    }, featureMarkdown(data, f, qa, own));
+    write(`${dir.slice(1)}changelog.json`, JSON.stringify(changelogJson(data, own, { feature: f.id, label: f.label, url: SITE + dir }), null, 2) + '\n');
+    write(`${dir.slice(1)}changelog.xml`, atom(data, own, { self: `${SITE + dir}changelog.xml`, alternate: SITE + dir, title: `${TITLE}: ${f.label}`, subtitle: `${f.label} in MCP clients: the spec milestone, clients shipping it and every recheck that moved it` }));
+  }
   write('404.html', page({ title: `Not found: ${TITLE}`, description: 'Page not found', path: '/404', image: ogImage('index'), noindex: true, body: '<main class="wrap narrow"><h1>Not found</h1><p><a href="/">Back to the tier list</a></p></main>' }));
   write('data.json', JSON.stringify(publicData(data), null, 2) + '\n');
   // Workers Builds sets WORKERS_CI_COMMIT_SHA; the live job in build.yml reads this file back to confirm the deploy
@@ -87,7 +107,7 @@ export function buildSite(out) {
   // Short badge URLs for READMEs: /badges/<slug>.svg
   fs.cpSync(ROOT + 'assets/badges', path.join(out, 'badges'), { recursive: true });
 
-  return { pages: data.clients.length + 2, changes: splitRecent(events, String(data.as_of)).recent.length };
+  return { pages: data.clients.length + FEATURES.length + 2, changes: splitRecent(events, String(data.as_of)).recent.length };
 }
 
 // ---------- pages
@@ -103,12 +123,12 @@ const groupLabel = g => (g === 'cli' ? 'CLI' : 'App or IDE');
 const badgeSize = c => { const [, w, h] = fs.readFileSync(ROOT + `assets/badges/${c.slug}.svg`, 'utf8').match(/<svg[^>]*?width="([\d.]+)" height="([\d.]+)"/); return `width="${Math.ceil(w)}" height="${Math.ceil(h)}"`; };
 const logoImg = (c, size) => `<span class="lg"><img src="/assets/logos/${attr(c.logo)}" alt="" width="${size}" height="${size}"></span>`;
 
-function page({ title, description, path: p, image, body, noindex = false, modified, jsonld, markdown }) {
+function page({ title, description, path: p, image, body, noindex = false, modified, jsonld, markdown, feeds = [] }) {
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${attr(description)}"><meta name="theme-color" content="#242424"><meta name="color-scheme" content="dark">
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${attr(SITE + p)}"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">`}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-${markdown ? `<link rel="alternate" type="text/markdown" href="${attr(markdown)}">` : ''}<link rel="alternate" type="application/json" href="/data.json" title="Scorecard data"><link rel="alternate" type="application/atom+xml" href="/changelog.xml" title="Scorecard changes"><meta name="author" content="StackOne">
+${markdown ? `<link rel="alternate" type="text/markdown" href="${attr(markdown)}">` : ''}<link rel="alternate" type="application/json" href="/data.json" title="Scorecard data">${feeds.map(([u, t]) => `<link rel="alternate" type="application/atom+xml" href="${attr(u)}" title="${attr(t)}">`).join('')}<link rel="alternate" type="application/atom+xml" href="/changelog.xml" title="Scorecard changes"><meta name="author" content="StackOne">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${TITLE}"><meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${attr(SITE + p)}"><meta property="og:image" content="${attr(image)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">${modified ? `<meta property="og:updated_time" content="${modified}">` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
@@ -164,7 +184,7 @@ function home(data, events, faq) {
     return `<div class="ask-panel${i === 0 ? ' on' : ''}" id="ask-${k}" role="tabpanel" aria-labelledby="tab-${k}"><p class="ask-q">Who supports ${esc(LABEL[k])}?</p>
 <p class="ask-n"><b>${yes.length}</b> of ${data.clients.length} clients${part.length ? `, ${part.length} partly` : ''}</p>
 <div class="ask-who">${who(yes, 'y') || `<span class="muted">${part.length ? 'No full support yet' : 'Nobody yet'}</span>`}${who(part, 'p')}</div>
-<button type="button" class="link" data-apply="${k}">Filter the tier list by ${esc(LABEL[k])}</button></div>`;
+<p class="ask-more"><a href="${featureUrl(k)}">See every ${esc(LABEL[k])} cell</a><button type="button" class="link" data-apply="${k}">Filter the tier list by ${esc(LABEL[k])}</button></p></div>`;
   };
   return `<main>
 <section class="wrap hero"><div class="hero-copy"><p class="meta-line"><i class="bdot"></i>Updated ${formatDate(data.as_of)}, rechecked every Monday</p>
@@ -188,7 +208,7 @@ ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small
 
 <section id="matrix" class="wrap sec"><div class="sec-hd"><h2>Every cell, with its source</h2><p class="note">Hover a cell for the evidence, click it to open the source, and click a column to sort. The <strong>harness</strong> columns show how a client handles tools, which the MCP spec does not define.</p></div>
 <div class="mx">${matrix(data)}</div>
-<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${esc(f.label)}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${inlineHtml(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a>${READING.filter(([k]) => k === f.id).map(([, p, t]) => ` · <a href="${SO}${p}">${esc(t)}</a>`).join('')}</dd></div>`).join('')}
+<details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${f.id === 'protocol' ? esc(f.label) : `<a href="${featureUrl(f.id)}">${esc(f.label)}</a>`}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${inlineHtml(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a>${READING.filter(([k]) => k === f.id).map(([, p, t]) => ` · <a href="${SO}${p}">${esc(t)}</a>`).join('')}</dd></div>`).join('')}
 <div><dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></div></dl></details></section>
 
 <section id="faq" class="wrap sec"><h2>Questions</h2><div class="faq">${faq.map(([q, a], i) => `<details${i === 0 ? " open" : ""}><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('')}</div></section>
@@ -247,7 +267,7 @@ function clientPage(data, c, prev, next) {
     const value = k === 'protocol'
       ? `<span class="pv ${g}">${esc(cell.value)}</span>${g === 'x' ? '' : ` ${GRADE[g]}`}${cell.fallback ? `, falls back to ${esc(cell.fallback)}` : ''}`
       : `<img src="/assets/icons/${cell.value}.svg" alt="" width="18" height="18">${MARK[cell.value]}${cell.value === 'y' && cell.label ? ` · ${esc(cell.label)}` : ''}`;
-    return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(inlinePlain(f.definition))}">${esc(l)}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
+    return `<article class="check v-${g || cell.value}"><div class="ck-hd"><h3 title="${attr(inlinePlain(f.definition))}">${k === 'protocol' ? esc(l) : `<a href="${featureUrl(k)}">${esc(l)}</a>`}</h3>${HARNESS.has(k) ? '<span class="tag">harness</span>' : ''}<span class="ck-v">${value}</span></div>
 <p class="ck-lead">${esc(evidenceLead(cell.evidence))}</p>
 <details class="proof" id="proof-${k}"><summary>See the proof</summary><div class="proof-body">
 <p class="proof-def"><em>${inlineHtml(f.definition)}</em></p>
@@ -280,6 +300,48 @@ ${SO_GUIDE[c.slug] ? `<p class="so-note">Connect ${esc(c.name)} to the business 
 <nav class="pager" aria-label="Other clients">${prev ? pagerLink(prev, 'prev', '← previous') : ''}${next ? pagerLink(next, 'next', 'next →') : ''}</nav>
 </main>
 <dialog class="dlg drawer" id="proof" aria-labelledby="proof-title"><div class="dlg-hd"><h3 id="proof-title"></h3><button type="button" class="xbtn" data-close aria-label="Close">×</button></div><div class="drawer-body"></div></dialog>`;
+}
+
+const VALUE_HEAD = { y: 'Yes', p: 'Partial', n: 'No', na: 'Not applicable' };
+const VALUE_ID = { y: 'yes', p: 'partial', n: 'no', na: 'not-applicable' };
+
+function countLine(data, k, short = false) {
+  const y = withValue(data, k, 'y').length, p = withValue(data, k, 'p').length;
+  return `${y} of ${data.clients.length}${short ? '' : ' clients support it'}${p ? `, ${p} partly` : ''}`;
+}
+
+// Yes, Partial and No in rank order. Yes always shows, so an empty one says nobody supports it yet
+const valueGroups = (data, k) => ['y', 'p', 'n', 'na'].map(v => [v, withValue(data, k, v)]).filter(([v, list]) => list.length || v === 'y');
+
+function featurePage(data, f, own) {
+  const k = f.id, dir = featureUrl(k);
+  const y = withValue(data, k, 'y').length, p = withValue(data, k, 'p').length, na = withValue(data, k, 'na').length;
+  const ship = s => `${formatDate(s.date)}${s.version ? ` in ${esc(s.version)}` : ''}`;
+  const row = c => {
+    const cell = c.cells[k], s = cell.since;
+    return `<article class="fcell" id="${attr(c.slug)}"><div class="fc-hd"><a class="fc-who" href="${clientUrl(c)}">${logoImg(c, 26)}<span>${esc(c.name)}</span></a>${cell.value === 'y' && cell.label ? `<span class="lbl">${esc(cell.label)}</span>` : ''}<span class="tb t-${c.tier}" title="${c.tier} tier">${c.tier}</span></div>
+<div class="md">${evidenceHtml(cell.evidence)}</div>
+<div class="src"><a href="${attr(cell.source)}" rel="nofollow">Source: ${METHOD[cell.method]} ↗</a><span>checked ${formatDate(cell.checked)}</span>${s ? `<span>shipped <a href="${attr(s.source)}" rel="nofollow">${ship(s)}</a></span>` : ''}</div></article>`;
+  };
+  const groups = valueGroups(data, k).map(([v, list]) => `<section class="fgroup" id="${VALUE_ID[v]}"><h2><img src="/assets/icons/${v}.svg" alt="" width="22" height="22">${VALUE_HEAD[v]}<span class="n">${list.length}</span></h2>
+${list.length ? `<div class="fcells">${list.map(row).join('\n')}</div>` : `<p class="note">No client fully supports ${esc(f.label)} yet.</p>`}</section>`).join('\n');
+  const reading = READING.filter(([r]) => r === k);
+  return `<main class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Tier list</a><span>/</span>${esc(f.label)}</nav>
+<section class="fhero"><p class="meta-line"><i class="bdot"></i>Updated ${formatDate(data.as_of)}, rechecked every Monday${HARNESS.has(k) ? ' <span class="tag">harness</span>' : ''}</p>
+<h1>Which MCP clients support ${esc(f.label)}?</h1>
+<p class="fdef">${inlineHtml(f.definition)}</p>
+<p class="fcount"><b>${y}</b> of ${data.clients.length} clients support it${p ? `, <b class="p">${p}</b> partly` : ''}.${na ? ` It does not apply to ${na} terminal CLIs.` : ''}</p>
+<p class="fdots" aria-hidden="true">${byRank(data).map(c => `<i class="bdot ${c.cells[k].value}"></i>`).join('')}</p>
+<dl class="proof-meta"><dt>Defined in</dt><dd><a href="${attr(f.url)}" rel="nofollow">${esc(f.ref)} ↗</a></dd>
+${f.spec_date && f.spec_event ? `<dt>Spec</dt><dd>${esc(f.spec_event)}, <a href="${attr(f.spec_source ?? f.url)}" rel="nofollow">${formatDate(f.spec_date)} ↗</a></dd>` : ''}${reading.map(([, u, t]) => `<dt>Read more</dt><dd><a href="${SO}${u}">${esc(t)}</a></dd>`).join('')}</dl>
+<p class="follow">Follow this feature: <a href="${dir}changelog.xml">Atom feed</a> · <a href="${dir}changelog.json">JSON</a></p>
+<div class="ctas"><a class="btn" href="/?f=${k}#board">Filter the tier list by ${esc(f.label)}</a><p class="share-line">Share ${share(`Which MCP clients support ${f.label}? ${countLine(data, k)}`, SITE + dir)}</p></div></section>
+${groups}
+<section class="fgroup" id="history"><h2>Changes</h2><p class="note">The spec milestone, each client shipping ${esc(f.label)} and every weekly recheck that moved it. <a href="${dir}changelog.xml">Atom feed</a> · <a href="${dir}changelog.json">JSON</a></p>
+${own.length ? `<ol class="cl">${own.map(eventLi).join('')}</ol>` : '<p class="note">No dated changes yet.</p>'}</section>
+<p class="so-note">A cell wrong or out of date? <a href="${REPO}/blob/main/CONTRIBUTING.md">Send a fix with a source</a>.</p>
+</main>`;
 }
 
 function share(text, url) {
@@ -317,14 +379,24 @@ function homeFaq(data) {
   const current = byRank(data).filter(c => protocolGrade(c.cells.protocol.value, data.spec_versions) === 'g').map(c => c.name);
   return [
     ['What is the best MCP client?', `As of ${formatDate(data.as_of)}, the highest ranked MCP clients, in ${top[0]} tier, are ${list(tier(top[0]))}${top[1] ? `, followed in ${top[1]} tier by ${list(tier(top[1]))}` : ''}. Tiers come from ${COLUMNS.length} checks: the MCP spec version and features such as MCP Apps, Tasks, CIMD and elicitation, plus how the client handles tools (code mode, tool search). Every cell links to a dated source.`],
-    ...FEATURES.map(([k, l]) => {
-      const y = withValue(data, k, 'y').map(c => c.name), p = withValue(data, k, 'p').map(c => c.name);
-      const lead = y.length ? `${y.length} of ${n} MCP clients support${y.length === 1 ? 's' : ''} ${l}: ${list(y)}.` : `None of the ${n} MCP clients fully supports ${l} yet.`;
-      return [`Which MCP clients support ${l}?`, `${lead}${p.length ? ` ${list(p)} support${p.length === 1 ? 's' : ''} it partly.` : ''}`];
-    }),
+    ...FEATURES.map(([k, l]) => [`Which MCP clients support ${l}?`, featureAnswer(data, k, l)]),
     ['Which MCP clients support the latest MCP spec?', current.length ? `${current.length} of ${n} clients speak the current MCP spec, ${latest}: ${list(current)}.` : `None of the ${n} clients speaks the current MCP spec, ${latest}, yet.`],
     ['How often is the MCP clients scorecard updated?', `Every Monday. Each cell records the date it was last checked and links to its source: a live probe, the client's source code, its docs or a changelog. The last refresh was on ${formatDate(data.as_of)}.`],
   ];
+}
+
+function featureAnswer(data, k, l) {
+  const n = data.clients.length;
+  const y = withValue(data, k, 'y').map(c => c.name), p = withValue(data, k, 'p').map(c => c.name);
+  const lead = y.length ? `${y.length} of ${n} MCP clients support${y.length === 1 ? 's' : ''} ${l}: ${list(y)}.` : `None of the ${n} MCP clients fully supports ${l} yet.`;
+  return `${lead}${p.length ? ` ${list(p)} support${p.length === 1 ? 's' : ''} it partly.` : ''}`;
+}
+
+function featureFaq(data, f) {
+  const na = withValue(data, f.id, 'na').length;
+  return [[`Which MCP clients support ${f.label}?`, `${featureAnswer(data, f.id, f.label)}${na ? ` It does not apply to ${na} terminal CLIs.` : ''}`],
+    [`What is ${f.label} in MCP?`, `${sentence(f.definition)} It is defined in ${f.ref}: ${f.url}`],
+    ...(f.spec_date && f.spec_event ? [[`When did ${f.label} enter the MCP spec?`, `${formatDate(f.spec_date)}: ${f.spec_event}.`]] : [])];
 }
 
 function clientFaq(data, c) {
@@ -365,6 +437,15 @@ function clientJsonld(data, c, qa) {
     faqLd(qa)] };
 }
 
+function featureJsonld(data, f, qa) {
+  const url = SITE + featureUrl(f.id);
+  return { '@context': 'https://schema.org', '@graph': [ORG, WEBSITE,
+    { '@type': 'WebPage', '@id': url, url, name: `${f.label} support in MCP clients`, description: featureAnswer(data, f.id, f.label), dateModified: String(data.as_of), isPartOf: { '@id': WEBSITE['@id'] },
+      about: { '@type': 'Thing', name: f.label, description: inlinePlain(f.definition), url: f.url } },
+    { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Tier list', item: `${SITE}/` }, { '@type': 'ListItem', position: 2, name: f.label, item: url }] },
+    faqLd(qa)] };
+}
+
 const mdCell = (data, k, cell) => (k === 'protocol' ? String(cell.value) : MARK[cell.value]);
 
 const yamlString = v => JSON.stringify(String(v));
@@ -378,8 +459,21 @@ function homeMarkdown(data, faq, events) {
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
     ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${encUrl(c.website)})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
     '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
-    '## What each column means', '', ...data.features.map(f => `- **${f.label}**: ${inlinePlain(f.definition)} (${f.url})`), '',
+    '## What each column means', '', ...data.features.map(f => `- **${f.id === 'protocol' ? f.label : `[${f.label}](${SITE + featureUrl(f.id)})`}**: ${inlinePlain(f.definition)} (${f.url})`), '',
     `Source and methodology: ${REPO}`, ''].join('\n');
+}
+
+function featureMarkdown(data, f, qa, own) {
+  const k = f.id, dir = SITE + featureUrl(k);
+  const na = withValue(data, k, 'na').length;
+  const row = c => { const cell = c.cells[k], s = cell.since; return `| [${c.name}](${SITE + clientUrl(c)}) | ${c.tier} | ${evidencePlain(cell.evidence).replace(/\|/g, '\\|')} | ${cell.source} | ${cell.checked} | ${s ? `${s.date}${s.version ? ` (${s.version})` : ''}` : ''} |`; };
+  return [`# Which MCP clients support ${f.label}?`, '', `> ${featureAnswer(data, k, f.label)}`, '', inlinePlain(f.definition), '',
+    `- Defined in: ${f.ref} (${f.url})`, ...(f.spec_date && f.spec_event ? [`- Spec: ${f.spec_event}, ${f.spec_date} (${f.spec_source ?? f.url})`] : []),
+    `- ${countLine(data, k)}.${na ? ` It does not apply to ${na} terminal CLIs.` : ''}`, `- Follow this feature: ${dir}changelog.xml (Atom), ${dir}changelog.json (JSON)`, '',
+    ...valueGroups(data, k).flatMap(([v, list]) => [`## ${VALUE_HEAD[v]} (${list.length})`, '',
+      ...(list.length ? ['| Client | Tier | Evidence | Source | Checked | Shipped |', '| --- | --- | --- | --- | --- | --- |', ...list.map(row)] : [`No client fully supports ${f.label} yet.`]), '']),
+    '## Changes', '', ...(own.length ? own.map(mdEvent) : ['No dated changes yet.']), '',
+    ...qa.flatMap(([q, a]) => [`### ${q}`, '', a, '']), `Full scorecard: ${SITE}/`, ''].join('\n');
 }
 
 function clientMarkdown(data, c, qa) {
@@ -403,7 +497,7 @@ const eventUrl = e => (e.client?.slug ? SITE + `/clients/${e.client.slug}/` : e.
 const eventId = e => crypto.createHash('sha256').update(`${e.date}|${e.key}`).digest('hex').slice(0, 16);
 
 // over: past the first page of recent changes, hidden until the reader asks for more (style.css)
-function eventLi(e, over = false) {
+function eventLi(e, { over = false } = {}) {
   const who = e.client ? (e.client.slug ? `<a href="/clients/${attr(e.client.slug)}/">${esc(e.client.name)}</a> ` : `${esc(e.client.name)} `) : '';
   const src = e.source ? ` <a class="cl-src" href="${attr(e.source)}" rel="nofollow">source ↗</a>` : '';
   return `<li${over ? ' class="over"' : ''} data-kind="${e.kind}"><time datetime="${e.date}">${esc(formatDate(e.date))}</time><span class="cl-k k-${e.kind}">${KIND_LABEL[e.kind]}</span><span class="cl-t">${who}${esc(e.text)}${src}</span></li>`;
@@ -415,28 +509,32 @@ function changesSection(data, events) {
   const tabs = [['all', 'All', recent.length], ...KINDS.map(([k, l]) => [k, l, count(recent, k)])];
   return `<section id="changes" class="wrap sec" data-f="all" data-page="${CHANGES_PAGE}"><div class="sec-hd"><h2>Recent changes</h2><p class="note">The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Board changes carry the date of the weekly check, shipped features the date of their release note. <a href="/changelog.xml">Atom feed</a> · <a href="/changelog.json">JSON</a></p></div>
 <div class="seg cl-tabs" role="group" aria-label="Show changes of one kind">${tabs.map(([k, l, n], i) => `<button type="button" data-cl="${k}" aria-pressed="${i === 0}">${esc(l)}<span class="n">${n}</span></button>`).join('')}</div>
-${recent.length ? `<ol class="cl" id="cl-recent">${recent.map((e, i) => eventLi(e, i >= CHANGES_PAGE)).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing like this in the last ${RECENT_DAYS} days.</p>
+${recent.length ? `<ol class="cl" id="cl-recent">${recent.map((e, i) => eventLi(e, { over: i >= CHANGES_PAGE })).join('')}</ol>` : ''}<p class="note cl-empty"${recent.length ? ' hidden' : ''}>Nothing like this in the last ${RECENT_DAYS} days.</p>
 ${recent.length > CHANGES_PAGE ? `<a class="btn sm cl-load" href="#cl-recent"><span class="cl-load-t">Show all</span><span class="n">${recent.length}</span></a>` : ''}
 ${older.length ? `<details class="cl-more"><summary>Show <span class="cl-n">${older.length}</span> older change${older.length === 1 ? '' : 's'}</summary><ol class="cl">${older.map(e => eventLi(e)).join('')}</ol></details>` : ''}</section>`;
 }
 
+const mdEvent = e => `- ${e.date} · ${KIND_LABEL[e.kind]} · ${e.client?.slug ? `[${escText(e.client.name)}](${SITE}/clients/${e.client.slug}/) ${escText(e.text)}` : escText(plainEvent(e))}${e.source ? ` ([source](${encUrl(e.source)}))` : ''}`;
+
 function changesMd(data, events) {
   const { recent } = splitRecent(events, String(data.as_of));
-  const line = e => `- ${e.date} · ${KIND_LABEL[e.kind]} · ${e.client?.slug ? `[${escText(e.client.name)}](${SITE}/clients/${e.client.slug}/) ${escText(e.text)}` : escText(plainEvent(e))}${e.source ? ` ([source](${encUrl(e.source)}))` : ''}`;
   return ['## Recent changes', '', `The last ${RECENT_DAYS} days to ${formatDate(data.as_of)}. Every change, older ones included: ${SITE}/changelog.json (Atom: ${SITE}/changelog.xml)`, '',
-    ...(recent.length ? recent.map(line) : [`No changes in the last ${RECENT_DAYS} days.`]), ''];
+    ...(recent.length ? recent.map(mdEvent) : [`No changes in the last ${RECENT_DAYS} days.`]), ''];
 }
 
-function changelogJson(data, events) {
-  return { as_of: String(data.as_of), recent_days: RECENT_DAYS, kinds: Object.fromEntries(KINDS), events: events.map(e => ({ date: e.date, kind: e.kind, client: e.client?.slug ?? null, client_name: e.client?.name ?? null, title: plainEvent(e), url: eventUrl(e), source: e.source })) };
+// The site feed, or with extra fields ({ feature, label, url }) the feed of one feature
+function changelogJson(data, events, extra = {}) {
+  return { as_of: String(data.as_of), ...extra, recent_days: RECENT_DAYS, kinds: Object.fromEntries(KINDS), events: events.map(e => ({ date: e.date, kind: e.kind, client: e.client?.slug ?? null, client_name: e.client?.name ?? null, title: plainEvent(e), url: eventUrl(e), source: e.source })) };
 }
 
-function atom(data, events) {
+const SITE_FEED = { self: `${SITE}/changelog.xml`, alternate: `${SITE}/#changes`, title: `${TITLE}: changes`, subtitle: 'MCP clients joining the board, features shipped, tier moves and spec releases' };
+
+function atom(data, events, feed = SITE_FEED) {
   const list = events.slice(0, 100);
   const updated = `${data.as_of}T00:00:00Z`;
   return `<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>${attr(TITLE)}: changes</title><subtitle>MCP clients joining the board, features shipped, tier moves and spec releases</subtitle>
-<link rel="self" href="${SITE}/changelog.xml"/><link rel="alternate" type="text/html" href="${SITE}/#changes"/><id>${SITE}/changelog.xml</id><updated>${updated}</updated><author><name>StackOne</name><uri>${SO}</uri></author>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>${attr(feed.title)}</title><subtitle>${attr(feed.subtitle)}</subtitle>
+<link rel="self" href="${attr(feed.self)}"/><link rel="alternate" type="text/html" href="${attr(feed.alternate)}"/><id>${attr(feed.self)}</id><updated>${updated}</updated><author><name>StackOne</name><uri>${SO}</uri></author>
 ${list.map(e => `<entry><id>${SITE}/changelog#${eventId(e)}</id><title>${attr(`${KIND_LABEL[e.kind]}: ${plainEvent(e)}`)}</title><link href="${attr(eventUrl(e))}"/><updated>${e.date}T00:00:00Z</updated><category term="${e.kind}"/><summary>${attr(plainEvent(e))}${e.source ? attr(`. Source: ${e.source}`) : ''}</summary></entry>`).join('\n')}
 </feed>
 `;
@@ -464,19 +562,22 @@ function publicData(data) {
 function llms(data) {
   return [`# ${TITLE}`, '', `> Which MCP clients support which parts of the Model Context Protocol, with a linked source for every cell. As of ${data.as_of}. Maintained by StackOne.`, '',
     `Full data as JSON: ${SITE}/data.json`, `Every change, dated: ${SITE}/changelog.json (Atom: ${SITE}/changelog.xml)`, `Every page with its Markdown copy: ${SITE}/sitemap.md`, `Source and methodology: ${REPO}`, '', '## Tiers', '',
-    ...TIERS.map(t => `- ${t}: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), ''].join('\n');
+    ...TIERS.map(t => `- ${t}: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), '',
+    '## Features', '', 'One page per feature, every client\'s cell with its evidence, and a feed of its changes.', '',
+    ...FEATURES.map(([k, l]) => `- [${l}](${SITE + featureUrl(k)}): ${countLine(data, k)}. Feed: ${SITE + featureUrl(k)}changelog.xml`), ''].join('\n');
 }
 
 // The sitemap for agents: every page, its Markdown copy and when it last changed
 function sitemapMd(data) {
   const row = (name, u) => `- [${name}](${SITE + u}) ([Markdown](${SITE + u}index.md))`;
   return [`# ${TITLE}: sitemap`, '', `Last updated ${data.as_of}.`, '', row('Tier list', '/'), '', '## Clients', '',
-    ...byRank(data).map(c => row(`${c.name}, ${c.tier} tier`, clientUrl(c))), '', '## Data', '',
+    ...byRank(data).map(c => row(`${c.name}, ${c.tier} tier`, clientUrl(c))), '', '## Features', '',
+    ...FEATURES.map(([k, l]) => `${row(l, featureUrl(k))} ([Atom](${SITE + featureUrl(k)}changelog.xml), [JSON](${SITE + featureUrl(k)}changelog.json))`), '', '## Data', '',
     `- [data.json](${SITE}/data.json)`, `- [changelog.json](${SITE}/changelog.json)`, `- [llms-full.txt](${SITE}/llms-full.txt)`, ''].join('\n');
 }
 
 function sitemap(data) {
-  const urls = ['/', ...data.clients.map(clientUrl)];
+  const urls = ['/', ...data.clients.map(clientUrl), ...FEATURES.map(([k]) => featureUrl(k))];
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `<url><loc>${SITE + u}</loc><lastmod>${data.as_of}</lastmod></url>`).join('\n')}\n</urlset>\n`;
 }
 

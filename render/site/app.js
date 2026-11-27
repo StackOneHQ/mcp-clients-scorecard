@@ -347,7 +347,7 @@
       ...feats.map(f => {
         const who = d.clients.filter(c => c.cells[f.id].value === 'y');
         const part = d.clients.filter(c => c.cells[f.id].value === 'p').length;
-        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'wrench' : 'check', feature: f.id, href: `/?f=${f.id}#board` };
+        return { kind: 'Features', title: `Who supports ${f.label}?`, sub: `${who.length} of ${d.clients.length}${part ? ` (+${part} partly)` : ''}: ${who.map(c => c.name).join(', ') || 'nobody yet'}`, key: `${f.label} ${f.id} ${f.definition}`, glyph: f.kind === 'harness' ? 'wrench' : 'check', feature: f.id, href: `/features/${f.id}/` };
       }),
       { kind: 'Actions', title: 'Compare clients side by side', sub: 'Pick 2 to 4 clients', key: 'compare versus vs diff', glyph: 'columns', action: 'compare' },
       { kind: 'Actions', title: 'Download the data', sub: 'data.json, MIT licensed', key: 'json data download api', glyph: 'download', href: '/data.json' },
