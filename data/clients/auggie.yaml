@@ -6,7 +6,7 @@ logo: gh-augmentcode.png
 website: https://www.augmentcode.com
 docs: https://docs.augmentcode.com/cli/integrations
 repo: null
-version_checked: "1.2.2"
+version_checked: "1.2.3"
 npm: "@augmentcode/auggie"
 tracker:
   repo: augmentcode/auggie

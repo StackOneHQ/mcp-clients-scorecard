@@ -6,7 +6,7 @@ logo: gh-QwenLM.png
 website: https://qwenlm.github.io/qwen-code-docs/
 docs: https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/
 repo: https://github.com/QwenLM/qwen-code
-version_checked: "0.28.3"
+version_checked: "0.28.7"
 npm: "@qwen-code/qwen-code"
 tracker:
   repo: QwenLM/qwen-code
@@ -32,6 +32,10 @@ cells:
       - Tools are discovered with `tool_search` and invoked through an `exec` script.
       - It defaults to `false` and needs a restart.
     checked: 2026-11-22
+    since:
+      date: 2026-09-14
+      version: "0.23.4"
+      source: https://github.com/QwenLM/qwen-code/releases/tag/v0.23.4
   tool_search:
     value: y
     label: Keyword
@@ -45,6 +49,10 @@ cells:
       - `tool-search.ts` supports `select:` lookups and weighted keyword scoring over name, description and search hint.
       - No BM25 or embeddings.
     checked: 2026-11-22
+    since:
+      date: 2026-05-10
+      version: "0.15.10"
+      source: https://github.com/QwenLM/qwen-code/releases/tag/v0.15.10
   apps:
     value: p
     method: docs
@@ -55,6 +63,10 @@ cells:
       - The client declares `io.modelcontextprotocol/ui` (`mcp-client.ts` L109, L485).
       - Terminal and headless sessions show the fallback text.
     checked: 2026-11-22
+    since:
+      date: 2026-08-25
+      version: "0.22.1"
+      source: https://github.com/QwenLM/qwen-code/releases/tag/v0.22.2
   tasks:
     value: n
     method: source

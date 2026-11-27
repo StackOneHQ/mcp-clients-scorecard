@@ -6,7 +6,7 @@ logo: icon-gemini.svg
 website: https://geminicli.com
 docs: https://geminicli.com/docs
 repo: https://github.com/google-gemini/gemini-cli
-version_checked: 0.70.0
+version_checked: 0.71.1
 npm: "@google/gemini-cli"
 tracker:
   repo: google-gemini/gemini-cli

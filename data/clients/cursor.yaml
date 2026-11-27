@@ -6,7 +6,7 @@ logo: icon-cursor.svg
 website: https://cursor.com
 docs: https://cursor.com/docs/mcp
 repo: null
-version_checked: 3.27.22
+version_checked: 3.32.10
 tracker: null
 cells:
   protocol:

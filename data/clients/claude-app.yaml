@@ -45,12 +45,18 @@ cells:
       date: 2026-01-26
       source: https://claude.com/resources/articles/interactive-tools-in-claude
   tasks:
-    value: n
+    value: y
     method: docs
     source: https://code.claude.com/docs/en/mcp
     evidence: |-
-      The Claude Code MCP page limits MCP tasks to **terminal, Agent SDK and GitHub Actions sessions**. It says "Other surfaces, such as the VS Code extension and the desktop app, don't have MCP tasks".
-    checked: 2026-10-30
+      Docs: MCP tasks **work in claude.ai chats** with connectors that support them on protocol revision 2026-07-28.
+
+      - The page lists "New chats in the unified Claude experience on Pro, Max, Ultra, and Team plans", and adds that not every existing chat has tasks.
+      - [Anthropic's 2026-11-24 announcement](https://claude.com/resources/articles/skills-over-mcp-tasks-and-more) calls Tasks *generally available*, rolling out to Enterprise.
+    checked: 2026-11-27
+    since:
+      date: 2026-11-24
+      source: https://claude.com/resources/articles/skills-over-mcp-tasks-and-more
   events:
     value: n
     method: docs

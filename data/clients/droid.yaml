@@ -6,7 +6,7 @@ logo: gh-Factory-AI.png
 website: https://factory.com
 docs: https://docs.factory.com
 repo: https://github.com/Factory-AI/factory
-version_checked: 1.17.2
+version_checked: 1.21.1
 npm: "@factory/cli"
 tracker:
   repo: Factory-AI/factory

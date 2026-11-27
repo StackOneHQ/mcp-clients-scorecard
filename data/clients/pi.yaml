@@ -6,7 +6,7 @@ logo: icon-pi.svg
 website: https://pi.dev
 docs: https://pi.dev/docs/latest
 repo: https://github.com/earendil-works/pi
-version_checked: 1.6.0
+version_checked: 1.6.1
 tracker:
   repo: earendil-works/pi
   mcp_in_title: true

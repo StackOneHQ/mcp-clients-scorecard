@@ -6,7 +6,7 @@ logo: gh-warpdotdev.png
 website: https://www.warp.dev
 docs: https://docs.warp.dev/agents/capabilities/mcp
 repo: https://github.com/warpdotdev/warp
-version_checked: "0.2026.11.11.08.17"
+version_checked: "0.2026.11.18.08.17"
 tracker: { repo: warpdotdev/warp, mcp_in_title: true }
 cells:
   protocol:

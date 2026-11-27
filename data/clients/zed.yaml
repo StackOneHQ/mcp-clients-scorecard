@@ -6,7 +6,7 @@ logo: icon-zed.svg
 website: https://zed.dev
 docs: https://zed.dev/docs/ai/mcp
 repo: https://github.com/zed-industries/zed
-version_checked: v1.29.3
+version_checked: v1.30.2
 tracker:
   repo: zed-industries/zed
   mcp_in_title: true

@@ -7,7 +7,7 @@ logo: gh-NousResearch.png
 website: https://hermes-agent.nousresearch.com
 docs: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp
 repo: https://github.com/NousResearch/hermes-agent
-version_checked: "0.23.3"
+version_checked: "0.23.4"
 tracker:
   repo: NousResearch/hermes-agent
   mcp_in_title: true
@@ -100,6 +100,10 @@ cells:
       - `_maybe_use_cimd` (:1049) passes it as `client_metadata_url`.
       - `cimd false` and `client_metadata_url` are config overrides.
     checked: 2026-11-23
+    since:
+      date: 2026-08-21
+      version: "0.20.5"
+      source: https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.19
   id_jag:
     value: n
     method: source

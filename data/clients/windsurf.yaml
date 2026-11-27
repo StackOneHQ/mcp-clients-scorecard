@@ -7,7 +7,7 @@ website: https://devin.ai/desktop
 docs: https://docs.devin.ai/desktop
 repo: null
 tracker: null
-version_checked: "3.11.234"
+version_checked: "3.15.14"
 cells:
   protocol:
     value: 2026-07-28

@@ -6,7 +6,7 @@ logo: si-cline.svg
 website: https://cline.bot
 docs: https://docs.cline.bot
 repo: https://github.com/cline/cline
-version_checked: 4.1.27
+version_checked: 4.1.28
 tracker:
   repo: cline/cline
   mcp_in_title: true

@@ -6,7 +6,7 @@ logo: gh-kirodotdev.png
 website: https://kiro.dev
 docs: https://kiro.dev/docs/mcp/
 repo: https://github.com/kirodotdev/Kiro
-version_checked: 3.5.0
+version_checked: 3.6.2
 tracker:
   repo: kirodotdev/Kiro
   mcp_in_title: true
@@ -97,6 +97,10 @@ cells:
       - Access is the organization's grant.
       - The docs never use the name ID-JAG, but the 3.5.0 binary's bundled docs index tags `kiro-cli mcp idp` with enterprise-managed authorization and `id-jag`.
     checked: 2026-11-22
+    since:
+      date: 2026-11-17
+      version: "3.5.0"
+      source: https://kiro.dev/changelog/cli/3-5
   elicitation:
     value: y
     method: docs

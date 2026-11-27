@@ -6,7 +6,7 @@ logo: gh-Kilo-Org.png
 website: https://kilo.ai
 docs: https://kilo.ai/docs/automate/mcp/using-in-kilo-code
 repo: https://github.com/Kilo-Org/kilocode
-version_checked: 7.8.32
+version_checked: 7.8.40
 tracker:
   repo: Kilo-Org/kilocode
   mcp_in_title: true
@@ -32,6 +32,10 @@ cells:
       - The `KILO_EXPERIMENTAL` umbrella or `experimental.code_mode` in config also turns it on.
       - When on, `session/tools.ts:471` stops exposing MCP tools directly and `tool/code-mode.ts` routes them through a script runtime.
     checked: 2026-11-22
+    since:
+      date: 2026-08-13
+      version: "7.4.22"
+      source: https://github.com/Kilo-Org/kilocode/releases/tag/v7.4.22
   tool_search:
     value: p
     method: source
@@ -44,6 +48,10 @@ cells:
     checked: 2026-11-22
     label: Keyword
     quality: basic
+    since:
+      date: 2026-08-13
+      version: "7.4.22"
+      source: https://github.com/Kilo-Org/kilocode/releases/tag/v7.4.22
   apps:
     value: n
     method: source

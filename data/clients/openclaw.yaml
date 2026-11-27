@@ -6,7 +6,7 @@ logo: gh-openclaw.png
 website: https://openclaw.ai
 docs: https://docs.openclaw.ai/cli/mcp
 repo: https://github.com/openclaw/openclaw
-version_checked: "2026.11.7"
+version_checked: "2026.11.10"
 tracker:
   repo: openclaw/openclaw
   mcp_in_title: true
@@ -63,6 +63,10 @@ cells:
       - The client advertises `io.modelcontextprotocol/ui` with mimeTypes `text/html;profile=mcp-app` *only* when Apps are enabled (`mcp-metadata.ts:13-15`).
       - So a web view exists although the CLI itself is a terminal tool.
     checked: 2026-11-23
+    since:
+      date: 2026-07-15
+      version: "2026.7.2-beta.1"
+      source: https://github.com/openclaw/openclaw/releases/tag/v2026.7.2-beta.1
   tasks:
     value: n
     method: source
@@ -84,6 +88,10 @@ cells:
       - It covers `server/discover`, `events/list`, `events/subscribe` and `events/unsubscribe` over Streamable HTTP (`mcp-event-request.ts:12-18`).
       - The page says 'Polling, push streams' and the gap and terminated notifications are *not* part of it.
     checked: 2026-11-23
+    since:
+      date: 2026-10-15
+      version: "2026.10.10-beta.1"
+      source: https://github.com/openclaw/openclaw/releases/tag/v2026.10.10-beta.1
   skills:
     value: n
     method: docs
@@ -102,6 +110,10 @@ cells:
       - The SDK uses it as the `client_id` when the server advertises `client_id_metadata_document_supported`.
       - The docs pages do not describe it.
     checked: 2026-11-23
+    since:
+      date: 2026-05-31
+      version: "2026.5.30-beta.1"
+      source: https://github.com/openclaw/openclaw/releases/tag/v2026.5.30-beta.1
   id_jag:
     value: n
     method: source
@@ -122,6 +134,10 @@ cells:
       - The gate is at `agent-bundle-mcp-runtime.ts:94` and :383; otherwise the client declares empty capabilities.
       - The MCP docs pages do not describe elicitation.
     checked: 2026-11-23
+    since:
+      date: 2026-10-05
+      version: "2026.10.1-beta.1"
+      source: https://github.com/openclaw/openclaw/releases/tag/v2026.10.1-beta.1
   list_changed:
     value: y
     method: source

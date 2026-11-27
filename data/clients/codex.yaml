@@ -6,7 +6,7 @@ logo: icon-codex.svg
 website: https://openai.com/codex/
 docs: https://developers.openai.com/codex
 repo: https://github.com/openai/codex
-version_checked: 0.171.0
+version_checked: 0.172.0
 npm: "@openai/codex"
 tracker:
   repo: openai/codex

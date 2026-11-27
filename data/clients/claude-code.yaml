@@ -30,6 +30,10 @@ cells:
       - The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".
       - The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated.
     checked: 2026-11-16
+    since:
+      date: 2026-11-12
+      version: "2.1.323"
+      source: https://github.com/anthropics/claude-code/releases/tag/v2.1.323
   tool_search:
     value: y
     label: Keyword
@@ -56,8 +60,8 @@ cells:
       Live probe of 2.1.325 declares **no MCP Apps extension** (`io.modelcontextprotocol/ui`).
 
       - The bundle adds it only under an undocumented environment variable.
-      - The feature request is still open.
-    checked: 2026-11-16
+      - The feature request was **closed as not planned** on 2026-11-25.
+    checked: 2026-11-27
   tasks:
     value: y
     method: docs
@@ -112,6 +116,9 @@ cells:
       - Admins can authorize MCP servers across Claude, Claude Code and Cowork.
       - Setting up XAA locally in the CLI without that policy needs an undocumented switch.
     checked: 2026-10-30
+    since:
+      date: 2026-06-18
+      source: https://claude.com/blog/enterprise-managed-auth
   elicitation:
     value: y
     method: probe
