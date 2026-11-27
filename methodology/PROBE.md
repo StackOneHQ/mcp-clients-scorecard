@@ -44,9 +44,10 @@ Some clients send the handshake before they check credentials. Others need a sig
 
 ## Limits
 
-- Only CLIs on npm are probed. Pi, Continue and the apps and IDEs are checked from source and docs.
+- Only the CLIs in the table are probed: the ones on npm, plus Antigravity CLI from its installer manifest (linux x64 only). Pi, Continue and the apps and IDEs are checked from source and docs.
+- Antigravity CLI is a closed binary, so it runs with an empty environment (only `PATH` and `HOME`). If its download or checksum fails, the other clients still run and it is left out of the results.
 - The probe sees the handshake. It does not exercise tasks, elicitation or other features, which are checked from source, docs and changelogs.
 - opencode is started with `mcp list`, which connects with a minimal client. Its declared capabilities may differ from a real chat session, so treat an empty `declares` there as unconfirmed.
-- Antigravity CLI connects its MCP servers before it asks to sign in, then waits for a login the probe never completes. Its `tools/list` re-list after the change notice did not show in every run (3 of 6 on 2026-11-27), so read a `relisted: false` there as unconfirmed.
+- Antigravity CLI connects its MCP servers before it asks to sign in, then waits for a login the probe never completes. Its `tools/list` re-list after the change notice did not show in every run (4 of 7 on 2026-11-27), so read a `relisted: false` there as unconfirmed.
 - A CLI that stops at sign-in after the handshake (Claude Code, Droid) still shows what it declared, but later requests, such as a tool call, are not seen.
 - A short run can end before the client relists, and `mcp list` lists tools once and exits, so `relisted: false` is unconfirmed rather than a no. A `relisted: true` shows the client fetched the list again, not that the model saw the new tool: a client that lists tools before every turn also passes, so check it against the client's source before you grade the cell.

@@ -45,7 +45,7 @@
       "group": "cli",
       "tier": "A",
       "protocol": "2026-07-28",
-      "apps": "n",
+      "apps": "na",
       "tasks": "n",
       "events": "n",
       "skills": "n",

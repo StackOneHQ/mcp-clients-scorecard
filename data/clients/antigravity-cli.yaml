@@ -44,7 +44,7 @@ cells:
       - The probe of 1.5.18 wrote `~/.gemini/antigravity-cli/mcp/probe/ping.json`.
     checked: 2026-11-27
   apps:
-    value: n
+    value: na
     method: docs
     source: https://antigravity.google/docs/mcp?tab=cli
     evidence: |-
@@ -115,6 +115,7 @@ cells:
       Own probe of 1.5.18: after `notifications/tools/list_changed` the CLI **called `tools/list` again** and picked up the new tool.
 
       - It opened `subscriptions/listen` with `toolsListChanged: true` every time.
-      - In 3 of 6 runs it re-listed when the notice arrived on that stream and wrote the new tool's schema file, `ping_1.json`, next to `ping.json`.
+      - In 4 of 7 runs it re-listed when the notice arrived on that stream and wrote the new tool's schema file, `ping_1.json`, next to `ping.json`.
       - In the other 3 no re-list followed within 45 to 60 seconds. The probe server sends its notice the moment the stream opens, so these look like a race at subscribe time; a tool added later in a session is the normal case.
+      - The binary is closed source. Google says the CLI [shares the App's agent harness](https://antigravity.google/blog/introducing-google-antigravity-cli), and the App's own probe re-listed on both handshakes.
     checked: 2026-11-27

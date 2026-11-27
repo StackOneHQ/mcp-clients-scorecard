@@ -18,15 +18,23 @@ PKGS=(@anthropic-ai/claude-code @github/copilot @openai/codex opencode-ai @facto
 npm install --prefix "$WORK/clients" --no-audit --no-fund --silent $(printf '%s@latest ' "${PKGS[@]}")
 BIN="$WORK/clients/node_modules/.bin"
 
-# Antigravity CLI is not on npm: fetch the build its installer (antigravity.google/cli/install.sh) picks, and check its sha512
+# Antigravity CLI is not on npm: fetch the build its installer (antigravity.google/cli/install.sh) picks, and check its sha512.
+# The manifest is kept only after the binary is in place, since report.mjs reads the probed version from it
 AGY="$WORK/clients/antigravity-cli"; mkdir -p "$AGY"
-curl -fsSL https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json -o "$AGY/manifest.json"
-AGY_URL=$(node -p 'require(process.argv[1]).url' "$AGY/manifest.json")
-AGY_SHA=$(node -p 'require(process.argv[1]).sha512' "$AGY/manifest.json")
-[[ "$AGY_SHA" =~ ^[0-9a-f]{128}$ ]] || { echo "Antigravity CLI manifest has no valid sha512" >&2; exit 1; }
-curl -fsSL --proto '=https' --proto-redir '=https' --url "$AGY_URL" -o "$AGY/agy.tar.gz"
-echo "$AGY_SHA  $AGY/agy.tar.gz" | sha512sum -c --quiet
-tar -xzf "$AGY/agy.tar.gz" -C "$AGY" antigravity
+agy_install() {
+  [ "$(uname -s)-$(uname -m)" = Linux-x86_64 ] || { echo "only the linux x64 build is probed"; return 1; }
+  local get=(curl -fsSL --proto '=https' --proto-redir '=https')
+  "${get[@]}" --url https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json -o "$AGY/manifest.tmp" || return 1
+  local url sha
+  url=$(node -p 'require(process.argv[1]).url' "$AGY/manifest.tmp") || return 1
+  sha=$(node -p 'require(process.argv[1]).sha512' "$AGY/manifest.tmp") || return 1
+  [[ "$sha" =~ ^[0-9a-f]{128}$ ]] || { echo "manifest has no valid sha512"; return 1; }
+  "${get[@]}" --url "$url" -o "$AGY/agy.tar.gz" || return 1
+  echo "$sha  $AGY/agy.tar.gz" | sha512sum -c --quiet || return 1
+  tar -xzf "$AGY/agy.tar.gz" -C "$AGY" antigravity || return 1
+  mv "$AGY/manifest.tmp" "$AGY/manifest.json"
+}
+agy_install > "$OUT/antigravity-cli-install.out" 2>&1 || echo "Antigravity CLI not installed, see $OUT/antigravity-cli-install.out" >&2
 
 # Fail early if the probe server itself cannot start
 node -e "require.resolve('@modelcontextprotocol/server/stdio', { paths: [process.argv[1]] })" "$HERE"
@@ -52,10 +60,13 @@ H=$(home codex); mkdir -p "$H/.codex"
 run codex env HOME="$H" CODEX_HOME="$H/.codex" timeout "$T" "$BIN/codex" exec --skip-git-repo-check \
   -c 'mcp_servers.probe.command="node"' -c "mcp_servers.probe.args=[$S,\"@openai/codex\"]" -c "mcp_servers.probe.env.PROBE_LOG=$L" "reply hi"
 
-# Antigravity CLI connects its MCP servers before it checks sign-in. The log path goes in the server config, as for Codex
-H=$(home agy); mkdir -p "$H/.gemini/config" "$H/ws"
-echo "{\"mcpServers\":{\"probe\":{\"command\":\"node\",\"args\":[$S,\"antigravity-cli\"],\"env\":{\"PROBE_LOG\":$L}}}}" > "$H/.gemini/config/mcp_config.json"
-(cd "$H/ws" && run antigravity-cli env HOME="$H" timeout "$T" "$AGY/antigravity" -p "reply hi")
+# Antigravity CLI connects its MCP servers before it checks sign-in. It is a closed binary, so it gets an empty environment:
+# no API keys from this shell. The log path goes in the server config, as for Codex
+if [ -x "$AGY/antigravity" ]; then
+  H=$(home agy); mkdir -p "$H/.gemini/config" "$H/ws"
+  echo "{\"mcpServers\":{\"probe\":{\"command\":\"node\",\"args\":[$S,\"antigravity-cli\"],\"env\":{\"PROBE_LOG\":$L}}}}" > "$H/.gemini/config/mcp_config.json"
+  (cd "$H/ws" && run antigravity-cli env -i PATH="$PATH" HOME="$H" timeout "$T" "$AGY/antigravity" -p "reply hi")
+fi
 
 # opencode
 H=$(home opencode); mkdir -p "$H/.config/opencode"
