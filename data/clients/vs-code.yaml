@@ -14,14 +14,15 @@ cells:
   protocol:
     value: 2025-11-25
     method: source
-    source: https://github.com/microsoft/vscode/blob/2c33b50b16c472efe58357d1d2a8a5414bc23fbf/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L116
+    source: https://github.com/microsoft/vscode/blob/661626d0e72f97806550790a98fb87116c9db825/src/vs/workbench/contrib/mcp/common/mcpServerRequestHandler.ts#L116
     evidence: |-
-      Source: at tag 1.144.0 the client sends `MCP.LATEST_PROTOCOL_VERSION`, which is **2025-11-25**.
+      Source: at tag 1.148.0 the client sends `MCP.LATEST_PROTOCOL_VERSION`, which is **2025-11-25**.
 
       - `mcpServerRequestHandler.ts:116` sends `protocolVersion: MCP.LATEST_PROTOCOL_VERSION`.
       - `platform/mcp/common/modelContextProtocol.ts:43` sets it to "2025-11-25".
-      - No 2026-07-28 in `src/vs`, and the 1.144 release notes name no protocol change.
-    checked: 2026-10-30
+      - The same line on [main](https://github.com/microsoft/vscode/blob/main/src/vs/platform/mcp/common/modelContextProtocol.ts#L43) still reads "2025-11-25" on 2026-11-27.
+      - A GitHub code search of the repo for "2026-07-28" found nothing.
+    checked: 2026-11-27
   code_mode:
     value: n
     method: source

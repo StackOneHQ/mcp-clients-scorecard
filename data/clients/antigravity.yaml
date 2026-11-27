@@ -1,7 +1,7 @@
 # Antigravity. Field reference: data/README.md. After editing, run npm run build.
 name: Antigravity
 group: app
-tier: S
+tier: A
 logo: icon-antigravity.svg
 website: https://antigravity.google
 docs: https://antigravity.google/docs/mcp
