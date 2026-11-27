@@ -186,7 +186,8 @@ test('the changelog dates board changes against the live data, with ids that ign
   live.clients = live.clients.filter(c => c !== gone);
   live.clients.push({ ...structuredClone(moved), slug: 'newcomer', name: 'Newcomer' });
   moved.tier = moved.tier === 'S' ? 'C' : 'S';
-  const k = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na')[0];
+  // A cell with no since date, whose upgrade the recheck itself reports
+  const k = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na' && !flipped.cells[k].since)[0];
   const was = flipped.cells[k].value;
   flipped.cells[k].value = was === 'y' ? 'n' : 'y';
   const today = changelog({ data: live }).filter(e => e.date === '2099-01-01').map(e => [e.kind, e.key]);
@@ -196,6 +197,22 @@ test('the changelog dates board changes against the live data, with ids that ign
     ['support', `recheck:${flipped.slug}:${k}=${was}>${flipped.cells[k].value}`],
     ['tier', `tier:${moved.slug}:${data.clients[1].tier}>${moved.tier}`],
   ].sort());
+});
+
+test('an upgrade with a since date shows on its release date, not on the day the board picked it up', () => {
+  const live = structuredClone(data);
+  live.as_of = '2099-01-01';
+  const c = live.clients.find(c => COLUMNS.some(([k]) => c.cells[k].value === 'n' && k !== 'list_changed'));
+  const [k] = COLUMNS.find(([k]) => c.cells[k].value === 'n' && k !== 'list_changed');
+  Object.assign(c.cells[k], { value: 'y', since: { date: '2098-06-01', version: '9.9', source: 'https://example.com/changelog' } });
+  const events = changelog({ data: live });
+  assert.ok(!events.some(e => e.date === '2099-01-01' && e.key.startsWith(`recheck:${c.slug}:`) && e.key.includes(`${k}=n>y`)));
+  assert.ok(events.some(e => e.date === '2098-06-01' && e.key === `ship:${c.slug}:${k}`));
+  // A downgrade is a finding of the recheck, so it keeps the check date
+  const d = live.clients.find(x => x !== c && COLUMNS.some(([j]) => x.cells[j].value === 'y' && x.cells[j].since));
+  const [j] = COLUMNS.find(([j]) => d.cells[j].value === 'y' && d.cells[j].since);
+  d.cells[j].value = 'p';
+  assert.ok(changelog({ data: live }).some(e => e.date === '2099-01-01' && e.key === `recheck:${d.slug}:${j}=y>p`));
 });
 
 test('every matrix row and the README table link the client website', () => {

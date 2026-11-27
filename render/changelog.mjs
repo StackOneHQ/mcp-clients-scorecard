@@ -1,6 +1,7 @@
 // The changelog: every dated event the data can vouch for, newest first. Built at every build from three sources:
 // - the weekly snapshots in data/history/: a client joins or leaves, a tier moves, a cell changes value (dated by the check)
-// - the `since` date on each supported cell: the release that shipped the feature (dated by the release note)
+// - the `since` date on each supported cell: the release that shipped the feature (dated by the release note), which
+//   replaces the check-dated move off no for that cell, so the timeline shows when the vendor shipped, not when we noticed
 // - data/features.yaml and data/meta.yaml: spec milestones and spec releases
 import fs from 'node:fs';
 import { ROOT, COLUMNS, TIERS } from './data.mjs';
@@ -14,6 +15,8 @@ export const RECENT_DAYS = 30;
 export const CHANGES_PAGE = 10;
 const LABEL = Object.fromEntries(COLUMNS);
 const WORD = { y: 'yes', p: 'partly', n: 'no', na: 'n/a' };
+const SHIPS = new Set(['y', 'p']);
+const NONE = new Set(['n', 'na']);
 const KIND_ORDER = Object.fromEntries(KINDS.map(([k], i) => [k, i]));
 
 // Committed snapshots before as_of, which load() never validates: check the fields the changelog reads
@@ -39,6 +42,7 @@ export function changelog({ data }) {
   const events = [];
   const live = new Set(data.clients.map(c => c.slug));
   const who = (slug, name) => ({ slug: live.has(slug) ? slug : null, name });
+  const dated = new Set(data.clients.flatMap(c => COLUMNS.filter(([k]) => c.cells[k].since && SHIPS.has(c.cells[k].value)).map(([k]) => `${c.slug}:${k}`)));
   // as_of compares against the live data, so the board is current even before the build writes its snapshot
   const snaps = [...readSnapshots(String(data.as_of)), JSON.parse(snapshot({ data }))];
   if (snaps.length) events.push({ date: snaps[0].as_of, kind: 'client', client: null, text: `Scorecard published with ${Object.keys(snaps[0].clients).length} clients`, source: null, key: 'publish' });
@@ -52,7 +56,8 @@ export function changelog({ data }) {
         const up = TIERS.indexOf(c.tier) < TIERS.indexOf(was.tier);
         events.push({ date, kind: 'tier', client: who(slug, c.name), text: `${up ? 'moves up' : 'moves down'} from ${was.tier} to ${c.tier} tier`, source: null, key: `tier:${slug}:${was.tier}>${c.tier}` });
       }
-      const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k])).map(([k]) => k);
+      // since dates the first release that shipped a cell, so that first move off no shows once, on the release date
+      const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k]) && !(NONE.has(was[k]) && SHIPS.has(c[k]) && dated.has(`${slug}:${k}`))).map(([k]) => k);
       const changes = changed.map(k => [k, flip(k, was[k], c[k])]);
       if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changes.map(([, t]) => t).join(', ')}`, source: null, key: `recheck:${slug}:${changed.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}`, changes });
     }
@@ -61,7 +66,7 @@ export function changelog({ data }) {
   for (const c of data.clients) {
     for (const [k, l] of COLUMNS) {
       const cell = c.cells[k], s = cell.since;
-      if (!s || (cell.value !== 'y' && cell.value !== 'p')) continue;
+      if (!s || !SHIPS.has(cell.value)) continue;
       events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${cell.value === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}`, feature: k });
     }
   }
