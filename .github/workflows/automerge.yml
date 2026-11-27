@@ -1,6 +1,6 @@
 # Merges the weekly data refresh pull requests that s2d2 opens, once s2d2 has verified them and every check passed.
-# s2d2 adds the automerge label only after it built and dogfooded the site and closed every review thread
-# (the PR gate in its weekly refresh workflow). Every other pull request waits for a person to merge it.
+# s2d2 leaves a review comment starting "s2d2 verified" on the head it built, dogfooded and reviewed, then adds the
+# automerge label (the PR gate in its weekly refresh workflow). Every other pull request waits for a person to merge it.
 # Nothing here checks out or runs code from the pull request: it reads and merges through the API only.
 name: automerge
 on:
@@ -52,12 +52,11 @@ jobs:
           [ "$(field .state)" = "open" ] || skip "#$PR is not open"
           jq -e '.labels | any(.name == "automerge")' <<<"$pr" >/dev/null || skip "#$PR has no automerge label"
           # Only s2d2 may vouch for the refresh: the newest automerge label event must be its own
-          last="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | [.actor.login, .created_at] | @tsv' | tail -n 1)"
-          actor="${last%%$'\t'*}"
+          actor="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | .actor.login' | tail -n 1)"
           [ "$actor" = "s2d2-agent[bot]" ] || skip "the automerge label on #$PR was added by ${actor:-nobody}, not s2d2"
-          # The label vouches for the commit s2d2 verified: a commit made after it needs a new label
-          committed="$(gh api "repos/$REPO/commits/$SHA" --jq '.commit.committer.date')"
-          [[ "${last#*$'\t'}" > "$committed" ]] || skip "$SHA was committed after s2d2 labelled #$PR"
+          # s2d2 vouches for one commit: its newest review on the PR is a comment that starts "s2d2 verified" on this exact SHA
+          verified="$(gh api --paginate "repos/$REPO/pulls/$PR/reviews?per_page=100" --jq '.[] | select(.user.login == "s2d2-agent[bot]") | [.commit_id, (.body | startswith("s2d2 verified"))] | @tsv' | tail -n 1)"
+          [ "$verified" = "$SHA"$'\t'"true" ] || skip "s2d2 has not verified $SHA"
           # A refresh edits data and the files built from it, never code, workflows or dependencies
           # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
           [ "$(field .changed_files)" -le 3000 ] || skip "#$PR changes more files than the API lists"
