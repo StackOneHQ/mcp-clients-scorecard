@@ -59,11 +59,11 @@ jobs:
           # A refresh edits data and the files built from it, never code, workflows or dependencies
           # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
           [ "$(field .changed_files)" -le 3000 ] || skip "#$PR changes more files than the API lists"
-          # One line per file: its path, then its old path when it was renamed
-          files="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq '.[] | [.filename, .previous_filename // empty] | join(" ")')"
-          [ "$(grep -c . <<<"$files")" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
-          files="$(tr ' ' '\n' <<<"$files")"
-          bad="$(grep -vE '^(data/.+\.(yaml|json)|assets/(badges/[^/]+\.svg|og/[^/]+\.png|logos/[^/]+\.(svg|png)|[^/]+\.png|images\.json)|methodology/[^/]+\.md|README\.md|EVIDENCE\.md)$' <<<"$files" || [ $? -eq 1 ])"
+          listed="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq 'length' | awk '{n += $1} END {print n + 0}')"
+          [ "$listed" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
+          # Each path is checked whole in jq, the old path of a rename too, so no file name can split into allowed ones
+          allowed='\\A(data/.+\\.(yaml|json)|assets/(badges/[^/]+\\.svg|og/[^/]+\\.png|logos/[^/]+\\.(svg|png)|[^/]+\\.png|images\\.json)|methodology/[^/]+\\.md|README\\.md|EVIDENCE\\.md)\\z'
+          bad="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq ".[] | .filename, (.previous_filename // empty) | select(test(\"$allowed\") | not) | tojson")"
           [ -z "$bad" ] || skip "#$PR touches files outside data: ${bad//$'\n'/ }"
           # Every check on the head commit finished green, this job excepted, and the check workflow is among them
           runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // "")] | @tsv')"
