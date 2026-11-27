@@ -23,7 +23,7 @@ BIN="$WORK/clients/node_modules/.bin"
 AGY="$WORK/clients/antigravity-cli"; mkdir -p "$AGY"
 agy_install() {
   [ "$(uname -s)-$(uname -m)" = Linux-x86_64 ] || { echo "only the linux x64 build is probed"; return 1; }
-  local get=(curl -fsSL --proto '=https' --proto-redir '=https')
+  local get=(curl -fsSL --proto '=https' --proto-redir '=https' --connect-timeout 20 --max-time 300)
   "${get[@]}" --url https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json -o "$AGY/manifest.tmp" || return 1
   local url sha
   url=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).url' "$AGY/manifest.tmp") || return 1

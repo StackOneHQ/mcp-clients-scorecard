@@ -108,14 +108,14 @@ cells:
       - The binary handles `elicitation/create`.
     checked: 2026-11-27
   list_changed:
-    value: y
+    value: p
     method: probe
     source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
     evidence: |-
-      Own probe of 1.5.18: after `notifications/tools/list_changed` the CLI **called `tools/list` again** and picked up the new tool.
+      Own probe of 1.5.18: the CLI subscribes to tool changes, but it **re-listed after the notice in only 5 of 11 runs**.
 
       - It opened `subscriptions/listen` with `toolsListChanged: true` every time.
-      - In 4 of 7 runs it re-listed when the notice arrived on that stream and wrote the new tool's schema file, `ping_1.json`, next to `ping.json`.
-      - In the other 3 no re-list followed within 45 to 60 seconds. The probe server sends its notice the moment the stream opens, so these look like a race at subscribe time; a tool added later in a session is the normal case.
-      - The binary is closed source. Google says the CLI [shares the App's agent harness](https://antigravity.google/blog/introducing-google-antigravity-cli), and the App's own probe re-listed on both handshakes.
+      - When it re-listed, it wrote the new tool's schema file, `ping_1.json`, next to `ping.json`.
+      - In the other 6 no `tools/list` followed within 30 to 60 seconds, including 3 of 4 runs where the tool was added 8 seconds after subscribing.
+      - The binary is closed source, so the cause is not known. The Antigravity App's probe re-listed every time.
     checked: 2026-11-27
