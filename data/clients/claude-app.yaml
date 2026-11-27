@@ -22,6 +22,7 @@ cells:
       - Desktop extensions on the built-in Node get the same check from a separate era probe. Other local stdio servers start on 2025-11-25 (*"exec lane pinned"*).
       - A remote feature flag (`1942337209`) turns all of this back to 2025-11-25. It is off by default.
       - *Not* probed live: the app starts MCP servers only after sign-in. The connector docs still publish no version.
+      - This is the Desktop app, as in the Code mode cell. Claude in the browser connects to remote connectors from Anthropic's servers, which publish no version.
     checked: 2026-11-27
     fallback: 2025-11-25
   code_mode:
