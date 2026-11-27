@@ -7,7 +7,7 @@ logo: gh-lmstudio-ai.png
 website: https://lmstudio.ai
 docs: https://lmstudio.ai/docs/app/mcp
 repo: https://github.com/lmstudio-ai/lmstudio-bug-tracker
-version_checked: "0.4.29"
+version_checked: "0.4.28"
 tracker:
   repo: lmstudio-ai/lmstudio-bug-tracker
   mcp_in_title: true

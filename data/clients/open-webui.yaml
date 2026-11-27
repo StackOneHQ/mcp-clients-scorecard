@@ -6,7 +6,7 @@ logo: gh-open-webui.png
 website: https://openwebui.com
 docs: https://docs.openwebui.com/features/extensibility/mcp/
 repo: https://github.com/open-webui/open-webui
-version_checked: "0.13.5"
+version_checked: "0.13.4"
 tracker:
   repo: open-webui/open-webui
   mcp_in_title: true

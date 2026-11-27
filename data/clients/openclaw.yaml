@@ -6,7 +6,7 @@ logo: gh-openclaw.png
 website: https://openclaw.ai
 docs: https://docs.openclaw.ai/cli/mcp
 repo: https://github.com/openclaw/openclaw
-version_checked: "2026.11.10"
+version_checked: "2026.11.7"
 tracker:
   repo: openclaw/openclaw
   mcp_in_title: true

@@ -7,7 +7,7 @@ logo: icon-goose.svg
 website: https://goose-docs.ai
 docs: https://goose-docs.ai/docs
 repo: https://github.com/aaif-goose/goose
-version_checked: 1.61.1
+version_checked: 1.60.2
 tracker:
   repo: aaif-goose/goose
   mcp_in_title: true

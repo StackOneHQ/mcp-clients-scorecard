@@ -17,8 +17,8 @@ cells:
     method: probe
     source: https://github.com/openai/codex/blob/ccf9be8cc458bd6b8336fe84d68d8893f2691a5e/codex-rs/features/src/lib.rs#L1779-L1784
     evidence: |-
-      Live probe of 0.171.0 on 2026-11-23: `initialize` carries **2025-06-18**. The `mcp_2026_07_28` feature is still **under development and off by default** (`features/src/lib.rs` at rust-v0.171.0).
-    checked: 2026-11-23
+      Live probe of 0.172.0 on 2026-11-27: `initialize` carries **2025-06-18**. The `mcp_2026_07_28` feature was still **under development and off by default** at rust-v0.171.0 (`features/src/lib.rs`).
+    checked: 2026-11-27
   code_mode:
     value: p
     method: docs

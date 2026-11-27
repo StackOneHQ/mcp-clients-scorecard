@@ -30,10 +30,6 @@ cells:
       - The 2.1.325 bundle still refuses it when the server-side gate "isn't open to your account yet".
       - The 2.1.319 bundle already carried it behind the same flag, so the first release is not dated.
     checked: 2026-11-16
-    since:
-      date: 2026-11-12
-      version: "2.1.323"
-      source: https://github.com/anthropics/claude-code/releases/tag/v2.1.323
   tool_search:
     value: y
     label: Keyword

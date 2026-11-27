@@ -6,7 +6,7 @@ logo: gh-kirodotdev.png
 website: https://kiro.dev
 docs: https://kiro.dev/docs/mcp/
 repo: https://github.com/kirodotdev/Kiro
-version_checked: 3.6.2
+version_checked: 3.5.0
 tracker:
   repo: kirodotdev/Kiro
   mcp_in_title: true

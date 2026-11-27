@@ -17,11 +17,11 @@ cells:
     method: probe
     source: https://github.com/google-gemini/gemini-cli/blob/8468962efadfbcdfd988a8fd04af4110a68c886e/packages/core/package.json#L34
     evidence: |-
-      Live probe of 0.70.0 on 2026-11-23 negotiated **2025-11-25**, where 0.68.0 asked for 2025-06-18.
+      Live probe of 0.71.1 on 2026-11-27 negotiated **2025-11-25**, as 0.70.0 did; 0.68.0 asked for 2025-06-18.
 
       - v0.70.0 now pins `@modelcontextprotocol/sdk` 1.32.2 (`packages/core/package.json:34`), up from 1.23.0 in v0.68.0.
       - `packages/core/src/tools/mcp-client.ts` and `packages/core/src/mcp/oauth-provider.ts` are byte-identical at v0.68.0 and v0.70.0, so the other cells carry over.
-    checked: 2026-11-23
+    checked: 2026-11-27
   code_mode:
     value: n
     method: source

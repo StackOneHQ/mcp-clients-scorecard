@@ -6,7 +6,7 @@ logo: gh-Kilo-Org.png
 website: https://kilo.ai
 docs: https://kilo.ai/docs/automate/mcp/using-in-kilo-code
 repo: https://github.com/Kilo-Org/kilocode
-version_checked: 7.8.40
+version_checked: 7.8.32
 tracker:
   repo: Kilo-Org/kilocode
   mcp_in_title: true

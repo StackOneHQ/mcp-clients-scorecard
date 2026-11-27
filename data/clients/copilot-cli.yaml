@@ -17,8 +17,8 @@ cells:
     method: probe
     source: https://github.com/github/copilot-cli/blob/main/changelog.md
     evidence: |-
-      Live probe of 1.0.114 on 2026-11-23: `server/discover` carries **2026-07-28**. Changelog 1.0.81 ships MCP 2026-07-28 support.
-    checked: 2026-11-23
+      Live probe of 1.0.117 on 2026-11-27: `server/discover` carries **2026-07-28**. Changelog 1.0.81 ships MCP 2026-07-28 support.
+    checked: 2026-11-27
   code_mode:
     value: n
     method: changelog

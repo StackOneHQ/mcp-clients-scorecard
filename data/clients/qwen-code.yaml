@@ -6,7 +6,7 @@ logo: gh-QwenLM.png
 website: https://qwenlm.github.io/qwen-code-docs/
 docs: https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/
 repo: https://github.com/QwenLM/qwen-code
-version_checked: "0.28.7"
+version_checked: "0.28.3"
 npm: "@qwen-code/qwen-code"
 tracker:
   repo: QwenLM/qwen-code
@@ -64,8 +64,8 @@ cells:
       - Terminal and headless sessions show the fallback text.
     checked: 2026-11-22
     since:
-      date: 2026-08-25
-      version: "0.22.1"
+      date: 2026-08-26
+      version: "0.22.2"
       source: https://github.com/QwenLM/qwen-code/releases/tag/v0.22.2
   tasks:
     value: n
