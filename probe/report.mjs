@@ -8,7 +8,12 @@ if (!fs.existsSync(logFile)) {
   process.exit(1);
 }
 const lines = fs.readFileSync(logFile, 'utf8').trim().split('\n').filter(Boolean).map(l => JSON.parse(l));
-const pkgs = ['@anthropic-ai/claude-code', '@github/copilot', '@openai/codex', '@google/gemini-cli', 'opencode-ai', '@factory/cli'];
+const pkgs = ['@anthropic-ai/claude-code', '@github/copilot', '@openai/codex', 'opencode-ai', '@factory/cli', 'antigravity-cli'];
+// npm clients carry their version in package.json; run.sh keeps the installer manifest of the others
+const versionOf = pkg => {
+  const file = [`${prefix}/node_modules/${pkg}/package.json`, `${prefix}/${pkg}/manifest.json`].find(f => fs.existsSync(f));
+  return file ? JSON.parse(fs.readFileSync(file, 'utf8')).version : null;
+};
 // What a declared capabilities object means for the scorecard columns
 const EXT_TASKS = 'io.modelcontextprotocol/tasks';
 const EXT_UI = 'io.modelcontextprotocol/ui';
@@ -29,8 +34,7 @@ const derive = c => {
 };
 const results = {};
 for (const pkg of pkgs) {
-  const pj = `${prefix}/node_modules/${pkg}/package.json`;
-  const version = fs.existsSync(pj) ? JSON.parse(fs.readFileSync(pj, 'utf8')).version : null;
+  const version = versionOf(pkg);
   const mine = lines.filter(l => l.label === pkg);
   const requested = [];
   let clientInfo = null;

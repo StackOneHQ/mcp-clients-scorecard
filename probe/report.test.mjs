@@ -131,3 +131,14 @@ test('a tool list from a restarted server process is not a relist', () => {
   assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(2)]), { listened: null, notified: true, relisted: false });
   assert.deepEqual(liveTools([...initialize('@openai/codex', {}), list(1), sent, list(1)]), { listened: null, notified: true, relisted: true });
 });
+
+test('a client installed from its vendor manifest reports the manifest version', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-'));
+  fs.mkdirSync(path.join(dir, 'antigravity-cli'));
+  fs.writeFileSync(path.join(dir, 'antigravity-cli', 'manifest.json'), JSON.stringify({ version: '1.5.18', url: 'https://example.com/a.tar.gz', sha512: 'f'.repeat(128) }));
+  fs.writeFileSync(path.join(dir, 'log.jsonl'), JSON.stringify({ label: 'antigravity-cli', method: 'server/discover', params: { _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' } } }) + '\n' + JSON.stringify({ label: 'antigravity-cli', reply: ['2026-07-28'] }) + '\n');
+  execFileSync('node', [new URL('report.mjs', import.meta.url).pathname, path.join(dir, 'log.jsonl'), dir, path.join(dir, 'out.json')], { stdio: 'pipe' });
+  const r = JSON.parse(fs.readFileSync(path.join(dir, 'out.json'), 'utf8')).results['antigravity-cli'];
+  assert.equal(r.version, '1.5.18');
+  assert.equal(r.negotiated, '2026-07-28');
+});

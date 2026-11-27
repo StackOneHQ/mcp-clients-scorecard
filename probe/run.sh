@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install each CLI at its npm latest, point it at server.cjs, and record the handshake it sends.
+# Install each CLI at its latest release (npm, or the vendor's installer manifest for Antigravity CLI), point it at server.cjs, and record the handshake it sends.
 # Writes probe/results.json. Each client runs with its own empty HOME, so no local config leaks in.
 # Some clients send the handshake before they check credentials, others need a signed-in account or API key in the environment.
 # Each client's output goes to $PROBE_OUT/<client>.out (default: a temp dir that is printed at the end).
@@ -14,9 +14,19 @@ export SRV="$HERE/server.cjs"
 T=${PROBE_TIMEOUT:-90}
 
 npm install --prefix "$HERE" --no-audit --no-fund --silent
-PKGS=(@anthropic-ai/claude-code @github/copilot @openai/codex @google/gemini-cli opencode-ai @factory/cli)
+PKGS=(@anthropic-ai/claude-code @github/copilot @openai/codex opencode-ai @factory/cli)
 npm install --prefix "$WORK/clients" --no-audit --no-fund --silent $(printf '%s@latest ' "${PKGS[@]}")
 BIN="$WORK/clients/node_modules/.bin"
+
+# Antigravity CLI is not on npm: fetch the build its installer (antigravity.google/cli/install.sh) picks, and check its sha512
+AGY="$WORK/clients/antigravity-cli"; mkdir -p "$AGY"
+curl -fsSL https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json -o "$AGY/manifest.json"
+AGY_URL=$(node -p 'require(process.argv[1]).url' "$AGY/manifest.json")
+AGY_SHA=$(node -p 'require(process.argv[1]).sha512' "$AGY/manifest.json")
+[[ "$AGY_SHA" =~ ^[0-9a-f]{128}$ ]] || { echo "Antigravity CLI manifest has no valid sha512" >&2; exit 1; }
+curl -fsSL --proto '=https' --proto-redir '=https' --url "$AGY_URL" -o "$AGY/agy.tar.gz"
+echo "$AGY_SHA  $AGY/agy.tar.gz" | sha512sum -c --quiet
+tar -xzf "$AGY/agy.tar.gz" -C "$AGY" antigravity
 
 # Fail early if the probe server itself cannot start
 node -e "require.resolve('@modelcontextprotocol/server/stdio', { paths: [process.argv[1]] })" "$HERE"
@@ -42,12 +52,10 @@ H=$(home codex); mkdir -p "$H/.codex"
 run codex env HOME="$H" CODEX_HOME="$H/.codex" timeout "$T" "$BIN/codex" exec --skip-git-repo-check \
   -c 'mcp_servers.probe.command="node"' -c "mcp_servers.probe.args=[$S,\"@openai/codex\"]" -c "mcp_servers.probe.env.PROBE_LOG=$L" "reply hi"
 
-# Gemini CLI
-H=$(home gemini); mkdir -p "$H/.gemini"
-echo "{\"mcpServers\":{\"probe\":{\"command\":\"node\",\"args\":[$S,\"@google/gemini-cli\"]}}}" > "$H/.gemini/settings.json"
-# Gemini disables MCP servers in untrusted folders, so trust the empty home it runs in
-H="$H" node -e 'process.stdout.write(JSON.stringify({ [process.env.H]: "TRUST_FOLDER" }))' > "$H/.gemini/trustedFolders.json"
-(cd "$H" && run gemini env HOME="$H" GEMINI_CLI_TRUSTED_FOLDERS_PATH="$H/.gemini/trustedFolders.json" timeout "$T" "$BIN/gemini" mcp list)
+# Antigravity CLI connects its MCP servers before it checks sign-in. The log path goes in the server config, as for Codex
+H=$(home agy); mkdir -p "$H/.gemini/config" "$H/ws"
+echo "{\"mcpServers\":{\"probe\":{\"command\":\"node\",\"args\":[$S,\"antigravity-cli\"],\"env\":{\"PROBE_LOG\":$L}}}}" > "$H/.gemini/config/mcp_config.json"
+(cd "$H/ws" && run antigravity-cli env HOME="$H" timeout "$T" "$AGY/antigravity" -p "reply hi")
 
 # opencode
 H=$(home opencode); mkdir -p "$H/.config/opencode"

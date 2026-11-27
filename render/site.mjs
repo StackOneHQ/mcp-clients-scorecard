@@ -171,7 +171,7 @@ const READING = [
   [null, '/blog/mcp-token-optimization/', 'MCP token optimization: four approaches compared'],
 ];
 // stackone.com setup guides for clients on this board
-const SO_GUIDE = { chatgpt: 'chatgpt', 'claude-app': 'claude', 'claude-code': 'claude-code', codex: 'codex', cursor: 'cursor', 'gemini-cli': 'gemini-cli', goose: 'goose', 'vs-code': 'vscode' };
+const SO_GUIDE = { chatgpt: 'chatgpt', 'claude-app': 'claude', 'claude-code': 'claude-code', codex: 'codex', cursor: 'cursor', goose: 'goose', 'vs-code': 'vscode' };
 
 function home(data, events, faq) {
   const perTier = Object.fromEntries(TIERS.map(t => [t, data.clients.filter(c => c.tier === t).length]));

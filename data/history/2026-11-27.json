@@ -40,6 +40,22 @@
       "code_mode": "n",
       "tool_search": "y"
     },
+    "antigravity-cli": {
+      "name": "Antigravity CLI",
+      "group": "cli",
+      "tier": "A",
+      "protocol": "2026-07-28",
+      "apps": "n",
+      "tasks": "n",
+      "events": "n",
+      "skills": "n",
+      "cimd": "y",
+      "id_jag": "n",
+      "elicitation": "y",
+      "list_changed": "y",
+      "code_mode": "n",
+      "tool_search": "y"
+    },
     "auggie": {
       "name": "Auggie",
       "group": "cli",
@@ -199,22 +215,6 @@
       "list_changed": "y",
       "code_mode": "p",
       "tool_search": "y"
-    },
-    "gemini-cli": {
-      "name": "Gemini CLI",
-      "group": "cli",
-      "tier": "C",
-      "protocol": "2025-11-25",
-      "apps": "na",
-      "tasks": "n",
-      "events": "n",
-      "skills": "n",
-      "cimd": "n",
-      "id_jag": "n",
-      "elicitation": "n",
-      "list_changed": "y",
-      "code_mode": "n",
-      "tool_search": "n"
     },
     "goose": {
       "name": "goose",
