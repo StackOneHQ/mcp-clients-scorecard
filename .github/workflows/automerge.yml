@@ -72,6 +72,10 @@ jobs:
           # Every check on the head commit finished green, this job excepted, and the check workflow is among them
           runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // ""), .app.slug] | @tsv')"
           grep -qP '^check\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
+          # build runs on every push; only its own regenerate commit, pushed with GITHUB_TOKEN, starts no build of its own
+          if [ "$(gh api "repos/$REPO/commits/$SHA" --jq '.author.login // ""')" != "github-actions[bot]" ]; then
+            grep -qP '^build\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the build workflow has not passed on $SHA"
+          fi
           red="$(awk -F'\t' '$2 != "completed" || ($3 != "success" && $3 != "skipped" && $3 != "neutral")' <<<"$runs")"
           [ -z "$red" ] || skip "checks not green on $SHA: ${red//$'\n'/ }"
           stale="$(gh api --paginate "repos/$REPO/commits/$SHA/status?per_page=100" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
