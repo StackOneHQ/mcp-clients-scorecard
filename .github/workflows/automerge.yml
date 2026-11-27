@@ -52,8 +52,12 @@ jobs:
           [ "$(field .state)" = "open" ] || skip "#$PR is not open"
           jq -e '.labels | any(.name == "automerge")' <<<"$pr" >/dev/null || skip "#$PR has no automerge label"
           # Only s2d2 may vouch for the refresh: the newest automerge label event must be its own
-          actor="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | .actor.login' | tail -n 1)"
+          last="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | [.actor.login, .created_at] | @tsv' | tail -n 1)"
+          actor="${last%%$'\t'*}"
           [ "$actor" = "s2d2-agent[bot]" ] || skip "the automerge label on #$PR was added by ${actor:-nobody}, not s2d2"
+          # The label vouches for the commit s2d2 verified: a commit made after it needs a new label
+          committed="$(gh api "repos/$REPO/commits/$SHA" --jq '.commit.committer.date')"
+          [[ "${last#*$'\t'}" > "$committed" ]] || skip "$SHA was committed after s2d2 labelled #$PR"
           # A refresh edits data and the files built from it, never code, workflows or dependencies
           # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
           [ "$(field .changed_files)" -le 3000 ] || skip "#$PR changes more files than the API lists"
@@ -61,7 +65,7 @@ jobs:
           files="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq '.[] | [.filename, .previous_filename // empty] | join(" ")')"
           [ "$(grep -c . <<<"$files")" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
           files="$(tr ' ' '\n' <<<"$files")"
-          bad="$(grep -vE '^(data/|assets/|methodology/[^/]+\.md$|README\.md$|EVIDENCE\.md$)' <<<"$files" || [ $? -eq 1 ])"
+          bad="$(grep -vE '^(data/.+\.(yaml|json)|assets/(badges/[^/]+\.svg|og/[^/]+\.png|logos/[^/]+\.(svg|png)|[^/]+\.png|images\.json)|methodology/[^/]+\.md|README\.md|EVIDENCE\.md)$' <<<"$files" || [ $? -eq 1 ])"
           [ -z "$bad" ] || skip "#$PR touches files outside data: ${bad//$'\n'/ }"
           # Every check on the head commit finished green, this job excepted, and the check workflow is among them
           runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // "")] | @tsv')"
