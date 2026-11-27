@@ -203,8 +203,12 @@ test('the changelog dates board changes against the live data, with ids that ign
 test('an upgrade with a since date shows on its release date, not on the day the board picked it up', () => {
   const live = structuredClone(data);
   live.as_of = '2099-01-01';
-  const c = live.clients.find(c => COLUMNS.some(([k]) => c.cells[k].value === 'n' && k !== 'list_changed'));
-  const [k] = COLUMNS.find(([k]) => c.cells[k].value === 'n' && k !== 'list_changed');
+  // A cell that is no today and was never supported in a committed snapshot, so the upgrade is its first support
+  const history = fs.readdirSync(new URL('../data/history/', import.meta.url)).map(f => JSON.parse(fs.readFileSync(new URL(`../data/history/${f}`, import.meta.url), 'utf8')));
+  const never = (slug, k) => history.every(h => !['y', 'p'].includes(h.clients[slug]?.[k]));
+  const fresh = ([k]) => k !== 'list_changed' && k !== 'protocol';
+  const c = live.clients.find(c => COLUMNS.some(col => fresh(col) && c.cells[col[0]].value === 'n' && never(c.slug, col[0])));
+  const [k] = COLUMNS.find(col => fresh(col) && c.cells[col[0]].value === 'n' && never(c.slug, col[0]));
   Object.assign(c.cells[k], { value: 'y', since: { date: '2098-06-01', version: '9.9', source: 'https://example.com/changelog' } });
   const events = changelog({ data: live });
   assert.ok(!events.some(e => e.date === '2099-01-01' && e.key.startsWith(`recheck:${c.slug}:`) && e.key.includes(`${k}=n>y`)));

@@ -11,6 +11,10 @@ on:
   pull_request_target:
     types: [labeled]
 permissions: {}
+# One evaluation per branch at a time; a newer event replaces a queued one and re-checks everything
+concurrency:
+  group: automerge-${{ github.event.pull_request.head.ref || github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
 jobs:
   automerge:
     if: github.event_name == 'pull_request_target' || github.event.workflow_run.conclusion == 'success'
@@ -59,24 +63,25 @@ jobs:
           # A refresh edits data and the files built from it, never code, workflows or dependencies
           # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
           [ "$(field .changed_files)" -le 3000 ] || skip "#$PR changes more files than the API lists"
-          listed="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq 'length' | awk '{n += $1} END {print n + 0}')"
-          [ "$listed" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
-          # Each path is checked whole in jq, the old path of a rename too, so no file name can split into allowed ones
-          allowed='\\A(data/.+\\.(yaml|json)|assets/(badges/[^/]+\\.svg|og/[^/]+\\.png|logos/[^/]+\\.(svg|png)|[^/]+\\.png|images\\.json)|methodology/[^/]+\\.md|README\\.md|EVIDENCE\\.md)\\z'
-          bad="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq ".[] | .filename, (.previous_filename // empty) | select(test(\"$allowed\") | not) | tojson")"
+          files="$(gh api --paginate --slurp "repos/$REPO/pulls/$PR/files?per_page=100")"
+          [ "$(jq '[.[][]] | length' <<<"$files")" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
+          # Each path is checked whole, the old path of a rename too, so no file name can split into allowed ones
+          allowed='\A(data/.+\.(yaml|json)|assets/(badges/[^/]+\.svg|og/[^/]+\.png|logos/[^/]+\.(svg|png)|[^/]+\.png|images\.json)|methodology/[^/]+\.md|README\.md|EVIDENCE\.md)\z'
+          bad="$(jq -r --arg re "$allowed" '.[][] | .filename, (.previous_filename // empty) | select(test($re) | not) | tojson' <<<"$files")"
           [ -z "$bad" ] || skip "#$PR touches files outside data: ${bad//$'\n'/ }"
           # Every check on the head commit finished green, this job excepted, and the check workflow is among them
           runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // ""), .app.slug] | @tsv')"
           grep -qP '^check\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
           red="$(awk -F'\t' '$2 != "completed" || ($3 != "success" && $3 != "skipped" && $3 != "neutral")' <<<"$runs")"
           [ -z "$red" ] || skip "checks not green on $SHA: ${red//$'\n'/ }"
-          stale="$(gh api "repos/$REPO/commits/$SHA/status" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
+          stale="$(gh api --paginate "repos/$REPO/commits/$SHA/status?per_page=100" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
           [ -z "$stale" ] || skip "commit statuses not green on $SHA: $stale"
           threads="$(gh api graphql --paginate --slurp -F owner="${REPO%/*}" -F name="${REPO#*/}" -F n="$PR" -f query='query($owner:String!,$name:String!,$n:Int!,$endCursor:String){repository(owner:$owner,name:$name){pullRequest(number:$n){reviewDecision reviewThreads(first:100,after:$endCursor){nodes{isResolved} pageInfo{hasNextPage endCursor}}}}}')"
           [ "$(jq '[.[].data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not)] | length' <<<"$threads")" = "0" ] || skip "#$PR has unresolved review threads"
           [ "$(jq -r '.[0].data.repository.pullRequest.reviewDecision // ""' <<<"$threads")" != "CHANGES_REQUESTED" ] || skip "#$PR has changes requested"
           # Two runs can race to the same pull request: one that finds it already merged has nothing left to do
           if ! gh api -X PUT "repos/$REPO/pulls/$PR/merge" -f sha="$SHA" -f merge_method=squash >/dev/null; then
+            sleep 5
             [ "$(gh api "repos/$REPO/pulls/$PR" --jq .merged)" = "true" ] && skip "#$PR is already merged"
             exit 1
           fi
