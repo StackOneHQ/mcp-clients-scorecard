@@ -38,6 +38,7 @@ The full rules and an example are in [data/README.md#writing-evidence](data/READ
 - `.github/workflows/build.yml` runs on every push, `main` included. It rebuilds the tables and badges, redraws with Chrome any chart whose HTML changed, commits any change back to the branch, then runs `npm run check` and `npm test`.
 - Deploys are not in GitHub Actions: Cloudflare Workers Builds runs `npm ci && npm run site` and `npx wrangler deploy` on every push to `main` (README.md#website). That build has no Chrome, which is why the share cards are committed. On `main`, the `live` job in `build.yml` then checks that https://mcpclients.dev/version.json reports the commit the build job tested, or a newer one.
 - `.github/workflows/check.yml` runs `npm run check` and `npm test` on pull requests. A pull request with stale charts fails it.
+- `.github/workflows/automerge.yml` squash-merges a weekly refresh pull request (branch `data/refresh-YYYY-MM-DD`) only when `s2d2-agent[bot]` opened it, s2d2 itself added the `automerge` label, it changes only data YAML and JSON, the generated charts, badges, share cards and logos in `assets/`, `methodology/*.md`, `README.md` and `EVIDENCE.md`, s2d2's newest review on the PR is a comment starting `s2d2 verified` on the head commit, every check on the head commit is green and no review thread is open. It reads and merges through the API and never runs code from the branch. Every other pull request waits for a person.
 
 ## Other commands
 

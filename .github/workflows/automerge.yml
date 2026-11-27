@@ -1,0 +1,96 @@
+# Merges the weekly data refresh pull requests that s2d2 opens, once s2d2 has verified them and every check passed.
+# s2d2 leaves a review comment starting "s2d2 verified" on the head it built, dogfooded and reviewed, then adds the
+# automerge label (the PR gate in its weekly refresh workflow). Every other pull request waits for a person to merge it.
+# Nothing here checks out or runs code from the pull request: it reads and merges through the API only.
+name: automerge
+on:
+  # Whichever of the two finishes last on the head commit is the one that finds every check green
+  workflow_run:
+    workflows: [check, build]
+    types: [completed]
+  pull_request_target:
+    types: [labeled]
+permissions: {}
+# One evaluation per branch at a time; a newer event replaces a queued one and re-checks everything
+concurrency:
+  group: automerge-${{ github.event.pull_request.head.ref || github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+jobs:
+  automerge:
+    if: github.event_name == 'pull_request_target' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      # The label events and the check runs of the head commit
+      issues: read
+      checks: read
+      statuses: read
+      # Starts the build workflow on main after the merge: a GITHUB_TOKEN merge starts no push run by itself
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      - name: Merge a verified s2d2 refresh
+        run: |
+          set -euo pipefail
+          skip() { echo "Not merging: $1"; exit 0; }
+          if [ -z "$PR" ]; then
+            [[ "$BRANCH" =~ ^data/refresh-[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || skip "check ran on $BRANCH"
+            PR="$(gh api "repos/$REPO/pulls?state=open&head=${REPO%/*}:$BRANCH" --jq '.[0].number // empty')"
+            [ -n "$PR" ] || skip "no open pull request for $BRANCH"
+          fi
+          pr="$(gh api "repos/$REPO/pulls/$PR")"
+          field() { jq -r "$1" <<<"$pr"; }
+          SHA="$(field .head.sha)"
+          [ "$(field .user.login)" = "s2d2-agent[bot]" ] || skip "#$PR was not opened by s2d2"
+          [ "$(field .head.repo.full_name)" = "$REPO" ] || skip "#$PR comes from a fork"
+          [ "$(field .base.ref)" = "main" ] || skip "#$PR does not target main"
+          [[ "$(field .head.ref)" =~ ^data/refresh-[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || skip "#$PR is not a data refresh branch"
+          [ "$(field .draft)" = "false" ] || skip "#$PR is a draft"
+          [ "$(field .state)" = "open" ] || skip "#$PR is not open"
+          jq -e '.labels | any(.name == "automerge")' <<<"$pr" >/dev/null || skip "#$PR has no automerge label"
+          # Only s2d2 may vouch for the refresh: the newest automerge label event must be its own
+          actor="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | .actor.login' | tail -n 1)"
+          [ "$actor" = "s2d2-agent[bot]" ] || skip "the automerge label on #$PR was added by ${actor:-nobody}, not s2d2"
+          # s2d2 vouches for one commit: its newest review on the PR is a comment that starts "s2d2 verified" on this exact SHA
+          verified="$(gh api --paginate "repos/$REPO/pulls/$PR/reviews?per_page=100" --jq '.[] | select(.user.login == "s2d2-agent[bot]") | [.commit_id, (.body // "" | startswith("s2d2 verified"))] | @tsv' | tail -n 1)"
+          [ "$verified" = "$SHA"$'\t'"true" ] || skip "s2d2 has not verified $SHA"
+          # A refresh edits data and the files built from it, never code, workflows or dependencies
+          # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
+          [ "$(field .changed_files)" -le 3000 ] || skip "#$PR changes more files than the API lists"
+          files="$(gh api --paginate --slurp "repos/$REPO/pulls/$PR/files?per_page=100")"
+          [ "$(jq '[.[][]] | length' <<<"$files")" -eq "$(field .changed_files)" ] || skip "could not list every file of #$PR"
+          # Each path is checked whole, the old path of a rename too, so no file name can split into allowed ones
+          allowed='\A(data/.+\.(yaml|json)|assets/(badges/[^/]+\.svg|og/[^/]+\.png|logos/[^/]+\.(svg|png)|[^/]+\.png|images\.json)|methodology/[^/]+\.md|README\.md|EVIDENCE\.md)\z'
+          bad="$(jq -r --arg re "$allowed" '.[][] | .filename, (.previous_filename // empty) | select(test($re) | not) | tojson' <<<"$files")"
+          [ -z "$bad" ] || skip "#$PR touches files outside data: ${bad//$'\n'/ }"
+          # Every check on the head commit finished green, this job excepted, and the check workflow is among them
+          runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // ""), .app.slug] | @tsv')"
+          grep -qP '^check\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
+          # build runs on every push; only its own regenerate commit, pushed with GITHUB_TOKEN, starts no build of its own
+          if [ "$(gh api "repos/$REPO/commits/$SHA" --jq '.author.login // ""')" != "github-actions[bot]" ]; then
+            grep -qP '^build\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the build workflow has not passed on $SHA"
+          fi
+          red="$(awk -F'\t' '$2 != "completed" || ($3 != "success" && $3 != "skipped" && $3 != "neutral")' <<<"$runs")"
+          [ -z "$red" ] || skip "checks not green on $SHA: ${red//$'\n'/ }"
+          stale="$(gh api --paginate "repos/$REPO/commits/$SHA/status?per_page=100" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
+          [ -z "$stale" ] || skip "commit statuses not green on $SHA: $stale"
+          threads="$(gh api graphql --paginate --slurp -F owner="${REPO%/*}" -F name="${REPO#*/}" -F n="$PR" -f query='query($owner:String!,$name:String!,$n:Int!,$endCursor:String){repository(owner:$owner,name:$name){pullRequest(number:$n){reviewDecision reviewThreads(first:100,after:$endCursor){nodes{isResolved} pageInfo{hasNextPage endCursor}}}}}')"
+          [ "$(jq '[.[].data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not)] | length' <<<"$threads")" = "0" ] || skip "#$PR has unresolved review threads"
+          [ "$(jq -r '.[0].data.repository.pullRequest.reviewDecision // ""' <<<"$threads")" != "CHANGES_REQUESTED" ] || skip "#$PR has changes requested"
+          # Two runs can race to the same pull request: one that finds it already merged has nothing left to do
+          if ! gh api -X PUT "repos/$REPO/pulls/$PR/merge" -f sha="$SHA" -f merge_method=squash >/dev/null; then
+            sleep 5
+            [ "$(gh api "repos/$REPO/pulls/$PR" --jq .merged)" = "true" ] && skip "#$PR is already merged"
+            exit 1
+          fi
+          echo "Merged #$PR at $SHA"
+          gh api -X DELETE "repos/$REPO/git/refs/heads/$(field .head.ref)" >/dev/null || echo "::warning::Could not delete the branch of #$PR"
+          for i in 1 2 3; do gh workflow run build.yml -R "$REPO" --ref main && exit 0; sleep 10; done
+          echo "::error::Merged #$PR but could not start the build workflow on main: run it by hand so the live check runs"
+          exit 1

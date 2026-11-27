@@ -91,7 +91,7 @@ Rules:
 
 Because undated cells are left out, the lines show a lower bound on adoption. A feature with many undated cells will look later and smaller than it is.
 
-The history snapshots in [data/history/](../data/history/) are a second record. Each build writes the value of every cell on the `as_of` date, so a change between two reviews is visible even when no release note dates it.
+The history snapshots in [data/history/](../data/history/) are a second record. Each build writes the value of every cell on the `as_of` date, so a change between two reviews is visible even when no release note dates it. The site's changelog shows the week a cell was first supported (`y` or `p`) on its `since` date instead, worded from the value it had then. Everything else it reads from these snapshots, on the review that found it: downgrades, partial support turning full, spec version moves, a return after a downgrade and upgrades with no `since`.
 
 ## Validation
 

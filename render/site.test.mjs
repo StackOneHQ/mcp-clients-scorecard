@@ -186,7 +186,9 @@ test('the changelog dates board changes against the live data, with ids that ign
   live.clients = live.clients.filter(c => c !== gone);
   live.clients.push({ ...structuredClone(moved), slug: 'newcomer', name: 'Newcomer' });
   moved.tier = moved.tier === 'S' ? 'C' : 'S';
-  const k = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na')[0];
+  // A cell with no since date, whose upgrade the recheck itself reports
+  const [k] = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na' && !flipped.cells[k].since) ?? [];
+  assert.ok(k, `${flipped.slug} has no undated column left to flip`);
   const was = flipped.cells[k].value;
   flipped.cells[k].value = was === 'y' ? 'n' : 'y';
   const today = changelog({ data: live }).filter(e => e.date === '2099-01-01').map(e => [e.kind, e.key]);
@@ -196,6 +198,26 @@ test('the changelog dates board changes against the live data, with ids that ign
     ['support', `recheck:${flipped.slug}:${k}=${was}>${flipped.cells[k].value}`],
     ['tier', `tier:${moved.slug}:${data.clients[1].tier}>${moved.tier}`],
   ].sort());
+});
+
+test('an upgrade with a since date shows on its release date, not on the day the board picked it up', () => {
+  const live = structuredClone(data);
+  live.as_of = '2099-01-01';
+  // A cell that is no today and was never supported in a committed snapshot, so the upgrade is its first support
+  const history = fs.readdirSync(new URL('../data/history/', import.meta.url)).map(f => JSON.parse(fs.readFileSync(new URL(`../data/history/${f}`, import.meta.url), 'utf8')));
+  const never = (slug, k) => history.every(h => !['y', 'p'].includes(h.clients[slug]?.[k]));
+  const fresh = ([k]) => k !== 'list_changed' && k !== 'protocol';
+  const c = live.clients.find(c => COLUMNS.some(col => fresh(col) && c.cells[col[0]].value === 'n' && never(c.slug, col[0])));
+  const [k] = COLUMNS.find(col => fresh(col) && c.cells[col[0]].value === 'n' && never(c.slug, col[0]));
+  Object.assign(c.cells[k], { value: 'y', since: { date: '2098-06-01', version: '9.9', source: 'https://example.com/changelog' } });
+  const events = changelog({ data: live });
+  assert.ok(!events.some(e => e.date === '2099-01-01' && e.key.startsWith(`recheck:${c.slug}:`) && e.key.includes(`${k}=n>y`)));
+  assert.ok(events.some(e => e.date === '2098-06-01' && e.key === `ship:${c.slug}:${k}`));
+  // A downgrade is a finding of the recheck, so it keeps the check date
+  const d = live.clients.find(x => x !== c && COLUMNS.some(([j]) => x.cells[j].value === 'y' && x.cells[j].since));
+  const [j] = COLUMNS.find(([j]) => d.cells[j].value === 'y' && d.cells[j].since);
+  d.cells[j].value = 'p';
+  assert.ok(changelog({ data: live }).some(e => e.date === '2099-01-01' && e.key === `recheck:${d.slug}:${j}=y>p`));
 });
 
 test('every matrix row and the README table link the client website', () => {
@@ -273,7 +295,8 @@ test('a feature feed carries only the events about that feature', () => {
       const ok = e.key === `feature:${k}` || e.key === `ship:${e.client?.slug}:${k}` || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`)));
       assert.ok(ok, `${k}: ${e.key}`);
     }
-    const expected = events.filter(e => e.key === `feature:${k}` || e.key.endsWith(`:${k}`) && e.key.startsWith('ship:') || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`))));
+    // A recheck's key also names a column told by its ship event instead, so count by the changes it shows
+    const expected = events.filter(e => e.key === `feature:${k}` || e.key.endsWith(`:${k}`) && e.key.startsWith('ship:') || e.changes?.some(([c]) => c === k));
     assert.equal(own.length, expected.length, k);
     assert.equal(JSON.parse(read(`features/${k}/changelog.json`)).events.length, own.length, k);
     assert.equal((read(`features/${k}/changelog.xml`).match(/<entry>/g) || []).length, Math.min(own.length, 100), k);

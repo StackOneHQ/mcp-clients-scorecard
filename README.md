@@ -70,7 +70,7 @@ The last 30 days to 27 Nov 2026. Clients: 15 · Feature support: 28 · Tier move
 | 2026-10-30 | Feature | [Cursor](EVIDENCE.md#cursor) rechecked: spec version not published → 2025-11-25, ID-JAG yes → no, Elicitation yes → partly |
 | 2026-10-30 | Feature | [Droid](EVIDENCE.md#droid) rechecked: Elicitation partly → no, Code mode no → partly |
 | 2026-10-30 | Feature | [goose](EVIDENCE.md#goose) rechecked: Elicitation yes → partly, Code mode partly → yes |
-| 2026-10-30 | Feature | [opencode](EVIDENCE.md#opencode) rechecked: Code mode no → partly, Tool search no → partly |
+| 2026-10-30 | Feature | [opencode](EVIDENCE.md#opencode) rechecked: Tool search no → partly |
 | 2026-10-30 | Feature | [Windsurf](EVIDENCE.md#windsurf) rechecked: MCP Apps no → partly, Tool search no → yes |
 
 </details>
