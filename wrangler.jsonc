@@ -1,5 +1,5 @@
 // The website: dist/, built by `npm run site` from data/, served through worker/index.js (headers and Markdown for agents).
-// The deploy job in .github/workflows/build.yml deploys it on every push to main. See README.md#website.
+// Cloudflare Workers Builds deploys it on every push to main. See README.md#website.
 {
   "name": "mcp-clients-scorecard",
   "main": "worker/index.js",
