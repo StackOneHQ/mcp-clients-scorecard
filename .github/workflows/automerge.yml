@@ -4,15 +4,13 @@
 # Nothing here checks out or runs code from the pull request: it reads and merges through the API only.
 name: automerge
 on:
+  # Whichever of the two finishes last on the head commit is the one that finds every check green
   workflow_run:
-    workflows: [check]
+    workflows: [check, build]
     types: [completed]
   pull_request_target:
     types: [labeled]
 permissions: {}
-concurrency:
-  group: automerge
-  cancel-in-progress: false
 jobs:
   automerge:
     if: github.event_name == 'pull_request_target' || github.event.workflow_run.conclusion == 'success'
@@ -24,6 +22,7 @@ jobs:
       # The label events and the check runs of the head commit
       issues: read
       checks: read
+      statuses: read
       # Starts the build workflow on main after the merge: a GITHUB_TOKEN merge starts no push run by itself
       actions: write
     env:
@@ -38,7 +37,7 @@ jobs:
           skip() { echo "Not merging: $1"; exit 0; }
           if [ -z "$PR" ]; then
             [[ "$BRANCH" =~ ^data/refresh-[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || skip "check ran on $BRANCH"
-            PR="$(gh pr list -R "$REPO" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')"
+            PR="$(gh api "repos/$REPO/pulls?state=open&head=${REPO%/*}:$BRANCH" --jq '.[0].number // empty')"
             [ -n "$PR" ] || skip "no open pull request for $BRANCH"
           fi
           pr="$(gh api "repos/$REPO/pulls/$PR")"
@@ -55,7 +54,7 @@ jobs:
           actor="$(gh api --paginate "repos/$REPO/issues/$PR/events" --jq '.[] | select(.event == "labeled" and .label.name == "automerge") | .actor.login' | tail -n 1)"
           [ "$actor" = "s2d2-agent[bot]" ] || skip "the automerge label on #$PR was added by ${actor:-nobody}, not s2d2"
           # s2d2 vouches for one commit: its newest review on the PR is a comment that starts "s2d2 verified" on this exact SHA
-          verified="$(gh api --paginate "repos/$REPO/pulls/$PR/reviews?per_page=100" --jq '.[] | select(.user.login == "s2d2-agent[bot]") | [.commit_id, (.body | startswith("s2d2 verified"))] | @tsv' | tail -n 1)"
+          verified="$(gh api --paginate "repos/$REPO/pulls/$PR/reviews?per_page=100" --jq '.[] | select(.user.login == "s2d2-agent[bot]") | [.commit_id, (.body // "" | startswith("s2d2 verified"))] | @tsv' | tail -n 1)"
           [ "$verified" = "$SHA"$'\t'"true" ] || skip "s2d2 has not verified $SHA"
           # A refresh edits data and the files built from it, never code, workflows or dependencies
           # The files endpoint lists at most 3000, so a larger pull request cannot be inspected and waits for a person
@@ -71,10 +70,16 @@ jobs:
           grep -qP '^check\tcompleted\tsuccess$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
           red="$(awk -F'\t' '$2 != "completed" || ($3 != "success" && $3 != "skipped" && $3 != "neutral")' <<<"$runs")"
           [ -z "$red" ] || skip "checks not green on $SHA: ${red//$'\n'/ }"
+          stale="$(gh api "repos/$REPO/commits/$SHA/status" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
+          [ -z "$stale" ] || skip "commit statuses not green on $SHA: $stale"
           threads="$(gh api graphql --paginate --slurp -F owner="${REPO%/*}" -F name="${REPO#*/}" -F n="$PR" -f query='query($owner:String!,$name:String!,$n:Int!,$endCursor:String){repository(owner:$owner,name:$name){pullRequest(number:$n){reviewDecision reviewThreads(first:100,after:$endCursor){nodes{isResolved} pageInfo{hasNextPage endCursor}}}}}')"
           [ "$(jq '[.[].data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not)] | length' <<<"$threads")" = "0" ] || skip "#$PR has unresolved review threads"
           [ "$(jq -r '.[0].data.repository.pullRequest.reviewDecision // ""' <<<"$threads")" != "CHANGES_REQUESTED" ] || skip "#$PR has changes requested"
-          gh api -X PUT "repos/$REPO/pulls/$PR/merge" -f sha="$SHA" -f merge_method=squash >/dev/null
+          # Two runs can race to the same pull request: one that finds it already merged has nothing left to do
+          if ! gh api -X PUT "repos/$REPO/pulls/$PR/merge" -f sha="$SHA" -f merge_method=squash >/dev/null; then
+            [ "$(gh api "repos/$REPO/pulls/$PR" --jq .merged)" = "true" ] && skip "#$PR is already merged"
+            exit 1
+          fi
           echo "Merged #$PR at $SHA"
           gh api -X DELETE "repos/$REPO/git/refs/heads/$(field .head.ref)" >/dev/null || echo "::warning::Could not delete the branch of #$PR"
           for i in 1 2 3; do gh workflow run build.yml -R "$REPO" --ref main && exit 0; sleep 10; done

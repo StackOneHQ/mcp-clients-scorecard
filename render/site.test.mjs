@@ -187,7 +187,8 @@ test('the changelog dates board changes against the live data, with ids that ign
   live.clients.push({ ...structuredClone(moved), slug: 'newcomer', name: 'Newcomer' });
   moved.tier = moved.tier === 'S' ? 'C' : 'S';
   // A cell with no since date, whose upgrade the recheck itself reports
-  const k = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na' && !flipped.cells[k].since)[0];
+  const [k] = COLUMNS.find(([k]) => k !== 'protocol' && flipped.cells[k].value !== 'na' && !flipped.cells[k].since) ?? [];
+  assert.ok(k, `${flipped.slug} has no undated column left to flip`);
   const was = flipped.cells[k].value;
   flipped.cells[k].value = was === 'y' ? 'n' : 'y';
   const today = changelog({ data: live }).filter(e => e.date === '2099-01-01').map(e => [e.kind, e.key]);
@@ -290,7 +291,8 @@ test('a feature feed carries only the events about that feature', () => {
       const ok = e.key === `feature:${k}` || e.key === `ship:${e.client?.slug}:${k}` || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`)));
       assert.ok(ok, `${k}: ${e.key}`);
     }
-    const expected = events.filter(e => e.key === `feature:${k}` || e.key.endsWith(`:${k}`) && e.key.startsWith('ship:') || (e.key.startsWith('recheck:') && e.key.split(':').slice(2).join(':').split(',').some(p => p.startsWith(`${k}=`))));
+    // A recheck's key also names a column told by its ship event instead, so count by the changes it shows
+    const expected = events.filter(e => e.key === `feature:${k}` || e.key.endsWith(`:${k}`) && e.key.startsWith('ship:') || e.changes?.some(([c]) => c === k));
     assert.equal(own.length, expected.length, k);
     assert.equal(JSON.parse(read(`features/${k}/changelog.json`)).events.length, own.length, k);
     assert.equal((read(`features/${k}/changelog.xml`).match(/<entry>/g) || []).length, Math.min(own.length, 100), k);

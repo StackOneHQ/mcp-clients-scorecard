@@ -1,7 +1,7 @@
 // The changelog: every dated event the data can vouch for, newest first. Built at every build from three sources:
 // - the weekly snapshots in data/history/: a client joins or leaves, a tier moves, a cell changes value (dated by the check)
 // - the `since` date on each supported cell: the release that shipped the feature (dated by the release note), which
-//   replaces the check-dated move off no for that cell, so the timeline shows when the vendor shipped, not when we noticed
+//   replaces the check-dated event of the cell's first support, so the timeline shows when the vendor shipped, not when we noticed
 // - data/features.yaml and data/meta.yaml: spec milestones and spec releases
 import fs from 'node:fs';
 import { ROOT, COLUMNS, TIERS } from './data.mjs';
@@ -16,7 +16,6 @@ export const CHANGES_PAGE = 10;
 const LABEL = Object.fromEntries(COLUMNS);
 const WORD = { y: 'yes', p: 'partly', n: 'no', na: 'n/a' };
 const SHIPS = new Set(['y', 'p']);
-const NONE = new Set(['n', 'na']);
 const KIND_ORDER = Object.fromEntries(KINDS.map(([k], i) => [k, i]));
 
 // Committed snapshots before as_of, which load() never validates: check the fields the changelog reads
@@ -42,14 +41,23 @@ export function changelog({ data }) {
   const events = [];
   const live = new Set(data.clients.map(c => c.slug));
   const who = (slug, name) => ({ slug: live.has(slug) ? slug : null, name });
-  const dated = new Set(data.clients.flatMap(c => COLUMNS.filter(([k]) => c.cells[k].since && SHIPS.has(c.cells[k].value)).map(([k]) => `${c.slug}:${k}`)));
   // as_of compares against the live data, so the board is current even before the build writes its snapshot
   const snaps = [...readSnapshots(String(data.as_of)), JSON.parse(snapshot({ data }))];
+  // The snapshot where each cell was first supported. A since date dates that move, not later ones. value is the one
+  // it moved to, kept only when a recheck saw the move: a cell supported on its first snapshot was never seen unshipped
+  const first = new Map();
+  snaps.forEach((snap, i) => {
+    for (const [slug, c] of Object.entries(snap.clients)) {
+      for (const [k] of COLUMNS) {
+        const was = snaps[i - 1]?.clients[slug]?.[k];
+        if (SHIPS.has(c[k]) && !first.has(`${slug}:${k}`)) first.set(`${slug}:${k}`, { i, value: was === undefined ? null : c[k] });
+      }
+    }
+  });
+  const dated = new Set(data.clients.flatMap(c => COLUMNS.filter(([k]) => c.cells[k].since && SHIPS.has(c.cells[k].value)).map(([k]) => `${c.slug}:${k}`)));
   if (snaps.length) events.push({ date: snaps[0].as_of, kind: 'client', client: null, text: `Scorecard published with ${Object.keys(snaps[0].clients).length} clients`, source: null, key: 'publish' });
   for (let i = 1; i < snaps.length; i++) {
     const [prev, cur] = [snaps[i - 1], snaps[i]];
-    // A cell already supported in an earlier snapshot has had its first ship
-    for (const [slug, c] of Object.entries(prev.clients)) for (const [k] of COLUMNS) if (SHIPS.has(c[k])) dated.delete(`${slug}:${k}`);
     const date = cur.as_of;
     for (const [slug, c] of Object.entries(cur.clients)) {
       const was = prev.clients[slug];
@@ -58,11 +66,12 @@ export function changelog({ data }) {
         const up = TIERS.indexOf(c.tier) < TIERS.indexOf(was.tier);
         events.push({ date, kind: 'tier', client: who(slug, c.name), text: `${up ? 'moves up' : 'moves down'} from ${was.tier} to ${c.tier} tier`, source: null, key: `tier:${slug}:${was.tier}>${c.tier}` });
       }
-      // since dates the first release that shipped a cell, so its first move off no shows once, on the release date
-      const firstShip = k => NONE.has(was[k]) && SHIPS.has(c[k]) && dated.delete(`${slug}:${k}`);
-      const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k]) && !firstShip(k)).map(([k]) => k);
+      const moved = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k])).map(([k]) => k);
+      // A cell's first support with a since date shows once, by its ship event on the release date
+      const changed = moved.filter(k => !(dated.has(`${slug}:${k}`) && first.get(`${slug}:${k}`).i === i));
       const changes = changed.map(k => [k, flip(k, was[k], c[k])]);
-      if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changes.map(([, t]) => t).join(', ')}`, source: null, key: `recheck:${slug}:${changed.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}`, changes });
+      // The key keeps every column that moved, so a feed id stays the same when one is told by its ship event instead
+      if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changes.map(([, t]) => t).join(', ')}`, source: null, key: `recheck:${slug}:${moved.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}`, changes });
     }
     for (const [slug, c] of Object.entries(prev.clients)) if (!cur.clients[slug]) events.push({ date, kind: 'client', client: who(slug, c.name), text: 'leaves the board', source: null, key: `leave:${slug}` });
   }
@@ -70,7 +79,9 @@ export function changelog({ data }) {
     for (const [k, l] of COLUMNS) {
       const cell = c.cells[k], s = cell.since;
       if (!s || !SHIPS.has(cell.value)) continue;
-      events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${cell.value === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}`, feature: k });
+      // Worded from the value the cell first had, so a partial first release does not read as full support
+      const shipped = first.get(`${c.slug}:${k}`)?.value ?? cell.value;
+      events.push({ date: String(s.date), kind: 'support', client: who(c.slug, c.name), text: `ships ${l}${shipped === 'p' ? ' (partly)' : ''}${s.version ? ` in ${s.version}` : ''}`, source: s.source, key: `ship:${c.slug}:${k}`, feature: k });
     }
   }
   for (const f of data.features) if (f.spec_date && f.spec_event) events.push({ date: String(f.spec_date), kind: 'spec', client: null, text: f.spec_event, source: f.spec_source ?? f.url, key: `feature:${f.id}`, feature: f.id });

@@ -52,7 +52,7 @@ Rules for `since`:
 - Only add it from a dated release note, changelog entry, release tag or vendor announcement (blog post, press release) that names the feature, or a vendor docs page that names the first version with it.
 - Use the date of the first release that shipped it, even behind a flag. Do not move it forward when partial support becomes full.
 - Leave it out if you are not sure. Cells without `since` still count in the table and are left out of the time series. See [the methodology](methodology/METHODOLOGY.md#dating-support).
-- Add it whenever a source dates it: the site's changelog shows a cell's first move off `n` on its `since` date, and falls back to the date the board picked it up only when there is none.
+- Add it whenever a source dates it: the site's changelog shows a cell's first support on its `since` date, and falls back to the date the board picked it up only when there is none.
 
 Other fields you can update: `version_checked` (the version you checked against), `website`, `docs`, `repo`, and `note` (one line shown under the table).
 
