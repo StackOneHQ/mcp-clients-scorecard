@@ -66,8 +66,8 @@ jobs:
           bad="$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq ".[] | .filename, (.previous_filename // empty) | select(test(\"$allowed\") | not) | tojson")"
           [ -z "$bad" ] || skip "#$PR touches files outside data: ${bad//$'\n'/ }"
           # Every check on the head commit finished green, this job excepted, and the check workflow is among them
-          runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // "")] | @tsv')"
-          grep -qP '^check\tcompleted\tsuccess$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
+          runs="$(gh api --paginate "repos/$REPO/commits/$SHA/check-runs?per_page=100" --jq '.check_runs[] | select(.name != "automerge") | [.name, .status, (.conclusion // ""), .app.slug] | @tsv')"
+          grep -qP '^check\tcompleted\tsuccess\tgithub-actions$' <<<"$runs" || skip "the check workflow has not passed on $SHA"
           red="$(awk -F'\t' '$2 != "completed" || ($3 != "success" && $3 != "skipped" && $3 != "neutral")' <<<"$runs")"
           [ -z "$red" ] || skip "checks not green on $SHA: ${red//$'\n'/ }"
           stale="$(gh api "repos/$REPO/commits/$SHA/status" --jq '[.statuses[] | select(.state != "success") | .context] | join(" ")')"
