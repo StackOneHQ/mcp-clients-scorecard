@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { load, COLUMNS, rubricTier } from './data.mjs';
+import { load, COLUMNS, SCORED, S_SHARE, rubricTier } from './data.mjs';
 import { buildSite } from './site.mjs';
 import { changelog, splitRecent, recentCutoff, forFeature, KINDS, CHANGES_PAGE } from './changelog.mjs';
 
@@ -318,16 +318,16 @@ test('a recheck that moved several columns shows only the one feature in that fe
   assert.equal(forFeature(events, 'tasks').find(e => e.key === both.key).text.includes('Events'), false);
 });
 
-test('S tier needs 60% of the feature columns on the current spec or one behind', () => {
-  const features = COLUMNS.filter(([k]) => k !== 'protocol').map(([k]) => k);
-  const client = (yes, protocol) => ({
+test('S tier needs S_SHARE of the feature columns on the current spec or one behind', () => {
+  // yes counts whole points; half adds one partial cell
+  const client = (yes, protocol, half = false) => ({
     fix: { kind: 'none' },
-    cells: { protocol: { value: protocol }, ...Object.fromEntries(features.map((k, i) => [k, { value: i < yes ? 'y' : 'n' }])) },
+    cells: { protocol: { value: protocol }, ...Object.fromEntries(SCORED.map((k, i) => [k, { value: i < yes ? 'y' : half && i === yes ? 'p' : 'n' }])) },
   });
-  const bar = Math.ceil(0.6 * features.length);
+  const bar = Math.ceil(S_SHARE * SCORED.length);
   const [current, behind, older] = data.spec_versions;
   assert.equal(rubricTier(client(bar, current), data.spec_versions), 'S');
   assert.equal(rubricTier(client(bar, behind), data.spec_versions), 'S');
-  assert.equal(rubricTier(client(bar - 1, current), data.spec_versions), 'A');
+  assert.equal(rubricTier(client(bar - 1, current, true), data.spec_versions), 'A');
   assert.equal(rubricTier(client(bar, older), data.spec_versions), 'A');
 });

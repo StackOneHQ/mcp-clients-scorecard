@@ -19,8 +19,9 @@ cells:
       Source: at tag 1.148.0 the client sends `MCP.LATEST_PROTOCOL_VERSION`, which is **2025-11-25**.
 
       - `mcpServerRequestHandler.ts:116` sends `protocolVersion: MCP.LATEST_PROTOCOL_VERSION`.
-      - `platform/mcp/common/modelContextProtocol.ts:43` sets it to "2025-11-25", unchanged on `main` on 2026-11-27.
-      - No 2026-07-28 in the repo, in code or pull requests.
+      - `platform/mcp/common/modelContextProtocol.ts:43` sets it to "2025-11-25".
+      - The same line on [main](https://github.com/microsoft/vscode/blob/main/src/vs/platform/mcp/common/modelContextProtocol.ts#L43) still reads "2025-11-25" on 2026-11-27.
+      - A GitHub code search of the repo for "2026-07-28" found nothing.
     checked: 2026-11-27
   code_mode:
     value: n

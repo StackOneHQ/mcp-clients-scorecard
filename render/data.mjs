@@ -7,6 +7,8 @@ const readYaml = f => YAML.parse(fs.readFileSync(ROOT + f, 'utf8'));
 // Column order and labels come from data/features.yaml
 const FEATURES = readYaml('data/features.yaml');
 export const COLUMNS = FEATURES.map(f => [f.id, f.label]);
+// The scored columns: every column except the spec version
+export const SCORED = COLUMNS.map(([k]) => k).filter(k => k !== 'protocol');
 // Harness columns are client designs outside the MCP spec, drawn as their own group
 export const HARNESS = new Set(FEATURES.filter(f => f.kind === 'harness').map(f => f.id));
 export const TIERS = ['S', 'A', 'B', 'C', 'D'];
@@ -162,11 +164,11 @@ export function formatDate(iso) {
 
 // Feature score: y = 1, p = 0.5 across every column except the spec version
 export function featureScore(c) {
-  return COLUMNS.filter(([k]) => k !== 'protocol').reduce((s, [k]) => s + ({ y: 1, p: 0.5 }[c.cells[k].value] || 0), 0);
+  return SCORED.reduce((s, k) => s + ({ y: 1, p: 0.5 }[c.cells[k].value] || 0), 0);
 }
 
 // S needs this share of the feature columns, so the bar rises when a column is added
-const S_SHARE = 0.6;
+export const S_SHARE = 0.6;
 
 // The tier the rubric in methodology/RUBRIC.md gives a client. A client may sit elsewhere only with a tier_note.
 export function rubricTier(c, versions) {
@@ -174,7 +176,7 @@ export function rubricTier(c, versions) {
   const spec = protocolGrade(c.cells.protocol.value, versions);
   const lowFix = c.fix.kind === 'rate' && c.fix.ratio < 0.15;
   if (c.unmaintained || (score <= 1 && spec === 'rd')) return 'D';
-  if (score >= S_SHARE * (COLUMNS.length - 1) && (spec === 'g' || spec === 'a')) return 'S';
+  if (score >= S_SHARE * SCORED.length && (spec === 'g' || spec === 'a')) return 'S';
   if (score >= 3 && spec === 'rd' && lowFix) return 'C';
   if (score >= 3 && spec === 'x' && c.fix.kind === 'none') return 'B';
   if (score >= 3) return 'A';
