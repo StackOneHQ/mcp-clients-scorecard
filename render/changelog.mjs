@@ -48,6 +48,8 @@ export function changelog({ data }) {
   if (snaps.length) events.push({ date: snaps[0].as_of, kind: 'client', client: null, text: `Scorecard published with ${Object.keys(snaps[0].clients).length} clients`, source: null, key: 'publish' });
   for (let i = 1; i < snaps.length; i++) {
     const [prev, cur] = [snaps[i - 1], snaps[i]];
+    // A cell already supported in an earlier snapshot has had its first ship
+    for (const [slug, c] of Object.entries(prev.clients)) for (const [k] of COLUMNS) if (SHIPS.has(c[k])) dated.delete(`${slug}:${k}`);
     const date = cur.as_of;
     for (const [slug, c] of Object.entries(cur.clients)) {
       const was = prev.clients[slug];
@@ -56,8 +58,9 @@ export function changelog({ data }) {
         const up = TIERS.indexOf(c.tier) < TIERS.indexOf(was.tier);
         events.push({ date, kind: 'tier', client: who(slug, c.name), text: `${up ? 'moves up' : 'moves down'} from ${was.tier} to ${c.tier} tier`, source: null, key: `tier:${slug}:${was.tier}>${c.tier}` });
       }
-      // since dates the first release that shipped a cell, so that first move off no shows once, on the release date
-      const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k]) && !(NONE.has(was[k]) && SHIPS.has(c[k]) && dated.has(`${slug}:${k}`))).map(([k]) => k);
+      // since dates the first release that shipped a cell, so its first move off no shows once, on the release date
+      const firstShip = k => NONE.has(was[k]) && SHIPS.has(c[k]) && dated.delete(`${slug}:${k}`);
+      const changed = COLUMNS.filter(([k]) => was[k] !== undefined && c[k] !== undefined && String(was[k]) !== String(c[k]) && !firstShip(k)).map(([k]) => k);
       const changes = changed.map(k => [k, flip(k, was[k], c[k])]);
       if (changed.length) events.push({ date, kind: 'support', client: who(slug, c.name), text: `rechecked: ${changes.map(([, t]) => t).join(', ')}`, source: null, key: `recheck:${slug}:${changed.map(k => `${k}=${was[k]}>${c[k]}`).join(',')}`, changes });
     }

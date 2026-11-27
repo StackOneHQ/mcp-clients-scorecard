@@ -21,6 +21,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # The label events and the check runs of the head commit
+      issues: read
+      checks: read
       # Starts the build workflow on main after the merge: a GITHUB_TOKEN merge starts no push run by itself
       actions: write
     env:
@@ -71,4 +74,6 @@ jobs:
           gh api -X PUT "repos/$REPO/pulls/$PR/merge" -f sha="$SHA" -f merge_method=squash >/dev/null
           echo "Merged #$PR at $SHA"
           gh api -X DELETE "repos/$REPO/git/refs/heads/$(field .head.ref)" >/dev/null || echo "::warning::Could not delete the branch of #$PR"
-          gh workflow run build.yml -R "$REPO" --ref main || echo "::warning::Could not start the build workflow on main"
+          for i in 1 2 3; do gh workflow run build.yml -R "$REPO" --ref main && exit 0; sleep 10; done
+          echo "::error::Merged #$PR but could not start the build workflow on main: run it by hand so the live check runs"
+          exit 1
