@@ -211,13 +211,13 @@ ${TIERS.map(t => `<div class="trow t-${t}"><div class="tlabel"><b>${t}</b><small
 <details class="defs"><summary>What each column means</summary><dl>${data.features.map(f => `<div><dt>${f.id === 'protocol' ? esc(f.label) : `<a href="${featureUrl(f.id)}">${esc(f.label)}</a>`}${HARNESS.has(f.id) ? ' <span class="tag">harness</span>' : ''}</dt><dd>${inlineHtml(f.definition)} <a href="${attr(f.url)}">${esc(f.ref)}</a>${READING.filter(([k]) => k === f.id).map(([, p, t]) => ` · <a href="${SO}${p}">${esc(t)}</a>`).join('')}</dd></div>`).join('')}
 <div><dt>MCP bugs fixed</dt><dd>The share of the client's MCP issues since ${formatDate(data.bug_window_start)} closed as completed, duplicates removed. <a href="${REPO}/blob/main/methodology/METHODOLOGY.md#mcp-bugs-fixed">How it is counted</a></dd></div></dl></details></section>
 
-<section id="faq" class="wrap sec"><h2>Questions</h2><div class="faq">${faq.map(([q, a], i) => `<details${i === 0 ? " open" : ""}><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('')}</div></section>
-
 <section id="reading" class="wrap sec"><div class="sec-hd"><h2>Notes from StackOne</h2><p class="note">We run an MCP server and test it in every one of these clients each week. These are the write-ups that came out of it.</p></div>
 <ul class="reading">${READING.map(([k, p, t]) => `<li><a href="${SO}${p}">${esc(t)}</a>${k ? `<span class="muted">${esc(LABEL[k])}</span>` : ''}</li>`).join('')}</ul></section>
 
 <section class="wrap sec"><h2>Adoption over time</h2><div class="charts"><img class="chart" src="/assets/history-features.png" alt="Which MCP clients shipped each feature, and when" loading="lazy" width="1200" height="700">
 <img class="chart" src="/assets/history-clients.png" alt="Features supported per client over time" loading="lazy" width="1200" height="700"></div></section>
+
+<section id="faq" class="wrap sec"><h2>Questions</h2><div class="faq">${faq.map(([q, a], i) => `<details${i === 0 ? " open" : ""}><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('')}</div></section>
 </main>
 <div class="tray" id="tray" aria-live="polite"><span class="lgs"></span><span class="txt"></span><button type="button" class="btn sm primary" id="tray-go" disabled>Compare</button><button type="button" class="xbtn" id="tray-clear" aria-label="Clear the selection">×</button></div>
 <dialog class="dlg" id="compare" aria-label="Compare clients"><div class="dlg-hd"><h3>Compare</h3><label class="toggle"><input type="checkbox" id="cmp-diff">Only differences</label><button type="button" class="btn sm" id="cmp-share" data-copy="">Copy link</button><button type="button" class="xbtn" data-close aria-label="Close">×</button></div>
@@ -458,8 +458,8 @@ function homeMarkdown(data, faq, events) {
     '## Tiers', '', ...TIERS.map(t => `- **${t}**: ${data.clients.filter(c => c.tier === t).map(c => `[${c.name}](${SITE + clientUrl(c)})`).join(', ') || 'none'}`), '',
     '## Every client', '', `| Client | Tier | ${COLUMNS.map(([, l]) => l).join(' | ')} |`, `|${' --- |'.repeat(COLUMNS.length + 2)}`,
     ...ranked.map(c => `| [${c.name}](${SITE + clientUrl(c)}) ([website](${encUrl(c.website)})) | ${c.tier} | ${COLUMNS.map(([k]) => `[${mdCell(data, k, c.cells[k])}](${c.cells[k].source} "checked ${c.cells[k].checked}")`).join(' | ')} |`), '',
-    '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
     '## What each column means', '', ...data.features.map(f => `- **${f.id === 'protocol' ? f.label : `[${f.label}](${SITE + featureUrl(f.id)})`}**: ${inlinePlain(f.definition)} (${f.url})`), '',
+    '## Questions', '', ...faq.flatMap(([q, a]) => [`### ${q}`, '', a, '']),
     `Source and methodology: ${REPO}`, ''].join('\n');
 }
 
