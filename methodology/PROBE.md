@@ -4,16 +4,16 @@ The probe checks which protocol version a CLI really sends, and which capabiliti
 
 ## What it runs
 
-[probe/run.sh](../probe/run.sh) installs each CLI at its npm latest into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request it receives, the client capabilities each one carries, and the reply it sends to each handshake. It also adds a tool mid-session: once after it answers the first `tools/list`, and once more for the first `subscriptions/listen` stream that asks for tool changes, so a 2026-07-28 client that opens the stream after its first list still gets a change notice.
+[probe/run.sh](../probe/run.sh) installs each CLI at its latest release (npm, or the vendor installer manifest for Antigravity CLI) into a temporary directory, gives each one an empty `HOME` so no local config leaks in, and points it at [probe/server.cjs](../probe/server.cjs). The server is a one-tool MCP server built on the official SDK (`@modelcontextprotocol/server`). It answers both the 2026-07-28 `server/discover` handshake and the older `initialize`, and logs every request it receives, the client capabilities each one carries, and the reply it sends to each handshake. It also adds a tool mid-session: once after it answers the first `tools/list`, and once more for the first `subscriptions/listen` stream that asks for tool changes, so a 2026-07-28 client that opens the stream after its first list still gets a change notice.
 
-| Client | npm package | How it is started |
+| Client | Package | How it is started |
 | --- | --- | --- |
 | Claude Code | `@anthropic-ai/claude-code` | `claude -p` with `--mcp-config` |
 | Copilot CLI | `@github/copilot` | `copilot -p` with `--additional-mcp-config` |
 | Codex | `@openai/codex` | `codex exec` with the server set through `-c` |
-| Gemini CLI | `@google/gemini-cli` | `gemini mcp list` in a trusted folder |
 | opencode | `opencode-ai` | `opencode mcp list` |
 | Droid | `@factory/cli` | `droid mcp add`, then `droid exec` |
+| Antigravity CLI | not on npm: the build named in its installer manifest, sha512 checked | `antigravity -p` (the binary the `agy` installer names) with the server in `~/.gemini/config/mcp_config.json`; it connects before sign-in |
 
 [probe/report.mjs](../probe/report.mjs) turns the log into `probe/results.json`: per package, the installed version, the versions it asked for, and the version the server agreed. On the `initialize` path, a client that asks for a version the probe server does not support, then sends `notifications/initialized` on the older version the server offers, is recorded under `accepted_downgrade`: use the version it asked for, not the one it accepted. A `server/discover` client sends its version on every later request, so a switch to an older version shows up in its requested list instead. It exits 1 when no client completed a handshake.
 
@@ -44,8 +44,10 @@ Some clients send the handshake before they check credentials. Others need a sig
 
 ## Limits
 
-- Only CLIs on npm are probed. Pi, Continue and the apps and IDEs are checked from source and docs.
+- Only the CLIs in the table are probed: the ones on npm, plus Antigravity CLI from its installer manifest (linux x64 only). Pi, Continue and the apps and IDEs are checked from source and docs.
+- Antigravity CLI is a closed binary, so it runs with an empty environment (only `PATH` and `HOME`). If its download or checksum fails, the other clients still run, and its entry in the results has no version and `connected: false`.
 - The probe sees the handshake. It does not exercise tasks, elicitation or other features, which are checked from source, docs and changelogs.
-- Gemini CLI and opencode are started with `mcp list`, which connects with a minimal client. Their declared capabilities (and Gemini's client name, `mcp-test-client`) may differ from a real chat session, so treat an empty `declares` there as unconfirmed.
+- opencode is started with `mcp list`, which connects with a minimal client. Its declared capabilities may differ from a real chat session, so treat an empty `declares` there as unconfirmed.
+- Antigravity CLI connects its MCP servers before it asks to sign in, then waits for a login the probe never completes. It re-listed tools after the change notice in only 5 of 11 runs on 2026-11-27, so a single run says little either way.
 - A CLI that stops at sign-in after the handshake (Claude Code, Droid) still shows what it declared, but later requests, such as a tool call, are not seen.
 - A short run can end before the client relists, and `mcp list` lists tools once and exits, so `relisted: false` is unconfirmed rather than a no. A `relisted: true` shows the client fetched the list again, not that the model saw the new tool: a client that lists tools before every turn also passes, so check it against the client's source before you grade the cell.

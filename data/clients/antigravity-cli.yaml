@@ -1,0 +1,121 @@
+# Antigravity CLI. Field reference: data/README.md. After editing, run npm run build.
+name: Antigravity CLI
+group: cli
+tier: A
+logo: icon-antigravity.svg
+website: https://antigravity.google/product/antigravity-cli
+docs: https://antigravity.google/docs/cli/mcp
+repo: null
+version_checked: "1.5.18"
+tracker: null
+cells:
+  protocol:
+    value: 2026-07-28
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Own probe of `agy` 1.5.18: it **opened with `server/discover` on 2026-07-28** and stayed on it.
+
+      - Ran the linux-x64 build from the installer's manifest (sha512 checked) with a local stdio server in `~/.gemini/config/mcp_config.json`.
+      - The request carried `io.modelcontextprotocol/protocolVersion` 2026-07-28 and `clientInfo` `antigravity-client`.
+      - It connected before sign-in, then sent `tools/list` and `subscriptions/listen` on 2026-07-28.
+      - Docs and changelog name no revision.
+    checked: 2026-11-27
+  code_mode:
+    value: n
+    method: docs
+    source: https://antigravity.google/docs/dynamic-workflows
+    evidence: |-
+      Docs: the CLI shares the App's agent, whose only scripting feature, Dynamic Workflows, runs Python that **starts agents, not MCP tool calls**.
+
+      - No `execute_code` or script runner over MCP tools in the 1.5.18 binary.
+    checked: 2026-11-27
+  tool_search:
+    value: y
+    label: Files
+    quality: basic
+    method: docs
+    source: https://antigravity.google/docs/cli/mcp
+    evidence: |-
+      Docs: MCP tools are **lazy-loaded by default**; the agent sees tool names and reads each schema from a file, with no search query.
+
+      - The CLI writes each tool's schema to `~/.gemini/antigravity-cli/mcp/<serverName>/<toolName>.json`.
+      - The agent then calls the tool through the built-in `call_mcp_tool`.
+      - The probe of 1.5.18 wrote `~/.gemini/antigravity-cli/mcp/probe/ping.json`.
+    checked: 2026-11-27
+  apps:
+    value: na
+    method: docs
+    source: https://antigravity.google/docs/mcp?tab=cli
+    evidence: |-
+      Docs: `ui://` views render only in the Antigravity App; **the CLI runs the same tools with their plain-text results**.
+
+      - The 1.5.18 handshake declared no `io.modelcontextprotocol/ui` extension.
+    checked: 2026-11-27
+  tasks:
+    value: n
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Own probe of 1.5.18: the handshake declares **no tasks capability or extension**.
+
+      - Capabilities were only `elicitation` and `roots`.
+      - No `tasks/get` or `io.modelcontextprotocol/tasks` in the binary.
+    checked: 2026-11-27
+  events:
+    value: n
+    method: source
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Source: **no** `events/subscribe`, `notifications/events` or `io.modelcontextprotocol/events` in the 1.5.18 binary. The docs and changelog do not mention MCP events.
+    checked: 2026-11-27
+  skills:
+    value: n
+    method: docs
+    source: https://antigravity.google/docs/skills
+    evidence: |-
+      Docs: skills load from `.agents/skills` folders and plugins, and the docs **do not mention skills served by MCP servers**.
+
+      - No `skills/list`, `skill://` or `io.modelcontextprotocol/skills` in the 1.5.18 binary.
+    checked: 2026-11-27
+  cimd:
+    value: y
+    method: docs
+    source: https://antigravity.google/docs/mcp
+    evidence: |-
+      Docs: Antigravity **sends its hosted CIMD URL as `client_id`** when the authorization server advertises `client_id_metadata_document_supported`.
+
+      - The page covers the App, IDE and CLI, with client resolution order manual `oauth.clientId`, then CIMD, then DCR.
+      - The 1.5.18 binary contains `https://antigravity.google/oauth/client-metadata.json` and `client_id_metadata_document_supported`.
+    checked: 2026-11-27
+  id_jag:
+    value: n
+    method: source
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Source: **no** `id-jag` token type in the 1.5.18 binary, and no doc or changelog entry for Cross App Access.
+
+      - The MCP auth docs list Google ADC, OAuth (manual client, CIMD, DCR) and custom headers.
+    checked: 2026-11-27
+  elicitation:
+    value: y
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Own probe of 1.5.18: the handshake declares **form and url elicitation**.
+
+      - `server/discover` carried `elicitation: {form: {}, url: {}}` in `io.modelcontextprotocol/clientCapabilities`.
+      - The binary handles `elicitation/create`.
+    checked: 2026-11-27
+  list_changed:
+    value: p
+    method: probe
+    source: https://storage.googleapis.com/antigravity-public/antigravity-cli/1.5.18-6386224290725888/linux-x64/cli_linux_x64.tar.gz
+    evidence: |-
+      Own probe of 1.5.18: the CLI subscribes to tool changes, but it **re-listed after the notice in only 5 of 11 runs**.
+
+      - It opened `subscriptions/listen` with `toolsListChanged: true` every time.
+      - When it re-listed, it wrote the new tool's schema file, `ping_1.json`, next to `ping.json`.
+      - In the other 6 no `tools/list` followed within 30 to 60 seconds, including 3 of 4 runs where the tool was added 8 seconds after subscribing.
+      - The binary is closed source, so the cause is not known. The Antigravity App's probe re-listed every time.
+    checked: 2026-11-27

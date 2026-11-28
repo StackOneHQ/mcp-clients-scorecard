@@ -42,11 +42,6 @@
       "completed": 1,
       "duplicates": 0
     },
-    "google-gemini/gemini-cli": {
-      "issues": 43,
-      "completed": 6,
-      "duplicates": 1
-    },
     "aaif-goose/goose": {
       "issues": 83,
       "completed": 45,
