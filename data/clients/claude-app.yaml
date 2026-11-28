@@ -1,7 +1,7 @@
 # Claude app. Field reference: data/README.md. After editing, run npm run build.
 name: Claude app
 group: app
-tier: A
+tier: S
 logo: icon-claude.svg
 website: https://claude.com/product/overview
 docs: https://claude.com/docs/connectors/building
@@ -11,11 +11,20 @@ tracker:
   mcp_in_title: false
 cells:
   protocol:
-    value: not published
-    method: docs
-    source: https://claude.com/docs/connectors/building
-    evidence: The connector build page names only the 2025-03-26, 2025-06-18 and 2025-11-25 authorization specs and **publishes no protocol version** for the client.
-    checked: 2026-10-30
+    value: 2026-07-28
+    method: source
+    source: https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_6.28899.6_amd64.deb
+    evidence: |-
+      Source: Claude Desktop 6.28899.6 **tries 2026-07-28 first** for remote connectors and for extensions on its built-in Node, and falls back to 2025-11-25.
+
+      - Read in `app.asar` of the official Linux package (sha256 checked against the apt index), `.vite/build/index.chunk-DqepnCaA.js`.
+      - Remote connectors connect with `versionNegotiation: { mode: "auto" }`: `server/discover` on 2026-07-28, then `initialize` on "2025-11-25" if the server does not answer it.
+      - Desktop extensions on the built-in Node get the same check from a separate era probe. Other local stdio servers start on 2025-11-25 (*"exec lane pinned"*).
+      - A remote feature flag (`1942337209`) turns all of this back to 2025-11-25. It is off by default.
+      - *Not* probed live: the app starts MCP servers only after sign-in. The connector docs still publish no version.
+      - This is the Desktop app, as in the Code mode cell. Claude in the browser connects to remote connectors from Anthropic's servers, which publish no version.
+    checked: 2026-11-27
+    fallback: 2025-11-25
   code_mode:
     value: n
     method: changelog

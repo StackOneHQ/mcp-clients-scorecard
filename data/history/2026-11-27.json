@@ -75,8 +75,8 @@
     "claude-app": {
       "name": "Claude app",
       "group": "app",
-      "tier": "A",
-      "protocol": "not published",
+      "tier": "S",
+      "protocol": "2026-07-28",
       "apps": "y",
       "tasks": "y",
       "events": "n",
